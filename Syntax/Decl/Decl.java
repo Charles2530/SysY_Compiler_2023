@@ -40,6 +40,15 @@ public class Decl {
 
     private void ConstDef() {
         Ident();
+        if(AstRecursion.getPreSymToken().getReservedWord().equals("LBRACK")){
+            AstNode lbrackNode = new AstNode("LBRACK");
+            AstNode intNode = new AstNode("<ConstExp>");
+            intNode.addChild(lbrackNode);
+            ConstExp();
+        }
+    }
+
+    private void ConstExp() {
     }
 
     private void Ident() {
