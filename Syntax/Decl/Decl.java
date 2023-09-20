@@ -8,7 +8,7 @@ public class Decl {
 
     public Decl(boolean isDebugMode) {
         this.isDebugMode = isDebugMode;
-        this.analysis(rootAst);
+//        this.analysis(rootAst);
     }
 
     public void analysis(AstNode rootAst) {
