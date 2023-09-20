@@ -5,25 +5,35 @@ import Syntax.AstRecursion;
 
 public class Decl {
     private final boolean isDebugMode;
+    private final AstNode rootAst;
 
-    public Decl(boolean isDebugMode) {
+    public Decl(boolean isDebugMode, AstNode rootAst) {
         this.isDebugMode = isDebugMode;
-//        this.analysis(rootAst);
+        this.rootAst = rootAst;
+        this.analysis();
     }
 
-    public void analysis(AstNode rootAst) {
-        ConstDecl();
-        VarDecl();
+    public void analysis() {
+        AstNode constDeclNode = ConstDecl();
+        if (constDeclNode != null) {
+            rootAst.addChild(constDeclNode);
+        }
+        AstNode varDeclNode = VarDecl();
+        if (varDeclNode != null) {
+            rootAst.addChild(varDeclNode);
+        }
     }
 
 
-    private void ConstDecl() {
+    private AstNode ConstDecl() {
         if (AstRecursion.getPreSymToken().getReservedWord().equals("CONSTTK")) {
-            AstNode constNode = new AstNode("<ConstDecl>");
+            AstNode constDeclNode = new AstNode("<ConstDecl>");
             AstRecursion.nextSym();
             BType();
             ConstDef();
+            return constDeclNode;
         }
+        return null;
     }
 
     private void BType() {
@@ -54,7 +64,8 @@ public class Decl {
     private void Ident() {
     }
 
-    private void VarDecl() {
+    private AstNode VarDecl() {
+        return null;
     }
 
 }
