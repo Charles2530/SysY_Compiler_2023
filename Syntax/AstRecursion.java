@@ -35,5 +35,6 @@ public class AstRecursion {
         Decl decl = new Decl(isDebugMode);
         FuncDef funcDef = new FuncDef(isDebugMode);
         MainFuncDef mainFuncDef = new MainFuncDef(isDebugMode);
+        decl.analysis(rootAst);
     }
 }

@@ -8,10 +8,10 @@ public class Decl {
 
     public Decl(boolean isDebugMode) {
         this.isDebugMode = isDebugMode;
-        this.analysis();
+        this.analysis(rootAst);
     }
 
-    private void analysis() {
+    public void analysis(AstNode rootAst) {
         ConstDecl();
         VarDecl();
     }
@@ -40,7 +40,7 @@ public class Decl {
 
     private void ConstDef() {
         Ident();
-        if(AstRecursion.getPreSymToken().getReservedWord().equals("LBRACK")){
+        if (AstRecursion.getPreSymToken().getReservedWord().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
             AstNode intNode = new AstNode("<ConstExp>");
             intNode.addChild(lbrackNode);
