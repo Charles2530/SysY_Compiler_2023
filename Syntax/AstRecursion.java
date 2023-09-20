@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class AstRecursion {
     private static ArrayList<SymToken> symTokens;
-
     private static int symPos;
     private static SymToken preSymToken;
     private final boolean isDebugMode;
