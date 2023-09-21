@@ -3,15 +3,15 @@ package Syntax.FuncDef;
 import Syntax.AstNode;
 
 public class FuncDef {
-    private final boolean isDebugMode;
-    private AstNode rootAst;
+  private final boolean isDebugMode;
+  private AstNode rootAst;
 
-    public FuncDef(boolean isDebugMode, AstNode rootAst) {
-        this.isDebugMode = isDebugMode;
-        this.rootAst = rootAst;
-        this.analysis();
-    }
+  public FuncDef(boolean isDebugMode, AstNode rootAst) {
+    this.isDebugMode = isDebugMode;
+    this.rootAst = rootAst;
+    this.analysis();
+  }
 
-    private void analysis() {
-    }
+  private void analysis() {
+  }
 }
