@@ -42,7 +42,8 @@ public class Decl {
             intNode.addChild(intTkNode);
         } else {
             if (isDebugMode) {
-                System.out.println("Error: ConstDecl: BType: " + AstRecursion.getPreSymToken().getLineNum());
+                System.err.println("Error: ConstDecl: BType: "
+                        + AstRecursion.getPreSymToken().getLineNum());
             }
         }
     }

@@ -1,11 +1,15 @@
 package Syntax;
 
+import Lexer.SymToken;
+
 import java.util.ArrayList;
 
 public class AstNode {
     private String grammarType;
     private AstNode parent;
     private ArrayList<AstNode> childList = new ArrayList<>();
+
+    private SymToken symToken;
 
     public AstNode(String grammarType) {
         this.grammarType = grammarType;
@@ -23,5 +27,17 @@ public class AstNode {
 
     public boolean isLeaf() {
         return childList.isEmpty();
+    }
+
+    public ArrayList<AstNode> getChildList() {
+        return childList;
+    }
+
+    public String getGrammarType() {
+        return grammarType;
+    }
+
+    public SymToken getSymToken() {
+        return symToken;
     }
 }

@@ -11,15 +11,19 @@ public class LexicalAnalysis {
     private final BufferedWriter lexerOutputStream;
     private final boolean IsDebugMode;
 
+    private final boolean IsLexerOutput;
+
     public ArrayList<SymToken> getSymTokens() {
         return symTokens;
     }
 
-    public LexicalAnalysis(BufferedWriter lexerOutputStream, boolean IsDebugMode) {
+    public LexicalAnalysis(BufferedWriter lexerOutputStream
+            , boolean IsDebugMode, boolean isLexerOutput) {
         this.initial();
         lexicalWordCheck.initial(IsDebugMode);
         this.lexerOutputStream = lexerOutputStream;
         this.IsDebugMode = IsDebugMode;
+        this.IsLexerOutput = isLexerOutput;
     }
 
     public void initial() {
@@ -74,8 +78,10 @@ public class LexicalAnalysis {
                 if (reservedWord != null) {
                     SymToken symToken = new SymToken(reservedWord, word, lineNum);
                     symTokens.add(symToken);
-                    lexerOutputStream.write(reservedWord + " " + word);
-                    lexerOutputStream.newLine();
+                    if (IsLexerOutput) {
+                        lexerOutputStream.write(reservedWord + " " + word);
+                        lexerOutputStream.newLine();
+                    }
                 } else {
                     if (IsDebugMode) {
                         System.err.println("error in " + lineNum + " line,word:"
@@ -93,7 +99,7 @@ public class LexicalAnalysis {
             return reservedWords.get(word);
         } else if (word.matches("[0-9]+")) {
             return "INTCON";
-        } else if (word.matches("\".*\"")) {
+        } else if (word.matches("\".*?\"")) {
             return "STRCON";
         } else if (word.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
             return "IDENFR";
