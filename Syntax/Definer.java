@@ -107,9 +107,9 @@ public class Definer {
     private static void AddExp(AstNode constExpNode) {
         AstNode addExpNode = new AstNode("<AddExp>");
         constExpNode.addChild(addExpNode);
-        if (IsAddExp()) {
-            AddExp(constExpNode);
-        } else if (IsMulExp()) {
+        if (IsMulExp()) {
+            MulExp(constExpNode);
+        } else if (IsAddExp()) {
             MulExp(constExpNode);
             if (getPreSym().equals("PLUS")) {
                 AstNode plusNode = new AstNode("PLUS");
@@ -138,14 +138,16 @@ public class Definer {
     private static void MulExp(AstNode constExpNode) {
         AstNode mulExpNode = new AstNode("<MulExp>");
         constExpNode.addChild(mulExpNode);
-        if (IsMulExp()) {
-            MulExp(constExpNode);
+        if (IsUnaryExp()) {
+            UnaryExp(constExpNode);
+        } else if (IsMulExp()) {
+            UnaryExp(constExpNode);
             //这里存在左递归，需要修改
             if (getPreSym().equals("MULT")) {
                 AstNode multNode = new AstNode("MULT");
                 constExpNode.addChild(multNode);
                 AstRecursion.nextSym();
-                if (IsMulExp()) {
+                if (IsUnaryExp()) {
                     UnaryExp(constExpNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -154,7 +156,7 @@ public class Definer {
                 AstNode divNode = new AstNode("DIV");
                 constExpNode.addChild(divNode);
                 AstRecursion.nextSym();
-                if (IsMulExp()) {
+                if (IsUnaryExp()) {
                     UnaryExp(constExpNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -163,14 +165,12 @@ public class Definer {
                 AstNode modNode = new AstNode("MOD");
                 constExpNode.addChild(modNode);
                 AstRecursion.nextSym();
-                if (IsMulExp()) {
+                if (IsUnaryExp()) {
                     UnaryExp(constExpNode);
                 } else {
                     ErrorController.DefinerPrintError();
                 }
             }
-        } else if (IsUnaryExp()) {
-            UnaryExp(constExpNode);
         } else {
             ErrorController.DefinerPrintError();
         }
