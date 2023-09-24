@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class SyntaxAnalysis {
     private final ArrayList<SymToken> symTokens;
-    private final boolean isDebugMode;
+    private static boolean isDebugMode;
     private final boolean isParserOutput;
 
     private final BufferedWriter parserOutputStream;
@@ -17,13 +17,13 @@ public class SyntaxAnalysis {
     public SyntaxAnalysis(BufferedWriter parserOutputStream
             , ArrayList<SymToken> symTokens, boolean isDebugMode, boolean isParserOutput) {
         this.symTokens = symTokens;
-        this.isDebugMode = isDebugMode;
+        SyntaxAnalysis.isDebugMode = isDebugMode;
         this.parserOutputStream = parserOutputStream;
         this.isParserOutput = isParserOutput;
     }
 
     public void analysis() {
-        AstRecursion astRecursion = new AstRecursion(symTokens, isDebugMode, RootAst);
+        AstRecursion astRecursion = new AstRecursion(symTokens, RootAst);
         astRecursion.CompUnit();
         //前序遍历AST并输出
         preTraverse(RootAst);
@@ -58,5 +58,9 @@ public class SyntaxAnalysis {
 
     public AstNode getAst() {
         return RootAst;
+    }
+
+    public static boolean getDebugMode() {
+        return isDebugMode;
     }
 }

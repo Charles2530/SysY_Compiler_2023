@@ -11,14 +11,12 @@ public class AstRecursion {
     private static ArrayList<SymToken> symTokens;
     private static int symPos;
     private static SymToken preSymToken;
-    private final boolean isDebugMode;
     private AstNode rootAst;
 
-    public AstRecursion(ArrayList<SymToken> symTokens, boolean isDebugMode, AstNode rootAst) {
+    public AstRecursion(ArrayList<SymToken> symTokens, AstNode rootAst) {
         AstRecursion.symTokens = symTokens;
         symPos = 0;
         preSymToken = symTokens.get(symPos);
-        this.isDebugMode = isDebugMode;
         this.rootAst = rootAst;
     }
 
@@ -32,8 +30,20 @@ public class AstRecursion {
     }
 
     public void CompUnit() {
-        new Decl(isDebugMode, rootAst);
-        new FuncDef(isDebugMode, rootAst);
-        new MainFuncDef(isDebugMode, rootAst);
+        while (IsDecl()) {
+            new Decl(rootAst);
+        }
+        while (IsFuncDef()) {
+            new FuncDef(rootAst);
+        }
+        new MainFuncDef(rootAst);
+    }
+
+    private boolean IsDecl() {
+        return false;
+    }
+
+    private boolean IsFuncDef() {
+        return false;
     }
 }

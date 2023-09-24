@@ -9,11 +9,14 @@ public class AstNode {
     private AstNode parent;
     private ArrayList<AstNode> childList = new ArrayList<>();
 
-    private SymToken symToken;
+    private SymToken symToken = null;
 
     public AstNode(String grammarType) {
         this.grammarType = grammarType;
         this.parent = null;
+        if (!grammarType.matches("<.*>")) {
+            this.symToken = AstRecursion.getPreSymToken();
+        }
     }
 
     public void addChild(AstNode astNode) {
