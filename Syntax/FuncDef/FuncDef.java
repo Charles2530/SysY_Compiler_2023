@@ -17,7 +17,7 @@ public class FuncDef {
     private void analysis() {
         AstNode funcDefNode = new AstNode("<FuncDef>");
         rootAst.addChild(funcDefNode);
-        if (IsFuncType()) {
+        if (Judge.IsFuncType()) {
             FuncType(funcDefNode);
         } else {
             ErrorController.FuncDefPrintError();
@@ -34,10 +34,8 @@ public class FuncDef {
         } else {
             ErrorController.FuncDefPrintError();
         }
-        if (IsFuncFParams()) {
+        if (Judge.IsFuncFParams()) {
             FuncFParams(funcDefNode);
-        } else {
-            ErrorController.FuncDefPrintError();
         }
         if (getPreSym().equals("RPARENT")) {
             AstNode rparentNode = new AstNode("RPARENT");
@@ -53,16 +51,8 @@ public class FuncDef {
         }
     }
 
-    private boolean IsFuncFParams() {
-        return IsFuncFParam();
-    }
-
-    private boolean IsFuncType() {
-        return getPreSym().equals("INTTK") || getPreSym().equals("VOIDTK");
-    }
-
     private void FuncFParams(AstNode funcDefNode) {
-        while (IsFuncFParam()) {
+        while (Judge.IsFuncFParam()) {
             FuncFParam(funcDefNode);
             if (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
@@ -121,10 +111,6 @@ public class FuncDef {
                 ErrorController.FuncDefPrintError();
             }
         }
-    }
-
-    private boolean IsFuncFParam() {
-        return getPreSym().equals("INTTK");
     }
 
     private void FuncType(AstNode funcDefNode) {

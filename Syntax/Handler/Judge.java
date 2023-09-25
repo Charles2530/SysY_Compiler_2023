@@ -3,8 +3,32 @@ package Syntax.Handler;
 import Syntax.AstRecursion;
 
 public class Judge {
+    public static boolean IsDecl() {
+        return IsConstDecl() || IsVarDecl();
+    }
+
+    public static boolean IsFuncDef() {
+        return IsFuncType() && getNextSym(1).equals("IDENFR") && getNextSym(2).equals("LPARENT");
+    }
+
+    public static boolean IsFuncFParams() {
+        return IsFuncFParam();
+    }
+
+    public static boolean IsFuncType() {
+        return getPreSym().equals("INTTK") || getPreSym().equals("VOIDTK");
+    }
+
+    public static boolean IsFuncFParam() {
+        return getPreSym().equals("INTTK");
+    }
+
+    public static boolean IsConstInitVal() {
+        return IsConstExp() || getPreSym().equals("LBRACE");
+    }
+
     public static boolean IsLVal() {
-        return IsIdent() && !getNextSym().equals("LPARENT");
+        return IsIdent() && !getNextSym(1).equals("LPARENT");
     }
 
     public static boolean IsUnaryExp() {
@@ -37,10 +61,8 @@ public class Judge {
     }
 
     public static boolean IsVarDecl() {
-        if (getPreSym().equals("INTTK")) {
-            return true;
-        }
-        return false;
+        return getPreSym().equals("INTTK") && getNextSym(1).equals("IDENFR")
+                && !getNextSym(2).equals("LPARENT");
     }
 
     public static boolean IsVarDef() {
@@ -81,14 +103,6 @@ public class Judge {
         return getPreSym().equals("LBRACE");
     }
 
-    public static String getPreSym() {
-        return AstRecursion.getPreSymToken().getReservedWord();
-    }
-
-    public static String getNextSym() {
-        return AstRecursion.getNextSymToken().getReservedWord();
-    }
-
     public static boolean IsConstDecl() {
         return getPreSym().equals("CONSTTK");
     }
@@ -107,5 +121,13 @@ public class Judge {
 
     public static boolean IsNumber() {
         return getPreSym().equals("INTCON");
+    }
+
+    public static String getPreSym() {
+        return AstRecursion.getPreSymToken().getReservedWord();
+    }
+
+    public static String getNextSym(int pos) {
+        return AstRecursion.getNextSymToken(pos).getReservedWord();
     }
 }

@@ -3,6 +3,7 @@ package Syntax;
 import Lexer.SymToken;
 import Syntax.Decl.Decl;
 import Syntax.FuncDef.FuncDef;
+import Syntax.Handler.Judge;
 import Syntax.MainFuncDef.MainFuncDef;
 
 import java.util.ArrayList;
@@ -32,30 +33,20 @@ public class AstRecursion {
         return preSymToken;
     }
 
-    public static SymToken getNextSymToken() {
-        if (symPos == symTokens.size() - 1) {
+    public static SymToken getNextSymToken(int pos) {
+        if (symPos + pos > symTokens.size() - 1) {
             return null;
         }
-        return symTokens.get(symPos + 1);
+        return symTokens.get(symPos + pos);
     }
 
     public void CompUnit() {
-        while (IsDecl()) {
+        while (Judge.IsDecl()) {
             new Decl(rootAst);
         }
-        while (IsFuncDef()) {
+        while (Judge.IsFuncDef()) {
             new FuncDef(rootAst);
         }
         new MainFuncDef(rootAst);
-    }
-
-    /*TODO: 这里之后过了样例后需要修改*/
-    private boolean IsDecl() {
-        //        return Definer.IsConstDecl() || Definer.IsVarDecl();
-        return false;
-    }
-
-    private boolean IsFuncDef() {
-        return false;
     }
 }

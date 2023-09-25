@@ -44,20 +44,22 @@ public class Definer {
     }
 
     private static void ConstDef(AstNode constDeclNode) {
+        AstNode constDefNode = new AstNode("<ConstDef>");
+        constDeclNode.addChild(constDefNode);
         AstNode idenfrNode = new AstNode("IDENFR");
-        constDeclNode.addChild(idenfrNode);
+        constDefNode.addChild(idenfrNode);
         AstRecursion.nextSym();
         //适配数组的文法
         while (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
-            constDeclNode.addChild(lbrackNode);
+            constDefNode.addChild(lbrackNode);
             AstRecursion.nextSym();
             if (Judge.IsConstExp()) {
-                ConstExp(constDeclNode);
+                ConstExp(constDefNode);
             }
             if (getPreSym().equals("RBRACK")) {
                 AstNode rbrackNode = new AstNode("RBRACK");
-                constDeclNode.addChild(rbrackNode);
+                constDefNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.DefinerPrintError();
@@ -65,11 +67,41 @@ public class Definer {
         }
         if (getPreSym().equals("ASSIGN")) {
             AstNode assignNode = new AstNode("ASSIGN");
-            constDeclNode.addChild(assignNode);
+            constDefNode.addChild(assignNode);
             AstRecursion.nextSym();
-            if (getPreSym().equals("INTCON")) {
-                AstNode intconNode = new AstNode("INTCON");
-                constDeclNode.addChild(intconNode);
+            if (Judge.IsConstInitVal()) {
+                ConstInitVal(constDefNode);
+            } else {
+                ErrorController.DefinerPrintError();
+            }
+        } else {
+            ErrorController.DefinerPrintError();
+        }
+    }
+
+    private static void ConstInitVal(AstNode constDeclNode) {
+        AstNode constInitValNode = new AstNode("<ConstInitVal>");
+        constDeclNode.addChild(constInitValNode);
+        if (Judge.IsConstExp()) {
+            ConstExp(constInitValNode);
+        } else if (getPreSym().equals("LBRACE")) {
+            AstNode lbraceNode = new AstNode("LBRACE");
+            constInitValNode.addChild(lbraceNode);
+            AstRecursion.nextSym();
+            if (Judge.IsConstInitVal()) {
+                ConstInitVal(constInitValNode);
+            }
+            while (getPreSym().equals("COMMA")) {
+                AstNode commaNode = new AstNode("COMMA");
+                constInitValNode.addChild(commaNode);
+                AstRecursion.nextSym();
+                if (Judge.IsConstInitVal()) {
+                    ConstInitVal(constInitValNode);
+                }
+            }
+            if (getPreSym().equals("RBRACE")) {
+                AstNode rbraceNode = new AstNode("RBRACE");
+                constInitValNode.addChild(rbraceNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.DefinerPrintError();
@@ -151,7 +183,7 @@ public class Definer {
             } else {
                 ErrorController.DefinerPrintError();
             }
-        } else if (Judge.IsIdent()) {
+        } else if (Judge.IsIdent() && getNextSym(1).equals("LPARENT")) {
             Ident(unaryExpNode);
             if (getPreSym().equals("LPARENT")) {
                 AstNode lparentNode = new AstNode("LPARENT");
@@ -199,21 +231,6 @@ public class Definer {
         AstNode idenfrNode = new AstNode("IDENFR");
         constExpNode.addChild(idenfrNode);
         AstRecursion.nextSym();
-        if (getPreSym().equals("LBRACK")) {
-            AstNode lbrackNode = new AstNode("LBRACK");
-            constExpNode.addChild(lbrackNode);
-            AstRecursion.nextSym();
-            if (Judge.IsFuncRParams()) {
-                FuncRParams(constExpNode);
-            }
-            if (getPreSym().equals("RBRACK")) {
-                AstNode rbrackNode = new AstNode("RBRACK");
-                constExpNode.addChild(rbrackNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.DefinerPrintError();
-            }
-        }
     }
 
     private static void FuncRParams(AstNode constExpNode) {
@@ -803,5 +820,9 @@ public class Definer {
 
     private static String getPreSym() {
         return AstRecursion.getPreSymToken().getReservedWord();
+    }
+
+    public static String getNextSym(int pos) {
+        return AstRecursion.getNextSymToken(pos).getReservedWord();
     }
 }
