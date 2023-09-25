@@ -28,7 +28,7 @@ public class Compiler {
         }
         // 语法分析初始化
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(parserOutputStream,
-                lexicalAnalysis.getSymTokens(), IsDebugMode,IsParserOutput);
+                lexicalAnalysis.getSymTokens(), IsDebugMode, IsParserOutput);
         syntaxAnalysis.analysis();
         // 生成中间代码
         LLvmMain llvmMain = new LLvmMain(syntaxAnalysis.getAst(), IsDebugMode);

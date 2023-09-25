@@ -27,6 +27,8 @@ public class ErrorController {
             case "k":
                 MissRbrackError(lineNum);
                 break;
+            default:
+                break;
         }
     }
 

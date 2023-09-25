@@ -5,10 +5,7 @@ import LLVM.ErrorController;
 public class Definer {
 
     public static boolean IsConstDecl() {
-        if (getPreSym().equals("CONSTTK")) {
-            return true;
-        }
-        return false;
+        return getPreSym().equals("CONSTTK");
     }
 
     public static void ConstDecl(AstNode blockNode) {
@@ -50,17 +47,12 @@ public class Definer {
     }
 
     private static boolean IsConstDef() {
-        if (getPreSym().equals("IDENFR")) {
-            return true;
-        }
-        return false;
+        return getPreSym().equals("IDENFR");
     }
 
     private static void ConstDef(AstNode constDeclNode) {
-        AstNode identNode = new AstNode("<Ident>");
-        constDeclNode.addChild(identNode);
         AstNode idenfrNode = new AstNode("IDENFR");
-        identNode.addChild(idenfrNode);
+        constDeclNode.addChild(idenfrNode);
         AstRecursion.nextSym();
         //适配数组的文法
         while (getPreSym().equals("LBRACK")) {
@@ -107,84 +99,53 @@ public class Definer {
     private static void AddExp(AstNode constExpNode) {
         AstNode addExpNode = new AstNode("<AddExp>");
         constExpNode.addChild(addExpNode);
-        if (IsMulExp()) {
-            MulExp(constExpNode);
-        } else if (IsAddExp()) {
-            MulExp(constExpNode);
-            if (getPreSym().equals("PLUS")) {
-                AstNode plusNode = new AstNode("PLUS");
-                constExpNode.addChild(plusNode);
-                AstRecursion.nextSym();
-                if (IsAddExp()) {
-                    AddExp(constExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            } else if (getPreSym().equals("MINU")) {
-                AstNode minuNode = new AstNode("MINU");
-                constExpNode.addChild(minuNode);
-                AstRecursion.nextSym();
-                if (IsAddExp()) {
-                    AddExp(constExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            }
-        } else {
-            ErrorController.DefinerPrintError();
+        MulExp(addExpNode);
+        if (getPreSym().equals("PLUS")) {
+            AstNode plusNode = new AstNode("PLUS");
+            addExpNode.addChild(plusNode);
+            AstRecursion.nextSym();
+            AddExp(addExpNode);
+        } else if (getPreSym().equals("MINU")) {
+            AstNode minuNode = new AstNode("MINU");
+            addExpNode.addChild(minuNode);
+            AstRecursion.nextSym();
+            AddExp(addExpNode);
         }
     }
 
     private static void MulExp(AstNode constExpNode) {
         AstNode mulExpNode = new AstNode("<MulExp>");
         constExpNode.addChild(mulExpNode);
-        if (IsUnaryExp()) {
-            UnaryExp(constExpNode);
-        } else if (IsMulExp()) {
-            UnaryExp(constExpNode);
-            //这里存在左递归，需要修改
-            if (getPreSym().equals("MULT")) {
-                AstNode multNode = new AstNode("MULT");
-                constExpNode.addChild(multNode);
-                AstRecursion.nextSym();
-                if (IsUnaryExp()) {
-                    UnaryExp(constExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            } else if (getPreSym().equals("DIV")) {
-                AstNode divNode = new AstNode("DIV");
-                constExpNode.addChild(divNode);
-                AstRecursion.nextSym();
-                if (IsUnaryExp()) {
-                    UnaryExp(constExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            } else if (getPreSym().equals("MOD")) {
-                AstNode modNode = new AstNode("MOD");
-                constExpNode.addChild(modNode);
-                AstRecursion.nextSym();
-                if (IsUnaryExp()) {
-                    UnaryExp(constExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            }
-        } else {
-            ErrorController.DefinerPrintError();
+        UnaryExp(mulExpNode);
+        if (getPreSym().equals("MULT")) {
+            AstNode multNode = new AstNode("MULT");
+            mulExpNode.addChild(multNode);
+            AstRecursion.nextSym();
+            MulExp(mulExpNode);
+        } else if (getPreSym().equals("DIV")) {
+            AstNode divNode = new AstNode("DIV");
+            mulExpNode.addChild(divNode);
+            AstRecursion.nextSym();
+            MulExp(mulExpNode);
+        } else if (getPreSym().equals("MOD")) {
+            AstNode modNode = new AstNode("MOD");
+            mulExpNode.addChild(modNode);
+            AstRecursion.nextSym();
+            MulExp(mulExpNode);
         }
     }
 
     private static void UnaryExp(AstNode constExpNode) {
+        AstNode unaryExpNode = new AstNode("<UnaryExp>");
+        constExpNode.addChild(unaryExpNode);
         if (IsPrimaryExp()) {
-            PrimaryExp(constExpNode);
+            PrimaryExp(unaryExpNode);
         } else if (IsIdent()) {
-            Ident(constExpNode);
+            Ident(unaryExpNode);
         } else if (IsUnaryOp()) {
-            UnaryOp(constExpNode);
+            UnaryOp(unaryExpNode);
             if (IsUnaryExp()) {
-                UnaryExp(constExpNode);
+                UnaryExp(unaryExpNode);
             } else {
                 ErrorController.DefinerPrintError();
             }
@@ -212,10 +173,8 @@ public class Definer {
     }
 
     public static void Ident(AstNode constExpNode) {
-        AstNode identNode = new AstNode("<Ident>");
-        constExpNode.addChild(identNode);
         AstNode idenfrNode = new AstNode("IDENFR");
-        identNode.addChild(idenfrNode);
+        constExpNode.addChild(idenfrNode);
         AstRecursion.nextSym();
         if (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
@@ -356,11 +315,11 @@ public class Definer {
     }
 
     private static boolean IsMulExp() {
-        return IsUnaryExp() || IsMulExp();
+        return IsUnaryExp();
     }
 
     private static boolean IsAddExp() {
-        return IsMulExp() || IsAddExp();
+        return IsMulExp();
     }
 
     public static boolean IsConstExp() {
@@ -413,21 +372,21 @@ public class Definer {
     }
 
     private static void VarDef(AstNode varDeclNode) {
-        AstNode identNode = new AstNode("<Ident>");
-        varDeclNode.addChild(identNode);
+        AstNode vardefNode = new AstNode("<VarDef>");
+        varDeclNode.addChild(vardefNode);
         AstNode idenfrNode = new AstNode("IDENFR");
-        identNode.addChild(idenfrNode);
+        vardefNode.addChild(idenfrNode);
         AstRecursion.nextSym();
         while (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
-            varDeclNode.addChild(lbrackNode);
+            vardefNode.addChild(lbrackNode);
             AstRecursion.nextSym();
             if (IsConstExp()) {
-                ConstExp(varDeclNode);
+                ConstExp(vardefNode);
             }
             if (getPreSym().equals("RBRACK")) {
                 AstNode rbrackNode = new AstNode("RBRACK");
-                varDeclNode.addChild(rbrackNode);
+                vardefNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.DefinerPrintError();
@@ -447,25 +406,27 @@ public class Definer {
     }
 
     public static void Stmt(AstNode blockNode) {
+        AstNode stmtNode = new AstNode("<Stmt>");
+        blockNode.addChild(stmtNode);
         if (IsLVal()) {
-            LVal(blockNode);
+            LVal(stmtNode);
             if (getPreSym().equals("ASSIGN")) {
                 AstNode assignNode = new AstNode("ASSIGN");
-                blockNode.addChild(assignNode);
+                stmtNode.addChild(assignNode);
                 AstRecursion.nextSym();
                 if (IsExp()) {
-                    Exp(blockNode);
+                    Exp(stmtNode);
                 } else if (getPreSym().equals("GETINTTK")) {
                     AstNode getinttkNode = new AstNode("GETINTTK");
-                    blockNode.addChild(getinttkNode);
+                    stmtNode.addChild(getinttkNode);
                     AstRecursion.nextSym();
                     if (getPreSym().equals("LPARENT")) {
                         AstNode lparentNode = new AstNode("LPARENT");
-                        blockNode.addChild(lparentNode);
+                        stmtNode.addChild(lparentNode);
                         AstRecursion.nextSym();
                         if (getPreSym().equals("RPARENT")) {
                             AstNode rparentNode = new AstNode("RPARENT");
-                            blockNode.addChild(rparentNode);
+                            stmtNode.addChild(rparentNode);
                             AstRecursion.nextSym();
                         } else {
                             ErrorController.DefinerPrintError();
@@ -478,7 +439,7 @@ public class Definer {
                 }
                 if (getPreSym().equals("SEMICN")) {
                     AstNode semicnNode = new AstNode("SEMICN");
-                    blockNode.addChild(semicnNode);
+                    stmtNode.addChild(semicnNode);
                     AstRecursion.nextSym();
                 } else {
                     ErrorController.DefinerPrintError();
@@ -487,48 +448,49 @@ public class Definer {
                 ErrorController.DefinerPrintError();
             }
         } else if (IsExp()) {
-            Exp(blockNode);
+            Exp(stmtNode);
             if (getPreSym().equals("SEMICN")) {
                 AstNode semicnNode = new AstNode("SEMICN");
-                blockNode.addChild(semicnNode);
+                stmtNode.addChild(semicnNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.DefinerPrintError();
             }
         } else if (IsBlock()) {
-            Block(blockNode);
+            Block(stmtNode);
         } else if (getPreSym().equals("IFTK")) {
-            IfStmt(blockNode);
+            IfStmt(stmtNode);
         } else if (getPreSym().equals("FORTK")) {
-            ForStmt(blockNode);
+            ForStmt(stmtNode);
         } else if (getPreSym().equals("BREAKTK")) {
-            BreakStmt(blockNode);
+            BreakStmt(stmtNode);
         } else if (getPreSym().equals("CONTINUETK")) {
-            ContinueStmt(blockNode);
+            ContinueStmt(stmtNode);
         } else if (getPreSym().equals("RETURNTK")) {
-            ReturnStmt(blockNode);
+            ReturnStmt(stmtNode);
         } else if (getPreSym().equals("PRINTFTK")) {
-            PrintfStmt(blockNode);
+            PrintfStmt(stmtNode);
         }
     }
 
     private static void PrintfStmt(AstNode blockNode) {
         AstNode printfStmtNode = new AstNode("PRINTFTK");
         blockNode.addChild(printfStmtNode);
+        AstRecursion.nextSym();
         if (getPreSym().equals("LPARENT")) {
             AstNode lparentNode = new AstNode("LPARENT");
-            printfStmtNode.addChild(lparentNode);
+            blockNode.addChild(lparentNode);
             AstRecursion.nextSym();
-            if (getPreSym().equals("FORMATTK")) {
-                AstNode formatNode = new AstNode("FORMATTK");
-                printfStmtNode.addChild(formatNode);
+            if (getPreSym().equals("STRCON")) {
+                AstNode formatNode = new AstNode("STRCON");
+                blockNode.addChild(formatNode);
                 AstRecursion.nextSym();
                 while (getPreSym().equals("COMMA")) {
                     AstNode commaNode = new AstNode("COMMA");
-                    printfStmtNode.addChild(commaNode);
+                    blockNode.addChild(commaNode);
                     AstRecursion.nextSym();
                     if (IsExp()) {
-                        Exp(printfStmtNode);
+                        Exp(blockNode);
                     } else {
                         ErrorController.DefinerPrintError();
                     }
@@ -538,14 +500,14 @@ public class Definer {
             }
             if (getPreSym().equals("RPARENT")) {
                 AstNode rparentNode = new AstNode("RPARENT");
-                printfStmtNode.addChild(rparentNode);
+                blockNode.addChild(rparentNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.DefinerPrintError();
             }
             if (getPreSym().equals("SEMICN")) {
                 AstNode semicnNode = new AstNode("SEMICN");
-                printfStmtNode.addChild(semicnNode);
+                blockNode.addChild(semicnNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.DefinerPrintError();
@@ -558,11 +520,11 @@ public class Definer {
         blockNode.addChild(returnStmtNode);
         AstRecursion.nextSym();
         if (IsExp()) {
-            Exp(returnStmtNode);
+            Exp(blockNode);
         }
         if (getPreSym().equals("SEMICN")) {
             AstNode semicnNode = new AstNode("SEMICN");
-            returnStmtNode.addChild(semicnNode);
+            blockNode.addChild(semicnNode);
             AstRecursion.nextSym();
         } else {
             ErrorController.DefinerPrintError();
@@ -643,159 +605,80 @@ public class Definer {
         }
     }
 
-    private static boolean IsCond() {
-        return IsLOrExp();
-    }
-
-    private static boolean IsLOrExp() {
-        return IsLAndExp();
-    }
-
     private static void Cond(AstNode forStmtNode) {
         AstNode condNode = new AstNode("<Cond>");
         forStmtNode.addChild(condNode);
-        if (IsLOrExp()) {
-            LOrExp(condNode);
-        } else {
-            ErrorController.DefinerPrintError();
-        }
+        LOrExp(condNode);
     }
 
     private static void LOrExp(AstNode condNode) {
         AstNode lOrExpNode = new AstNode("<LOrExp>");
         condNode.addChild(lOrExpNode);
-        if (IsLOrExp()) {
+        LAndExp(lOrExpNode);
+        if (getPreSym().equals("OR")) {
+            AstNode orNode = new AstNode("OR");
+            lOrExpNode.addChild(orNode);
+            AstRecursion.nextSym();
             LOrExp(lOrExpNode);
-            if (getPreSym().equals("OR")) {
-                AstNode orNode = new AstNode("OR");
-                lOrExpNode.addChild(orNode);
-                AstRecursion.nextSym();
-                if (IsLAndExp()) {
-                    LAndExp(lOrExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            }
-        } else if (IsLAndExp()) {
-            LAndExp(lOrExpNode);
-        } else {
-            ErrorController.DefinerPrintError();
         }
     }
 
     private static void LAndExp(AstNode lOrExpNode) {
         AstNode lAndExpNode = new AstNode("<LAndExp>");
         lOrExpNode.addChild(lAndExpNode);
-        if (IsLAndExp()) {
+        EquExp(lAndExpNode);
+        if (getPreSym().equals("AND")) {
+            AstNode andNode = new AstNode("AND");
+            lAndExpNode.addChild(andNode);
+            AstRecursion.nextSym();
             LAndExp(lAndExpNode);
-            if (getPreSym().equals("AND")) {
-                AstNode andNode = new AstNode("AND");
-                lAndExpNode.addChild(andNode);
-                AstRecursion.nextSym();
-                if (IsEquExp()) {
-                    EquExp(lAndExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            }
-        } else if (IsEquExp()) {
-            EquExp(lAndExpNode);
-        } else {
-            ErrorController.DefinerPrintError();
         }
     }
 
     private static void EquExp(AstNode lAndExpNode) {
         AstNode equExpNode = new AstNode("<EquExp>");
         lAndExpNode.addChild(equExpNode);
-        if (IsEquExp()) {
+        RelExp(equExpNode);
+        if (getPreSym().equals("EQL")) {
+            AstNode eqlNode = new AstNode("EQL");
+            equExpNode.addChild(eqlNode);
+            AstRecursion.nextSym();
             EquExp(equExpNode);
-            if (getPreSym().equals("EQL")) {
-                AstNode eqlNode = new AstNode("EQL");
-                equExpNode.addChild(eqlNode);
-                AstRecursion.nextSym();
-                if (IsRelExp()) {
-                    RelExp(equExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            } else if (getPreSym().equals("NEQ")) {
-                AstNode neqNode = new AstNode("NEQ");
-                equExpNode.addChild(neqNode);
-                AstRecursion.nextSym();
-                if (IsRelExp()) {
-                    RelExp(equExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            }
-        } else if (IsRelExp()) {
-            RelExp(equExpNode);
-        } else {
-            ErrorController.DefinerPrintError();
+        } else if (getPreSym().equals("NEQ")) {
+            AstNode neqNode = new AstNode("NEQ");
+            equExpNode.addChild(neqNode);
+            AstRecursion.nextSym();
+            EquExp(equExpNode);
         }
     }
 
     private static void RelExp(AstNode equExpNode) {
         AstNode relExpNode = new AstNode("<RelExp>");
         equExpNode.addChild(relExpNode);
-        if (IsRelExp()) {
+        AddExp(relExpNode);
+        if (getPreSym().equals("LSS")) {
+            AstNode lssNode = new AstNode("LSS");
+            relExpNode.addChild(lssNode);
+            AstRecursion.nextSym();
             RelExp(relExpNode);
-            if (getPreSym().equals("LSS")) {
-                AstNode lssNode = new AstNode("LSS");
-                relExpNode.addChild(lssNode);
-                AstRecursion.nextSym();
-                if (IsAddExp()) {
-                    AddExp(relExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            } else if (getPreSym().equals("LEQ")) {
-                AstNode leqNode = new AstNode("LEQ");
-                relExpNode.addChild(leqNode);
-                AstRecursion.nextSym();
-                if (IsAddExp()) {
-                    AddExp(relExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            } else if (getPreSym().equals("GRE")) {
-                AstNode greNode = new AstNode("GRE");
-                relExpNode.addChild(greNode);
-                AstRecursion.nextSym();
-                if (IsAddExp()) {
-                    AddExp(relExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            } else if (getPreSym().equals("GEQ")) {
-                AstNode geqNode = new AstNode("GEQ");
-                relExpNode.addChild(geqNode);
-                AstRecursion.nextSym();
-                if (IsAddExp()) {
-                    AddExp(relExpNode);
-                } else {
-                    ErrorController.DefinerPrintError();
-                }
-            }
-        } else if (IsAddExp()) {
-            AddExp(relExpNode);
-        } else {
-            ErrorController.DefinerPrintError();
+        } else if (getPreSym().equals("LEQ")) {
+            AstNode leqNode = new AstNode("LEQ");
+            relExpNode.addChild(leqNode);
+            AstRecursion.nextSym();
+            RelExp(relExpNode);
+        } else if (getPreSym().equals("GRE")) {
+            AstNode greNode = new AstNode("GRE");
+            relExpNode.addChild(greNode);
+            AstRecursion.nextSym();
+            RelExp(relExpNode);
+        } else if (getPreSym().equals("GEQ")) {
+            AstNode geqNode = new AstNode("GEQ");
+            relExpNode.addChild(geqNode);
+            AstRecursion.nextSym();
+            RelExp(relExpNode);
         }
     }
 
-    private static boolean IsRelExp() {
-        return IsAddExp();
-    }
-
-    private static boolean IsEquExp() {
-        return IsRelExp();
-    }
-
-    private static boolean IsLAndExp() {
-        return IsEquExp();
-    }
 
     private static boolean IsForStmtVal() {
         return IsLVal() || IsExp();
@@ -871,24 +754,30 @@ public class Definer {
         }
     }
 
+    private static boolean IsCond() {
+        return IsUnaryExp();
+    }
+
     public static boolean IsBlockItem() {
         return IsConstDecl() || IsVarDecl() || IsStmt();
     }
 
     public static void BlockItem(AstNode blockNode) {
+        AstNode blockItemNode = new AstNode("<BlockItem>");
+        blockNode.addChild(blockItemNode);
         if (IsConstDecl()) {
-            ConstDecl(blockNode);
+            AstNode declNode = new AstNode("<Decl>");
+            blockItemNode.addChild(declNode);
+            ConstDecl(declNode);
         } else if (IsVarDecl()) {
-            VarDecl(blockNode);
+            AstNode declNode = new AstNode("<Decl>");
+            blockItemNode.addChild(declNode);
+            VarDecl(declNode);
         } else if (IsStmt()) {
-            Stmt(blockNode);
+            Stmt(blockItemNode);
         } else {
             ErrorController.DefinerPrintError();
         }
-    }
-
-    private static String getPreSym() {
-        return AstRecursion.getPreSymToken().getReservedWord();
     }
 
     public static boolean IsBlock() {
@@ -915,5 +804,9 @@ public class Definer {
         } else {
             ErrorController.DefinerPrintError();
         }
+    }
+
+    private static String getPreSym() {
+        return AstRecursion.getPreSymToken().getReservedWord();
     }
 }

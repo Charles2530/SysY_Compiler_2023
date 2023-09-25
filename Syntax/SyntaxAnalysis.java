@@ -41,6 +41,9 @@ public class SyntaxAnalysis {
                     parserOutputStream.newLine();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    if (isDebugMode) {
+                        System.err.println(rootAst.getGrammarType());
+                    }
                 }
             } else {
                 if (!(rootAst.getGrammarType().equals("<BlockItem>") || rootAst.getGrammarType()

@@ -21,6 +21,9 @@ public class AstRecursion {
     }
 
     public static void nextSym() {
+        if (symPos == symTokens.size() - 1) {
+            return;
+        }
         symPos++;
         preSymToken = symTokens.get(symPos);
     }
@@ -39,7 +42,9 @@ public class AstRecursion {
         new MainFuncDef(rootAst);
     }
 
+    /*TODO: 这里之后过了样例后需要修改*/
     private boolean IsDecl() {
+        //        return Definer.IsConstDecl() || Definer.IsVarDecl();
         return false;
     }
 
