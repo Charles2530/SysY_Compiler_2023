@@ -52,23 +52,27 @@ public class FuncDef {
     }
 
     private void FuncFParams(AstNode funcDefNode) {
+        AstNode funcFParamsNode = new AstNode("<FuncFParams>");
+        funcDefNode.addChild(funcFParamsNode);
         while (Judge.IsFuncFParam()) {
-            FuncFParam(funcDefNode);
+            FuncFParam(funcFParamsNode);
             if (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
-                funcDefNode.addChild(commaNode);
+                funcFParamsNode.addChild(commaNode);
                 AstRecursion.nextSym();
-                FuncFParams(funcDefNode);
+                FuncFParams(funcFParamsNode);
             } else {
                 break;
             }
         }
     }
 
-    private void FuncFParam(AstNode funcDefNode) {
+    private void FuncFParam(AstNode funcFParamsNode) {
+        AstNode funcFParamNode = new AstNode("<FuncFParam>");
+        funcFParamsNode.addChild(funcFParamNode);
         if (getPreSym().equals("INTTK")) {
             AstNode bTypeNode = new AstNode("<BType>");
-            funcDefNode.addChild(bTypeNode);
+            funcFParamNode.addChild(bTypeNode);
             AstNode intNode = new AstNode("INTTK");
             bTypeNode.addChild(intNode);
             AstRecursion.nextSym();
@@ -76,17 +80,17 @@ public class FuncDef {
             ErrorController.FuncDefPrintError();
         }
         if (Judge.IsIdent()) {
-            Definer.Ident(funcDefNode);
+            Definer.Ident(funcFParamNode);
         } else {
             ErrorController.FuncDefPrintError();
         }
         if (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
-            funcDefNode.addChild(lbrackNode);
+            funcFParamNode.addChild(lbrackNode);
             AstRecursion.nextSym();
             if (getPreSym().equals("RBRACK")) {
                 AstNode rbrackNode = new AstNode("RBRACK");
-                funcDefNode.addChild(rbrackNode);
+                funcFParamNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.FuncDefPrintError();
@@ -94,16 +98,16 @@ public class FuncDef {
         }
         while (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
-            funcDefNode.addChild(lbrackNode);
+            funcFParamNode.addChild(lbrackNode);
             AstRecursion.nextSym();
             if (Judge.IsConstExp()) {
-                Definer.ConstExp(funcDefNode);
+                Definer.ConstExp(funcFParamNode);
             } else {
                 ErrorController.FuncDefPrintError();
             }
             if (getPreSym().equals("RBRACK")) {
                 AstNode rbrackNode = new AstNode("RBRACK");
-                funcDefNode.addChild(rbrackNode);
+                funcFParamNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
                 ErrorController.FuncDefPrintError();
@@ -112,13 +116,15 @@ public class FuncDef {
     }
 
     private void FuncType(AstNode funcDefNode) {
+        AstNode funcTypeNode = new AstNode("<FuncType>");
+        funcDefNode.addChild(funcTypeNode);
         if (getPreSym().equals("INTTK")) {
             AstNode intNode = new AstNode("INTTK");
-            funcDefNode.addChild(intNode);
+            funcTypeNode.addChild(intNode);
             AstRecursion.nextSym();
         } else if (getPreSym().equals("VOIDTK")) {
             AstNode voidNode = new AstNode("VOIDTK");
-            funcDefNode.addChild(voidNode);
+            funcTypeNode.addChild(voidNode);
             AstRecursion.nextSym();
         } else {
             ErrorController.FuncDefPrintError();

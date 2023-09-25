@@ -25,7 +25,7 @@ public class SyntaxAnalysis {
     public void analysis() {
         AstRecursion astRecursion = new AstRecursion(symTokens, RootAst);
         astRecursion.CompUnit();
-        //前序遍历AST并输出
+        //后续遍历AST树
         preTraverse(RootAst);
     }
 
