@@ -123,7 +123,8 @@ public class Definer {
         AstNode mulExpNode = new AstNode("<MulExp>");
         UnaryExp(mulExpNode);
         AstNode father = mulExpNode;
-        while (getPreSym().equals("MULT") || getPreSym().equals("DIV") || getPreSym().equals("MOD")) {
+        while (getPreSym().equals("MULT") || getPreSym().equals("DIV") ||
+                getPreSym().equals("MOD")) {
             AstNode extraMulExpNode = new AstNode("<MulExp>");
             extraMulExpNode.addChild(father);
             father = extraMulExpNode;
@@ -683,8 +684,8 @@ public class Definer {
         AstNode relExpNode = new AstNode("<RelExp>");
         AddExp(relExpNode);
         AstNode father = relExpNode;
-        while (getPreSym().equals("LSS") || getPreSym().equals("LEQ") || getPreSym().equals("GRE") ||
-                getPreSym().equals("GEQ")) {
+        while (getPreSym().equals("LSS") || getPreSym().equals("LEQ") ||
+                getPreSym().equals("GRE") || getPreSym().equals("GEQ")) {
             AstNode extraRelExpNode = new AstNode("<RelExp>");
             extraRelExpNode.addChild(father);
             father = extraRelExpNode;
@@ -711,9 +712,7 @@ public class Definer {
             }
         }
         equExpNode.addChild(father);
-
     }
-
 
     private static boolean IsForStmtVal() {
         return IsLVal() || IsExp();
