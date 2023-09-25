@@ -1,6 +1,6 @@
-package Syntax.Handler;
+package syntax.handler;
 
-import Syntax.AstRecursion;
+import syntax.AstRecursion;
 
 public class Judge {
     public static boolean IsDecl() {

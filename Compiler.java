@@ -1,6 +1,6 @@
-import LLVM.LLvmMain;
-import Lexer.LexicalAnalysis;
-import Syntax.SyntaxAnalysis;
+import llvm.LLvmMain;
+import lexer.LexicalAnalysis;
+import syntax.SyntaxAnalysis;
 
 import java.io.*;
 

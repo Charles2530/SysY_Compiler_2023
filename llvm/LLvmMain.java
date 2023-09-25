@@ -1,6 +1,6 @@
-package LLVM;
+package llvm;
 
-import Syntax.AstNode;
+import syntax.AstNode;
 
 public class LLvmMain {
     private Boolean isDebugMode;

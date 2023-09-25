@@ -1,10 +1,10 @@
-package Syntax.MainFuncDef;
+package syntax.mainFuncDef;
 
-import LLVM.ErrorController;
-import Syntax.AstNode;
-import Syntax.AstRecursion;
-import Syntax.Handler.Definer;
-import Syntax.Handler.Judge;
+import llvm.ErrorController;
+import syntax.AstNode;
+import syntax.AstRecursion;
+import syntax.handler.Definer;
+import syntax.handler.Judge;
 
 public class MainFuncDef {
     private AstNode rootAst;

@@ -1,7 +1,7 @@
-package LLVM;
+package llvm;
 
-import Syntax.AstRecursion;
-import Syntax.SyntaxAnalysis;
+import syntax.AstRecursion;
+import syntax.SyntaxAnalysis;
 
 public class ErrorController {
     private String errorCategoryCode;// 错误类别码

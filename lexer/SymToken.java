@@ -1,4 +1,4 @@
-package Lexer;
+package lexer;
 
 public class SymToken {
     private final String reservedWord;

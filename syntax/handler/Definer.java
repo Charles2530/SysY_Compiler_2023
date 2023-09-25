@@ -1,8 +1,8 @@
-package Syntax.Handler;
+package syntax.handler;
 
-import LLVM.ErrorController;
-import Syntax.AstNode;
-import Syntax.AstRecursion;
+import llvm.ErrorController;
+import syntax.AstNode;
+import syntax.AstRecursion;
 
 public class Definer {
     public static void ConstDecl(AstNode blockNode) {

@@ -1,9 +1,9 @@
-package Syntax.Decl;
+package syntax.decl;
 
-import LLVM.ErrorController;
-import Syntax.AstNode;
-import Syntax.Handler.Definer;
-import Syntax.Handler.Judge;
+import llvm.ErrorController;
+import syntax.AstNode;
+import syntax.handler.Definer;
+import syntax.handler.Judge;
 
 public class Decl {
     private final AstNode rootAst;

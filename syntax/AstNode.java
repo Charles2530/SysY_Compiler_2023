@@ -1,6 +1,6 @@
-package Syntax;
+package syntax;
 
-import Lexer.SymToken;
+import lexer.SymToken;
 
 import java.util.ArrayList;
 

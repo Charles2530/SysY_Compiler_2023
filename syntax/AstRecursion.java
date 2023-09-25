@@ -1,10 +1,10 @@
-package Syntax;
+package syntax;
 
-import Lexer.SymToken;
-import Syntax.Decl.Decl;
-import Syntax.FuncDef.FuncDef;
-import Syntax.Handler.Judge;
-import Syntax.MainFuncDef.MainFuncDef;
+import lexer.SymToken;
+import syntax.decl.Decl;
+import syntax.funcDef.FuncDef;
+import syntax.handler.Judge;
+import syntax.mainFuncDef.MainFuncDef;
 
 import java.util.ArrayList;
 
