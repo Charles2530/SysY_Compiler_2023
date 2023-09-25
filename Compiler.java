@@ -5,7 +5,7 @@ import Syntax.SyntaxAnalysis;
 import java.io.*;
 
 public class Compiler {
-    private static final boolean IsDebugMode = true;
+    private static final boolean IsDebugMode = false;
     private static final boolean IsLexerOutput = false;
     private static final boolean IsParserOutput = true;
 
