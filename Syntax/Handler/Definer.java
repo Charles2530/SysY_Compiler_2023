@@ -455,8 +455,10 @@ public class Definer {
             } else {
                 ErrorController.DefinerPrintError();
             }
-        } else if (Judge.IsExp()) {
-            Exp(stmtNode);
+        } else if (Judge.IsExp() || getPreSym().equals("SEMICN")) {
+            if (Judge.IsExp()) {
+                Exp(stmtNode);
+            }
             if (getPreSym().equals("SEMICN")) {
                 AstNode semicnNode = new AstNode("SEMICN");
                 stmtNode.addChild(semicnNode);
