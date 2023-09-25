@@ -98,41 +98,53 @@ public class Definer {
 
     private static void AddExp(AstNode constExpNode) {
         AstNode addExpNode = new AstNode("<AddExp>");
-        constExpNode.addChild(addExpNode);
         MulExp(addExpNode);
-        if (getPreSym().equals("PLUS")) {
-            AstNode plusNode = new AstNode("PLUS");
-            addExpNode.addChild(plusNode);
-            AstRecursion.nextSym();
-            AddExp(addExpNode);
-        } else if (getPreSym().equals("MINU")) {
-            AstNode minuNode = new AstNode("MINU");
-            addExpNode.addChild(minuNode);
-            AstRecursion.nextSym();
-            AddExp(addExpNode);
+        AstNode father = addExpNode;
+        while (getPreSym().equals("PLUS") || getPreSym().equals("MINU")) {
+            AstNode extraAddExpNode = new AstNode("<AddExp>");
+            extraAddExpNode.addChild(father);
+            father = extraAddExpNode;
+            if (getPreSym().equals("PLUS")) {
+                AstNode plusNode = new AstNode("PLUS");
+                father.addChild(plusNode);
+                AstRecursion.nextSym();
+                MulExp(father);
+            } else if (getPreSym().equals("MINU")) {
+                AstNode minuNode = new AstNode("MINU");
+                father.addChild(minuNode);
+                AstRecursion.nextSym();
+                MulExp(father);
+            }
         }
+        constExpNode.addChild(father);
     }
 
     private static void MulExp(AstNode constExpNode) {
         AstNode mulExpNode = new AstNode("<MulExp>");
-        constExpNode.addChild(mulExpNode);
         UnaryExp(mulExpNode);
-        if (getPreSym().equals("MULT")) {
-            AstNode multNode = new AstNode("MULT");
-            mulExpNode.addChild(multNode);
-            AstRecursion.nextSym();
-            MulExp(mulExpNode);
-        } else if (getPreSym().equals("DIV")) {
-            AstNode divNode = new AstNode("DIV");
-            mulExpNode.addChild(divNode);
-            AstRecursion.nextSym();
-            MulExp(mulExpNode);
-        } else if (getPreSym().equals("MOD")) {
-            AstNode modNode = new AstNode("MOD");
-            mulExpNode.addChild(modNode);
-            AstRecursion.nextSym();
-            MulExp(mulExpNode);
+        AstNode father = mulExpNode;
+        while (getPreSym().equals("MULT") || getPreSym().equals("DIV") || getPreSym().equals("MOD")) {
+            AstNode extraMulExpNode = new AstNode("<MulExp>");
+            extraMulExpNode.addChild(father);
+            father = extraMulExpNode;
+            if (getPreSym().equals("MULT")) {
+                AstNode multNode = new AstNode("MULT");
+                father.addChild(multNode);
+                AstRecursion.nextSym();
+                UnaryExp(father);
+            } else if (getPreSym().equals("DIV")) {
+                AstNode divNode = new AstNode("DIV");
+                father.addChild(divNode);
+                AstRecursion.nextSym();
+                UnaryExp(father);
+            } else if (getPreSym().equals("MOD")) {
+                AstNode modNode = new AstNode("MOD");
+                father.addChild(modNode);
+                AstRecursion.nextSym();
+                UnaryExp(father);
+            }
         }
+        constExpNode.addChild(father);
     }
 
     private static void UnaryExp(AstNode constExpNode) {
@@ -613,70 +625,93 @@ public class Definer {
 
     private static void LOrExp(AstNode condNode) {
         AstNode lOrExpNode = new AstNode("<LOrExp>");
-        condNode.addChild(lOrExpNode);
         LAndExp(lOrExpNode);
-        if (getPreSym().equals("OR")) {
+        AstNode father = lOrExpNode;
+        while (getPreSym().equals("OR")) {
+            AstNode extraLorExpNode = new AstNode("<LorExp>");
+            extraLorExpNode.addChild(father);
+            father = extraLorExpNode;
             AstNode orNode = new AstNode("OR");
-            lOrExpNode.addChild(orNode);
+            father.addChild(orNode);
             AstRecursion.nextSym();
-            LOrExp(lOrExpNode);
+            LAndExp(father);
         }
+        condNode.addChild(father);
+
     }
 
     private static void LAndExp(AstNode lOrExpNode) {
         AstNode lAndExpNode = new AstNode("<LAndExp>");
-        lOrExpNode.addChild(lAndExpNode);
-        EquExp(lAndExpNode);
-        if (getPreSym().equals("AND")) {
+        EqExp(lAndExpNode);
+        AstNode father = lAndExpNode;
+        while (getPreSym().equals("AND")) {
+            AstNode extraLAndExpNode = new AstNode("<LAndExp>");
+            extraLAndExpNode.addChild(father);
+            father = extraLAndExpNode;
             AstNode andNode = new AstNode("AND");
-            lAndExpNode.addChild(andNode);
+            father.addChild(andNode);
             AstRecursion.nextSym();
-            LAndExp(lAndExpNode);
+            LAndExp(father);
         }
+        lOrExpNode.addChild(lAndExpNode);
     }
 
-    private static void EquExp(AstNode lAndExpNode) {
-        AstNode equExpNode = new AstNode("<EquExp>");
-        lAndExpNode.addChild(equExpNode);
+    private static void EqExp(AstNode lAndExpNode) {
+        AstNode equExpNode = new AstNode("<EqExp>");
         RelExp(equExpNode);
-        if (getPreSym().equals("EQL")) {
-            AstNode eqlNode = new AstNode("EQL");
-            equExpNode.addChild(eqlNode);
-            AstRecursion.nextSym();
-            EquExp(equExpNode);
-        } else if (getPreSym().equals("NEQ")) {
-            AstNode neqNode = new AstNode("NEQ");
-            equExpNode.addChild(neqNode);
-            AstRecursion.nextSym();
-            EquExp(equExpNode);
+        AstNode father = equExpNode;
+        while (getPreSym().equals("EQL") || getPreSym().equals("NEQ")) {
+            AstNode extraEqExpNode = new AstNode("<EqExp>");
+            extraEqExpNode.addChild(father);
+            father = extraEqExpNode;
+            if (getPreSym().equals("EQL")) {
+                AstNode eqlNode = new AstNode("EQL");
+                father.addChild(eqlNode);
+                AstRecursion.nextSym();
+                RelExp(father);
+            } else if (getPreSym().equals("NEQ")) {
+                AstNode neqNode = new AstNode("NEQ");
+                father.addChild(neqNode);
+                AstRecursion.nextSym();
+                RelExp(father);
+            }
         }
+        lAndExpNode.addChild(father);
     }
 
     private static void RelExp(AstNode equExpNode) {
         AstNode relExpNode = new AstNode("<RelExp>");
-        equExpNode.addChild(relExpNode);
         AddExp(relExpNode);
-        if (getPreSym().equals("LSS")) {
-            AstNode lssNode = new AstNode("LSS");
-            relExpNode.addChild(lssNode);
-            AstRecursion.nextSym();
-            RelExp(relExpNode);
-        } else if (getPreSym().equals("LEQ")) {
-            AstNode leqNode = new AstNode("LEQ");
-            relExpNode.addChild(leqNode);
-            AstRecursion.nextSym();
-            RelExp(relExpNode);
-        } else if (getPreSym().equals("GRE")) {
-            AstNode greNode = new AstNode("GRE");
-            relExpNode.addChild(greNode);
-            AstRecursion.nextSym();
-            RelExp(relExpNode);
-        } else if (getPreSym().equals("GEQ")) {
-            AstNode geqNode = new AstNode("GEQ");
-            relExpNode.addChild(geqNode);
-            AstRecursion.nextSym();
-            RelExp(relExpNode);
+        AstNode father = relExpNode;
+        while (getPreSym().equals("LSS") || getPreSym().equals("LEQ") || getPreSym().equals("GRE") ||
+                getPreSym().equals("GEQ")) {
+            AstNode extraRelExpNode = new AstNode("<RelExp>");
+            extraRelExpNode.addChild(father);
+            father = extraRelExpNode;
+            if (getPreSym().equals("LSS")) {
+                AstNode lssNode = new AstNode("LSS");
+                father.addChild(lssNode);
+                AstRecursion.nextSym();
+                AddExp(father);
+            } else if (getPreSym().equals("LEQ")) {
+                AstNode leqNode = new AstNode("LEQ");
+                father.addChild(leqNode);
+                AstRecursion.nextSym();
+                AddExp(father);
+            } else if (getPreSym().equals("GRE")) {
+                AstNode greNode = new AstNode("GRE");
+                father.addChild(greNode);
+                AstRecursion.nextSym();
+                AddExp(father);
+            } else if (getPreSym().equals("GEQ")) {
+                AstNode geqNode = new AstNode("GEQ");
+                father.addChild(geqNode);
+                AstRecursion.nextSym();
+                AddExp(father);
+            }
         }
+        equExpNode.addChild(father);
+
     }
 
 
