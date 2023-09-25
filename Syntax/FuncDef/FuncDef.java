@@ -91,8 +91,6 @@ public class FuncDef {
             } else {
                 ErrorController.FuncDefPrintError();
             }
-        } else {
-            ErrorController.FuncDefPrintError();
         }
         while (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
