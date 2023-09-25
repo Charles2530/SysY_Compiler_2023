@@ -39,7 +39,7 @@ public class MainFuncDef {
                             ErrorController.MainFuncDefPrintError();
                         }
                     } else {
-                        ErrorController.MainFuncDefPrintError();
+                        new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
                     }
                 } else {
                     ErrorController.MainFuncDefPrintError();

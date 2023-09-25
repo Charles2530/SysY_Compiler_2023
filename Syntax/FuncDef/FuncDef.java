@@ -42,7 +42,7 @@ public class FuncDef {
             funcDefNode.addChild(rparentNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.FuncDefPrintError();
+            new ErrorController("j",AstRecursion.getNextSymToken(-1).getLineNum());
         }
         if (Judge.IsBlock()) {
             Definer.Block(funcDefNode);
@@ -108,7 +108,7 @@ public class FuncDef {
                 funcFParamNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
-                ErrorController.FuncDefPrintError();
+                new ErrorController("k",AstRecursion.getNextSymToken(-1).getLineNum());
             }
         }
         while (getPreSym().equals("LBRACK")) {
@@ -125,7 +125,7 @@ public class FuncDef {
                 funcFParamNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
-                ErrorController.FuncDefPrintError();
+                new ErrorController("k",AstRecursion.getNextSymToken(-1).getLineNum());
             }
         }
     }

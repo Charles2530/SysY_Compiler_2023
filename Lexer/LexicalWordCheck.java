@@ -1,5 +1,7 @@
 package Lexer;
 
+import LLVM.ErrorController;
+
 import java.util.ArrayList;
 
 public class LexicalWordCheck {
@@ -73,6 +75,7 @@ public class LexicalWordCheck {
                     // 判断是否为非法字符串
                     System.err.println("error in " + lineNum +
                             " line,word:" + word + " is illegal");
+                    new ErrorController("a", lineNum);
                     System.exit(0);
                 } else {
                     words.add(word);
