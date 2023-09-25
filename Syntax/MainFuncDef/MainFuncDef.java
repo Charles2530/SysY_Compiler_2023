@@ -4,6 +4,7 @@ import LLVM.ErrorController;
 import Syntax.AstNode;
 import Syntax.AstRecursion;
 import Syntax.Handler.Definer;
+import Syntax.Handler.Judge;
 
 public class MainFuncDef {
     private AstNode rootAst;
@@ -32,7 +33,11 @@ public class MainFuncDef {
                         AstNode rparentNode = new AstNode("RPARENT");
                         mainFuncDefNode.addChild(rparentNode);
                         AstRecursion.nextSym();
-                        Definer.Block(mainFuncDefNode);
+                        if (Judge.IsBlock()) {
+                            Definer.Block(mainFuncDefNode);
+                        } else {
+                            ErrorController.MainFuncDefPrintError();
+                        }
                     } else {
                         ErrorController.MainFuncDefPrintError();
                     }

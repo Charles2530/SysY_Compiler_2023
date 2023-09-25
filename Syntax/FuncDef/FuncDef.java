@@ -51,6 +51,22 @@ public class FuncDef {
         }
     }
 
+    private void FuncType(AstNode funcDefNode) {
+        AstNode funcTypeNode = new AstNode("<FuncType>");
+        funcDefNode.addChild(funcTypeNode);
+        if (getPreSym().equals("INTTK")) {
+            AstNode intNode = new AstNode("INTTK");
+            funcTypeNode.addChild(intNode);
+            AstRecursion.nextSym();
+        } else if (getPreSym().equals("VOIDTK")) {
+            AstNode voidNode = new AstNode("VOIDTK");
+            funcTypeNode.addChild(voidNode);
+            AstRecursion.nextSym();
+        } else {
+            ErrorController.FuncDefPrintError();
+        }
+    }
+
     private void FuncFParams(AstNode funcDefNode) {
         AstNode funcFParamsNode = new AstNode("<FuncFParams>");
         funcDefNode.addChild(funcFParamsNode);
@@ -60,7 +76,6 @@ public class FuncDef {
                 AstNode commaNode = new AstNode("COMMA");
                 funcFParamsNode.addChild(commaNode);
                 AstRecursion.nextSym();
-                FuncFParams(funcFParamsNode);
             } else {
                 break;
             }
@@ -112,22 +127,6 @@ public class FuncDef {
             } else {
                 ErrorController.FuncDefPrintError();
             }
-        }
-    }
-
-    private void FuncType(AstNode funcDefNode) {
-        AstNode funcTypeNode = new AstNode("<FuncType>");
-        funcDefNode.addChild(funcTypeNode);
-        if (getPreSym().equals("INTTK")) {
-            AstNode intNode = new AstNode("INTTK");
-            funcTypeNode.addChild(intNode);
-            AstRecursion.nextSym();
-        } else if (getPreSym().equals("VOIDTK")) {
-            AstNode voidNode = new AstNode("VOIDTK");
-            funcTypeNode.addChild(voidNode);
-            AstRecursion.nextSym();
-        } else {
-            ErrorController.FuncDefPrintError();
         }
     }
 
