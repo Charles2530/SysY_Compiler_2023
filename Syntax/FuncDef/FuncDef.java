@@ -3,7 +3,8 @@ package Syntax.FuncDef;
 import LLVM.ErrorController;
 import Syntax.AstNode;
 import Syntax.AstRecursion;
-import Syntax.Definer;
+import Syntax.Handler.Definer;
+import Syntax.Handler.Judge;
 
 public class FuncDef {
     private AstNode rootAst;
@@ -21,7 +22,7 @@ public class FuncDef {
         } else {
             ErrorController.FuncDefPrintError();
         }
-        if (Definer.IsIdent()) {
+        if (Judge.IsIdent()) {
             Definer.Ident(funcDefNode);
         } else {
             ErrorController.FuncDefPrintError();
@@ -45,7 +46,7 @@ public class FuncDef {
         } else {
             ErrorController.FuncDefPrintError();
         }
-        if (Definer.IsBlock()) {
+        if (Judge.IsBlock()) {
             Definer.Block(funcDefNode);
         } else {
             ErrorController.FuncDefPrintError();
@@ -84,7 +85,7 @@ public class FuncDef {
         } else {
             ErrorController.FuncDefPrintError();
         }
-        if (Definer.IsIdent()) {
+        if (Judge.IsIdent()) {
             Definer.Ident(funcDefNode);
         } else {
             ErrorController.FuncDefPrintError();
@@ -107,7 +108,7 @@ public class FuncDef {
             AstNode lbrackNode = new AstNode("LBRACK");
             funcDefNode.addChild(lbrackNode);
             AstRecursion.nextSym();
-            if (Definer.IsConstExp()) {
+            if (Judge.IsConstExp()) {
                 Definer.ConstExp(funcDefNode);
             } else {
                 ErrorController.FuncDefPrintError();

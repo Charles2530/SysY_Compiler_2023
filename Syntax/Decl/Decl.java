@@ -2,7 +2,8 @@ package Syntax.Decl;
 
 import LLVM.ErrorController;
 import Syntax.AstNode;
-import Syntax.Definer;
+import Syntax.Handler.Definer;
+import Syntax.Handler.Judge;
 
 public class Decl {
     private final AstNode rootAst;
@@ -15,9 +16,9 @@ public class Decl {
     public void analysis() {
         AstNode declNode = new AstNode("<Decl>");
         rootAst.addChild(declNode);
-        if (Definer.IsConstDecl()) {
+        if (Judge.IsConstDecl()) {
             Definer.ConstDecl(declNode);
-        } else if (Definer.IsVarDecl()) {
+        } else if (Judge.IsVarDecl()) {
             Definer.VarDecl(declNode);
         } else {
             ErrorController.DeclPrintError();

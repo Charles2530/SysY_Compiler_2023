@@ -3,7 +3,7 @@ package Syntax.MainFuncDef;
 import LLVM.ErrorController;
 import Syntax.AstNode;
 import Syntax.AstRecursion;
-import Syntax.Definer;
+import Syntax.Handler.Definer;
 
 public class MainFuncDef {
     private AstNode rootAst;

@@ -32,6 +32,13 @@ public class AstRecursion {
         return preSymToken;
     }
 
+    public static SymToken getNextSymToken() {
+        if (symPos == symTokens.size() - 1) {
+            return null;
+        }
+        return symTokens.get(symPos + 1);
+    }
+
     public void CompUnit() {
         while (IsDecl()) {
             new Decl(rootAst);
