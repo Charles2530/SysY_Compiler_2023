@@ -4,11 +4,11 @@ import syntax.AstNode;
 
 public class GenerationMain {
     private Boolean isDebugMode;
-    private AstNode RootAst;
+    private AstNode rootAst;
 
-    public GenerationMain(AstNode RootAst, boolean isDebugMode) {
+    public GenerationMain(AstNode rootAst, boolean isDebugMode) {
         this.isDebugMode = isDebugMode;
-        this.RootAst = RootAst;
+        this.rootAst = rootAst;
     }
 
     public void generate() {

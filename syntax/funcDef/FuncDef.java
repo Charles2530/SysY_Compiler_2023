@@ -6,15 +6,17 @@ import syntax.AstRecursion;
 import syntax.handler.Definer;
 import syntax.handler.Judge;
 
+import java.io.IOException;
+
 public class FuncDef {
     private AstNode rootAst;
 
-    public FuncDef(AstNode rootAst) {
+    public FuncDef(AstNode rootAst) throws IOException {
         this.rootAst = rootAst;
         this.analysis();
     }
 
-    private void analysis() {
+    private void analysis() throws IOException {
         AstNode funcDefNode = new AstNode("<FuncDef>");
         rootAst.addChild(funcDefNode);
         if (Judge.IsFuncType()) {
@@ -51,7 +53,7 @@ public class FuncDef {
         }
     }
 
-    private void FuncType(AstNode funcDefNode) {
+    private void FuncType(AstNode funcDefNode) throws IOException {
         AstNode funcTypeNode = new AstNode("<FuncType>");
         funcDefNode.addChild(funcTypeNode);
         if (getPreSym().equals("INTTK")) {
@@ -67,7 +69,7 @@ public class FuncDef {
         }
     }
 
-    private void FuncFParams(AstNode funcDefNode) {
+    private void FuncFParams(AstNode funcDefNode) throws IOException {
         AstNode funcFParamsNode = new AstNode("<FuncFParams>");
         funcDefNode.addChild(funcFParamsNode);
         while (Judge.IsFuncFParam()) {
@@ -82,7 +84,7 @@ public class FuncDef {
         }
     }
 
-    private void FuncFParam(AstNode funcFParamsNode) {
+    private void FuncFParam(AstNode funcFParamsNode) throws IOException {
         AstNode funcFParamNode = new AstNode("<FuncFParam>");
         funcFParamsNode.addChild(funcFParamNode);
         if (getPreSym().equals("INTTK")) {

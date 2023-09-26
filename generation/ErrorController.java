@@ -1,19 +1,46 @@
 package generation;
 
 import syntax.AstRecursion;
-import syntax.SyntaxAnalysis;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 public class ErrorController {
     private String errorCategoryCode;// 错误类别码
     private int lineNum;  // 词法分析器的行号
+    private static BufferedWriter errorBufferedWriter;
+    private static boolean isDebugMode;
 
-    public ErrorController(String errorCategoryCode, int lineNum) {
+    public ErrorController(String errorCategoryCode, int lineNum) throws IOException {
         this.errorCategoryCode = errorCategoryCode;
         this.lineNum = lineNum;
-        printError(errorCategoryCode, lineNum);
+        printError();
     }
 
-    private void printError(String errorCategoryCode, int lineNum) {
+    public static void setBufferedWriter(BufferedWriter errorBufferedWriter) {
+        ErrorController.errorBufferedWriter = errorBufferedWriter;
+    }
+
+    public static void setIsDebugMode(boolean isDebugMode) {
+        ErrorController.isDebugMode = isDebugMode;
+    }
+
+    public static void LexicalWordCheckPrintError(int lineNum, String c) throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("error in " + lineNum +
+                    " line,word:" + c + " can not be recognized");
+            errorBufferedWriter.newLine();
+        }
+    }
+
+    public static void SyntaxAnalysisError(String grammarType) throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("grammarType:" + grammarType);
+            errorBufferedWriter.newLine();
+        }
+    }
+
+    private void printError() throws IOException {
         switch (errorCategoryCode) {
             case "a":
                 IllegalTokenError(lineNum);
@@ -32,58 +59,74 @@ public class ErrorController {
         }
     }
 
-    private void MissRbrackError(int lineNum) {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: MissRbrackError: " + lineNum);
+    private void MissRbrackError(int lineNum) throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: MissRbrackError: " + lineNum);
+            errorBufferedWriter.newLine();
         }
     }
 
-    private void MissRparentError(int lineNum) {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: MissRparentError: " + lineNum);
+    private void MissRparentError(int lineNum) throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: MissRparentError: " + lineNum);
+            errorBufferedWriter.newLine();
         }
     }
 
-    private void MissSemicnError(int lineNum) {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: MissSemicnError: " + lineNum);
+    private void MissSemicnError(int lineNum) throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: MissSemicnError: " + lineNum);
+            errorBufferedWriter.newLine();
         }
     }
 
-    private void IllegalTokenError(int lineNum) {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: IllegalTokenError: " + lineNum);
+    private void IllegalTokenError(int lineNum) throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: IllegalTokenError: " + lineNum);
+            errorBufferedWriter.newLine();
         }
     }
 
-    public static void DeclPrintError() {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: Decl: "
+    public static void DeclPrintError() throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: Decl: "
                     + AstRecursion.getPreSymToken().getLineNum() +
                     ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
+            errorBufferedWriter.newLine();
         }
     }
 
-    public static void FuncDefPrintError() {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: FuncDef: "
+    public static void FuncDefPrintError() throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: FuncDef: "
                     + AstRecursion.getPreSymToken().getLineNum() +
                     ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
+            errorBufferedWriter.newLine();
         }
     }
 
-    public static void MainFuncDefPrintError() {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: MainFuncDef: "
+    public static void MainFuncDefPrintError() throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: MainFuncDef: "
                     + AstRecursion.getPreSymToken().getLineNum() +
                     ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
+            errorBufferedWriter.newLine();
         }
     }
 
-    public static void DefinerPrintError() {
-        if (SyntaxAnalysis.getDebugMode()) {
-            System.err.println("Error: Definer: BlockItem: "
+    public static void DefinerPrintError() throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("Error: Definer: BlockItem: "
                     + AstRecursion.getPreSymToken().getLineNum());
+            errorBufferedWriter.newLine();
+        }
+    }
+
+    public static void LexicalAnalysisPrintError(int lineNum, String word) throws IOException {
+        if (isDebugMode) {
+            errorBufferedWriter.write("error in " + lineNum + " line,word:"
+                    + word + " is not a reserved word");
+            errorBufferedWriter.newLine();
         }
     }
 }

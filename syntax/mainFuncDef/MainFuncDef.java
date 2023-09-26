@@ -6,15 +6,17 @@ import syntax.AstRecursion;
 import syntax.handler.Definer;
 import syntax.handler.Judge;
 
+import java.io.IOException;
+
 public class MainFuncDef {
     private AstNode rootAst;
 
-    public MainFuncDef(AstNode rootAst) {
+    public MainFuncDef(AstNode rootAst) throws IOException {
         this.rootAst = rootAst;
         this.analysis();
     }
 
-    private void analysis() {
+    private void analysis() throws IOException {
         AstNode mainFuncDefNode = new AstNode("<MainFuncDef>");
         rootAst.addChild(mainFuncDefNode);
         if (getPreSym().equals("INTTK")) {

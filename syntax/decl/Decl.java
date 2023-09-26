@@ -5,15 +5,17 @@ import syntax.AstNode;
 import syntax.handler.Definer;
 import syntax.handler.Judge;
 
+import java.io.IOException;
+
 public class Decl {
     private final AstNode rootAst;
 
-    public Decl(AstNode rootAst) {
+    public Decl(AstNode rootAst) throws IOException {
         this.rootAst = rootAst;
         this.analysis();
     }
 
-    public void analysis() {
+    public void analysis() throws IOException {
         AstNode declNode = new AstNode("<Decl>");
         rootAst.addChild(declNode);
         if (Judge.IsConstDecl()) {

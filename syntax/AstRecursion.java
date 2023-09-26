@@ -6,6 +6,7 @@ import syntax.funcDef.FuncDef;
 import syntax.handler.Judge;
 import syntax.mainFuncDef.MainFuncDef;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AstRecursion {
@@ -40,7 +41,7 @@ public class AstRecursion {
         return symTokens.get(symPos + pos);
     }
 
-    public void CompUnit() {
+    public void CompUnit() throws IOException {
         while (Judge.IsDecl()) {
             new Decl(rootAst);
         }

@@ -1,4 +1,6 @@
+import generation.ErrorController;
 import generation.GenerationMain;
+import generation.OutputController;
 import lexer.LexicalAnalysis;
 import semantic.SemanticAnalysis;
 import syntax.SyntaxAnalysis;
@@ -13,23 +15,34 @@ public class Compiler {
     public static void main(String[] args) throws IOException {
         // 将文件进行重定向
         BufferedReader fileInputStream = new BufferedReader(new FileReader("testfile.txt"));
+        BufferedWriter errorOutputStream = IsDebugMode ? new BufferedWriter(
+                new FileWriter("error.txt", false)) : null;
         BufferedWriter lexerOutputStream = IsLexerOutput ? new BufferedWriter(
                 new FileWriter("LexerOutput.txt", false)) : null;
         BufferedWriter parserOutputStream = IsParserOutput ? new BufferedWriter(
                 new FileWriter("output.txt", false)) : null;
+        //错误处理初始化
+        ErrorController.setBufferedWriter(errorOutputStream);
+        ErrorController.setIsDebugMode(IsDebugMode);
+        //输出处理初始化
+        OutputController.setBufferedLexerWriter(lexerOutputStream);
+        OutputController.setBufferedParserWriter(parserOutputStream);
+        OutputController.setLexerOutput(IsLexerOutput);
+        OutputController.setParserOutput(IsParserOutput);
+
         String line;
         int lineNum = 0;
         // 词法分析初始化
         LexicalAnalysis lexicalAnalysis = new LexicalAnalysis(
-                lexerOutputStream, IsDebugMode, IsLexerOutput);
+        );
         while ((line = fileInputStream.readLine()) != null) {
             // 对每一行进行词法分析
             lineNum++;
             lexicalAnalysis.analysis(line, lineNum);
         }
         // 语法分析初始化
-        SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(parserOutputStream,
-                lexicalAnalysis.getSymTokens(), IsDebugMode, IsParserOutput);
+        SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(
+                lexicalAnalysis.getSymTokens());
         syntaxAnalysis.analysis();
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(
@@ -45,6 +58,9 @@ public class Compiler {
         }
         if (IsParserOutput) {
             parserOutputStream.close();
+        }
+        if (IsDebugMode) {
+            errorOutputStream.close();
         }
     }
 }

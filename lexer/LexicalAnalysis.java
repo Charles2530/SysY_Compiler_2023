@@ -1,6 +1,9 @@
 package lexer;
 
-import java.io.BufferedWriter;
+import generation.ErrorController;
+import generation.OutputController;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,22 +11,14 @@ public class LexicalAnalysis {
     private final HashMap<String, String> reservedWords = new HashMap<>();
     private final ArrayList<SymToken> symTokens = new ArrayList<>();
     private final LexicalWordCheck lexicalWordCheck = new LexicalWordCheck();
-    private final BufferedWriter lexerOutputStream;
-    private final boolean IsDebugMode;
-
-    private final boolean IsLexerOutput;
 
     public ArrayList<SymToken> getSymTokens() {
         return symTokens;
     }
 
-    public LexicalAnalysis(BufferedWriter lexerOutputStream
-            , boolean IsDebugMode, boolean isLexerOutput) {
+    public LexicalAnalysis() {
         this.initial();
-        lexicalWordCheck.initial(IsDebugMode);
-        this.lexerOutputStream = lexerOutputStream;
-        this.IsDebugMode = IsDebugMode;
-        this.IsLexerOutput = isLexerOutput;
+        lexicalWordCheck.initial();
     }
 
     public void initial() {
@@ -64,7 +59,7 @@ public class LexicalAnalysis {
         reservedWords.put("/", "DIV");
     }
 
-    public void analysis(String line, int lineNum) {
+    public void analysis(String line, int lineNum) throws IOException {
         // 将每一个字符串进行拆分成可分析的词法词
         ArrayList<String> words = lexicalWordCheck.split(line, lineNum);
         // 将对应的词法词进行输出
@@ -78,15 +73,9 @@ public class LexicalAnalysis {
                 if (reservedWord != null) {
                     SymToken symToken = new SymToken(reservedWord, word, lineNum);
                     symTokens.add(symToken);
-                    if (IsLexerOutput) {
-                        lexerOutputStream.write(reservedWord + " " + word);
-                        lexerOutputStream.newLine();
-                    }
+                    OutputController.LexicalAnalysisPrint(symToken);
                 } else {
-                    if (IsDebugMode) {
-                        System.err.println("error in " + lineNum + " line,word:"
-                                + word + " is not a reserved word");
-                    }
+                    ErrorController.LexicalAnalysisPrintError(lineNum, word);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

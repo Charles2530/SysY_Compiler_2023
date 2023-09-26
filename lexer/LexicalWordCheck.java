@@ -2,6 +2,7 @@ package lexer;
 
 import generation.ErrorController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class LexicalWordCheck {
@@ -12,14 +13,12 @@ public class LexicalWordCheck {
 
     private String word = "";
     private Boolean isComment = false;
-    private boolean IsDebugMode;
 
-    public void initial(boolean isDebugMode) {
+    public void initial() {
         this.word = "";
-        this.IsDebugMode = isDebugMode;
     }
 
-    public ArrayList<String> split(String line, int lineNum) {
+    public ArrayList<String> split(String line, int lineNum) throws IOException {
         ArrayList<String> words = new ArrayList<>();
         for (int i = 0; i < line.length(); i++) {
             if (isComment) {
@@ -71,12 +70,9 @@ public class LexicalWordCheck {
                     i++;
                 }
                 word += line.charAt(i);
-                if (this.checkIllegalSym(word) && IsDebugMode) {
+                if (this.checkIllegalSym(word)) {
                     // 判断是否为非法字符串
-                    System.err.println("error in " + lineNum +
-                            " line,word:" + word + " is illegal");
                     new ErrorController("a", lineNum);
-                    System.exit(0);
                 } else {
                     words.add(word);
                 }
@@ -117,11 +113,7 @@ public class LexicalWordCheck {
                 }
             } else {
                 // 出现错误
-                if (IsDebugMode) {
-                    System.err.println("error in " + lineNum +
-                            " line,word:" + c + " can not be recognized");
-                    System.exit(0);
-                }
+                ErrorController.LexicalWordCheckPrintError(lineNum, String.valueOf(c));
             }
         }
         if (!word.isEmpty()) {
