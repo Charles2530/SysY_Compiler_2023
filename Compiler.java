@@ -29,12 +29,10 @@ public class Compiler {
         OutputController.setBufferedParserWriter(parserOutputStream);
         OutputController.setLexerOutput(IsLexerOutput);
         OutputController.setParserOutput(IsParserOutput);
-
+        // 词法分析初始化
         String line;
         int lineNum = 0;
-        // 词法分析初始化
-        LexicalAnalysis lexicalAnalysis = new LexicalAnalysis(
-        );
+        LexicalAnalysis lexicalAnalysis = new LexicalAnalysis();
         while ((line = fileInputStream.readLine()) != null) {
             // 对每一行进行词法分析
             lineNum++;
