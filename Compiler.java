@@ -46,10 +46,10 @@ public class Compiler {
         syntaxAnalysis.analysis();
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(
-                syntaxAnalysis.getAst(), IsDebugMode);
+                syntaxAnalysis.getAst());
         semanticAnalysis.analysis();
         // 生成中间代码
-        GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst(), IsDebugMode);
+        GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
         generationMain.generate();
         // 关闭文件流
         fileInputStream.close();

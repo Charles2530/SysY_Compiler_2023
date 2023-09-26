@@ -66,10 +66,7 @@ public class Judge {
     }
 
     public static boolean IsVarDef() {
-        if (getPreSym().equals("IDENFR")) {
-            return true;
-        }
-        return false;
+        return getPreSym().equals("IDENFR");
     }
 
     public static boolean IsInitval() {

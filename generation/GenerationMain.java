@@ -3,11 +3,9 @@ package generation;
 import syntax.AstNode;
 
 public class GenerationMain {
-    private Boolean isDebugMode;
     private AstNode rootAst;
 
-    public GenerationMain(AstNode rootAst, boolean isDebugMode) {
-        this.isDebugMode = isDebugMode;
+    public GenerationMain(AstNode rootAst) {
         this.rootAst = rootAst;
     }
 
