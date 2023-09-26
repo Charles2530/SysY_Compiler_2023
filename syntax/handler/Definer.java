@@ -1,6 +1,6 @@
 package syntax.handler;
 
-import llvm.ErrorController;
+import generation.ErrorController;
 import syntax.AstNode;
 import syntax.AstRecursion;
 

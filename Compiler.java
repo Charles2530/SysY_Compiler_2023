@@ -1,4 +1,4 @@
-import llvm.LLvmMain;
+import generation.GenerationMain;
 import lexer.LexicalAnalysis;
 import semantic.SemanticAnalysis;
 import syntax.SyntaxAnalysis;
@@ -36,8 +36,8 @@ public class Compiler {
                 syntaxAnalysis.getAst(), IsDebugMode);
         semanticAnalysis.analysis();
         // 生成中间代码
-        LLvmMain llvmMain = new LLvmMain(syntaxAnalysis.getAst(), IsDebugMode);
-        llvmMain.generate();
+        GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst(), IsDebugMode);
+        generationMain.generate();
         // 关闭文件流
         fileInputStream.close();
         if (IsLexerOutput) {

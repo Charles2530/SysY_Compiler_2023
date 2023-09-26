@@ -1,6 +1,6 @@
 package syntax.decl;
 
-import llvm.ErrorController;
+import generation.ErrorController;
 import syntax.AstNode;
 import syntax.handler.Definer;
 import syntax.handler.Judge;

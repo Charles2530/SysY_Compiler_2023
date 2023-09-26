@@ -1,6 +1,6 @@
 package lexer;
 
-import llvm.ErrorController;
+import generation.ErrorController;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package llvm;
+package generation;
 
 import syntax.AstRecursion;
 import syntax.SyntaxAnalysis;
