@@ -1,5 +1,6 @@
 import llvm.LLvmMain;
 import lexer.LexicalAnalysis;
+import semantic.SemanticAnalysis;
 import syntax.SyntaxAnalysis;
 
 import java.io.*;
@@ -30,6 +31,10 @@ public class Compiler {
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(parserOutputStream,
                 lexicalAnalysis.getSymTokens(), IsDebugMode, IsParserOutput);
         syntaxAnalysis.analysis();
+        // 语义分析
+        SemanticAnalysis semanticAnalysis = new SemanticAnalysis(
+                syntaxAnalysis.getAst(), IsDebugMode);
+        semanticAnalysis.analysis();
         // 生成中间代码
         LLvmMain llvmMain = new LLvmMain(syntaxAnalysis.getAst(), IsDebugMode);
         llvmMain.generate();
