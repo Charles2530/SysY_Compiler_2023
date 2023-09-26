@@ -2,8 +2,8 @@ package syntax.decl;
 
 import generation.ErrorController;
 import syntax.AstNode;
-import syntax.handler.Definer;
-import syntax.handler.Judge;
+import syntax.utils.Definer;
+import syntax.utils.Judge;
 
 import java.io.IOException;
 

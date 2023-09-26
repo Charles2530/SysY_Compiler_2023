@@ -1,4 +1,4 @@
-package syntax.handler;
+package syntax.utils;
 
 import syntax.AstRecursion;
 

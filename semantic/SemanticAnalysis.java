@@ -10,5 +10,6 @@ public class SemanticAnalysis {
     }
 
     public void analysis() {
+        
     }
 }

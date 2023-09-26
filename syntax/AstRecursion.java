@@ -3,7 +3,7 @@ package syntax;
 import lexer.SymToken;
 import syntax.decl.Decl;
 import syntax.funcDef.FuncDef;
-import syntax.handler.Judge;
+import syntax.utils.Judge;
 import syntax.mainFuncDef.MainFuncDef;
 
 import java.io.IOException;

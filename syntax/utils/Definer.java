@@ -1,4 +1,4 @@
-package syntax.handler;
+package syntax.utils;
 
 import generation.ErrorController;
 import syntax.AstNode;
