@@ -109,6 +109,9 @@ public class SemanticAnalysisChecker {
             case "<ConstExp>":
                 checkConstExpChecker(rootAst);
                 break;
+            case "<BType>":
+                checkBTypeChecker(rootAst);
+                break;
             case "IDENFR":
                 checkIdentChecker(rootAst);
                 break;
@@ -228,6 +231,7 @@ public class SemanticAnalysisChecker {
         }
     }
 
+
     //Decl.java
     private void checkDeclChecker(AstNode rootAst) {
     }
@@ -324,6 +328,9 @@ public class SemanticAnalysisChecker {
     }
 
     private void checkConstExpChecker(AstNode rootAst) {
+    }
+
+    private void checkBTypeChecker(AstNode rootAst) {
     }
 
     private void checkIdentChecker(AstNode rootAst) {
