@@ -41,7 +41,8 @@ public class Definer {
             constDeclNode.addChild(semicnNode);
             AstRecursion.nextSym();
         } else {
-            new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+            new ErrorController("i",
+                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
         }
     }
 
@@ -55,7 +56,6 @@ public class Definer {
         } else {
             ErrorController.DefinerPrintError();
         }
-        //适配数组的文法
         while (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
             constDefNode.addChild(lbrackNode);
@@ -68,7 +68,8 @@ public class Definer {
                 constDefNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("k", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("k",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
         }
         if (getPreSym().equals("ASSIGN")) {
@@ -146,7 +147,8 @@ public class Definer {
             varDeclNode.addChild(semicnNode);
             AstRecursion.nextSym();
         } else {
-            new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+            new ErrorController("i",
+                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
         }
     }
 
@@ -172,7 +174,8 @@ public class Definer {
                 vardefNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("k", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("k",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
         }
         if (getPreSym().equals("ASSIGN")) {
@@ -283,7 +286,8 @@ public class Definer {
                             stmtNode.addChild(rparentNode);
                             AstRecursion.nextSym();
                         } else {
-                            new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
+                            new ErrorController("j",
+                                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
                         }
                     } else {
                         ErrorController.DefinerPrintError();
@@ -296,7 +300,8 @@ public class Definer {
                     stmtNode.addChild(semicnNode);
                     AstRecursion.nextSym();
                 } else {
-                    new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+                    new ErrorController("i",
+                            AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
                 }
             } else {
                 ErrorController.DefinerPrintError();
@@ -310,7 +315,8 @@ public class Definer {
                 stmtNode.addChild(semicnNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("i",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
         } else if (Judge.IsBlock()) {
             Block(stmtNode);
@@ -347,7 +353,8 @@ public class Definer {
                 blockNode.addChild(rparentNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("j",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
             if (Judge.IsStmt()) {
                 Stmt(blockNode);
@@ -385,7 +392,8 @@ public class Definer {
                 blockNode.addChild(semicnNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("i",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
             if (Judge.IsCond()) {
                 Cond(blockNode);
@@ -395,7 +403,8 @@ public class Definer {
                 blockNode.addChild(semicnNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("i",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
             if (Judge.IsForStmtVal()) {
                 ForStmtVal(blockNode);
@@ -405,7 +414,8 @@ public class Definer {
                 blockNode.addChild(rparentNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("j",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
             if (Judge.IsStmt()) {
                 Stmt(blockNode);
@@ -426,7 +436,8 @@ public class Definer {
             blockNode.addChild(semicnNode);
             AstRecursion.nextSym();
         } else {
-            new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+            new ErrorController("i",
+                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
         }
     }
 
@@ -439,7 +450,8 @@ public class Definer {
             blockNode.addChild(semicnNode);
             AstRecursion.nextSym();
         } else {
-            new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+            new ErrorController("i",
+                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
         }
     }
 
@@ -455,7 +467,8 @@ public class Definer {
             blockNode.addChild(semicnNode);
             AstRecursion.nextSym();
         } else {
-            new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+            new ErrorController("i",
+                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
         }
     }
 
@@ -489,14 +502,16 @@ public class Definer {
                 blockNode.addChild(rparentNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("j",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
             if (getPreSym().equals("SEMICN")) {
                 AstNode semicnNode = new AstNode("SEMICN");
                 blockNode.addChild(semicnNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("i", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("i",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
         }
     }
@@ -558,7 +573,8 @@ public class Definer {
                     lValNode.addChild(rbrackNode);
                     AstRecursion.nextSym();
                 } else {
-                    new ErrorController("k", AstRecursion.getNextSymToken(-1).getLineNum());
+                    new ErrorController("k",
+                            AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
                 }
             }
         } else {
@@ -583,7 +599,8 @@ public class Definer {
                 primaryExpNode.addChild(rparentNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
+                new ErrorController("j",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
         } else if (Judge.IsLVal()) {
             LVal(primaryExpNode);
@@ -630,7 +647,8 @@ public class Definer {
                     unaryExpNode.addChild(rparentNode);
                     AstRecursion.nextSym();
                 } else {
-                    new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
+                    new ErrorController("j",
+                            AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
                 }
             }
         } else if (Judge.IsPrimaryExp()) {

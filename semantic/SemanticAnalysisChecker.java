@@ -231,7 +231,6 @@ public class SemanticAnalysisChecker {
         }
     }
 
-
     //Decl.java
     private void checkDeclChecker(AstNode rootAst) {
     }

@@ -2,6 +2,7 @@ import generation.ErrorController;
 import generation.GenerationMain;
 import generation.OutputController;
 import lexer.LexicalAnalysis;
+import semantic.SemanticAnalysis;
 import syntax.SyntaxAnalysis;
 
 import java.io.*;
@@ -41,6 +42,9 @@ public class Compiler {
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(
                 lexicalAnalysis.getSymTokens());
         syntaxAnalysis.analysis();
+        // 语义分析
+        SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
+        semanticAnalysis.analysis();
         // 生成中间代码
         GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
         generationMain.generate();

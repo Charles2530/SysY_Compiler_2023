@@ -231,7 +231,6 @@ public class LLvmGenIR {
         }
     }
 
-
     //Decl.java
     private void genIrDeclChecker(AstNode rootAst) {
     }

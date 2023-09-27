@@ -41,7 +41,8 @@ public class MainFuncDef {
                             ErrorController.MainFuncDefPrintError();
                         }
                     } else {
-                        new ErrorController("j", AstRecursion.getNextSymToken(-1).getLineNum());
+                        new ErrorController("j",
+                                AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
                     }
                 } else {
                     ErrorController.MainFuncDefPrintError();

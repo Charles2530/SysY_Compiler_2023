@@ -13,13 +13,21 @@ public class AstRecursion {
     private static ArrayList<SymToken> symTokens;
     private static int symPos;
     private static SymToken preSymToken;
-    private final AstNode rootAst;
+    private AstNode rootAst;
+    private static AstNode previousNoTerminalAst;
 
-    public AstRecursion(ArrayList<SymToken> symTokens, AstNode rootAst) {
+    public static void setPreviousNoTerminalAst(AstNode previousNoTerminalAst) {
+        AstRecursion.previousNoTerminalAst = previousNoTerminalAst;
+    }
+
+    public static AstNode getPreviousNoTerminalAst() {
+        return previousNoTerminalAst;
+    }
+
+    public AstRecursion(ArrayList<SymToken> symTokens) {
         AstRecursion.symTokens = symTokens;
         AstRecursion.symPos = 0;
         AstRecursion.preSymToken = symTokens.get(symPos);
-        this.rootAst = rootAst;
     }
 
     public static void nextSym() {
@@ -41,7 +49,8 @@ public class AstRecursion {
         return symTokens.get(symPos + pos);
     }
 
-    public void CompUnit() throws IOException {
+    public void CompUnit(AstNode rootAst) throws IOException {
+        this.rootAst = rootAst;
         while (Judge.IsDecl()) {
             new Decl(rootAst);
         }
