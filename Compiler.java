@@ -2,7 +2,6 @@ import generation.ErrorController;
 import generation.GenerationMain;
 import generation.OutputController;
 import lexer.LexicalAnalysis;
-import semantic.SemanticAnalysis;
 import syntax.SyntaxAnalysis;
 
 import java.io.*;
@@ -29,7 +28,7 @@ public class Compiler {
         OutputController.setBufferedParserWriter(parserOutputStream);
         OutputController.setLexerOutput(IsLexerOutput);
         OutputController.setParserOutput(IsParserOutput);
-        // 词法分析初始化
+        // 词法分析
         String line;
         int lineNum = 0;
         LexicalAnalysis lexicalAnalysis = new LexicalAnalysis();
@@ -38,14 +37,10 @@ public class Compiler {
             lineNum++;
             lexicalAnalysis.analysis(line, lineNum);
         }
-        // 语法分析初始化
+        // 语法分析
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(
                 lexicalAnalysis.getSymTokens());
         syntaxAnalysis.analysis();
-        // 语义分析
-        SemanticAnalysis semanticAnalysis = new SemanticAnalysis(
-                syntaxAnalysis.getAst());
-        semanticAnalysis.analysis();
         // 生成中间代码
         GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
         generationMain.generate();

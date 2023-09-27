@@ -3,6 +3,7 @@ package syntax;
 import generation.ErrorController;
 import generation.OutputController;
 import lexer.SymToken;
+import syntax.semantic.SemanticAnalysis;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class SyntaxAnalysis {
     public void analysis() throws IOException {
         AstRecursion astRecursion = new AstRecursion(symTokens, rootAst);
         astRecursion.CompUnit();
+        // 语义分析
+        SemanticAnalysis semanticAnalysis = new SemanticAnalysis(getAst());
+        semanticAnalysis.analysis();
         //后续遍历AST树
         preTraverse(rootAst);
     }
