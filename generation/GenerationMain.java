@@ -1,7 +1,6 @@
 package generation;
 
 import syntax.AstNode;
-import syntax.semantic.SemanticAnalysisChecker;
 
 public class GenerationMain {
     private AstNode rootAst;

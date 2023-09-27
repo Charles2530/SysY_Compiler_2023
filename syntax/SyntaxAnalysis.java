@@ -3,7 +3,7 @@ package syntax;
 import generation.ErrorController;
 import generation.OutputController;
 import lexer.SymToken;
-import syntax.semantic.SemanticAnalysis;
+import semantic.SemanticAnalysis;
 
 import java.io.IOException;
 import java.util.ArrayList;

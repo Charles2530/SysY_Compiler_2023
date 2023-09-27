@@ -1,4 +1,4 @@
-package syntax.semantic;
+package semantic;
 
 import syntax.AstNode;
 
