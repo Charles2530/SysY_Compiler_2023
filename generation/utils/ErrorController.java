@@ -1,4 +1,4 @@
-package generation;
+package generation.utils;
 
 import semantic.symbolTable.Symbol;
 import syntax.AstRecursion;

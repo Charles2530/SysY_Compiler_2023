@@ -1,5 +1,6 @@
 package generation;
 
+import generation.llvm.LLvmGenIR;
 import syntax.AstNode;
 
 public class GenerationMain {

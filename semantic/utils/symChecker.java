@@ -1,6 +1,6 @@
 package semantic.utils;
 
-import generation.ErrorController;
+import generation.utils.ErrorController;
 import semantic.SemanticAnalysis;
 import semantic.SemanticAnalysisChecker;
 import semantic.symbolTable.Symbol;

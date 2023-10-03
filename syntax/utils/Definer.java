@@ -1,6 +1,6 @@
 package syntax.utils;
 
-import generation.ErrorController;
+import generation.utils.ErrorController;
 import syntax.AstNode;
 import syntax.AstRecursion;
 

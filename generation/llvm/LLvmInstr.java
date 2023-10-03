@@ -1,4 +1,4 @@
-package generation;
+package generation.llvm;
 
 public class LLvmInstr {
     //LLVM IR

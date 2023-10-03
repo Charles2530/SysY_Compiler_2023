@@ -1,4 +1,4 @@
-package generation;
+package generation.llvm;
 
 import syntax.AstNode;
 

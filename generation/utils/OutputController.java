@@ -1,4 +1,4 @@
-package generation;
+package generation.utils;
 
 import lexer.SymToken;
 import syntax.AstNode;

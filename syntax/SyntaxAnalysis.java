@@ -1,7 +1,7 @@
 package syntax;
 
-import generation.ErrorController;
-import generation.OutputController;
+import generation.utils.ErrorController;
+import generation.utils.OutputController;
 import lexer.SymToken;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package syntax.decl;
 
-import generation.ErrorController;
+import generation.utils.ErrorController;
 import syntax.AstNode;
 import syntax.utils.Definer;
 import syntax.utils.Judge;

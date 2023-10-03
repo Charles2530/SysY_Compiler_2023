@@ -1,6 +1,6 @@
-import generation.ErrorController;
+import generation.utils.ErrorController;
 import generation.GenerationMain;
-import generation.OutputController;
+import generation.utils.OutputController;
 import lexer.LexicalAnalysis;
 import semantic.SemanticAnalysis;
 import syntax.SyntaxAnalysis;

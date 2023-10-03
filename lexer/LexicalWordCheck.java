@@ -1,6 +1,6 @@
 package lexer;
 
-import generation.ErrorController;
+import generation.utils.ErrorController;
 
 import java.io.IOException;
 import java.util.ArrayList;
