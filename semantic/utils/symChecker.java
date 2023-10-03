@@ -45,18 +45,15 @@ public class symChecker {
             case "<LVal>":
                 checkLValChecker(rootAst);
                 break;
-            //FuncDef.java
             case "<FuncDef>":
                 checkFuncDefChecker(rootAst);
                 break;
             case "<FuncFParam>":
                 checkFuncFParamChecker(rootAst);
                 break;
-            //MainFuncDef.java
             case "<MainFuncDef>":
                 checkMainFuncDefChecker(rootAst);
                 break;
-            //Lexer_part
             case "ASSIGN":
                 checkASSIGNChecker(rootAst);
                 break;

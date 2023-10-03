@@ -37,7 +37,7 @@ public class SemanticAnalysisChecker {
         }
         Symbol.SymType symbolType;
         if (dim == 0) {
-            symbolType = Symbol.SymType.INT;
+            symbolType = Symbol.SymType.CONST;
         } else {
             symbolType = Symbol.SymType.ARRAY;
         }
