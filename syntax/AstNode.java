@@ -59,4 +59,8 @@ public class AstNode {
     public SymToken getSymToken() {
         return symToken;
     }
+
+    public AstNode getParent() {
+        return parent;
+    }
 }

@@ -11,6 +11,7 @@ public class Compiler {
     private static final boolean IsDebugMode = false;
     private static final boolean IsLexerOutput = false;
     private static final boolean IsParserOutput = true;
+    private static final boolean IsGenerationOutput = false;
 
     public static void main(String[] args) throws IOException {
         // 将文件进行重定向
@@ -21,14 +22,18 @@ public class Compiler {
                 new FileWriter("LexerOutput.txt", false)) : null;
         BufferedWriter parserOutputStream = IsParserOutput ? new BufferedWriter(
                 new FileWriter("output.txt", false)) : null;
+        BufferedWriter generationOutputStream = IsGenerationOutput ? new BufferedWriter(
+                new FileWriter("llvm_ir.txt", false)) : null;
         //错误处理初始化
         ErrorController.setBufferedWriter(errorOutputStream);
         ErrorController.setIsDebugMode(IsDebugMode);
         //输出处理初始化
         OutputController.setBufferedLexerWriter(lexerOutputStream);
         OutputController.setBufferedParserWriter(parserOutputStream);
+        OutputController.setBufferedGenerationWriter(generationOutputStream);
         OutputController.setLexerOutput(IsLexerOutput);
         OutputController.setParserOutput(IsParserOutput);
+        OutputController.setGenerationOutput(IsGenerationOutput);
         // 词法分析
         String line;
         int lineNum = 0;
@@ -50,14 +55,17 @@ public class Compiler {
         generationMain.generate();
         // 关闭文件流
         fileInputStream.close();
+        if (IsDebugMode) {
+            errorOutputStream.close();
+        }
         if (IsLexerOutput) {
             lexerOutputStream.close();
         }
         if (IsParserOutput) {
             parserOutputStream.close();
         }
-        if (IsDebugMode) {
-            errorOutputStream.close();
+        if (IsGenerationOutput) {
+            generationOutputStream.close();
         }
     }
 }

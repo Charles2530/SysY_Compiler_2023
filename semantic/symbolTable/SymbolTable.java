@@ -4,16 +4,49 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class SymbolTable {
-    private Stack<StackSymbolTable> symbolTables;
-    private HashMap<String, Stack<StackSymbolTable>> symbolNameTables;
+    private static Stack<StackSymbolTable> symbolTables;
+    private static HashMap<String, Stack<StackSymbolTable>> symbolNameTables;
+    private static boolean isGlobalArea;
+
+    private static int loopLevel;
 
     public SymbolTable() {
-        this.symbolTables = new Stack<>();
-        this.symbolNameTables = new HashMap<>();
+        SymbolTable.symbolTables = new Stack<>();
+        SymbolTable.symbolNameTables = new HashMap<>();
+        SymbolTable.isGlobalArea = true;
+        SymbolTable.loopLevel = 0;
     }
 
-    public boolean addSymbol(Symbol symbol) {
-        StackSymbolTable topTable = this.symbolTables.peek();
+    public static boolean isGlobalArea() {
+        return isGlobalArea;
+    }
+
+    public static void setGlobalArea(boolean isGlobalArea) {
+        SymbolTable.isGlobalArea = isGlobalArea;
+    }
+
+    public static void createStackSymbolTable() {
+        StackSymbolTable stackSymbolTable = new StackSymbolTable();
+        symbolTables.push(stackSymbolTable);
+    }
+
+    public static void destroyStackSymbolTable() {
+        StackSymbolTable topStack = symbolTables.pop();
+        topStack.getSymbols().forEach((k, v) -> {
+            symbolNameTables.get(k).pop();
+        });
+    }
+
+    public static void enterLoop() {
+        loopLevel++;
+    }
+
+    public static void leaveLoop() {
+        loopLevel--;
+    }
+
+    public static boolean addSymbol(Symbol symbol) {
+        StackSymbolTable topTable = symbolTables.peek();
         if (topTable.getSymbol(symbol.getSymbolName()) != null) {
             return false;
         }
@@ -26,5 +59,17 @@ public class SymbolTable {
             return v;
         });
         return true;
+    }
+
+    public static Symbol getSymByName(String name) {
+        Stack<StackSymbolTable> stackSymbolTables = symbolNameTables.get(name);
+        if (stackSymbolTables == null) {
+            return null;
+        }
+        return stackSymbolTables.peek().getSymbol(name);
+    }
+
+    public static int getLoopLevel() {
+        return loopLevel;
     }
 }

@@ -1,5 +1,6 @@
 package generation;
 
+import semantic.symbolTable.Symbol;
 import syntax.AstRecursion;
 
 import java.io.BufferedWriter;
@@ -37,6 +38,12 @@ public class ErrorController {
         if (isDebugMode) {
             errorBufferedWriter.write("grammarType:" + grammarType);
             errorBufferedWriter.newLine();
+        }
+    }
+
+    public static void SymbolError(Symbol symbol) {
+        if (isDebugMode) {
+            System.out.println("symbol:" + symbol);
         }
     }
 

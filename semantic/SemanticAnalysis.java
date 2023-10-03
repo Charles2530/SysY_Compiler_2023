@@ -1,26 +1,30 @@
 package semantic;
 
+import semantic.symbolTable.SymbolTable;
+import semantic.utils.symChecker;
 import syntax.AstNode;
 
 public class SemanticAnalysis {
     private AstNode rootAst;
-
-    private SemanticAnalysisChecker rootChecker;
+    private static symChecker rootChecker;
+    private SymbolTable symbolTable;
 
     public SemanticAnalysis(AstNode rootAst) {
         this.rootAst = rootAst;
+        this.symbolTable = new SymbolTable();
     }
 
     public void analysis() {
-        SemanticAnalysisChecker rootChecker = new SemanticAnalysisChecker(rootAst);
-        this.rootChecker = rootChecker;
+        SemanticAnalysis.rootChecker = new symChecker(rootAst, symbolTable);
         preTraverse(rootAst);
     }
 
-    private void preTraverse(AstNode rootAst) {
-        for (AstNode astNode : rootAst.getChildList()) {
-            preTraverse(astNode);
+    public static void preTraverse(AstNode rootAst) {
+        if (rootAst.isLeaf()) {
+            return;
         }
-        rootChecker.checkAnalysis(rootAst);
+        for (AstNode astNode : rootAst.getChildList()) {
+            rootChecker.check(astNode);
+        }
     }
 }

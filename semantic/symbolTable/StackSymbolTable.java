@@ -16,4 +16,8 @@ public class StackSymbolTable {
     public Symbol getSymbol(String name) {
         return symbols.get(name);
     }
+
+    public HashMap<String, Symbol> getSymbols() {
+        return symbols;
+    }
 }

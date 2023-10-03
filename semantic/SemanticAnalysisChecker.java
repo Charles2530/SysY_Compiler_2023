@@ -1,448 +1,493 @@
 package semantic;
 
+import semantic.symbolTable.Symbol;
+import semantic.symbolTable.SymbolTable;
+import semantic.symbolTable.symbol.ConstSymbol;
+import semantic.symbolTable.symbol.VarSymbol;
+import semantic.utils.symCalc;
 import syntax.AstNode;
+
+import java.util.ArrayList;
 
 public class SemanticAnalysisChecker {
     private AstNode rootAst;
+    private SymbolTable symbolTable;
 
-    public SemanticAnalysisChecker(AstNode rootAst) {
+    public SemanticAnalysisChecker(AstNode rootAst, SymbolTable symbolTable) {
         this.rootAst = rootAst;
+        this.symbolTable = symbolTable;
     }
 
-    public void checkAnalysis(AstNode rootAst) {
+    public Symbol createAnalysis(AstNode rootAst) {
         switch (rootAst.getGrammarType()) {
             //Decl.java
             case "<Decl>":
-                checkDeclChecker(rootAst);
-                break;
+                return createDeclChecker(rootAst);
             //Definer.java
             case "<ConstDecl>":
-                checkConstDeclChecker(rootAst);
-                break;
+                return createConstDeclChecker(rootAst);
             case "<ConstDef>":
-                checkConstDefChecker(rootAst);
-                break;
+                return createConstDefChecker(rootAst);
             case "<ConstInitVal>":
-                checkConstInitValChecker(rootAst);
-                break;
+                return createConstInitValChecker(rootAst);
             case "<VarDecl>":
-                checkVarDeclChecker(rootAst);
-                break;
+                return createVarDeclChecker(rootAst);
             case "<VarDef>":
-                checkVarDefChecker(rootAst);
-                break;
-            case "<InitVal>":
-                checkInitValChecker(rootAst);
-                break;
+                return createVarDefChecker(rootAst);
+//            case "<InitVal>":
+//                return createInitValChecker(rootAst);
             case "<Block>":
-                checkBlockChecker(rootAst);
-                break;
+                return createBlockChecker(rootAst);
             case "<BlockItem>":
-                checkBlockItemChecker(rootAst);
-                break;
+                return createBlockItemChecker(rootAst);
             case "<Stmt>":
-                checkStmtChecker(rootAst);
-                break;
+                return createStmtChecker(rootAst);
             case "IFTK":
-                checkIfStmtChecker(rootAst);
-                break;
+                return createIfStmtChecker(rootAst);
             case "FORTK":
-                checkForStmtChecker(rootAst);
-                break;
+                return createForStmtChecker(rootAst);
             case "BREAKTK":
-                checkBreakStmtChecker(rootAst);
-                break;
+                return createBreakStmtChecker(rootAst);
             case "CONTINUETK":
-                checkContinueStmtChecker(rootAst);
-                break;
+                return createContinueStmtChecker(rootAst);
             case "RETURNTK":
-                checkReturnStmtChecker(rootAst);
-                break;
+                return createReturnStmtChecker(rootAst);
             case "PRINTFTK":
-                checkPrintStmtChecker(rootAst);
-                break;
+                return createPrintStmtChecker(rootAst);
             case "<ForStmt>":
-                checkForStmtValChecker(rootAst);
-                break;
+                return createForStmtValChecker(rootAst);
             case "<Exp>":
-                checkExpChecker(rootAst);
-                break;
+                return createExpChecker(rootAst);
             case "<Cond>":
-                checkCondChecker(rootAst);
-                break;
+                return createCondChecker(rootAst);
             case "<LVal>":
-                checkLValChecker(rootAst);
-                break;
+                return createLValChecker(rootAst);
             case "<PrimaryExp>":
-                checkPrimaryExpChecker(rootAst);
-                break;
+                return createPrimaryExpChecker(rootAst);
             case "<Number>":
-                checkNumberCallChecker(rootAst);
-                break;
+                return createNumberCallChecker(rootAst);
             case "<UnaryExp>":
-                checkUnaryExpChecker(rootAst);
-                break;
+                return createUnaryExpChecker(rootAst);
             case "<UnaryOp>":
-                checkUnaryOpChecker(rootAst);
-                break;
+                return createUnaryOpChecker(rootAst);
             case "<FuncRParams>":
-                checkFuncRParamsChecker(rootAst);
-                break;
+                return createFuncRParamsChecker(rootAst);
             case "<MulExp>":
-                checkMulExpChecker(rootAst);
-                break;
+                return createMulExpChecker(rootAst);
             case "<AddExp>":
-                checkAddExpChecker(rootAst);
-                break;
+                return createAddExpChecker(rootAst);
             case "<RelExp>":
-                checkRelExpChecker(rootAst);
-                break;
+                return createRelExpChecker(rootAst);
             case "<EqExp>":
-                checkEqExpChecker(rootAst);
-                break;
+                return createEqExpChecker(rootAst);
             case "<LAndExp>":
-                checkLAndExpChecker(rootAst);
-                break;
+                return createLAndExpChecker(rootAst);
             case "<LOrExp>":
-                checkLOrExpChecker(rootAst);
-                break;
-            case "<ConstExp>":
-                checkConstExpChecker(rootAst);
-                break;
+                return createLOrExpChecker(rootAst);
+//            case "<ConstExp>":
+//                return createConstExpChecker(rootAst);
             case "<BType>":
-                checkBTypeChecker(rootAst);
-                break;
+                return createBTypeChecker(rootAst);
             case "IDENFR":
-                checkIdentChecker(rootAst);
-                break;
+                return createIdentChecker(rootAst);
             //FuncDef.java
             case "<FuncDef>":
-                checkFuncDefChecker(rootAst);
-                break;
+                return createFuncDefChecker(rootAst);
             case "<FuncType>":
-                checkFuncTypeChecker(rootAst);
-                break;
+                return createFuncTypeChecker(rootAst);
             case "<FuncFParams>":
-                checkFuncFParamsChecker(rootAst);
-                break;
+                return createFuncFParamsChecker(rootAst);
             case "<FuncFParam>":
-                checkFuncFParamChecker(rootAst);
-                break;
+                return createFuncFParamChecker(rootAst);
             //MainFuncDef.java
             case "<MainFuncDef>":
-                checkMainFuncDefChecker(rootAst);
-                break;
+                return createMainFuncDefChecker(rootAst);
             //Lexer_part
             case "INTTK":
-                checkINTTKChecker(rootAst);
-                break;
+                return createINTTKChecker(rootAst);
             case "VOIDTK":
-                checkVOIDTKChecker(rootAst);
-                break;
+                return createVOIDTKChecker(rootAst);
             case "MAINTK":
-                checkMAINTKChecker(rootAst);
-                break;
+                return createMAINTKChecker(rootAst);
             case "LPARENT":
-                checkLPARENTChecker(rootAst);
-                break;
+                return createLPARENTChecker(rootAst);
             case "RPARENT":
-                checkRPARENTChecker(rootAst);
-                break;
+                return createRPARENTChecker(rootAst);
             case "LBRACE":
-                checkLBRACEChecker(rootAst);
-                break;
+                return createLBRACEChecker(rootAst);
             case "RBRACE":
-                checkRBRACEChecker(rootAst);
-                break;
+                return createRBRACEChecker(rootAst);
             case "LBRACK":
-                checkLBRACKChecker(rootAst);
-                break;
+                return createLBRACKChecker(rootAst);
             case "RBRACK":
-                checkRBRACKChecker(rootAst);
-                break;
+                return createRBRACKChecker(rootAst);
             case "SEMICN":
-                checkSEMICNChecker(rootAst);
-                break;
+                return createSEMICNChecker(rootAst);
             case "COMMA":
-                checkCOMMAChecker(rootAst);
-                break;
+                return createCOMMAChecker(rootAst);
             case "ASSIGN":
-                checkASSIGNChecker(rootAst);
-                break;
+                return createASSIGNChecker(rootAst);
             case "PLUS":
-                checkPLUSChecker(rootAst);
-                break;
+                return createPLUSChecker(rootAst);
             case "MINU":
-                checkMINUChecker(rootAst);
-                break;
+                return createMINUChecker(rootAst);
             case "INTCON":
-                checkINTCONChecker(rootAst);
-                break;
+                return createINTCONChecker(rootAst);
             case "NOT":
-                checkNOTChecker(rootAst);
-                break;
+                return createNOTChecker(rootAst);
             case "DIV":
-                checkDIVChecker(rootAst);
-                break;
+                return createDIVChecker(rootAst);
             case "MULT":
-                checkMULTChecker(rootAst);
-                break;
+                return createMULTChecker(rootAst);
             case "MOD":
-                checkMODChecker(rootAst);
-                break;
+                return createMODChecker(rootAst);
             case "AND":
-                checkANDChecker(rootAst);
-                break;
+                return createANDChecker(rootAst);
             case "OR":
-                checkORChecker(rootAst);
-                break;
+                return createORChecker(rootAst);
             case "NEQ":
-                checkNEQChecker(rootAst);
-                break;
+                return createNEQChecker(rootAst);
             case "EQL":
-                checkEQLChecker(rootAst);
-                break;
+                return createEQLChecker(rootAst);
             case "LSS":
-                checkLSSChecker(rootAst);
-                break;
+                return createLSSChecker(rootAst);
             case "LEQ":
-                checkLEQChecker(rootAst);
-                break;
+                return createLEQChecker(rootAst);
             case "GRE":
-                checkGREChecker(rootAst);
-                break;
+                return createGREChecker(rootAst);
             case "GEQ":
-                checkGEQChecker(rootAst);
-                break;
+                return createGEQChecker(rootAst);
             case "STRCON":
-                checkSTRCONChecker(rootAst);
-                break;
+                return createSTRCONChecker(rootAst);
             case "CONSTTK":
-                checkCONSTTKChecker(rootAst);
-                break;
+                return createCONSTTKChecker(rootAst);
             case "ELSETK":
-                checkELSETKChecker(rootAst);
-                break;
+                return createELSETKChecker(rootAst);
             case "GETINTTK":
-                checkGETINTTKChecker(rootAst);
-                break;
+                return createGETINTTKChecker(rootAst);
             default:
-                break;
+                return null;
         }
     }
 
     //Decl.java
-    private void checkDeclChecker(AstNode rootAst) {
+    public Symbol createDeclChecker(AstNode rootAst) {
+        return null;
     }
 
     //Definer.java
-    private void checkConstDeclChecker(AstNode rootAst) {
+    public Symbol createConstDeclChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkConstDefChecker(AstNode rootAst) {
+    public Symbol createConstDefChecker(AstNode rootAst) {
+        String symbolName = rootAst.getChildList().get(0).getSymToken().getWord();
+        Symbol.SymType symbolType = Symbol.SymType.CONST;
+        return new ConstSymbol(symbolName, symbolType);
     }
 
-    private void checkConstInitValChecker(AstNode rootAst) {
+    public Symbol createConstInitValChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkVarDeclChecker(AstNode rootAst) {
+    public Symbol createVarDeclChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkVarDefChecker(AstNode rootAst) {
+    public Symbol createVarDefChecker(AstNode rootAst) {
+        String symbolName = rootAst.getChildList().get(0).getSymToken().getWord();
+        int dim = 0;
+        Integer value = null;
+        AstNode initValAst = null;
+        int space = 1;
+        for (AstNode astNode : rootAst.getChildList()) {
+            if (astNode.getGrammarType().equals("<ConstExp>")) {
+                dim++;
+                space *= createConstExpChecker(astNode);
+            }
+            if (astNode.getGrammarType().equals("<InitVal>")) {
+                initValAst = astNode;
+            }
+        }
+        Symbol.SymType symbolType;
+        if (dim == 0) {
+            symbolType = Symbol.SymType.INT;
+        } else {
+            symbolType = Symbol.SymType.ARRAY;
+        }
+        Symbol initValue = null;
+        if (initValAst != null) {
+//            initValue = createInitValChecker(initValAst);
+        }
+        return new VarSymbol(symbolName, symbolType, dim, initValue, space);
     }
 
-    private void checkInitValChecker(AstNode rootAst) {
+    public ArrayList<Integer> createInitValChecker(int dim, AstNode rootAst) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (dim == 0) {
+            ans.add(symCalc.calc(rootAst));
+        } else {
+            for (AstNode astNode : rootAst.getChildList()) {
+                if (astNode.getGrammarType().equals("<InitVal>")) {
+                    ans.addAll(createInitValChecker(dim - 1, astNode));
+                }
+            }
+        }
+        return ans;
     }
 
-    private void checkBlockChecker(AstNode rootAst) {
+    public Symbol createBlockChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkBlockItemChecker(AstNode rootAst) {
+    public Symbol createBlockItemChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkStmtChecker(AstNode rootAst) {
+    public Symbol createStmtChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkIfStmtChecker(AstNode rootAst) {
+    public Symbol createIfStmtChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkForStmtChecker(AstNode rootAst) {
+    public Symbol createForStmtChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkBreakStmtChecker(AstNode rootAst) {
+    public Symbol createBreakStmtChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkContinueStmtChecker(AstNode rootAst) {
+    public Symbol createContinueStmtChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkReturnStmtChecker(AstNode rootAst) {
+    public Symbol createReturnStmtChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkPrintStmtChecker(AstNode rootAst) {
+    public Symbol createPrintStmtChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkForStmtValChecker(AstNode rootAst) {
+    public Symbol createForStmtValChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkExpChecker(AstNode rootAst) {
+    public Symbol createExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkCondChecker(AstNode rootAst) {
+    public Symbol createCondChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLValChecker(AstNode rootAst) {
+    public Symbol createLValChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkPrimaryExpChecker(AstNode rootAst) {
+    public Symbol createPrimaryExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkNumberCallChecker(AstNode rootAst) {
+    public Symbol createNumberCallChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkUnaryExpChecker(AstNode rootAst) {
+    public Symbol createUnaryExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkUnaryOpChecker(AstNode rootAst) {
+    public Symbol createUnaryOpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkFuncRParamsChecker(AstNode rootAst) {
+    public Symbol createFuncRParamsChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkMulExpChecker(AstNode rootAst) {
+    public Symbol createMulExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkAddExpChecker(AstNode rootAst) {
+    public Symbol createAddExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkRelExpChecker(AstNode rootAst) {
+    public Symbol createRelExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkEqExpChecker(AstNode rootAst) {
+    public Symbol createEqExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLAndExpChecker(AstNode rootAst) {
+    public Symbol createLAndExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLOrExpChecker(AstNode rootAst) {
+    public Symbol createLOrExpChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkConstExpChecker(AstNode rootAst) {
+    public int createConstExpChecker(AstNode rootAst) {
+        return 0;
     }
 
-    private void checkBTypeChecker(AstNode rootAst) {
+    public Symbol createBTypeChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkIdentChecker(AstNode rootAst) {
+    public Symbol createIdentChecker(AstNode rootAst) {
+        return null;
     }
 
     //FuncDef.java
-    private void checkFuncDefChecker(AstNode rootAst) {
+    public Symbol createFuncDefChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkFuncTypeChecker(AstNode rootAst) {
+    public Symbol createFuncTypeChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkFuncFParamsChecker(AstNode rootAst) {
+    public Symbol createFuncFParamsChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkFuncFParamChecker(AstNode rootAst) {
+    public Symbol createFuncFParamChecker(AstNode rootAst) {
+        return null;
     }
 
     //MainFuncDef.java
-    private void checkMainFuncDefChecker(AstNode rootAst) {
+    public Symbol createMainFuncDefChecker(AstNode rootAst) {
+        return null;
     }
 
     //Lexer_part
-    private void checkINTTKChecker(AstNode rootAst) {
+    public Symbol createINTTKChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkVOIDTKChecker(AstNode rootAst) {
+    public Symbol createVOIDTKChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkMAINTKChecker(AstNode rootAst) {
+    public Symbol createMAINTKChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLPARENTChecker(AstNode rootAst) {
+    public Symbol createLPARENTChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkRPARENTChecker(AstNode rootAst) {
+    public Symbol createRPARENTChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLBRACEChecker(AstNode rootAst) {
+    public Symbol createLBRACEChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkRBRACEChecker(AstNode rootAst) {
+    public Symbol createRBRACEChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLBRACKChecker(AstNode rootAst) {
+    public Symbol createLBRACKChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkRBRACKChecker(AstNode rootAst) {
+    public Symbol createRBRACKChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkSEMICNChecker(AstNode rootAst) {
+    public Symbol createSEMICNChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkCOMMAChecker(AstNode rootAst) {
+    public Symbol createCOMMAChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkASSIGNChecker(AstNode rootAst) {
+    public Symbol createASSIGNChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkPLUSChecker(AstNode rootAst) {
+    public Symbol createPLUSChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkMINUChecker(AstNode rootAst) {
+    public Symbol createMINUChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkINTCONChecker(AstNode rootAst) {
+    public Symbol createINTCONChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkNOTChecker(AstNode rootAst) {
+    public Symbol createNOTChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkDIVChecker(AstNode rootAst) {
+    public Symbol createDIVChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkMULTChecker(AstNode rootAst) {
+    public Symbol createMULTChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkMODChecker(AstNode rootAst) {
+    public Symbol createMODChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkANDChecker(AstNode rootAst) {
+    public Symbol createANDChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkORChecker(AstNode rootAst) {
+    public Symbol createORChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkNEQChecker(AstNode rootAst) {
+    public Symbol createNEQChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkEQLChecker(AstNode rootAst) {
+    public Symbol createEQLChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLSSChecker(AstNode rootAst) {
+    public Symbol createLSSChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkLEQChecker(AstNode rootAst) {
+    public Symbol createLEQChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkGREChecker(AstNode rootAst) {
+    public Symbol createGREChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkGEQChecker(AstNode rootAst) {
+    public Symbol createGEQChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkSTRCONChecker(AstNode rootAst) {
+    public Symbol createSTRCONChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkCONSTTKChecker(AstNode rootAst) {
+    public Symbol createCONSTTKChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkELSETKChecker(AstNode rootAst) {
+    public Symbol createELSETKChecker(AstNode rootAst) {
+        return null;
     }
 
-    private void checkGETINTTKChecker(AstNode rootAst) {
+    public Symbol createGETINTTKChecker(AstNode rootAst) {
+        return null;
     }
 }

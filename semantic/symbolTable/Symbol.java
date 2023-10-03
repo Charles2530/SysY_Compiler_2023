@@ -1,10 +1,15 @@
 package semantic.symbolTable;
 
 public class Symbol {
-    private String symbolName;
-    private String symbolType;
+    public enum SymType {
+        INT, VOID, ARRAY,CONST
+    }
 
-    public Symbol(String symbolName, String symbolType) {
+    private String symbolName;
+    private SymType symbolType;
+    private Integer symbolLevel;
+
+    public Symbol(String symbolName, SymType symbolType) {
         this.symbolName = symbolName;
         this.symbolType = symbolType;
     }
@@ -13,7 +18,11 @@ public class Symbol {
         return symbolName;
     }
 
-    public String getSymbolType() {
+    public SymType getSymbolType() {
         return symbolType;
+    }
+
+    public Integer getSymbolLevel() {
+        return symbolLevel;
     }
 }
