@@ -14,7 +14,8 @@ public class symDefiner {
             AstNode funcFormalParams = astNode.getChildList().get(3);
             for (AstNode child : funcFormalParams.getChildList()) {
                 if (child.getGrammarType().equals("<FuncFParam>")) {
-                    FParamTypes.add(Symbol.SymType.valueOf(child.getChildList().get(0).getSymToken().getWord()));
+                    FParamTypes.add(Symbol.SymType.valueOf(
+                            child.getChildList().get(0).getSymToken().getWord()));
                     FParamDims.add(child.getChildList().size() - 1);
                 }
             }

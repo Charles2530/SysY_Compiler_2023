@@ -9,7 +9,8 @@ public class VarSymbol extends Symbol {
     private ArrayList<Integer> initValue;
     private int space;
 
-    public VarSymbol(String symbolName, SymType symbolType, int dim, ArrayList<Integer> initValue, int space) {
+    public VarSymbol(String symbolName, SymType symbolType, int dim,
+                     ArrayList<Integer> initValue, int space) {
         super(symbolName, symbolType);
         this.dim = dim;
         this.initValue = initValue;
@@ -26,12 +27,14 @@ public class VarSymbol extends Symbol {
 
     public int getConstValue(int... idx) {
         if (idx.length == 0) {
-//            return initValue.getConstValue();
+            return initValue.get(0);
         } else if (idx.length == 1) {
-//            return initValue.getConstValue(idx[0]);
+            return initValue.get(idx[0]);
         } else {
-//            return initValue.getConstValue(idx[0], idx[1]);
+            if (idx[0] == 0) {
+                return initValue.get(idx[1]);
+            }
+            return initValue.get(idx[0] * space + idx[1]);
         }
-        return 0;
     }
 }

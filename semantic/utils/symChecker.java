@@ -121,7 +121,6 @@ public class symChecker {
         SemanticAnalysis.preTraverse(sonAst);
     }
 
-
     /*TODO: 这里可能有bug*/
     private void checkReturnStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
@@ -159,7 +158,8 @@ public class symChecker {
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
         AstNode lastSentence = block.getChildList().get(senNum - 2);
-        if (!(lastSentence.getGrammarType().equals("RETURNTK")) && symbol.getSymbolType() != Symbol.SymType.VOID) {
+        if (!(lastSentence.getGrammarType().equals("RETURNTK")) &&
+                symbol.getSymbolType() != Symbol.SymType.VOID) {
             ErrorController.SymbolError(symbol);
         }
     }
@@ -192,7 +192,8 @@ public class symChecker {
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
         AstNode lastSentence = block.getChildList().get(senNum - 2);
-        if (!(lastSentence.getGrammarType().equals("RETURNTK")) && symbol.getSymbolType() != Symbol.SymType.VOID) {
+        if (!(lastSentence.getGrammarType().equals("RETURNTK")) &&
+                symbol.getSymbolType() != Symbol.SymType.VOID) {
             ErrorController.SymbolError(symbol);
         }
     }

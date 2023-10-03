@@ -44,7 +44,6 @@ public class SemanticAnalysisChecker {
         return new ConstSymbol(symbolName, symbolType, dim, initValue, space);
     }
 
-
     public Symbol createVarDefChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(0).getSymToken().getWord();
         int dim = 0;
@@ -118,8 +117,8 @@ public class SemanticAnalysisChecker {
 
     public Symbol createFuncDefChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(1).getSymToken().getWord();
-        Symbol.SymType returnType = (rootAst.getChildList().get(0).getGrammarType().equals("INTTK")) ?
-                Symbol.SymType.INT : Symbol.SymType.VOID;
+        Symbol.SymType returnType = (rootAst.getChildList().get(0).getGrammarType()
+                .equals("INTTK")) ? Symbol.SymType.INT : Symbol.SymType.VOID;
         return new FuncSymbol(symbolName, returnType);
     }
 }
