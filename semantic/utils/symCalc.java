@@ -9,6 +9,20 @@ import syntax.AstNode;
 import java.util.ArrayList;
 
 public class symCalc {
+    public static ArrayList<Integer> calcInitVal(int dim, AstNode astNode) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (dim == 0) {
+            ans.add(calc(astNode.getChildList().get(0)));
+        } else {
+            for (AstNode child : astNode.getChildList()) {
+                if (child.getGrammarType().equals("<InitVal>")) {
+                    ans.addAll(calcInitVal(dim - 1, child));
+                }
+            }
+        }
+        return ans;
+    }
+
     public static int calc(AstNode astNode) {
         switch (astNode.getGrammarType()) {
             case "<Exp>", "<ConstExp>":

@@ -1,8 +1,9 @@
 package semantic.symbolTable;
 
 public class Symbol {
+
     public enum SymType {
-        INT, VOID, ARRAY,CONST
+        INT, VOID, ARRAY, CONST
     }
 
     private String symbolName;
@@ -25,4 +26,13 @@ public class Symbol {
     public Integer getSymbolLevel() {
         return symbolLevel;
     }
+
+    public void printSymbol() {
+        System.out.println("Symbol{" +
+                "symbolName='" + symbolName + '\'' +
+                ", symbolType=" + symbolType +
+                ", symbolLevel=" + symbolLevel +
+                '}');
+    }
+
 }

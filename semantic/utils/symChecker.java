@@ -6,16 +6,14 @@ import semantic.SemanticAnalysisChecker;
 import semantic.symbolTable.Symbol;
 import semantic.symbolTable.SymbolTable;
 import semantic.symbolTable.symbol.ConstSymbol;
+import semantic.symbolTable.symbol.FuncSymbol;
 import syntax.AstNode;
 
 public class symChecker {
-    private AstNode rootAst;
-
     private SemanticAnalysisChecker semanticAnalysisChecker;
 
-    public symChecker(AstNode rootAst, SymbolTable symbolTable) {
-        this.rootAst = rootAst;
-        this.semanticAnalysisChecker = new SemanticAnalysisChecker(rootAst, symbolTable);
+    public symChecker(SymbolTable symbolTable) {
+        this.semanticAnalysisChecker = new SemanticAnalysisChecker(symbolTable);
     }
 
     public void check(AstNode rootAst) {
@@ -148,9 +146,25 @@ public class symChecker {
     //FuncDef.java
     private void checkFuncDefChecker(AstNode rootAst) {
         SymbolTable.setGlobalArea(false);
-//        SymbolTable.createStackSymbolTable();
-        SemanticAnalysis.preTraverse(rootAst);
-//        SymbolTable.destroyStackSymbolTable();
+        Symbol symbol = semanticAnalysisChecker.createFuncDefChecker(rootAst);
+        if (!SymbolTable.addSymbol(symbol)) {
+            ErrorController.SymbolError(symbol);
+        }
+        SymbolTable.setCurrentFunc((FuncSymbol) symbol);
+        SymbolTable.createStackSymbolTable();
+        for (AstNode astNode : rootAst.getChildList()) {
+            if (astNode.getGrammarType().equals("<Block>")) {
+                symDefiner.setParamInfo(astNode, (FuncSymbol) symbol);
+            }
+            SemanticAnalysis.preTraverse(astNode);
+        }
+        SymbolTable.destroyStackSymbolTable();
+        AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
+        int senNum = block.getChildList().size();
+        AstNode lastSentence = block.getChildList().get(senNum - 2);
+        if (!(lastSentence.getGrammarType().equals("RETURNTK")) && symbol.getSymbolType() != Symbol.SymType.VOID) {
+            ErrorController.SymbolError(symbol);
+        }
     }
 
     private void checkFuncFParamChecker(AstNode rootAst) {
@@ -165,9 +179,25 @@ public class symChecker {
     /*TODO: 这个还没写完*/
     private void checkMainFuncDefChecker(AstNode rootAst) {
         SymbolTable.setGlobalArea(false);
-//        SymbolTable.createStackSymbolTable();
-        SemanticAnalysis.preTraverse(rootAst);
-//        SymbolTable.destroyStackSymbolTable();
+        Symbol symbol = semanticAnalysisChecker.createMainFuncDefChecker(rootAst);
+        if (!SymbolTable.addSymbol(symbol)) {
+            ErrorController.SymbolError(symbol);
+        }
+        SymbolTable.setCurrentFunc((FuncSymbol) symbol);
+        SymbolTable.createStackSymbolTable();
+        for (AstNode astNode : rootAst.getChildList()) {
+            if (astNode.getGrammarType().equals("<Block>")) {
+                symDefiner.setParamInfo(astNode, (FuncSymbol) symbol);
+            }
+            SemanticAnalysis.preTraverse(rootAst);
+        }
+        SymbolTable.destroyStackSymbolTable();
+        AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
+        int senNum = block.getChildList().size();
+        AstNode lastSentence = block.getChildList().get(senNum - 2);
+        if (!(lastSentence.getGrammarType().equals("RETURNTK")) && symbol.getSymbolType() != Symbol.SymType.VOID) {
+            ErrorController.SymbolError(symbol);
+        }
     }
 
     //Lexer_part

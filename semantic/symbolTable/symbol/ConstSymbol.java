@@ -2,13 +2,19 @@ package semantic.symbolTable.symbol;
 
 import semantic.symbolTable.Symbol;
 
+import java.util.ArrayList;
+
 public class ConstSymbol extends Symbol {
     private int dim;
-    private Symbol initValue;
+    private ArrayList<Integer> initValue;
     private int space;
 
-    public ConstSymbol(String symbolName, SymType symbolType) {
+    public ConstSymbol(String symbolName, SymType symbolType, int dim,
+                       ArrayList<Integer> initValue, int space) {
         super(symbolName, symbolType);
+        this.dim = dim;
+        this.initValue = initValue;
+        this.space = space;
     }
 
     public boolean Isglobal() {

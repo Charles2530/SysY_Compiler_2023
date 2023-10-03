@@ -15,8 +15,8 @@ public class SemanticAnalysis {
     }
 
     public void analysis() {
-        SemanticAnalysis.rootChecker = new symChecker(rootAst, symbolTable);
-        preTraverse(rootAst);
+        SemanticAnalysis.rootChecker = new symChecker(symbolTable);
+        rootChecker.check(rootAst);
     }
 
     public static void preTraverse(AstNode rootAst) {
