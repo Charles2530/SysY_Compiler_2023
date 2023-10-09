@@ -28,11 +28,19 @@ public class Judge {
     }
 
     public static boolean IsLVal() {
-        return IsIdent() && !getNextSym(1).equals("LPARENT");
+        int k = 1;
+        while (getNextSym(k).equals("LBRACK") && !getNextSym(k).equals("EOF")) {
+            while (!getNextSym(k).equals("RBRACK")) {
+                k++;
+            }
+            k++;
+        }
+        return IsIdent() && !getNextSym(k).matches(
+                "LPARENT|PLUS|MINU|MULT|DIV|LSS|LEQ|GRE|GEQ|EQL|NEQ|SEMICN");
     }
 
     public static boolean IsUnaryExp() {
-        return IsPrimaryExp() || IsUnaryOp() || IsIdent();
+        return IsPrimaryExp() || IsUnaryOp() || IsIdent() && getNextSym(1).equals("LPARENT");
     }
 
     public static boolean IsIdent() {
@@ -45,7 +53,7 @@ public class Judge {
     }
 
     public static boolean IsPrimaryExp() {
-        return getPreSym().equals("LPARENT") || IsLVal() || IsNumber();
+        return getPreSym().equals("LPARENT") || IsIdent() || IsNumber();
     }
 
     public static boolean IsMulExp() {

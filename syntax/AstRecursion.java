@@ -44,7 +44,7 @@ public class AstRecursion {
 
     public static SymToken getNextSymToken(int pos) {
         if (symPos + pos > symTokens.size() - 1 || symPos + pos < 0) {
-            return null;
+            return new SymToken("EOF", "EOF", -1);
         }
         return symTokens.get(symPos + pos);
     }

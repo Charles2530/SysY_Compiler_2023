@@ -47,16 +47,26 @@ public class OutputController {
 
     public static void SyntaxAnalysisPrintTerminal(AstNode rootAst) throws IOException {
         if (IsParserOutput) {
-            parserOutputStream.write(rootAst.getSymToken().getReservedWord()
-                    + " " + rootAst.getSymToken().getWord());
-            parserOutputStream.newLine();
+            try {
+                parserOutputStream.write(rootAst.getSymToken().getReservedWord()
+                        + " " + rootAst.getSymToken().getWord());
+                parserOutputStream.newLine();
+            } catch (Exception e) {
+                System.err.println(rootAst.getGrammarType());
+                e.printStackTrace();
+            }
         }
     }
 
     public static void SyntaxAnalysisPrintNoTerminal(AstNode rootAst) throws IOException {
         if (IsParserOutput) {
-            parserOutputStream.write(rootAst.getGrammarType());
-            parserOutputStream.newLine();
+            try {
+                parserOutputStream.write(rootAst.getGrammarType());
+                parserOutputStream.newLine();
+            } catch (Exception e) {
+                System.err.println(rootAst.getSymToken().getWord());
+                e.printStackTrace();
+            }
         }
     }
 

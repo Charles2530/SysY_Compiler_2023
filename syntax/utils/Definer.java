@@ -602,7 +602,7 @@ public class Definer {
                 new ErrorController("j",
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
             }
-        } else if (Judge.IsLVal()) {
+        } else if (Judge.IsIdent()) {
             LVal(primaryExpNode);
         } else if (Judge.IsNumber()) {
             NumberCall(primaryExpNode);

@@ -19,15 +19,15 @@ public class Compiler {
         BufferedWriter errorOutputStream = IsDebugMode ? new BufferedWriter(
                 new FileWriter("error.txt", false)) : null;
         BufferedWriter lexerOutputStream = IsLexerOutput ? new BufferedWriter(
-                new FileWriter("LexerOutput.txt", false)) : null;
+                new FileWriter("output.txt", false)) : null;
         BufferedWriter parserOutputStream = IsParserOutput ? new BufferedWriter(
                 new FileWriter("output.txt", false)) : null;
         BufferedWriter generationOutputStream = IsGenerationOutput ? new BufferedWriter(
                 new FileWriter("llvm_ir.txt", false)) : null;
-        //错误处理初始化
+        // 错误处理初始化
         ErrorController.setBufferedWriter(errorOutputStream);
         ErrorController.setIsDebugMode(IsDebugMode);
-        //输出处理初始化
+        // 输出处理初始化
         OutputController.setBufferedLexerWriter(lexerOutputStream);
         OutputController.setBufferedParserWriter(parserOutputStream);
         OutputController.setBufferedGenerationWriter(generationOutputStream);
