@@ -45,9 +45,8 @@ public class FuncDef {
             funcDefNode.addChild(rparentNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.addError(
-                    new ErrorToken("j",
-                            AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
+            ErrorController.addError(new ErrorToken("j",
+                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
         }
         if (Judge.IsBlock()) {
             Definer.Block(funcDefNode);

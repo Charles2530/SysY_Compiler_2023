@@ -175,9 +175,8 @@ public class Definer {
                 vardefNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
-                ErrorController.addError(
-                        new ErrorToken("k",
-                                AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
+                ErrorController.addError(new ErrorToken("k",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
         }
         if (getPreSym().equals("ASSIGN")) {
@@ -289,8 +288,8 @@ public class Definer {
                             AstRecursion.nextSym();
                         } else {
                             ErrorController.addError(new ErrorToken("j",
-                                            AstRecursion.getPreviousNoTerminalAst()
-                                                    .getSpan().getEndLine()));
+                                    AstRecursion.getPreviousNoTerminalAst()
+                                            .getSpan().getEndLine()));
                         }
                     } else {
                         ErrorController.DefinerPrintError();
@@ -304,8 +303,8 @@ public class Definer {
                     AstRecursion.nextSym();
                 } else {
                     ErrorController.addError(new ErrorToken("i",
-                                    AstRecursion.getPreviousNoTerminalAst()
-                                            .getSpan().getEndLine()));
+                            AstRecursion.getPreviousNoTerminalAst()
+                                    .getSpan().getEndLine()));
                 }
             } else {
                 ErrorController.DefinerPrintError();
@@ -319,9 +318,8 @@ public class Definer {
                 stmtNode.addChild(semicnNode);
                 AstRecursion.nextSym();
             } else {
-                ErrorController.addError(
-                        new ErrorToken("i",
-                                AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
+                ErrorController.addError(new ErrorToken("i",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
         } else if (Judge.IsBlock()) {
             Block(stmtNode);

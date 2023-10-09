@@ -73,11 +73,11 @@ public class symCalc {
         AstNode child = astNode.getChildList().get(0);
         if (child.getGrammarType().equals("<UnaryOp>")) {
             if (child.getChildList().get(0).getGrammarType().equals("PLUS")) {
-                ans = calc(child.getChildList().get(1));
+                ans = calc(astNode.getChildList().get(1));
             } else if (child.getChildList().get(0).getGrammarType().equals("MINU")) {
-                ans = -calc(child.getChildList().get(1));
+                ans = -calc(astNode.getChildList().get(1));
             } else if (child.getChildList().get(0).getGrammarType().equals("NOT")) {
-                ans = calc(child.getChildList().get(1)) == 0 ? 1 : 0;
+                ans = calc(astNode.getChildList().get(1)) == 0 ? 1 : 0;
             }
         } else if (child.getGrammarType().equals("<PrimaryExp>")) {
             ans = calc(child);

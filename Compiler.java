@@ -47,7 +47,6 @@ public class Compiler {
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(
                 lexicalAnalysis.getSymTokens());
         syntaxAnalysis.analysis();
-        ErrorController.printErrors();
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();

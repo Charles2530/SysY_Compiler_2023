@@ -13,6 +13,7 @@ public class Symbol {
     public Symbol(String symbolName, SymType symbolType) {
         this.symbolName = symbolName;
         this.symbolType = symbolType;
+        this.symbolLevel = SymbolTable.getCurlevel();
     }
 
     public String getSymbolName() {

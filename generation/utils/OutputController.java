@@ -45,26 +45,24 @@ public class OutputController {
         OutputController.IsGenerationOutput = isGenerationOutput;
     }
 
-    public static void SyntaxAnalysisPrintTerminal(AstNode rootAst) throws IOException {
+    public static void SyntaxAnalysisPrintTerminal(AstNode rootAst) {
         if (IsParserOutput) {
             try {
                 parserOutputStream.write(rootAst.getSymToken().getReservedWord()
                         + " " + rootAst.getSymToken().getWord());
                 parserOutputStream.newLine();
             } catch (Exception e) {
-                System.err.println(rootAst.getGrammarType());
                 e.printStackTrace();
             }
         }
     }
 
-    public static void SyntaxAnalysisPrintNoTerminal(AstNode rootAst) throws IOException {
+    public static void SyntaxAnalysisPrintNoTerminal(AstNode rootAst) {
         if (IsParserOutput) {
             try {
                 parserOutputStream.write(rootAst.getGrammarType());
                 parserOutputStream.newLine();
             } catch (Exception e) {
-                System.err.println(rootAst.getSymToken().getWord());
                 e.printStackTrace();
             }
         }
@@ -76,5 +74,4 @@ public class OutputController {
             generationOutputStream.newLine();
         }
     }
-
 }

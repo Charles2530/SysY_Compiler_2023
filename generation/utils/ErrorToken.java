@@ -6,7 +6,7 @@ public class ErrorToken {
     private String errorCategoryCode;// 错误类别码
     private int lineNum;  // 词法分析器的行号
 
-    public ErrorToken(String errorCategoryCode, int lineNum) throws IOException {
+    public ErrorToken(String errorCategoryCode, int lineNum) {
         this.errorCategoryCode = errorCategoryCode;
         this.lineNum = lineNum;
     }

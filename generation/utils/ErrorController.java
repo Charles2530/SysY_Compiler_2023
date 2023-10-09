@@ -1,6 +1,6 @@
 package generation.utils;
 
-import semantic.symbolTable.Symbol;
+import semantic.symbolTable.SymbolTable;
 import syntax.AstRecursion;
 
 import java.io.BufferedWriter;
@@ -26,17 +26,20 @@ public class ErrorController {
     }
 
     public static void printErrors() throws IOException {
-        errorlist.sort((o1, o2) -> {
-            if (o1.getLineNum() > o2.getLineNum()) {
-                return 1;
-            } else if (o1.getLineNum() < o2.getLineNum()) {
-                return -1;
-            } else {
-                return 0;
+        if (isDebugMode) {
+            errorlist.sort((o1, o2) -> {
+                if (o1.getLineNum() > o2.getLineNum()) {
+                    return 1;
+                } else if (o1.getLineNum() < o2.getLineNum()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+            for (ErrorToken error : errorlist) {
+                printError(error);
             }
-        });
-        for (ErrorToken error : errorlist) {
-            printError(error);
+            printSymbolTable();
         }
     }
 
@@ -80,6 +83,7 @@ public class ErrorController {
                 break;
             case "m":
                 UnmatchLoopError(error.getLineNum(), "m");
+                break;
             default:
                 break;
         }
@@ -242,7 +246,7 @@ public class ErrorController {
     }
 
     public static void LexicalWordCheckPrintError(int lineNum, String c) throws IOException {
-        if (isDebugMode) {
+        if (isDebugMode && detailMode) {
             errorBufferedWriter.write("error in " + lineNum +
                     " line,word:" + c + " can not be recognized");
             errorBufferedWriter.newLine();
@@ -250,20 +254,14 @@ public class ErrorController {
     }
 
     public static void SyntaxAnalysisError(String grammarType) throws IOException {
-        if (isDebugMode) {
+        if (isDebugMode && detailMode) {
             errorBufferedWriter.write("grammarType:" + grammarType);
             errorBufferedWriter.newLine();
         }
     }
 
-    public static void SymbolError(Symbol symbol) {
-        if (isDebugMode) {
-            System.out.println("symbol:" + symbol);
-        }
-    }
-
     public static void DeclPrintError() throws IOException {
-        if (isDebugMode) {
+        if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: Decl: "
                     + AstRecursion.getPreSymToken().getLineNum() +
                     ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
@@ -272,7 +270,7 @@ public class ErrorController {
     }
 
     public static void FuncDefPrintError() throws IOException {
-        if (isDebugMode) {
+        if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: FuncDef: "
                     + AstRecursion.getPreSymToken().getLineNum() +
                     ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
@@ -281,7 +279,7 @@ public class ErrorController {
     }
 
     public static void MainFuncDefPrintError() throws IOException {
-        if (isDebugMode) {
+        if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: MainFuncDef: "
                     + AstRecursion.getPreSymToken().getLineNum() +
                     ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
@@ -290,7 +288,7 @@ public class ErrorController {
     }
 
     public static void DefinerPrintError() throws IOException {
-        if (isDebugMode) {
+        if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: Definer: BlockItem: "
                     + AstRecursion.getPreSymToken().getLineNum());
             errorBufferedWriter.newLine();
@@ -298,10 +296,16 @@ public class ErrorController {
     }
 
     public static void LexicalAnalysisPrintError(int lineNum, String word) throws IOException {
-        if (isDebugMode) {
+        if (isDebugMode && detailMode) {
             errorBufferedWriter.write("error in " + lineNum + " line,word:"
                     + word + " is not a reserved word");
             errorBufferedWriter.newLine();
+        }
+    }
+
+    public static void printSymbolTable() {
+        if (isDebugMode && detailMode) {
+            SymbolTable.printSymbolTable();
         }
     }
 }

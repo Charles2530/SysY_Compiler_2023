@@ -19,16 +19,16 @@ public class SemanticAnalysis {
 
     public void analysis() throws IOException {
         SemanticAnalysis.rootChecker = new symChecker(symbolTable);
-        rootChecker.check(rootAst);
+        SemanticAnalysis.rootChecker.check(rootAst);
         ErrorController.printErrors();
     }
 
-    public static void preTraverse(AstNode rootAst) {
+    public static void preTraverse(AstNode rootAst) throws IOException {
         if (rootAst.isLeaf()) {
             return;
         }
         for (AstNode astNode : rootAst.getChildList()) {
-            rootChecker.check(astNode);
+            SemanticAnalysis.rootChecker.check(astNode);
         }
     }
 }
