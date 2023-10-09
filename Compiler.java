@@ -8,7 +8,7 @@ import syntax.SyntaxAnalysis;
 import java.io.*;
 
 public class Compiler {
-    private static final boolean IsDebugMode = false;
+    private static final boolean IsDebugMode = true;
     private static final boolean IsLexerOutput = false;
     private static final boolean IsParserOutput = true;
     private static final boolean IsGenerationOutput = false;
@@ -47,6 +47,7 @@ public class Compiler {
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(
                 lexicalAnalysis.getSymTokens());
         syntaxAnalysis.analysis();
+        ErrorController.printErrors();
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();

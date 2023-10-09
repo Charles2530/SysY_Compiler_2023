@@ -1,6 +1,7 @@
 package syntax.funcDef;
 
 import generation.utils.ErrorController;
+import generation.utils.ErrorToken;
 import syntax.AstNode;
 import syntax.AstRecursion;
 import syntax.utils.Definer;
@@ -44,8 +45,9 @@ public class FuncDef {
             funcDefNode.addChild(rparentNode);
             AstRecursion.nextSym();
         } else {
-            new ErrorController("j",
-                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
+            ErrorController.addError(
+                    new ErrorToken("j",
+                            AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
         }
         if (Judge.IsBlock()) {
             Definer.Block(funcDefNode);
@@ -111,8 +113,8 @@ public class FuncDef {
                 funcFParamNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("k",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
+                ErrorController.addError(new ErrorToken("k",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
         }
         while (getPreSym().equals("LBRACK")) {
@@ -129,8 +131,8 @@ public class FuncDef {
                 funcFParamNode.addChild(rbrackNode);
                 AstRecursion.nextSym();
             } else {
-                new ErrorController("k",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
+                ErrorController.addError(new ErrorToken("k",
+                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
         }
     }

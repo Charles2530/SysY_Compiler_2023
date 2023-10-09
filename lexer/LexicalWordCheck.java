@@ -1,6 +1,7 @@
 package lexer;
 
 import generation.utils.ErrorController;
+import generation.utils.ErrorToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class LexicalWordCheck {
                 word += line.charAt(i);
                 if (this.checkIllegalSym(word)) {
                     // 判断是否为非法字符串
-                    new ErrorController("a", lineNum);
+                    ErrorController.addError(new ErrorToken("a", lineNum));
                 } else {
                     words.add(word);
                 }

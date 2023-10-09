@@ -1,6 +1,7 @@
 package syntax.mainFuncDef;
 
 import generation.utils.ErrorController;
+import generation.utils.ErrorToken;
 import syntax.AstNode;
 import syntax.AstRecursion;
 import syntax.utils.Definer;
@@ -41,8 +42,9 @@ public class MainFuncDef {
                             ErrorController.MainFuncDefPrintError();
                         }
                     } else {
-                        new ErrorController("j",
-                                AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine());
+                        ErrorController.addError(new ErrorToken("j",
+                                AstRecursion.getPreviousNoTerminalAst()
+                                        .getSpan().getEndLine()));
                     }
                 } else {
                     ErrorController.MainFuncDefPrintError();

@@ -1,8 +1,11 @@
 package semantic;
 
+import generation.utils.ErrorController;
 import semantic.symbolTable.SymbolTable;
 import semantic.utils.symChecker;
 import syntax.AstNode;
+
+import java.io.IOException;
 
 public class SemanticAnalysis {
     private AstNode rootAst;
@@ -14,9 +17,10 @@ public class SemanticAnalysis {
         this.symbolTable = new SymbolTable();
     }
 
-    public void analysis() {
+    public void analysis() throws IOException {
         SemanticAnalysis.rootChecker = new symChecker(symbolTable);
         rootChecker.check(rootAst);
+        ErrorController.printErrors();
     }
 
     public static void preTraverse(AstNode rootAst) {
