@@ -3,7 +3,7 @@ package semantic.symbolTable;
 public class Symbol {
 
     public enum SymType {
-        INT, VOID, ARRAY, CONST
+        INT, VOID, ARRAY, CONST, CONST_ARRAY, FUNC
     }
 
     private String symbolName;

@@ -39,7 +39,7 @@ public class SemanticAnalysisChecker {
         if (dim == 0) {
             symbolType = Symbol.SymType.CONST;
         } else {
-            symbolType = Symbol.SymType.ARRAY;
+            symbolType = Symbol.SymType.CONST_ARRAY;
         }
         return new ConstSymbol(symbolName, symbolType, dim, initValue, space);
     }
@@ -47,9 +47,8 @@ public class SemanticAnalysisChecker {
     public Symbol createVarDefChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(0).getSymToken().getWord();
         int dim = 0;
-        Integer value = null;
-        AstNode initValAst = null;
         int space = 1;
+        AstNode initValAst = null;
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<ConstExp>")) {
                 dim++;
@@ -72,28 +71,8 @@ public class SemanticAnalysisChecker {
         return new VarSymbol(symbolName, symbolType, dim, initValue, space);
     }
 
-    public ArrayList<Integer> createInitValChecker(int dim, AstNode rootAst) {
-        ArrayList<Integer> ans = new ArrayList<>();
-        if (dim == 0) {
-            ans.add(symCalc.calc(rootAst));
-        } else {
-            for (AstNode astNode : rootAst.getChildList()) {
-                if (astNode.getGrammarType().equals("<InitVal>")) {
-                    ans.addAll(createInitValChecker(dim - 1, astNode));
-                }
-            }
-        }
-        return ans;
-    }
-
     public Symbol createFuncFParamChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(1).getSymToken().getWord();
-        Symbol.SymType symbolType;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("INTTK")) {
-            symbolType = Symbol.SymType.INT;
-        } else {
-            symbolType = Symbol.SymType.VOID;
-        }
         int dim = 0;
         ArrayList<Integer> list = new ArrayList<>();
         for (int i = 0; i < rootAst.getChildList().size(); i++) {
@@ -105,6 +84,17 @@ public class SemanticAnalysisChecker {
                     list.add(-1);
                 }
             }
+        }
+        Symbol.SymType symbolType;
+        AstNode bytType = rootAst.getChildList().get(0);
+        if (bytType.getChildList().get(0).getGrammarType().equals("INTTK")) {
+            if (dim == 0) {
+                symbolType = Symbol.SymType.INT;
+            } else {
+                symbolType = Symbol.SymType.ARRAY;
+            }
+        } else {
+            symbolType = Symbol.SymType.VOID;
         }
         return new VarSymbol(symbolName, symbolType, dim, list, 1);
     }

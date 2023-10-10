@@ -11,7 +11,7 @@ public class ErrorController {
     private static ArrayList<ErrorToken> errorlist = new ArrayList<>();
     private static BufferedWriter errorBufferedWriter;
     private static boolean isDebugMode;
-    private static boolean detailMode = false;
+    private static boolean detailMode;
 
     public static void setBufferedWriter(BufferedWriter errorBufferedWriter) {
         ErrorController.errorBufferedWriter = errorBufferedWriter;
@@ -19,6 +19,10 @@ public class ErrorController {
 
     public static void setIsDebugMode(boolean isDebugMode) {
         ErrorController.isDebugMode = isDebugMode;
+    }
+
+    public static void setDetailMode(boolean detailMode) {
+        ErrorController.detailMode = detailMode;
     }
 
     public static void addError(ErrorToken error) {

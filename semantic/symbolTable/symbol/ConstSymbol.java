@@ -25,7 +25,10 @@ public class ConstSymbol extends Symbol {
         return dim;
     }
 
-    public int getConstValue(int... idx) {
+    public Integer getConstValue(int... idx) {
+        if (initValue.isEmpty()) {
+            return null;
+        }
         if (idx.length == 0) {
             return initValue.get(0);
         } else if (idx.length == 1) {

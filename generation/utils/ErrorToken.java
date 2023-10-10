@@ -1,10 +1,8 @@
 package generation.utils;
 
-import java.io.IOException;
-
 public class ErrorToken {
-    private String errorCategoryCode;// 错误类别码
-    private int lineNum;  // 词法分析器的行号
+    private String errorCategoryCode;
+    private int lineNum;
 
     public ErrorToken(String errorCategoryCode, int lineNum) {
         this.errorCategoryCode = errorCategoryCode;

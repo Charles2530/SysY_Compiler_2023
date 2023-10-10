@@ -21,4 +21,8 @@ public class FuncSymbol extends Symbol {
     public SymType getReturnType() {
         return returnType;
     }
+
+    public int getParamNum() {
+        return FParamTypes.size();
+    }
 }

@@ -9,6 +9,7 @@ import java.io.*;
 
 public class Compiler {
     private static final boolean IsDebugMode = true;
+    private static boolean detailMode = false;
     private static final boolean IsLexerOutput = false;
     private static final boolean IsParserOutput = true;
     private static final boolean IsGenerationOutput = false;
@@ -27,6 +28,7 @@ public class Compiler {
         // 错误处理初始化
         ErrorController.setBufferedWriter(errorOutputStream);
         ErrorController.setIsDebugMode(IsDebugMode);
+        ErrorController.setDetailMode(detailMode);
         // 输出处理初始化
         OutputController.setBufferedLexerWriter(lexerOutputStream);
         OutputController.setBufferedParserWriter(parserOutputStream);

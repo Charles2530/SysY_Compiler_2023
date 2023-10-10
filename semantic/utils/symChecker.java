@@ -102,7 +102,6 @@ public class symChecker {
 
     private void checkForStmtChecker(AstNode sonAst) throws IOException {
         SymbolTable.enterLoop();
-        AstNode rootAst = sonAst.getParent();
         SemanticAnalysis.preTraverse(sonAst);
         SymbolTable.leaveLoop();
     }
@@ -128,7 +127,7 @@ public class symChecker {
         AstNode rootAst = sonAst.getParent();
         if (rootAst.getChildList().size() >= 2 &&
                 rootAst.getChildList().get(1).getGrammarType().equals("<Exp>")) {
-            FuncSymbol func = SymbolTable.getLatestFunc();
+            FuncSymbol func = SymbolTable.getCurrentFunc();
             if (func.getReturnType() == Symbol.SymType.VOID) {
                 ErrorController.addError(new ErrorToken("f", rootAst.getSpan().getEndLine()));
             }
@@ -162,7 +161,8 @@ public class symChecker {
         SymbolTable.destroyStackSymbolTable();
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
-        AstNode lastSentence = block.getChildList().get(senNum - 2);
+        AstNode lastSentence = block.getChildList().get(senNum - 2)
+                .getChildList().get(0).getChildList().get(0);
         if (!(lastSentence.getGrammarType().equals("RETURNTK")) &&
                 symbol.getSymbolType() != Symbol.SymType.VOID) {
             ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
@@ -189,14 +189,15 @@ public class symChecker {
         SymbolTable.createStackSymbolTable();
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<Block>")) {
-                symDefiner.setParamInfo(astNode, (FuncSymbol) symbol);
+                symDefiner.setParamInfo(rootAst, (FuncSymbol) symbol);
             }
-            SemanticAnalysis.preTraverse(rootAst);
+            SemanticAnalysis.preTraverse(astNode);
         }
         SymbolTable.destroyStackSymbolTable();
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
-        AstNode lastSentence = block.getChildList().get(senNum - 2);
+        AstNode lastSentence = block.getChildList().get(senNum - 2)
+                .getChildList().get(0).getChildList().get(0);
         if (!(lastSentence.getGrammarType().equals("RETURNTK")) &&
                 symbol.getSymbolType() != Symbol.SymType.VOID) {
             ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
@@ -208,7 +209,7 @@ public class symChecker {
     private void checkASSIGNChecker(AstNode sonAst) throws IOException {
         AstNode rootAst = sonAst.getParent();
         for (AstNode astNode : rootAst.getChildList()) {
-            if (astNode.getGrammarType().equals("<LValExp>")) {
+            if (astNode.getGrammarType().equals("<LVal>")) {
                 String name = astNode.getChildList().get(0).getSymToken().getWord();
                 Symbol symbol = SymbolTable.getSymByName(name);
                 if (symbol instanceof ConstSymbol) {
@@ -222,7 +223,7 @@ public class symChecker {
     private void checkGETINTTKChecker(AstNode sonAst) throws IOException {
         AstNode rootAst = sonAst.getParent();
         for (AstNode astNode : rootAst.getChildList()) {
-            if (astNode.getGrammarType().equals("<LValExp>")) {
+            if (astNode.getGrammarType().equals("<LVal>")) {
                 String name = astNode.getChildList().get(0).getSymToken().getWord();
                 Symbol symbol = SymbolTable.getSymByName(name);
                 if (symbol instanceof ConstSymbol) {
