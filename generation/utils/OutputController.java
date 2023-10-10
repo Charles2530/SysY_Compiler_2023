@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class OutputController {
+    private static boolean IsCalcMode;
     private static BufferedWriter lexerOutputStream;
     private static boolean IsLexerOutput;
     private static BufferedWriter parserOutputStream;
@@ -19,6 +20,14 @@ public class OutputController {
             lexerOutputStream.write(symToken.getReservedWord() + " " + symToken.getWord());
             lexerOutputStream.newLine();
         }
+    }
+
+    public static void setIsCalcMode(boolean isCalcMode) {
+        IsCalcMode = isCalcMode;
+    }
+
+    public static boolean getIsCalcMode() {
+        return IsCalcMode;
     }
 
     public static void setBufferedLexerWriter(BufferedWriter lexerOutputStream) {

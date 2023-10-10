@@ -1,7 +1,7 @@
 package semantic;
 
+import generation.utils.OutputController;
 import semantic.symbolTable.Symbol;
-import semantic.symbolTable.SymbolTable;
 import semantic.symbolTable.symbol.ConstSymbol;
 import semantic.symbolTable.symbol.FuncSymbol;
 import semantic.symbolTable.symbol.VarSymbol;
@@ -11,29 +11,23 @@ import syntax.AstNode;
 import java.util.ArrayList;
 
 public class SemanticAnalysisChecker {
-    private SymbolTable symbolTable;
-
-    public SemanticAnalysisChecker(SymbolTable symbolTable) {
-        this.symbolTable = symbolTable;
-    }
 
     public Symbol createConstDefChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(0).getSymToken().getWord();
         int dim = 0;
-        int space = 1;
+        ArrayList<Integer> space = new ArrayList<>();
         AstNode initValAst = null;
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<ConstExp>")) {
                 dim++;
-                space *= symCalc.calc(astNode);
-            }
-            if (astNode.getGrammarType().equals("<ConstInitVal>")) {
+                space.add(symCalc.calc(astNode));
+            } else if (astNode.getGrammarType().equals("<ConstInitVal>")) {
                 initValAst = astNode;
             }
         }
-        ArrayList<Integer> initValue = null;
-        if (initValAst != null) {
-            initValue = symCalc.calcInitVal(dim, initValAst);
+        ArrayList<Integer> initValue = new ArrayList<>();
+        if (initValAst != null && OutputController.getIsCalcMode()) {
+            initValue = symCalc.calcConstInitVal(dim, initValAst);
         }
         Symbol.SymType symbolType = Symbol.SymType.CONST;
         return new ConstSymbol(symbolName, symbolType, dim, initValue, space);
@@ -42,20 +36,20 @@ public class SemanticAnalysisChecker {
     public Symbol createVarDefChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(0).getSymToken().getWord();
         int dim = 0;
-        int space = 1;
+        ArrayList<Integer> space = new ArrayList<>();
         AstNode initValAst = null;
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<ConstExp>")) {
                 dim++;
-                space *= symCalc.calc(astNode);
+                space.add(symCalc.calc(astNode));
             }
             if (astNode.getGrammarType().equals("<InitVal>")) {
                 initValAst = astNode;
             }
         }
         Symbol.SymType symbolType = Symbol.SymType.INT;
-        ArrayList<Integer> initValue = null;
-        if (initValAst != null) {
+        ArrayList<Integer> initValue = new ArrayList<>();
+        if (initValAst != null && OutputController.getIsCalcMode()) {
             initValue = symCalc.calcInitVal(dim, initValAst);
         }
         return new VarSymbol(symbolName, symbolType, dim, initValue, space);
@@ -75,14 +69,10 @@ public class SemanticAnalysisChecker {
                 }
             }
         }
-        Symbol.SymType symbolType;
         AstNode bytType = rootAst.getChildList().get(0);
-        if (bytType.getChildList().get(0).getGrammarType().equals("INTTK")) {
-            symbolType = Symbol.SymType.INT;
-        } else {
-            symbolType = Symbol.SymType.VOID;
-        }
-        return new VarSymbol(symbolName, symbolType, dim, list, 1);
+        Symbol.SymType symbolType = bytType.getChildList().get(0).getGrammarType().equals("INTTK") ?
+                Symbol.SymType.INT : Symbol.SymType.VOID;
+        return new VarSymbol(symbolName, symbolType, dim, new ArrayList<>(), list);
     }
 
     public Symbol createMainFuncDefChecker(AstNode rootAst) {

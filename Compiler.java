@@ -1,5 +1,5 @@
-import generation.utils.ErrorController;
 import generation.GenerationMain;
+import generation.utils.ErrorController;
 import generation.utils.OutputController;
 import lexer.LexicalAnalysis;
 import semantic.SemanticAnalysis;
@@ -8,15 +8,18 @@ import syntax.SyntaxAnalysis;
 import java.io.*;
 
 public class Compiler {
+    private static final boolean fileInputMode = true;
+    private static final boolean detailMode = false;
+    private static final boolean IsCalcMode = false;
     private static final boolean IsDebugMode = true;
-    private static boolean detailMode = true;
     private static final boolean IsLexerOutput = false;
-    private static final boolean IsParserOutput = true;
+    private static final boolean IsParserOutput = false;
     private static final boolean IsGenerationOutput = false;
 
     public static void main(String[] args) throws IOException {
         // 将文件进行重定向
-        BufferedReader fileInputStream = new BufferedReader(new FileReader("testfile.txt"));
+        BufferedReader fileInputStream = fileInputMode ? new BufferedReader(new FileReader("testfile.txt")) :
+                new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter errorOutputStream = IsDebugMode ? new BufferedWriter(
                 new FileWriter("error.txt", false)) : null;
         BufferedWriter lexerOutputStream = IsLexerOutput ? new BufferedWriter(
@@ -29,6 +32,7 @@ public class Compiler {
         ErrorController.setBufferedWriter(errorOutputStream);
         ErrorController.setIsDebugMode(IsDebugMode);
         ErrorController.setDetailMode(detailMode);
+        OutputController.setIsCalcMode(IsCalcMode);
         // 输出处理初始化
         OutputController.setBufferedLexerWriter(lexerOutputStream);
         OutputController.setBufferedParserWriter(parserOutputStream);

@@ -23,6 +23,20 @@ public class symCalc {
         return ans;
     }
 
+    public static ArrayList<Integer> calcConstInitVal(int dim, AstNode astNode) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (dim == 0) {
+            ans.add(calc(astNode.getChildList().get(0)));
+        } else {
+            for (AstNode child : astNode.getChildList()) {
+                if (child.getGrammarType().equals("<ConstInitVal>")) {
+                    ans.addAll(calcConstInitVal(dim - 1, child));
+                }
+            }
+        }
+        return ans;
+    }
+
     public static int calc(AstNode astNode) {
         switch (astNode.getGrammarType()) {
             case "<Exp>", "<ConstExp>":
@@ -37,7 +51,7 @@ public class symCalc {
                 return calcPrimaryExp(astNode);
             case "<Number>":
                 return calcNumber(astNode);
-            case "<LValExp>":
+            case "<LVal>":
                 return calcLValExp(astNode);
             default:
                 return 0;
@@ -88,7 +102,7 @@ public class symCalc {
     private static int calcPrimaryExp(AstNode astNode) {
         int ans;
         switch (astNode.getChildList().get(0).getGrammarType()) {
-            case "<Number>", "<LValExp>" -> ans = calc(astNode.getChildList().get(0));
+            case "<Number>", "<LVal>" -> ans = calc(astNode.getChildList().get(0));
             default -> ans = calc(astNode.getChildList().get(1));
         }
         return ans;

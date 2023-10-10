@@ -25,12 +25,14 @@ public class SymbolTable {
         SymbolTable.isGlobalArea = isGlobalArea;
     }
 
+    public static boolean isIsGlobalArea() {
+        return isGlobalArea;
+    }
+
     public static void createStackSymbolTable() {
         StackSymbolTable stackSymbolTable = new StackSymbolTable();
         curLevel++;
-        if (symbolTables.get(curLevel) == null) {
-            symbolTables.put(curLevel, new ArrayList<>());
-        }
+        symbolTables.computeIfAbsent(curLevel, k -> new ArrayList<>());
         symbolTables.get(curLevel).add(stackSymbolTable);
     }
 
@@ -117,8 +119,8 @@ public class SymbolTable {
                         System.out.println("\t\t" + type + " \t" + key +
                                 " \tdim:" + constSymbol.getDim() +
                                 " \tlevel:" + constSymbol.getSymbolLevel() +
-                                " \tvalue:" + constSymbol.getConstValue() == null ?
-                                "NAN" : constSymbol.getConstValue());
+                                " \tvalue:" + (constSymbol.getConstValue() == null ?
+                                "NAN" : constSymbol.getConstValue()));
                     }
                 }
             }

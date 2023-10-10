@@ -11,6 +11,7 @@ public class FuncSymbol extends Symbol {
 
     public FuncSymbol(String symbolName, SymType symbolType) {
         super(symbolName, symbolType);
+        this.returnType = symbolType;
     }
 
     public void setParamInfo(ArrayList<SymType> fParamTypes, ArrayList<Integer> fParamDims) {

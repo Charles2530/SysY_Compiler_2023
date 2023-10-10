@@ -9,6 +9,10 @@ public class Span {
         this.endLine = endLine;
     }
 
+    public int getStartLine() {
+        return startLine;
+    }
+
     public int getEndLine() {
         return endLine;
     }

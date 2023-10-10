@@ -2,21 +2,24 @@ package semantic.utils;
 
 import generation.utils.ErrorController;
 import generation.utils.ErrorToken;
+import generation.utils.OutputController;
 import semantic.SemanticAnalysis;
 import semantic.SemanticAnalysisChecker;
 import semantic.symbolTable.Symbol;
 import semantic.symbolTable.SymbolTable;
 import semantic.symbolTable.symbol.ConstSymbol;
 import semantic.symbolTable.symbol.FuncSymbol;
+import semantic.symbolTable.symbol.VarSymbol;
 import syntax.AstNode;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class symChecker {
     private SemanticAnalysisChecker semanticAnalysisChecker;
 
-    public symChecker(SymbolTable symbolTable) {
-        this.semanticAnalysisChecker = new SemanticAnalysisChecker(symbolTable);
+    public symChecker() {
+        this.semanticAnalysisChecker = new SemanticAnalysisChecker();
     }
 
     public void check(AstNode rootAst) throws IOException {
@@ -87,7 +90,7 @@ public class symChecker {
     private void checkConstDefChecker(AstNode rootAst) throws IOException {
         Symbol symbol = semanticAnalysisChecker.createConstDefChecker(rootAst);
         if (!SymbolTable.addSymbol(symbol)) {
-            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getEndLine()));
+            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getStartLine()));
         }
         SemanticAnalysis.preTraverse(rootAst);
     }
@@ -95,7 +98,7 @@ public class symChecker {
     private void checkVarDefChecker(AstNode rootAst) throws IOException {
         Symbol symbol = semanticAnalysisChecker.createVarDefChecker(rootAst);
         if (!SymbolTable.addSymbol(symbol)) {
-            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getEndLine()));
+            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getStartLine()));
         }
         SemanticAnalysis.preTraverse(rootAst);
     }
@@ -154,7 +157,7 @@ public class symChecker {
         SymbolTable.setGlobalArea(false);
         Symbol symbol = semanticAnalysisChecker.createFuncDefChecker(rootAst);
         if (!SymbolTable.addSymbol(symbol)) {
-            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getEndLine()));
+            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getStartLine()));
         }
         SymbolTable.setCurrentFunc((FuncSymbol) symbol);
         SymbolTable.createStackSymbolTable();
@@ -167,11 +170,12 @@ public class symChecker {
         SymbolTable.destroyStackSymbolTable();
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
-        AstNode lastSentence = block.getChildList().get(senNum - 2)
-                .getChildList().get(0).getChildList().get(0);
-        if (!(lastSentence.getGrammarType().equals("RETURNTK")) &&
-                symbol.getSymbolType() != Symbol.SymType.VOID) {
-            ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
+        if (symbol.getSymbolType() != Symbol.SymType.VOID) {
+            AstNode lastSentence = block.getChildList().get(senNum - 2)
+                    .getChildList().get(0).getChildList().get(0);
+            if (!(lastSentence.getGrammarType().equals("RETURNTK"))) {
+                ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
+            }
         }
     }
 
@@ -189,7 +193,7 @@ public class symChecker {
         SymbolTable.setGlobalArea(false);
         Symbol symbol = semanticAnalysisChecker.createMainFuncDefChecker(rootAst);
         if (!SymbolTable.addSymbol(symbol)) {
-            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getEndLine()));
+            ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getStartLine()));
         }
         SymbolTable.setCurrentFunc((FuncSymbol) symbol);
         SymbolTable.createStackSymbolTable();
@@ -202,24 +206,48 @@ public class symChecker {
         SymbolTable.destroyStackSymbolTable();
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
-        AstNode lastSentence = block.getChildList().get(senNum - 2)
-                .getChildList().get(0).getChildList().get(0);
-        if (!(lastSentence.getGrammarType().equals("RETURNTK")) &&
-                symbol.getSymbolType() != Symbol.SymType.VOID) {
-            ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
+        if (symbol.getSymbolType() != Symbol.SymType.VOID) {
+            AstNode lastSentence = block.getChildList().get(senNum - 2)
+                    .getChildList().get(0).getChildList().get(0);
+            if (!(lastSentence.getGrammarType().equals("RETURNTK"))) {
+                ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
+            }
         }
     }
 
     //Lexer_part
 
     private void checkASSIGNChecker(AstNode sonAst) throws IOException {
+        Symbol symbol = null;
+        ArrayList<Integer> tempDim = new ArrayList<>();
         AstNode rootAst = sonAst.getParent();
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<LVal>")) {
-                String name = astNode.getChildList().get(0).getSymToken().getWord();
-                Symbol symbol = SymbolTable.getSymByName(name);
+                for (AstNode child : astNode.getChildList()) {
+                    if (child.getGrammarType().equals("IDENFR")) {
+                        String name = child.getSymToken().getWord();
+                        symbol = SymbolTable.getSymByName(name);
+                    } else if (child.getGrammarType().equals("<Exp>")) {
+                        if (tempDim.size() != ((VarSymbol) symbol).getDim()) {
+                            tempDim.add(symCalc.calc(child));
+                        }
+                    }
+                }
                 if (symbol instanceof ConstSymbol) {
                     ErrorController.addError(new ErrorToken("h", rootAst.getSpan().getEndLine()));
+                }
+            } else if (astNode.getGrammarType().equals("<Exp>")) {
+                if (OutputController.getIsCalcMode()) {
+                    if (symbol instanceof VarSymbol) {
+                        int value = symCalc.calc(astNode);
+                        if (tempDim.isEmpty()) {
+                            ((VarSymbol) symbol).updateValue(value);
+                        } else if (tempDim.size() == 1) {
+                            ((VarSymbol) symbol).updateValue(value, tempDim.get(0));
+                        } else {
+                            ((VarSymbol) symbol).updateValue(value, tempDim.get(0), tempDim.get(1));
+                        }
+                    }
                 }
             }
         }
@@ -252,7 +280,7 @@ public class symChecker {
                 int paramNum = funcSymbol.getParamNum();
                 int argNum = rootAst.getChildList().get(2).getChildList().size();
                 if (paramNum != argNum) {
-                    ErrorController.addError(new ErrorToken("d", rootAst.getSpan().getEndLine()));
+                    ErrorController.addError(new ErrorToken("d", rootAst.getSpan().getStartLine()));
                 } else {
                     for (int i = 0; i < paramNum; i++) {
                         Symbol.SymType paramType = funcSymbol.getFParamTypes().get(i);
@@ -260,7 +288,7 @@ public class symChecker {
                                 get(2).getChildList().get(i));
                         if (paramType != argType) {
                             ErrorController.addError(new ErrorToken("e",
-                                    rootAst.getSpan().getEndLine()));
+                                    rootAst.getSpan().getStartLine()));
                         }
                     }
                 }

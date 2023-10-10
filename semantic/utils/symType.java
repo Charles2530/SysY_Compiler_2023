@@ -2,6 +2,7 @@ package semantic.utils;
 
 import semantic.symbolTable.Symbol;
 import semantic.symbolTable.SymbolTable;
+import semantic.symbolTable.symbol.FuncSymbol;
 import syntax.AstNode;
 
 import java.util.Objects;
@@ -13,6 +14,8 @@ public class symType {
                 return getExpTypeNumber(astNode);
             case "<LVal>":
                 return getExpTypeLVal(astNode);
+            case "<UnaryExp>":
+                return getExpTypeUnaryExp(astNode);
             default:
                 return getExpType(astNode.getChildList().get(0));
         }
@@ -31,4 +34,17 @@ public class symType {
         }
     }
 
+    private static Symbol.SymType getExpTypeUnaryExp(AstNode astNode) {
+        if (astNode.getChildList().size() == 1) {
+            return getExpType(astNode.getChildList().get(0));
+        } else {
+            Symbol symbol = SymbolTable.getSymByName(
+                    astNode.getChildList().get(0).getSymToken().getWord());
+            if (symbol instanceof FuncSymbol) {
+                return ((FuncSymbol) symbol).getReturnType();
+            } else {
+                return symbol.getSymbolType();
+            }
+        }
+    }
 }
