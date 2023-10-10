@@ -146,13 +146,12 @@ public class symChecker {
         SemanticAnalysis.preTraverse(sonAst);
     }
 
-    /*TODO: 这里可能有bug*/
     private void checkReturnStmtChecker(AstNode sonAst) throws IOException {
         AstNode rootAst = sonAst.getParent();
-        if (rootAst.getChildList().size() >= 2 &&
+        if (rootAst.getChildList().size() >= 3 &&
                 rootAst.getChildList().get(1).getGrammarType().equals("<Exp>")) {
             FuncSymbol func = SymbolTable.getCurrentFunc();
-            if (func.getReturnType() == Symbol.SymType.VOID) {
+            if (func.getReturnType().equals(Symbol.SymType.VOID)) {
                 ErrorController.addError(new ErrorToken("f", rootAst.getSpan().getEndLine()));
             }
         }
@@ -188,7 +187,8 @@ public class symChecker {
         if (symbol.getSymbolType() != Symbol.SymType.VOID) {
             AstNode lastSentence = block.getChildList().get(senNum - 2);
             if (lastSentence.isLeaf() || !(lastSentence.getChildList().get(0).
-                    getChildList().get(0).getGrammarType().equals("RETURNTK"))) {
+                    getChildList().get(0).getGrammarType().equals("RETURNTK") &&
+                    lastSentence.getChildList().get(0).getChildList().size() >= 3)) {
                 ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
             }
         }
@@ -224,7 +224,8 @@ public class symChecker {
         if (symbol.getSymbolType() != Symbol.SymType.VOID) {
             AstNode lastSentence = block.getChildList().get(senNum - 2);
             if (lastSentence.isLeaf() || !(lastSentence.getChildList().get(0).
-                    getChildList().get(0).getGrammarType().equals("RETURNTK"))) {
+                    getChildList().get(0).getGrammarType().equals("RETURNTK") &&
+                    lastSentence.getChildList().get(0).getChildList().size() >= 3)) {
                 ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
             }
         }

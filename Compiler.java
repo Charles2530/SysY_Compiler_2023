@@ -46,7 +46,6 @@ public class Compiler {
         int lineNum = 0;
         LexicalAnalysis lexicalAnalysis = new LexicalAnalysis();
         while ((line = fileInputStream.readLine()) != null) {
-            // 对每一行进行词法分析
             lineNum++;
             lexicalAnalysis.analysis(line, lineNum);
         }
