@@ -9,7 +9,7 @@ import java.io.*;
 
 public class Compiler {
     private static final boolean IsDebugMode = true;
-    private static boolean detailMode = false;
+    private static boolean detailMode = true;
     private static final boolean IsLexerOutput = false;
     private static final boolean IsParserOutput = true;
     private static final boolean IsGenerationOutput = false;

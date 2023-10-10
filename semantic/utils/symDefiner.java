@@ -10,13 +10,21 @@ public class symDefiner {
     public static void setParamInfo(AstNode astNode, FuncSymbol symbol) {
         ArrayList<Symbol.SymType> FParamTypes = new ArrayList<>();
         ArrayList<Integer> FParamDims = new ArrayList<>();
-        if (astNode.getChildList().get(3).getGrammarType().equals("<FuncFormalParams>")) {
+        if (astNode.getChildList().get(3).getGrammarType().equals("<FuncFParams>")) {
             AstNode funcFormalParams = astNode.getChildList().get(3);
             for (AstNode child : funcFormalParams.getChildList()) {
                 if (child.getGrammarType().equals("<FuncFParam>")) {
-                    FParamTypes.add(Symbol.SymType.valueOf(
-                            child.getChildList().get(0).getSymToken().getWord()));
-                    FParamDims.add(child.getChildList().size() - 1);
+                    int dim = 0;
+                    for (AstNode obj : child.getChildList()) {
+                        if (obj.getGrammarType().equals("LBRACK")) {
+                            dim++;
+                        }
+                    }
+                    Symbol.SymType type = child.getChildList().get(0)
+                            .getChildList().get(0).getGrammarType().equals("INTTK") ?
+                            Symbol.SymType.INT : Symbol.SymType.CONST;
+                    FParamTypes.add(type);
+                    FParamDims.add(dim);
                 }
             }
         }

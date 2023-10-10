@@ -63,6 +63,12 @@ public class symChecker {
             case "GETINTTK":
                 checkGETINTTKChecker(rootAst);
                 break;
+            case "<UnaryExp>":
+                checkUnaryExpChecker(rootAst);
+                break;
+            case "PRINTFTK":
+                checkPRINTFTKChecker(rootAst);
+                break;
             default:
                 SemanticAnalysis.preTraverse(rootAst);
                 break;
@@ -154,7 +160,7 @@ public class symChecker {
         SymbolTable.createStackSymbolTable();
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<Block>")) {
-                symDefiner.setParamInfo(astNode, (FuncSymbol) symbol);
+                symDefiner.setParamInfo(rootAst, (FuncSymbol) symbol);
             }
             SemanticAnalysis.preTraverse(astNode);
         }
@@ -233,5 +239,55 @@ public class symChecker {
             }
         }
         SemanticAnalysis.preTraverse(sonAst);
+    }
+
+    private void checkUnaryExpChecker(AstNode rootAst) throws IOException {
+        if (rootAst.getChildList().size() >= 3 && rootAst.getChildList().get(1).
+                getGrammarType().equals("LPARENT")) {
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTable.getSymByName(
+                    rootAst.getChildList().get(0).getSymToken().getWord());
+            if (funcSymbol == null) {
+                ErrorController.addError(new ErrorToken("c", rootAst.getSpan().getEndLine()));
+            } else {
+                int paramNum = funcSymbol.getParamNum();
+                int argNum = rootAst.getChildList().get(2).getChildList().size();
+                if (paramNum != argNum) {
+                    ErrorController.addError(new ErrorToken("d", rootAst.getSpan().getEndLine()));
+                } else {
+                    for (int i = 0; i < paramNum; i++) {
+                        Symbol.SymType paramType = funcSymbol.getFParamTypes().get(i);
+                        Symbol.SymType argType = symType.getExpType(rootAst.getChildList().
+                                get(2).getChildList().get(i));
+                        if (paramType != argType) {
+                            ErrorController.addError(new ErrorToken("e",
+                                    rootAst.getSpan().getEndLine()));
+                        }
+                    }
+                }
+            }
+        }
+        SemanticAnalysis.preTraverse(rootAst);
+    }
+
+    private void checkPRINTFTKChecker(AstNode astNode) throws IOException {
+        AstNode rootAst = astNode.getParent();
+        int argNum = 0;
+        String formatString = rootAst.getChildList().get(2).getSymToken().getWord();
+        for (int i = 0; i < formatString.length(); i++) {
+            if (formatString.charAt(i) == '%' && i + 1 < formatString.length()
+                    && formatString.charAt(i + 1) == 'd') {
+                argNum++;
+            }
+        }
+        int inputNum = 0;
+        for (AstNode child : rootAst.getChildList()) {
+            if (child.getGrammarType().equals("<Exp>")) {
+                inputNum++;
+            }
+        }
+        if (argNum != inputNum) {
+            ErrorController.addError(new ErrorToken("l", rootAst.getSpan().getEndLine()));
+        }
+        SemanticAnalysis.preTraverse(astNode);
     }
 }

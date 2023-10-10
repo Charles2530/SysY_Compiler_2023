@@ -35,12 +35,7 @@ public class SemanticAnalysisChecker {
         if (initValAst != null) {
             initValue = symCalc.calcInitVal(dim, initValAst);
         }
-        Symbol.SymType symbolType;
-        if (dim == 0) {
-            symbolType = Symbol.SymType.CONST;
-        } else {
-            symbolType = Symbol.SymType.CONST_ARRAY;
-        }
+        Symbol.SymType symbolType = Symbol.SymType.CONST;
         return new ConstSymbol(symbolName, symbolType, dim, initValue, space);
     }
 
@@ -58,12 +53,7 @@ public class SemanticAnalysisChecker {
                 initValAst = astNode;
             }
         }
-        Symbol.SymType symbolType;
-        if (dim == 0) {
-            symbolType = Symbol.SymType.INT;
-        } else {
-            symbolType = Symbol.SymType.ARRAY;
-        }
+        Symbol.SymType symbolType = Symbol.SymType.INT;
         ArrayList<Integer> initValue = null;
         if (initValAst != null) {
             initValue = symCalc.calcInitVal(dim, initValAst);
@@ -88,11 +78,7 @@ public class SemanticAnalysisChecker {
         Symbol.SymType symbolType;
         AstNode bytType = rootAst.getChildList().get(0);
         if (bytType.getChildList().get(0).getGrammarType().equals("INTTK")) {
-            if (dim == 0) {
-                symbolType = Symbol.SymType.INT;
-            } else {
-                symbolType = Symbol.SymType.ARRAY;
-            }
+            symbolType = Symbol.SymType.INT;
         } else {
             symbolType = Symbol.SymType.VOID;
         }
@@ -107,7 +93,8 @@ public class SemanticAnalysisChecker {
 
     public Symbol createFuncDefChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(1).getSymToken().getWord();
-        Symbol.SymType returnType = (rootAst.getChildList().get(0).getGrammarType()
+        Symbol.SymType returnType = (rootAst.getChildList().get(0).
+                getChildList().get(0).getGrammarType()
                 .equals("INTTK")) ? Symbol.SymType.INT : Symbol.SymType.VOID;
         return new FuncSymbol(symbolName, returnType);
     }
