@@ -1,6 +1,7 @@
 package semantic;
 
 import generation.utils.ErrorController;
+import semantic.symbolTable.SymbolTable;
 import semantic.utils.symChecker;
 import syntax.AstNode;
 
@@ -12,6 +13,11 @@ public class SemanticAnalysis {
 
     public SemanticAnalysis(AstNode rootAst) {
         this.rootAst = rootAst;
+        new SymbolTable();
+    }
+
+    public static symChecker getRootChecker() {
+        return rootChecker;
     }
 
     public void analysis() throws IOException {
@@ -26,6 +32,9 @@ public class SemanticAnalysis {
         }
         for (AstNode astNode : rootAst.getChildList()) {
             SemanticAnalysis.rootChecker.check(astNode);
+            if (astNode.getGrammarType().equals("FORTK")) {
+                break;
+            }
         }
     }
 }

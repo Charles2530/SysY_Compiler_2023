@@ -16,6 +16,8 @@ public class symType {
                 return getExpTypeLVal(astNode);
             case "<UnaryExp>":
                 return getExpTypeUnaryExp(astNode);
+            case "<PrimaryExp>":
+                return getExpTypePrimaryExp(astNode);
             default:
                 return getExpType(astNode.getChildList().get(0));
         }
@@ -38,13 +40,27 @@ public class symType {
         if (astNode.getChildList().size() == 1) {
             return getExpType(astNode.getChildList().get(0));
         } else {
-            Symbol symbol = SymbolTable.getSymByName(
-                    astNode.getChildList().get(0).getSymToken().getWord());
-            if (symbol instanceof FuncSymbol) {
-                return ((FuncSymbol) symbol).getReturnType();
+            if (astNode.getChildList().get(0).getGrammarType().equals("IDENFR")) {
+                Symbol symbol = SymbolTable.getSymByName(
+                        astNode.getChildList().get(0).getSymToken().getWord());
+                if (symbol instanceof FuncSymbol) {
+                    return ((FuncSymbol) symbol).getReturnType();
+                } else {
+                    return symbol.getSymbolType();
+                }
+            } else if (astNode.getChildList().get(0).getGrammarType().equals("<UnaryOp>")) {
+                return getExpType(astNode.getChildList().get(1));
             } else {
-                return symbol.getSymbolType();
+                return Symbol.SymType.INT;
             }
+        }
+    }
+
+    private static Symbol.SymType getExpTypePrimaryExp(AstNode astNode) {
+        if (astNode.getChildList().size() == 1) {
+            return getExpType(astNode.getChildList().get(0));
+        } else {
+            return getExpType(astNode.getChildList().get(1));
         }
     }
 }

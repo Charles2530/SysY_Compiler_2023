@@ -28,9 +28,11 @@ public class symChecker {
                 checkCompUnitChecker(rootAst);
                 break;
             case "<ConstDef>":
+                // Error b
                 checkConstDefChecker(rootAst);
                 break;
             case "<VarDef>":
+                // Error b
                 checkVarDefChecker(rootAst);
                 break;
             case "<Block>":
@@ -40,36 +42,43 @@ public class symChecker {
                 checkForStmtChecker(rootAst);
                 break;
             case "BREAKTK":
+                // Error m
                 checkBreakStmtChecker(rootAst);
                 break;
             case "CONTINUETK":
+                // Error m
                 checkContinueStmtChecker(rootAst);
                 break;
             case "RETURNTK":
+                // Error f
                 checkReturnStmtChecker(rootAst);
                 break;
             case "<LVal>":
+                // Error c
                 checkLValChecker(rootAst);
                 break;
             case "<FuncDef>":
+                // Error b,g
                 checkFuncDefChecker(rootAst);
                 break;
             case "<FuncFParam>":
+                // Error b
                 checkFuncFParamChecker(rootAst);
                 break;
             case "<MainFuncDef>":
+                // Error b,g
                 checkMainFuncDefChecker(rootAst);
                 break;
             case "ASSIGN":
+                // Error h
                 checkASSIGNChecker(rootAst);
                 break;
-            case "GETINTTK":
-                checkGETINTTKChecker(rootAst);
-                break;
             case "<UnaryExp>":
+                // Error b,c,d,e
                 checkUnaryExpChecker(rootAst);
                 break;
             case "PRINTFTK":
+                // Error l
                 checkPRINTFTKChecker(rootAst);
                 break;
             default:
@@ -111,7 +120,13 @@ public class symChecker {
 
     private void checkForStmtChecker(AstNode sonAst) throws IOException {
         SymbolTable.enterLoop();
-        SemanticAnalysis.preTraverse(sonAst);
+        AstNode rootAst = sonAst.getParent();
+        for (AstNode child : rootAst.getChildList()) {
+            if (child.equals(sonAst)) {
+                continue;
+            }
+            SemanticAnalysis.getRootChecker().check(child);
+        }
         SymbolTable.leaveLoop();
     }
 
@@ -171,9 +186,9 @@ public class symChecker {
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
         if (symbol.getSymbolType() != Symbol.SymType.VOID) {
-            AstNode lastSentence = block.getChildList().get(senNum - 2)
-                    .getChildList().get(0).getChildList().get(0);
-            if (!(lastSentence.getGrammarType().equals("RETURNTK"))) {
+            AstNode lastSentence = block.getChildList().get(senNum - 2);
+            if (lastSentence.isLeaf() || !(lastSentence.getChildList().get(0).
+                    getChildList().get(0).getGrammarType().equals("RETURNTK"))) {
                 ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
             }
         }
@@ -207,9 +222,9 @@ public class symChecker {
         AstNode block = rootAst.getChildList().get(rootAst.getChildList().size() - 1);
         int senNum = block.getChildList().size();
         if (symbol.getSymbolType() != Symbol.SymType.VOID) {
-            AstNode lastSentence = block.getChildList().get(senNum - 2)
-                    .getChildList().get(0).getChildList().get(0);
-            if (!(lastSentence.getGrammarType().equals("RETURNTK"))) {
+            AstNode lastSentence = block.getChildList().get(senNum - 2);
+            if (lastSentence.isLeaf() || !(lastSentence.getChildList().get(0).
+                    getChildList().get(0).getGrammarType().equals("RETURNTK"))) {
                 ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
             }
         }
@@ -228,7 +243,8 @@ public class symChecker {
                         String name = child.getSymToken().getWord();
                         symbol = SymbolTable.getSymByName(name);
                     } else if (child.getGrammarType().equals("<Exp>")) {
-                        if (tempDim.size() != ((VarSymbol) symbol).getDim()) {
+                        if (symbol instanceof VarSymbol && tempDim.size() !=
+                                ((VarSymbol) symbol).getDim()) {
                             tempDim.add(symCalc.calc(child));
                         }
                     }
@@ -254,39 +270,33 @@ public class symChecker {
         SemanticAnalysis.preTraverse(sonAst);
     }
 
-    private void checkGETINTTKChecker(AstNode sonAst) throws IOException {
-        AstNode rootAst = sonAst.getParent();
-        for (AstNode astNode : rootAst.getChildList()) {
-            if (astNode.getGrammarType().equals("<LVal>")) {
-                String name = astNode.getChildList().get(0).getSymToken().getWord();
-                Symbol symbol = SymbolTable.getSymByName(name);
-                if (symbol instanceof ConstSymbol) {
-                    ErrorController.addError(new ErrorToken("h",
-                            rootAst.getSpan().getEndLine()));
-                }
-            }
-        }
-        SemanticAnalysis.preTraverse(sonAst);
-    }
-
     private void checkUnaryExpChecker(AstNode rootAst) throws IOException {
         if (rootAst.getChildList().size() >= 3 && rootAst.getChildList().get(1).
                 getGrammarType().equals("LPARENT")) {
-            FuncSymbol funcSymbol = (FuncSymbol) SymbolTable.getSymByName(
-                    rootAst.getChildList().get(0).getSymToken().getWord());
-            if (funcSymbol == null) {
+            Symbol symbol = SymbolTable.getSymByName(rootAst.getChildList().get(0)
+                    .getSymToken().getWord());
+            if ((!(symbol instanceof FuncSymbol) && symbol != null)) {
+                ErrorController.addError(new ErrorToken("b", rootAst.getSpan().getEndLine()));
+            } else if (symbol == null) {
                 ErrorController.addError(new ErrorToken("c", rootAst.getSpan().getEndLine()));
             } else {
+                FuncSymbol funcSymbol = (FuncSymbol) symbol;
                 int paramNum = funcSymbol.getParamNum();
-                int argNum = rootAst.getChildList().get(2).getChildList().size();
-                if (paramNum != argNum) {
+                ArrayList<AstNode> childList = new ArrayList<>();
+                for (AstNode astNode : rootAst.getChildList().get(2).getChildList()) {
+                    if (astNode.getGrammarType().equals("<Exp>")) {
+                        childList.add(astNode);
+                    }
+                }
+                if (paramNum != childList.size()) {
                     ErrorController.addError(new ErrorToken("d", rootAst.getSpan().getStartLine()));
                 } else {
                     for (int i = 0; i < paramNum; i++) {
                         Symbol.SymType paramType = funcSymbol.getFParamTypes().get(i);
-                        Symbol.SymType argType = symType.getExpType(rootAst.getChildList().
-                                get(2).getChildList().get(i));
-                        if (paramType != argType) {
+                        Symbol.SymType argType = symType.getExpType(childList.get(i));
+                        Integer paramdim = funcSymbol.getFParamDims().get(i);
+                        Integer argdim = symDefiner.getExpDim(childList.get(i));
+                        if (!paramType.equals(argType) || !paramdim.equals(argdim)) {
                             ErrorController.addError(new ErrorToken("e",
                                     rootAst.getSpan().getStartLine()));
                         }

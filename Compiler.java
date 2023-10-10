@@ -18,7 +18,8 @@ public class Compiler {
 
     public static void main(String[] args) throws IOException {
         // 将文件进行重定向
-        BufferedReader fileInputStream = fileInputMode ? new BufferedReader(new FileReader("testfile.txt")) :
+        BufferedReader fileInputStream = fileInputMode ? new BufferedReader(
+                new FileReader("testfile.txt")) :
                 new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter errorOutputStream = IsDebugMode ? new BufferedWriter(
                 new FileWriter("error.txt", false)) : null;

@@ -30,4 +30,8 @@ public class FuncSymbol extends Symbol {
     public ArrayList<SymType> getFParamTypes() {
         return FParamTypes;
     }
+
+    public ArrayList<Integer> getFParamDims() {
+        return FParamDims;
+    }
 }
