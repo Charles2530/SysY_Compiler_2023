@@ -5,8 +5,6 @@ import semantic.symbolTable.SymbolTable;
 import semantic.symbolTable.symbol.FuncSymbol;
 import syntax.AstNode;
 
-import java.util.Objects;
-
 public class symType {
     public static Symbol.SymType getExpType(AstNode astNode) {
         switch (astNode.getGrammarType()) {

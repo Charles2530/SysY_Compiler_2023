@@ -74,9 +74,8 @@ public class LexicalWordCheck {
                 if (this.checkIllegalSym(word)) {
                     // 判断是否为非法字符串
                     ErrorController.addError(new ErrorToken("a", lineNum));
-                } else {
-                    words.add(word);
                 }
+                words.add(word);
                 word = "";
             } else if (i + 1 < line.length() && (c == '&' && line.charAt(i + 1) == '&'
                     || c == '|' && line.charAt(i + 1) == '|')) {

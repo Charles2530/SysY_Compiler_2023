@@ -27,10 +27,6 @@ public class ConstSymbol extends Symbol {
         }
     }
 
-    public boolean Isglobal() {
-        return super.getSymbolLevel() == 0;
-    }
-
     public int getDim() {
         return dim;
     }
