@@ -24,8 +24,9 @@ public class symType {
     }
 
     private static Symbol.SymType getExpTypeLVal(AstNode astNode) {
-        return Objects.requireNonNull(SymbolTable.getSymByName(astNode.getChildList().get(0)
-                .getSymToken().getWord())).getSymbolType();
+        Symbol symbol = SymbolTable.getSymByName(astNode.getChildList().get(0)
+                .getSymToken().getWord());
+        return symbol == null ? Symbol.SymType.INT : symbol.getSymbolType();
     }
 
     private static Symbol.SymType getExpTypeNumber(AstNode astNode) {
