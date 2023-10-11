@@ -36,15 +36,15 @@ public class MainFuncDef {
                         AstNode rparentNode = new AstNode("RPARENT");
                         mainFuncDefNode.addChild(rparentNode);
                         AstRecursion.nextSym();
-                        if (Judge.IsBlock()) {
-                            Definer.Block(mainFuncDefNode);
-                        } else {
-                            ErrorController.MainFuncDefPrintError();
-                        }
                     } else {
                         ErrorController.addError(new ErrorToken("j",
                                 AstRecursion.getPreviousNoTerminalAst()
                                         .getSpan().getEndLine()));
+                    }
+                    if (Judge.IsBlock()) {
+                        Definer.Block(mainFuncDefNode);
+                    } else {
+                        ErrorController.MainFuncDefPrintError();
                     }
                 } else {
                     ErrorController.MainFuncDefPrintError();

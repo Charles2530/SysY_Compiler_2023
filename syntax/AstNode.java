@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class AstNode {
     private String grammarType;
     private ArrayList<AstNode> childList = new ArrayList<>();
-
     private SymToken symToken = null;
     private Span span;
     private AstNode parent;

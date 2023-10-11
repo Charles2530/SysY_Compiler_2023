@@ -27,11 +27,15 @@ public class Judge {
         return IsConstExp() || getPreSym().equals("LBRACE");
     }
 
+    /*TODO:bug here*/
     public static boolean IsLVal() {
         int k = 1;
         while (getNextSym(k).equals("LBRACK") && !getNextSym(k).equals("EOF")) {
             while (!getNextSym(k).equals("RBRACK")) {
                 k++;
+                if (k > 10) {
+                    break;
+                }
             }
             k++;
         }

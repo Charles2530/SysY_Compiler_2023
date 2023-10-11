@@ -20,7 +20,6 @@ public class SyntaxAnalysis {
         AstRecursion astRecursion = new AstRecursion(symTokens);
         this.rootAst = new AstNode("<CompUnit>");
         astRecursion.CompUnit(rootAst);
-        //后续遍历AST树
         preTraverse(rootAst);
     }
 
