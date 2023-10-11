@@ -1,8 +1,8 @@
-package semantic.symbolTable;
+package semantic.symtable;
 
-import semantic.symbolTable.symbol.ConstSymbol;
-import semantic.symbolTable.symbol.FuncSymbol;
-import semantic.symbolTable.symbol.VarSymbol;
+import semantic.symtable.symbol.ConstSymbol;
+import semantic.symtable.symbol.FuncSymbol;
+import semantic.symtable.symbol.VarSymbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class SymbolTable {
     private static FuncSymbol currentFunc;
     private static int curLevel;
 
-    public SymbolTable() {
+    public static void init() {
         SymbolTable.symbolTables = new HashMap<>();
         SymbolTable.isGlobalArea = true;
         SymbolTable.loopLevel = 0;
@@ -102,20 +102,17 @@ public class SymbolTable {
                 for (String key : symbols.keySet()) {
                     Symbol symbol = symbols.get(key);
                     Symbol.SymType type = symbol.getSymbolType();
-                    if (symbol instanceof FuncSymbol) {
-                        FuncSymbol funcSymbol = (FuncSymbol) symbol;
+                    if (symbol instanceof FuncSymbol funcSymbol) {
                         System.out.println("\t\t" + type + " \t" + key +
                                 " \tlevel:" + funcSymbol.getSymbolLevel() +
                                 " \tparamNum:" + funcSymbol.getParamNum());
-                    } else if (symbol instanceof VarSymbol) {
-                        VarSymbol varSymbol = (VarSymbol) symbol;
+                    } else if (symbol instanceof VarSymbol varSymbol) {
                         System.out.println("\t\t" + type + " \t" + key +
                                 " \tdim:" + varSymbol.getDim() +
                                 " \tlevel:" + varSymbol.getSymbolLevel() +
                                 " \tvalue:" + (varSymbol.getConstValue() == null ?
                                 "NAN" : varSymbol.getConstValue()));
-                    } else if (symbol instanceof ConstSymbol) {
-                        ConstSymbol constSymbol = (ConstSymbol) symbol;
+                    } else if (symbol instanceof ConstSymbol constSymbol) {
                         System.out.println("\t\t" + type + " \t" + key +
                                 " \tdim:" + constSymbol.getDim() +
                                 " \tlevel:" + constSymbol.getSymbolLevel() +

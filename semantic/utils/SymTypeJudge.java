@@ -1,24 +1,19 @@
 package semantic.utils;
 
-import semantic.symbolTable.Symbol;
-import semantic.symbolTable.SymbolTable;
-import semantic.symbolTable.symbol.FuncSymbol;
+import semantic.symtable.Symbol;
+import semantic.symtable.SymbolTable;
+import semantic.symtable.symbol.FuncSymbol;
 import syntax.AstNode;
 
-public class symType {
+public class SymTypeJudge {
     public static Symbol.SymType getExpType(AstNode astNode) {
-        switch (astNode.getGrammarType()) {
-            case "<Number>":
-                return getExpTypeNumber(astNode);
-            case "<LVal>":
-                return getExpTypeLVal(astNode);
-            case "<UnaryExp>":
-                return getExpTypeUnaryExp(astNode);
-            case "<PrimaryExp>":
-                return getExpTypePrimaryExp(astNode);
-            default:
-                return getExpType(astNode.getChildList().get(0));
-        }
+        return switch (astNode.getGrammarType()) {
+            case "<Number>" -> getExpTypeNumber(astNode);
+            case "<LVal>" -> getExpTypeLVal(astNode);
+            case "<UnaryExp>" -> getExpTypeUnaryExp(astNode);
+            case "<PrimaryExp>" -> getExpTypePrimaryExp(astNode);
+            default -> getExpType(astNode.getChildList().get(0));
+        };
     }
 
     private static Symbol.SymType getExpTypeLVal(AstNode astNode) {
@@ -28,11 +23,8 @@ public class symType {
     }
 
     private static Symbol.SymType getExpTypeNumber(AstNode astNode) {
-        if (astNode.getChildList().get(0).getGrammarType().equals("INTCON")) {
-            return Symbol.SymType.INT;
-        } else {
-            return Symbol.SymType.VOID;
-        }
+        return astNode.getChildList().get(0).getGrammarType().equals("INTCON") ?
+                Symbol.SymType.INT : Symbol.SymType.VOID;
     }
 
     private static Symbol.SymType getExpTypeUnaryExp(AstNode astNode) {

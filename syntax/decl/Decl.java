@@ -18,9 +18,9 @@ public class Decl {
     public void analysis() throws IOException {
         AstNode declNode = new AstNode("<Decl>");
         rootAst.addChild(declNode);
-        if (Judge.IsConstDecl()) {
+        if (Judge.isConstDecl()) {
             Definer.ConstDecl(declNode);
-        } else if (Judge.IsVarDecl()) {
+        } else if (Judge.isVarDecl()) {
             Definer.VarDecl(declNode);
         } else {
             ErrorController.DeclPrintError();

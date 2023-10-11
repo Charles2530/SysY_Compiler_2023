@@ -1,4 +1,4 @@
-package syntax.funcDef;
+package syntax.funcdef;
 
 import generation.utils.ErrorController;
 import generation.utils.ErrorToken;
@@ -10,7 +10,7 @@ import syntax.utils.Judge;
 import java.io.IOException;
 
 public class FuncDef {
-    private AstNode rootAst;
+    private final AstNode rootAst;
 
     public FuncDef(AstNode rootAst) throws IOException {
         this.rootAst = rootAst;
@@ -20,12 +20,12 @@ public class FuncDef {
     private void analysis() throws IOException {
         AstNode funcDefNode = new AstNode("<FuncDef>");
         rootAst.addChild(funcDefNode);
-        if (Judge.IsFuncType()) {
+        if (Judge.isFuncType()) {
             FuncType(funcDefNode);
         } else {
             ErrorController.FuncDefPrintError();
         }
-        if (Judge.IsIdent()) {
+        if (Judge.isIdent()) {
             Definer.Ident(funcDefNode);
         } else {
             ErrorController.FuncDefPrintError();
@@ -37,7 +37,7 @@ public class FuncDef {
         } else {
             ErrorController.FuncDefPrintError();
         }
-        if (Judge.IsFuncFParams()) {
+        if (Judge.isFuncFParams()) {
             FuncFParams(funcDefNode);
         }
         if (getPreSym().equals("RPARENT")) {
@@ -48,7 +48,7 @@ public class FuncDef {
             ErrorController.addError(new ErrorToken("j",
                     AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
         }
-        if (Judge.IsBlock()) {
+        if (Judge.isBlock()) {
             Definer.Block(funcDefNode);
         } else {
             ErrorController.FuncDefPrintError();
@@ -74,7 +74,7 @@ public class FuncDef {
     private void FuncFParams(AstNode funcDefNode) throws IOException {
         AstNode funcFParamsNode = new AstNode("<FuncFParams>");
         funcDefNode.addChild(funcFParamsNode);
-        while (Judge.IsFuncFParam()) {
+        while (Judge.isFuncFParam()) {
             FuncFParam(funcFParamsNode);
             if (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
@@ -98,7 +98,7 @@ public class FuncDef {
         } else {
             ErrorController.FuncDefPrintError();
         }
-        if (Judge.IsIdent()) {
+        if (Judge.isIdent()) {
             Definer.Ident(funcFParamNode);
         } else {
             ErrorController.FuncDefPrintError();
@@ -120,7 +120,7 @@ public class FuncDef {
             AstNode lbrackNode = new AstNode("LBRACK");
             funcFParamNode.addChild(lbrackNode);
             AstRecursion.nextSym();
-            if (Judge.IsConstExp()) {
+            if (Judge.isConstExp()) {
                 Definer.ConstExp(funcFParamNode);
             } else {
                 ErrorController.FuncDefPrintError();

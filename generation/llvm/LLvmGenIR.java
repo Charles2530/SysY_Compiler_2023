@@ -3,7 +3,7 @@ package generation.llvm;
 import syntax.AstNode;
 
 public class LLvmGenIR {
-    private AstNode rootAst;
+    private final AstNode rootAst;
 
     public LLvmGenIR(AstNode rootAst) {
         this.rootAst = rootAst;

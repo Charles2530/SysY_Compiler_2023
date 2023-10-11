@@ -1,13 +1,13 @@
-package semantic.symbolTable.symbol;
+package semantic.symtable.symbol;
 
-import semantic.symbolTable.Symbol;
+import semantic.symtable.Symbol;
 
 import java.util.ArrayList;
 
 public class VarSymbol extends Symbol {
-    private int dim;
-    private ArrayList<Integer> initValue;
-    private ArrayList<Integer> space;
+    private final int dim;
+    private final ArrayList<Integer> initValue;
+    private final ArrayList<Integer> space;
 
     public VarSymbol(String symbolName, SymType symbolType, int dim,
                      ArrayList<Integer> initValue, ArrayList<Integer> space) {
@@ -18,10 +18,10 @@ public class VarSymbol extends Symbol {
         // array init
         if (dim > 0) {
             int size = 1;
-            for (int i = 0; i < space.size(); i++) {
-                size *= space.get(i);
+            for (Integer integer : space) {
+                size *= integer;
             }
-            for (int i = 0; i < size - initValue.size(); i++) {
+            for (int i = 0; i < size - this.initValue.size(); i++) {
                 this.initValue.add(0);
             }
         }

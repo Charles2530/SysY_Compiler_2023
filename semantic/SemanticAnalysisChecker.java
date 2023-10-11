@@ -1,11 +1,11 @@
 package semantic;
 
-import generation.utils.OutputController;
-import semantic.symbolTable.Symbol;
-import semantic.symbolTable.symbol.ConstSymbol;
-import semantic.symbolTable.symbol.FuncSymbol;
-import semantic.symbolTable.symbol.VarSymbol;
-import semantic.utils.symCalc;
+import semantic.symtable.Symbol;
+import semantic.symtable.SymbolTable;
+import semantic.symtable.symbol.ConstSymbol;
+import semantic.symtable.symbol.FuncSymbol;
+import semantic.symtable.symbol.VarSymbol;
+import semantic.utils.SymCalc;
 import syntax.AstNode;
 
 import java.util.ArrayList;
@@ -20,14 +20,14 @@ public class SemanticAnalysisChecker {
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<ConstExp>")) {
                 dim++;
-                space.add(symCalc.calc(astNode));
+                space.add(SymCalc.calc(astNode));
             } else if (astNode.getGrammarType().equals("<ConstInitVal>")) {
                 initValAst = astNode;
             }
         }
         ArrayList<Integer> initValue = new ArrayList<>();
-        if (initValAst != null && OutputController.getIsCalcMode()) {
-            initValue = symCalc.calcConstInitVal(dim, initValAst);
+        if (initValAst != null && SymbolTable.isIsGlobalArea()) {
+            initValue = SymCalc.calcConstInitVal(dim, initValAst);
         }
         Symbol.SymType symbolType = Symbol.SymType.CONST;
         return new ConstSymbol(symbolName, symbolType, dim, initValue, space);
@@ -41,7 +41,7 @@ public class SemanticAnalysisChecker {
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<ConstExp>")) {
                 dim++;
-                space.add(symCalc.calc(astNode));
+                space.add(SymCalc.calc(astNode));
             }
             if (astNode.getGrammarType().equals("<InitVal>")) {
                 initValAst = astNode;
@@ -49,8 +49,8 @@ public class SemanticAnalysisChecker {
         }
         Symbol.SymType symbolType = Symbol.SymType.INT;
         ArrayList<Integer> initValue = new ArrayList<>();
-        if (initValAst != null && OutputController.getIsCalcMode()) {
-            initValue = symCalc.calcInitVal(dim, initValAst);
+        if (initValAst != null && SymbolTable.isIsGlobalArea()) {
+            initValue = SymCalc.calcInitVal(dim, initValAst);
         }
         return new VarSymbol(symbolName, symbolType, dim, initValue, space);
     }
@@ -64,7 +64,7 @@ public class SemanticAnalysisChecker {
                 dim++;
                 if (i + 1 < rootAst.getChildList().size()) {
                     if (rootAst.getChildList().get(i + 1).getGrammarType().equals("ConstExp")) {
-                        list.add(symCalc.calc(rootAst.getChildList().get(i + 1)));
+                        list.add(SymCalc.calc(rootAst.getChildList().get(i + 1)));
                     } else {
                         list.add(-1);
                     }

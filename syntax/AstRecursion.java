@@ -2,9 +2,9 @@ package syntax;
 
 import lexer.SymToken;
 import syntax.decl.Decl;
-import syntax.funcDef.FuncDef;
+import syntax.funcdef.FuncDef;
 import syntax.utils.Judge;
-import syntax.mainFuncDef.MainFuncDef;
+import syntax.mainfuncdef.MainFuncDef;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +13,6 @@ public class AstRecursion {
     private static ArrayList<SymToken> symTokens;
     private static int symPos;
     private static SymToken preSymToken;
-    private AstNode rootAst;
     private static AstNode previousNoTerminalAst;
 
     public static void setPreviousNoTerminalAst(AstNode previousNoTerminalAst) {
@@ -50,11 +49,10 @@ public class AstRecursion {
     }
 
     public void CompUnit(AstNode rootAst) throws IOException {
-        this.rootAst = rootAst;
-        while (Judge.IsDecl()) {
+        while (Judge.isDecl()) {
             new Decl(rootAst);
         }
-        while (Judge.IsFuncDef()) {
+        while (Judge.isFuncDef()) {
             new FuncDef(rootAst);
         }
         new MainFuncDef(rootAst);

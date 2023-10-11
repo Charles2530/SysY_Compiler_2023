@@ -1,4 +1,4 @@
-package semantic.symbolTable;
+package semantic.symtable;
 
 public class Symbol {
 
@@ -6,9 +6,9 @@ public class Symbol {
         INT, VOID, CONST
     }
 
-    private String symbolName;
-    private SymType symbolType;
-    private Integer symbolLevel;
+    private final String symbolName;
+    private final SymType symbolType;
+    private final Integer symbolLevel;
 
     public Symbol(String symbolName, SymType symbolType) {
         this.symbolName = symbolName;
@@ -35,5 +35,4 @@ public class Symbol {
                 ", symbolLevel=" + symbolLevel +
                 '}');
     }
-
 }

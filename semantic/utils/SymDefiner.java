@@ -1,18 +1,18 @@
 package semantic.utils;
 
-import semantic.symbolTable.Symbol;
-import semantic.symbolTable.SymbolTable;
-import semantic.symbolTable.symbol.ConstSymbol;
-import semantic.symbolTable.symbol.FuncSymbol;
-import semantic.symbolTable.symbol.VarSymbol;
+import semantic.symtable.Symbol;
+import semantic.symtable.SymbolTable;
+import semantic.symtable.symbol.ConstSymbol;
+import semantic.symtable.symbol.FuncSymbol;
+import semantic.symtable.symbol.VarSymbol;
 import syntax.AstNode;
 
 import java.util.ArrayList;
 
-public class symDefiner {
+public class SymDefiner {
     public static void setParamInfo(AstNode astNode, FuncSymbol symbol) {
-        ArrayList<Symbol.SymType> FParamTypes = new ArrayList<>();
-        ArrayList<Integer> FParamDims = new ArrayList<>();
+        ArrayList<Symbol.SymType> fparamTypes = new ArrayList<>();
+        ArrayList<Integer> fparamDims = new ArrayList<>();
         if (astNode.getChildList().get(3).getGrammarType().equals("<FuncFParams>")) {
             AstNode funcFormalParams = astNode.getChildList().get(3);
             for (AstNode child : funcFormalParams.getChildList()) {
@@ -26,30 +26,25 @@ public class symDefiner {
                     Symbol.SymType type = child.getChildList().get(0)
                             .getChildList().get(0).getGrammarType().equals("INTTK") ?
                             Symbol.SymType.INT : Symbol.SymType.CONST;
-                    FParamTypes.add(type);
-                    FParamDims.add(dim);
+                    fparamTypes.add(type);
+                    fparamDims.add(dim);
                 }
             }
         }
-        symbol.setParamInfo(FParamTypes, FParamDims);
+        symbol.setParamInfo(fparamTypes, fparamDims);
     }
 
     public static Integer getExpDim(AstNode astNode) {
-        switch (astNode.getGrammarType()) {
-            case "<Number>":
-                return getExpDimNumber(astNode);
-            case "<LVal>":
-                return getExpDimLVal(astNode);
-            case "<UnaryExp>":
-                return getExpDimUnaryExp(astNode);
-            case "<PrimaryExp>":
-                return getExpDimPrimaryExp(astNode);
-            default:
-                return getExpDim(astNode.getChildList().get(0));
-        }
+        return switch (astNode.getGrammarType()) {
+            case "<Number>" -> getExpDimNumber();
+            case "<LVal>" -> getExpDimLVal(astNode);
+            case "<UnaryExp>" -> getExpDimUnaryExp(astNode);
+            case "<PrimaryExp>" -> getExpDimPrimaryExp(astNode);
+            default -> getExpDim(astNode.getChildList().get(0));
+        };
     }
 
-    private static Integer getExpDimNumber(AstNode astNode) {
+    private static Integer getExpDimNumber() {
         return 0;
     }
 

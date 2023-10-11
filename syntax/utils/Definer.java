@@ -21,7 +21,7 @@ public class Definer {
             intNode.addChild(intTkNode);
             AstRecursion.nextSym();
             while (true) {
-                if (Judge.IsConstDef()) {
+                if (Judge.isConstDef()) {
                     ConstDef(constDeclNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -50,7 +50,7 @@ public class Definer {
     private static void ConstDef(AstNode constDeclNode) throws IOException {
         AstNode constDefNode = new AstNode("<ConstDef>");
         constDeclNode.addChild(constDefNode);
-        if (Judge.IsIdent()) {
+        if (Judge.isIdent()) {
             AstNode idenfrNode = new AstNode("IDENFR");
             constDefNode.addChild(idenfrNode);
             AstRecursion.nextSym();
@@ -61,7 +61,7 @@ public class Definer {
             AstNode lbrackNode = new AstNode("LBRACK");
             constDefNode.addChild(lbrackNode);
             AstRecursion.nextSym();
-            if (Judge.IsConstExp()) {
+            if (Judge.isConstExp()) {
                 ConstExp(constDefNode);
             }
             if (getPreSym().equals("RBRACK")) {
@@ -77,7 +77,7 @@ public class Definer {
             AstNode assignNode = new AstNode("ASSIGN");
             constDefNode.addChild(assignNode);
             AstRecursion.nextSym();
-            if (Judge.IsConstInitVal()) {
+            if (Judge.isConstInitVal()) {
                 ConstInitVal(constDefNode);
             } else {
                 ErrorController.DefinerPrintError();
@@ -90,20 +90,20 @@ public class Definer {
     private static void ConstInitVal(AstNode constDeclNode) throws IOException {
         AstNode constInitValNode = new AstNode("<ConstInitVal>");
         constDeclNode.addChild(constInitValNode);
-        if (Judge.IsConstExp()) {
+        if (Judge.isConstExp()) {
             ConstExp(constInitValNode);
         } else if (getPreSym().equals("LBRACE")) {
             AstNode lbraceNode = new AstNode("LBRACE");
             constInitValNode.addChild(lbraceNode);
             AstRecursion.nextSym();
-            if (Judge.IsConstInitVal()) {
+            if (Judge.isConstInitVal()) {
                 ConstInitVal(constInitValNode);
             }
             while (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
                 constInitValNode.addChild(commaNode);
                 AstRecursion.nextSym();
-                if (Judge.IsConstInitVal()) {
+                if (Judge.isConstInitVal()) {
                     ConstInitVal(constInitValNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -130,7 +130,7 @@ public class Definer {
         intNode.addChild(intTkNode);
         AstRecursion.nextSym();
         while (true) {
-            if (Judge.IsVarDef()) {
+            if (Judge.isVarDef()) {
                 VarDef(varDeclNode);
             } else {
                 ErrorController.DefinerPrintError();
@@ -156,7 +156,7 @@ public class Definer {
     private static void VarDef(AstNode varDeclNode) throws IOException {
         AstNode vardefNode = new AstNode("<VarDef>");
         varDeclNode.addChild(vardefNode);
-        if (Judge.IsIdent()) {
+        if (Judge.isIdent()) {
             AstNode idenfrNode = new AstNode("IDENFR");
             vardefNode.addChild(idenfrNode);
             AstRecursion.nextSym();
@@ -167,7 +167,7 @@ public class Definer {
             AstNode lbrackNode = new AstNode("LBRACK");
             vardefNode.addChild(lbrackNode);
             AstRecursion.nextSym();
-            if (Judge.IsConstExp()) {
+            if (Judge.isConstExp()) {
                 ConstExp(vardefNode);
             }
             if (getPreSym().equals("RBRACK")) {
@@ -183,7 +183,7 @@ public class Definer {
             AstNode assignNode = new AstNode("ASSIGN");
             vardefNode.addChild(assignNode);
             AstRecursion.nextSym();
-            if (Judge.IsInitval()) {
+            if (Judge.isInitval()) {
                 InitVal(vardefNode);
             } else {
                 ErrorController.DefinerPrintError();
@@ -194,20 +194,20 @@ public class Definer {
     private static void InitVal(AstNode vardefNode) throws IOException {
         AstNode initValNode = new AstNode("<InitVal>");
         vardefNode.addChild(initValNode);
-        if (Judge.IsExp()) {
+        if (Judge.isExp()) {
             Exp(initValNode);
         } else if (getPreSym().equals("LBRACE")) {
             AstNode lbraceNode = new AstNode("LBRACE");
             initValNode.addChild(lbraceNode);
             AstRecursion.nextSym();
-            if (Judge.IsInitval()) {
+            if (Judge.isInitval()) {
                 InitVal(initValNode);
             }
             while (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
                 initValNode.addChild(commaNode);
                 AstRecursion.nextSym();
-                if (Judge.IsInitval()) {
+                if (Judge.isInitval()) {
                     InitVal(initValNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -230,7 +230,7 @@ public class Definer {
             AstNode lbraceNode = new AstNode("LBRACE");
             blockNode.addChild(lbraceNode);
             AstRecursion.nextSym();
-            while (Judge.IsBlockItem()) {
+            while (Judge.isBlockItem()) {
                 Definer.BlockItem(blockNode);
             }
             if (getPreSym().equals("RBRACE")) {
@@ -248,15 +248,15 @@ public class Definer {
     public static void BlockItem(AstNode blockNode) throws IOException {
         AstNode blockItemNode = new AstNode("<BlockItem>");
         blockNode.addChild(blockItemNode);
-        if (Judge.IsConstDecl()) {
+        if (Judge.isConstDecl()) {
             AstNode declNode = new AstNode("<Decl>");
             blockItemNode.addChild(declNode);
             ConstDecl(declNode);
-        } else if (Judge.IsVarDecl()) {
+        } else if (Judge.isVarDecl()) {
             AstNode declNode = new AstNode("<Decl>");
             blockItemNode.addChild(declNode);
             VarDecl(declNode);
-        } else if (Judge.IsStmt()) {
+        } else if (Judge.isStmt()) {
             Stmt(blockItemNode);
         } else {
             ErrorController.DefinerPrintError();
@@ -266,13 +266,13 @@ public class Definer {
     public static void Stmt(AstNode blockNode) throws IOException {
         AstNode stmtNode = new AstNode("<Stmt>");
         blockNode.addChild(stmtNode);
-        if (Judge.IsLVal()) {
+        if (Judge.isLVal()) {
             LVal(stmtNode);
             if (getPreSym().equals("ASSIGN")) {
                 AstNode assignNode = new AstNode("ASSIGN");
                 stmtNode.addChild(assignNode);
                 AstRecursion.nextSym();
-                if (Judge.IsExp()) {
+                if (Judge.isExp()) {
                     Exp(stmtNode);
                 } else if (getPreSym().equals("GETINTTK")) {
                     AstNode getinttkNode = new AstNode("GETINTTK");
@@ -309,8 +309,8 @@ public class Definer {
             } else {
                 ErrorController.DefinerPrintError();
             }
-        } else if (Judge.IsExp() || getPreSym().equals("SEMICN")) {
-            if (Judge.IsExp()) {
+        } else if (Judge.isExp() || getPreSym().equals("SEMICN")) {
+            if (Judge.isExp()) {
                 Exp(stmtNode);
             }
             if (getPreSym().equals("SEMICN")) {
@@ -321,7 +321,7 @@ public class Definer {
                 ErrorController.addError(new ErrorToken("i",
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
-        } else if (Judge.IsBlock()) {
+        } else if (Judge.isBlock()) {
             Block(stmtNode);
         } else if (getPreSym().equals("IFTK")) {
             IfStmt(stmtNode);
@@ -346,7 +346,7 @@ public class Definer {
             AstNode lparentNode = new AstNode("LPARENT");
             blockNode.addChild(lparentNode);
             AstRecursion.nextSym();
-            if (Judge.IsCond()) {
+            if (Judge.isCond()) {
                 Cond(blockNode);
             } else {
                 ErrorController.DefinerPrintError();
@@ -359,7 +359,7 @@ public class Definer {
                 ErrorController.addError(new ErrorToken("j",
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
-            if (Judge.IsStmt()) {
+            if (Judge.isStmt()) {
                 Stmt(blockNode);
             } else {
                 ErrorController.DefinerPrintError();
@@ -368,7 +368,7 @@ public class Definer {
                 AstNode elseTkNode = new AstNode("ELSETK");
                 blockNode.addChild(elseTkNode);
                 AstRecursion.nextSym();
-                if (Judge.IsStmt()) {
+                if (Judge.isStmt()) {
                     Stmt(blockNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -387,7 +387,7 @@ public class Definer {
             AstNode lparentNode = new AstNode("LPARENT");
             blockNode.addChild(lparentNode);
             AstRecursion.nextSym();
-            if (Judge.IsForStmtVal()) {
+            if (Judge.isForStmtVal()) {
                 ForStmtVal(blockNode);
             }
             if (getPreSym().equals("SEMICN")) {
@@ -398,7 +398,7 @@ public class Definer {
                 ErrorController.addError(new ErrorToken("i",
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
-            if (Judge.IsCond()) {
+            if (Judge.isCond()) {
                 Cond(blockNode);
             }
             if (getPreSym().equals("SEMICN")) {
@@ -409,7 +409,7 @@ public class Definer {
                 ErrorController.addError(new ErrorToken("i",
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
-            if (Judge.IsForStmtVal()) {
+            if (Judge.isForStmtVal()) {
                 ForStmtVal(blockNode);
             }
             if (getPreSym().equals("RPARENT")) {
@@ -420,7 +420,7 @@ public class Definer {
                 ErrorController.addError(new ErrorToken("j",
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
-            if (Judge.IsStmt()) {
+            if (Judge.isStmt()) {
                 Stmt(blockNode);
             } else {
                 ErrorController.DefinerPrintError();
@@ -462,7 +462,7 @@ public class Definer {
         AstNode returnStmtNode = new AstNode("RETURNTK");
         blockNode.addChild(returnStmtNode);
         AstRecursion.nextSym();
-        if (Judge.IsExp()) {
+        if (Judge.isExp()) {
             Exp(blockNode);
         }
         if (getPreSym().equals("SEMICN")) {
@@ -491,7 +491,7 @@ public class Definer {
                     AstNode commaNode = new AstNode("COMMA");
                     blockNode.addChild(commaNode);
                     AstRecursion.nextSym();
-                    if (Judge.IsExp()) {
+                    if (Judge.isExp()) {
                         Exp(blockNode);
                     } else {
                         ErrorController.DefinerPrintError();
@@ -522,13 +522,13 @@ public class Definer {
     private static void ForStmtVal(AstNode forStmtNode) throws IOException {
         AstNode forStmtValNode = new AstNode("<ForStmt>");
         forStmtNode.addChild(forStmtValNode);
-        if (Judge.IsLVal()) {
+        if (Judge.isLVal()) {
             LVal(forStmtValNode);
             if (getPreSym().equals("ASSIGN")) {
                 AstNode assignNode = new AstNode("ASSIGN");
                 forStmtValNode.addChild(assignNode);
                 AstRecursion.nextSym();
-                if (Judge.IsExp()) {
+                if (Judge.isExp()) {
                     Exp(forStmtValNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -544,7 +544,7 @@ public class Definer {
     private static void Exp(AstNode funcRParamsNode) throws IOException {
         AstNode expNode = new AstNode("<Exp>");
         funcRParamsNode.addChild(expNode);
-        if (Judge.IsAddExp()) {
+        if (Judge.isAddExp()) {
             AddExp(expNode);
         } else {
             ErrorController.DefinerPrintError();
@@ -560,13 +560,13 @@ public class Definer {
     private static void LVal(AstNode primaryExpNode) throws IOException {
         AstNode lValNode = new AstNode("<LVal>");
         primaryExpNode.addChild(lValNode);
-        if (Judge.IsIdent()) {
+        if (Judge.isIdent()) {
             Ident(lValNode);
             while (getPreSym().equals("LBRACK")) {
                 AstNode lbrackNode = new AstNode("LBRACK");
                 lValNode.addChild(lbrackNode);
                 AstRecursion.nextSym();
-                if (Judge.IsExp()) {
+                if (Judge.isExp()) {
                     Exp(lValNode);
                 } else {
                     ErrorController.DefinerPrintError();
@@ -592,7 +592,7 @@ public class Definer {
             AstNode lparentNode = new AstNode("LPARENT");
             primaryExpNode.addChild(lparentNode);
             AstRecursion.nextSym();
-            if (Judge.IsExp()) {
+            if (Judge.isExp()) {
                 Exp(primaryExpNode);
             } else {
                 ErrorController.DefinerPrintError();
@@ -605,9 +605,9 @@ public class Definer {
                 ErrorController.addError(new ErrorToken("j",
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
-        } else if (Judge.IsIdent()) {
+        } else if (Judge.isIdent()) {
             LVal(primaryExpNode);
-        } else if (Judge.IsNumber()) {
+        } else if (Judge.isNumber()) {
             NumberCall(primaryExpNode);
         } else {
             ErrorController.DefinerPrintError();
@@ -629,20 +629,20 @@ public class Definer {
     private static void UnaryExp(AstNode constExpNode) throws IOException {
         AstNode unaryExpNode = new AstNode("<UnaryExp>");
         constExpNode.addChild(unaryExpNode);
-        if (Judge.IsUnaryOp()) {
+        if (Judge.isUnaryOp()) {
             UnaryOp(unaryExpNode);
-            if (Judge.IsUnaryExp()) {
+            if (Judge.isUnaryExp()) {
                 UnaryExp(unaryExpNode);
             } else {
                 ErrorController.DefinerPrintError();
             }
-        } else if (Judge.IsIdent() && getNextSym(1).equals("LPARENT")) {
+        } else if (Judge.isIdent() && getNextSym(1).equals("LPARENT")) {
             Ident(unaryExpNode);
             if (getPreSym().equals("LPARENT")) {
                 AstNode lparentNode = new AstNode("LPARENT");
                 unaryExpNode.addChild(lparentNode);
                 AstRecursion.nextSym();
-                if (Judge.IsFuncRParams()) {
+                if (Judge.isFuncRParams()) {
                     FuncRParams(unaryExpNode);
                 }
                 if (getPreSym().equals("RPARENT")) {
@@ -654,7 +654,7 @@ public class Definer {
                             AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
                 }
             }
-        } else if (Judge.IsPrimaryExp()) {
+        } else if (Judge.isPrimaryExp()) {
             PrimaryExp(unaryExpNode);
         } else {
             ErrorController.DefinerPrintError();
@@ -684,7 +684,7 @@ public class Definer {
     private static void FuncRParams(AstNode constExpNode) throws IOException {
         AstNode funcRParamsNode = new AstNode("<FuncRParams>");
         constExpNode.addChild(funcRParamsNode);
-        while (Judge.IsExp()) {
+        while (Judge.isExp()) {
             Exp(funcRParamsNode);
             if (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
@@ -840,7 +840,7 @@ public class Definer {
     public static void ConstExp(AstNode constDeclNode) throws IOException {
         AstNode constExpNode = new AstNode("<ConstExp>");
         constDeclNode.addChild(constExpNode);
-        if (Judge.IsAddExp()) {
+        if (Judge.isAddExp()) {
             AddExp(constExpNode);
         } else {
             ErrorController.DefinerPrintError();

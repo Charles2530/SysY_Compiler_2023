@@ -29,7 +29,7 @@ public class SyntaxAnalysis {
         }
         if (rootAst.isLeaf()) {
             try {
-                OutputController.SyntaxAnalysisPrintTerminal(rootAst);
+                OutputController.syntaxAnalysisPrintTerminal(rootAst);
             } catch (Exception e) {
                 ErrorController.SyntaxAnalysisError(rootAst.getGrammarType());
                 e.printStackTrace();
@@ -38,7 +38,7 @@ public class SyntaxAnalysis {
             if (!(rootAst.getGrammarType().equals("<BlockItem>") || rootAst.getGrammarType()
                     .equals("<BType>") || rootAst.getGrammarType().equals("<Decl>"))) {
                 try {
-                    OutputController.SyntaxAnalysisPrintNoTerminal(rootAst);
+                    OutputController.syntaxAnalysisPrintNoTerminal(rootAst);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

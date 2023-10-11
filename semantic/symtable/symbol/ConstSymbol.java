@@ -1,13 +1,13 @@
-package semantic.symbolTable.symbol;
+package semantic.symtable.symbol;
 
-import semantic.symbolTable.Symbol;
+import semantic.symtable.Symbol;
 
 import java.util.ArrayList;
 
 public class ConstSymbol extends Symbol {
-    private int dim;
-    private ArrayList<Integer> initValue;
-    private ArrayList<Integer> space;
+    private final int dim;
+    private final ArrayList<Integer> initValue;
+    private final ArrayList<Integer> space;
 
     public ConstSymbol(String symbolName, SymType symbolType, int dim,
                        ArrayList<Integer> initValue, ArrayList<Integer> space) {

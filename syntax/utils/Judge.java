@@ -3,32 +3,32 @@ package syntax.utils;
 import syntax.AstRecursion;
 
 public class Judge {
-    public static boolean IsDecl() {
-        return IsConstDecl() || IsVarDecl();
+    public static boolean isDecl() {
+        return isConstDecl() || isVarDecl();
     }
 
-    public static boolean IsFuncDef() {
-        return IsFuncType() && getNextSym(1).equals("IDENFR") && getNextSym(2).equals("LPARENT");
+    public static boolean isFuncDef() {
+        return isFuncType() && getNextSym(1).equals("IDENFR") && getNextSym(2).equals("LPARENT");
     }
 
-    public static boolean IsFuncFParams() {
-        return IsFuncFParam();
+    public static boolean isFuncFParams() {
+        return isFuncFParam();
     }
 
-    public static boolean IsFuncType() {
+    public static boolean isFuncType() {
         return getPreSym().equals("INTTK") || getPreSym().equals("VOIDTK");
     }
 
-    public static boolean IsFuncFParam() {
+    public static boolean isFuncFParam() {
         return getPreSym().equals("INTTK");
     }
 
-    public static boolean IsConstInitVal() {
-        return IsConstExp() || getPreSym().equals("LBRACE");
+    public static boolean isConstInitVal() {
+        return isConstExp() || getPreSym().equals("LBRACE");
     }
 
     /*TODO:bug here*/
-    public static boolean IsLVal() {
+    public static boolean isLVal() {
         int k = 1;
         while (getNextSym(k).equals("LBRACK") && !getNextSym(k).equals("EOF")) {
             while (!getNextSym(k).equals("RBRACK")) {
@@ -39,96 +39,96 @@ public class Judge {
             }
             k++;
         }
-        return IsIdent() && !getNextSym(k).matches(
+        return isIdent() && !getNextSym(k).matches(
                 "LPARENT|PLUS|MINU|MULT|DIV|LSS|LEQ|GRE|GEQ|EQL|NEQ|SEMICN");
     }
 
-    public static boolean IsUnaryExp() {
-        return IsPrimaryExp() || IsUnaryOp() || IsIdent() && getNextSym(1).equals("LPARENT");
+    public static boolean isUnaryExp() {
+        return isPrimaryExp() || isUnaryOp() || isIdent() && getNextSym(1).equals("LPARENT");
     }
 
-    public static boolean IsIdent() {
+    public static boolean isIdent() {
         return getPreSym().equals("IDENFR");
     }
 
-    public static boolean IsUnaryOp() {
+    public static boolean isUnaryOp() {
         return getPreSym().equals("PLUS") || getPreSym().equals("MINU")
                 || getPreSym().equals("NOT");
     }
 
-    public static boolean IsPrimaryExp() {
-        return getPreSym().equals("LPARENT") || IsIdent() || IsNumber();
+    public static boolean isPrimaryExp() {
+        return getPreSym().equals("LPARENT") || isIdent() || isNumber();
     }
 
-    public static boolean IsMulExp() {
-        return IsUnaryExp();
+    public static boolean isMulExp() {
+        return isUnaryExp();
     }
 
-    public static boolean IsAddExp() {
-        return IsMulExp();
+    public static boolean isAddExp() {
+        return isMulExp();
     }
 
-    public static boolean IsConstExp() {
-        return IsAddExp();
+    public static boolean isConstExp() {
+        return isAddExp();
     }
 
-    public static boolean IsVarDecl() {
+    public static boolean isVarDecl() {
         return getPreSym().equals("INTTK") && getNextSym(1).equals("IDENFR")
                 && !getNextSym(2).equals("LPARENT");
     }
 
-    public static boolean IsVarDef() {
+    public static boolean isVarDef() {
         return getPreSym().equals("IDENFR");
     }
 
-    public static boolean IsInitval() {
-        return IsExp() || getPreSym().equals("LBRACE");
+    public static boolean isInitval() {
+        return isExp() || getPreSym().equals("LBRACE");
     }
 
-    public static boolean IsStmt() {
-        return IsLVal() || IsExp() || IsBlock() || IsReservedForStmt();
+    public static boolean isStmt() {
+        return isLVal() || isExp() || isBlock() || isReservedForStmt();
     }
 
-    public static boolean IsReservedForStmt() {
+    public static boolean isReservedForStmt() {
         return getPreSym().equals("SEMICN") || getPreSym().equals("IFTK") ||
                 getPreSym().equals("FORTK") || getPreSym().equals("BREAKTK") ||
                 getPreSym().equals("CONTINUETK") || getPreSym().equals("RETURNTK") ||
                 getPreSym().equals("PRINTFTK");
     }
 
-    public static boolean IsForStmtVal() {
-        return IsLVal() || IsExp();
+    public static boolean isForStmtVal() {
+        return isLVal() || isExp();
     }
 
-    public static boolean IsCond() {
-        return IsUnaryExp();
+    public static boolean isCond() {
+        return isUnaryExp();
     }
 
-    public static boolean IsBlockItem() {
-        return IsConstDecl() || IsVarDecl() || IsStmt();
+    public static boolean isBlockItem() {
+        return isConstDecl() || isVarDecl() || isStmt();
     }
 
-    public static boolean IsBlock() {
+    public static boolean isBlock() {
         return getPreSym().equals("LBRACE");
     }
 
-    public static boolean IsConstDecl() {
+    public static boolean isConstDecl() {
         return getPreSym().equals("CONSTTK");
     }
 
-    public static boolean IsConstDef() {
+    public static boolean isConstDef() {
         return getPreSym().equals("IDENFR");
     }
 
-    public static boolean IsExp() {
-        return IsAddExp();
+    public static boolean isExp() {
+        return isAddExp();
     }
 
-    public static boolean IsFuncRParams() {
-        return IsExp();
+    public static boolean isFuncRParams() {
+        return isExp();
     }
 
-    public static boolean IsNumber() {
+    public static boolean isNumber() {
         return getPreSym().equals("INTCON");
     }
 

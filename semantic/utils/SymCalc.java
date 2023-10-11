@@ -1,15 +1,15 @@
 package semantic.utils;
 
 import generation.utils.OutputController;
-import semantic.symbolTable.Symbol;
-import semantic.symbolTable.SymbolTable;
-import semantic.symbolTable.symbol.ConstSymbol;
-import semantic.symbolTable.symbol.VarSymbol;
+import semantic.symtable.Symbol;
+import semantic.symtable.SymbolTable;
+import semantic.symtable.symbol.ConstSymbol;
+import semantic.symtable.symbol.VarSymbol;
 import syntax.AstNode;
 
 import java.util.ArrayList;
 
-public class symCalc {
+public class SymCalc {
     public static ArrayList<Integer> calcInitVal(int dim, AstNode astNode) {
         ArrayList<Integer> ans = new ArrayList<>();
         if (dim == 0) {
@@ -40,24 +40,16 @@ public class symCalc {
 
     public static int calc(AstNode astNode) {
         if (OutputController.getIsCalcMode()) {
-            switch (astNode.getGrammarType()) {
-                case "<Exp>", "<ConstExp>":
-                    return calc(astNode.getChildList().get(0));
-                case "<AddExp>":
-                    return calcAddExp(astNode);
-                case "<MulExp>":
-                    return calcMulExp(astNode);
-                case "<UnaryExp>":
-                    return calcUnaryExp(astNode);
-                case "<PrimaryExp>":
-                    return calcPrimaryExp(astNode);
-                case "<Number>":
-                    return calcNumber(astNode);
-                case "<LVal>":
-                    return calcLValExp(astNode);
-                default:
-                    return 0;
-            }
+            return switch (astNode.getGrammarType()) {
+                case "<Exp>", "<ConstExp>" -> calc(astNode.getChildList().get(0));
+                case "<AddExp>" -> calcAddExp(astNode);
+                case "<MulExp>" -> calcMulExp(astNode);
+                case "<UnaryExp>" -> calcUnaryExp(astNode);
+                case "<PrimaryExp>" -> calcPrimaryExp(astNode);
+                case "<Number>" -> calcNumber(astNode);
+                case "<LVal>" -> calcLValExp(astNode);
+                default -> 0;
+            };
         } else {
             return 0;
         }
@@ -82,6 +74,8 @@ public class symCalc {
                 case "MUL" -> ans *= calc(astNode.getChildList().get(++i));
                 case "DIV" -> ans /= calc(astNode.getChildList().get(++i));
                 case "MOD" -> ans %= calc(astNode.getChildList().get(++i));
+                default -> {
+                }
             }
         }
         return ans;
@@ -91,13 +85,12 @@ public class symCalc {
         int ans = 0;
         AstNode child = astNode.getChildList().get(0);
         if (child.getGrammarType().equals("<UnaryOp>")) {
-            if (child.getChildList().get(0).getGrammarType().equals("PLUS")) {
-                ans = calc(astNode.getChildList().get(1));
-            } else if (child.getChildList().get(0).getGrammarType().equals("MINU")) {
-                ans = -calc(astNode.getChildList().get(1));
-            } else if (child.getChildList().get(0).getGrammarType().equals("NOT")) {
-                ans = calc(astNode.getChildList().get(1)) == 0 ? 1 : 0;
-            }
+            ans = switch (child.getChildList().get(0).getGrammarType()) {
+                case "PLUS" -> calc(astNode.getChildList().get(1));
+                case "MINU" -> -calc(astNode.getChildList().get(1));
+                case "NOT" -> calc(astNode.getChildList().get(1)) == 0 ? 1 : 0;
+                default -> ans;
+            };
         } else if (child.getGrammarType().equals("<PrimaryExp>")) {
             ans = calc(child);
         }
@@ -129,8 +122,7 @@ public class symCalc {
                 bracketVal.add(calc(astNode.getChildList().get(i)));
             }
         }
-        if (symbol instanceof ConstSymbol) {
-            ConstSymbol constSymbol = (ConstSymbol) symbol;
+        if (symbol instanceof ConstSymbol constSymbol) {
             if (constSymbol.getDim() == 0) {
                 return constSymbol.getConstValue();
             } else if (constSymbol.getDim() == 1) {

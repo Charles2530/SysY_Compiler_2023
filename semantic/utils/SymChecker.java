@@ -5,20 +5,20 @@ import generation.utils.ErrorToken;
 import generation.utils.OutputController;
 import semantic.SemanticAnalysis;
 import semantic.SemanticAnalysisChecker;
-import semantic.symbolTable.Symbol;
-import semantic.symbolTable.SymbolTable;
-import semantic.symbolTable.symbol.ConstSymbol;
-import semantic.symbolTable.symbol.FuncSymbol;
-import semantic.symbolTable.symbol.VarSymbol;
+import semantic.symtable.Symbol;
+import semantic.symtable.SymbolTable;
+import semantic.symtable.symbol.ConstSymbol;
+import semantic.symtable.symbol.FuncSymbol;
+import semantic.symtable.symbol.VarSymbol;
 import syntax.AstNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class symChecker {
-    private SemanticAnalysisChecker semanticAnalysisChecker;
+public class SymChecker {
+    private final SemanticAnalysisChecker semanticAnalysisChecker;
 
-    public symChecker() {
+    public SymChecker() {
         this.semanticAnalysisChecker = new SemanticAnalysisChecker();
     }
 
@@ -71,7 +71,7 @@ public class symChecker {
                 break;
             case "ASSIGN":
                 // Error h
-                checkASSIGNChecker(rootAst);
+                checkAssignChecker(rootAst);
                 break;
             case "<UnaryExp>":
                 // Error b,c,d,e
@@ -79,7 +79,7 @@ public class symChecker {
                 break;
             case "PRINTFTK":
                 // Error l
-                checkPRINTFTKChecker(rootAst);
+                checkPrintfChecker(rootAst);
                 break;
             default:
                 SemanticAnalysis.preTraverse(rootAst);
@@ -177,7 +177,7 @@ public class symChecker {
         SymbolTable.createStackSymbolTable();
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<Block>")) {
-                symDefiner.setParamInfo(rootAst, (FuncSymbol) symbol);
+                SymDefiner.setParamInfo(rootAst, (FuncSymbol) symbol);
             }
             SemanticAnalysis.preTraverse(astNode);
         }
@@ -205,7 +205,6 @@ public class symChecker {
     }
 
     //MainFuncDef.java
-    /*TODO: 这个还没写完*/
     private void checkMainFuncDefChecker(AstNode rootAst) throws IOException {
         SymbolTable.setGlobalArea(false);
         Symbol symbol = semanticAnalysisChecker.createMainFuncDefChecker(rootAst);
@@ -216,7 +215,7 @@ public class symChecker {
         SymbolTable.createStackSymbolTable();
         for (AstNode astNode : rootAst.getChildList()) {
             if (astNode.getGrammarType().equals("<Block>")) {
-                symDefiner.setParamInfo(rootAst, (FuncSymbol) symbol);
+                SymDefiner.setParamInfo(rootAst, (FuncSymbol) symbol);
             }
             SemanticAnalysis.preTraverse(astNode);
         }
@@ -237,7 +236,7 @@ public class symChecker {
 
     //Lexer_part
 
-    private void checkASSIGNChecker(AstNode sonAst) throws IOException {
+    private void checkAssignChecker(AstNode sonAst) throws IOException {
         Symbol symbol = null;
         ArrayList<Integer> tempDim = new ArrayList<>();
         AstNode rootAst = sonAst.getParent();
@@ -250,7 +249,7 @@ public class symChecker {
                     } else if (child.getGrammarType().equals("<Exp>")) {
                         if (symbol instanceof VarSymbol && tempDim.size() !=
                                 ((VarSymbol) symbol).getDim()) {
-                            tempDim.add(symCalc.calc(child));
+                            tempDim.add(SymCalc.calc(child));
                         }
                     }
                 }
@@ -260,7 +259,7 @@ public class symChecker {
             } else if (astNode.getGrammarType().equals("<Exp>")) {
                 if (OutputController.getIsCalcMode()) {
                     if (symbol instanceof VarSymbol) {
-                        int value = symCalc.calc(astNode);
+                        int value = SymCalc.calc(astNode);
                         if (tempDim.isEmpty()) {
                             ((VarSymbol) symbol).updateValue(value);
                         } else if (tempDim.size() == 1) {
@@ -297,10 +296,10 @@ public class symChecker {
                     ErrorController.addError(new ErrorToken("d", rootAst.getSpan().getStartLine()));
                 } else {
                     for (int i = 0; i < paramNum; i++) {
-                        Symbol.SymType paramType = funcSymbol.getFParamTypes().get(i);
-                        Symbol.SymType argType = symType.getExpType(childList.get(i));
-                        Integer paramdim = funcSymbol.getFParamDims().get(i);
-                        Integer argdim = symDefiner.getExpDim(childList.get(i));
+                        Symbol.SymType paramType = funcSymbol.getFparamTypes().get(i);
+                        Symbol.SymType argType = SymTypeJudge.getExpType(childList.get(i));
+                        Integer paramdim = funcSymbol.getFparamDims().get(i);
+                        Integer argdim = SymDefiner.getExpDim(childList.get(i));
                         if (!paramType.equals(argType) || !paramdim.equals(argdim)) {
                             ErrorController.addError(new ErrorToken("e",
                                     rootAst.getSpan().getStartLine()));
@@ -312,7 +311,7 @@ public class symChecker {
         SemanticAnalysis.preTraverse(rootAst);
     }
 
-    private void checkPRINTFTKChecker(AstNode astNode) throws IOException {
+    private void checkPrintfChecker(AstNode astNode) throws IOException {
         AstNode rootAst = astNode.getParent();
         int argNum = 0;
         String formatString = rootAst.getChildList().get(2).getSymToken().getWord();

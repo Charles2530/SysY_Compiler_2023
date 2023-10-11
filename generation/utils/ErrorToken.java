@@ -1,8 +1,8 @@
 package generation.utils;
 
 public class ErrorToken {
-    private String errorCategoryCode;
-    private int lineNum;
+    private final String errorCategoryCode;
+    private final int lineNum;
 
     public ErrorToken(String errorCategoryCode, int lineNum) {
         this.errorCategoryCode = errorCategoryCode;

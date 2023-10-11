@@ -1,14 +1,15 @@
 package generation.utils;
 
-import semantic.symbolTable.SymbolTable;
+import semantic.symtable.SymbolTable;
 import syntax.AstRecursion;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ErrorController {
-    private static ArrayList<ErrorToken> errorlist = new ArrayList<>();
+    private static final ArrayList<ErrorToken> errorlist = new ArrayList<>();
     private static BufferedWriter errorBufferedWriter;
     private static boolean isDebugMode;
     private static boolean detailMode;
@@ -31,15 +32,7 @@ public class ErrorController {
 
     public static void printErrors() throws IOException {
         if (isDebugMode) {
-            errorlist.sort((o1, o2) -> {
-                if (o1.getLineNum() > o2.getLineNum()) {
-                    return 1;
-                } else if (o1.getLineNum() < o2.getLineNum()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            });
+            errorlist.sort(Comparator.comparingInt(ErrorToken::getLineNum));
             for (ErrorToken error : errorlist) {
                 printError(error);
             }

@@ -1,9 +1,9 @@
-package semantic.symbolTable;
+package semantic.symtable;
 
 import java.util.HashMap;
 
 public class StackSymbolTable {
-    private HashMap<String, Symbol> symbols;
+    private final HashMap<String, Symbol> symbols;
 
     public StackSymbolTable() {
         this.symbols = new HashMap<>();

@@ -23,7 +23,6 @@ public class LexicalWordCheck {
         ArrayList<String> words = new ArrayList<>();
         for (int i = 0; i < line.length(); i++) {
             if (isComment) {
-                // 注释
                 if (i + 1 < line.length() && line.charAt(i) == '*' && line.charAt(i + 1) == '/') {
                     isComment = false;
                     i++;
@@ -32,14 +31,12 @@ public class LexicalWordCheck {
             }
             char c = line.charAt(i);
             if (charSet.contains(String.valueOf(c))) {
-                // 判断是否为保留字
                 if (!word.isEmpty()) {
                     words.add(word);
                     word = "";
                 }
                 words.add(String.valueOf(c));
             } else if (cmpSet.contains(String.valueOf(c))) {
-                // 判断是否为>=,<=,==,!=
                 if (!word.isEmpty()) {
                     words.add(word);
                     word = "";
@@ -51,16 +48,13 @@ public class LexicalWordCheck {
                     words.add(String.valueOf(c));
                 }
             } else if (Character.isLetterOrDigit(c) || c == '_') {
-                // 判断是否为数字或者字母或者下划线
                 word += c;
             } else if (Character.isSpaceChar(c)) {
-                // 判断是否为空格
                 if (!word.isEmpty()) {
                     words.add(word);
                     word = "";
                 }
             } else if (c == '\"') {
-                // 判断是否为字符串
                 if (!word.isEmpty()) {
                     words.add(word);
                     word = "";
@@ -72,14 +66,12 @@ public class LexicalWordCheck {
                 }
                 word += line.charAt(i);
                 if (this.checkIllegalSym(word)) {
-                    // 判断是否为非法字符串
                     ErrorController.addError(new ErrorToken("a", lineNum));
                 }
                 words.add(word);
                 word = "";
             } else if (i + 1 < line.length() && (c == '&' && line.charAt(i + 1) == '&'
                     || c == '|' && line.charAt(i + 1) == '|')) {
-                // 判断是否为&&,||
                 if (!word.isEmpty()) {
                     words.add(word);
                     word = "";
@@ -87,16 +79,13 @@ public class LexicalWordCheck {
                 words.add(c + String.valueOf(line.charAt(i + 1)));
                 i++;
             } else if (c == '/') {
-                // 判断是否为除法
                 if (!word.isEmpty()) {
                     words.add(word);
                     word = "";
                 }
                 if (i + 1 < line.length() && line.charAt(i + 1) == '/') {
-                    // 判断是否为单行注释
                     break;
                 } else if (i + 1 < line.length() && line.charAt(i + 1) == '*') {
-                    // 判断是否为多行注释
                     i += 2;
                     isComment = true;
                     while (i < line.length() && !(line.charAt(i) == '*'
@@ -112,7 +101,6 @@ public class LexicalWordCheck {
                     words.add(String.valueOf(c));
                 }
             } else {
-                // 出现错误
                 ErrorController.LexicalWordCheckPrintError(lineNum, String.valueOf(c));
             }
         }

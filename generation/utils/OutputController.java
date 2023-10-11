@@ -15,7 +15,7 @@ public class OutputController {
     private static BufferedWriter generationOutputStream;
     private static boolean IsGenerationOutput;
 
-    public static void LexicalAnalysisPrint(SymToken symToken) throws IOException {
+    public static void lexicalAnalysisPrint(SymToken symToken) throws IOException {
         if (IsLexerOutput) {
             lexerOutputStream.write(symToken.getReservedWord() + " " + symToken.getWord());
             lexerOutputStream.newLine();
@@ -54,7 +54,7 @@ public class OutputController {
         OutputController.IsGenerationOutput = isGenerationOutput;
     }
 
-    public static void SyntaxAnalysisPrintTerminal(AstNode rootAst) {
+    public static void syntaxAnalysisPrintTerminal(AstNode rootAst) {
         if (IsParserOutput) {
             try {
                 parserOutputStream.write(rootAst.getSymToken().getReservedWord()
@@ -66,7 +66,7 @@ public class OutputController {
         }
     }
 
-    public static void SyntaxAnalysisPrintNoTerminal(AstNode rootAst) {
+    public static void syntaxAnalysisPrintNoTerminal(AstNode rootAst) {
         if (IsParserOutput) {
             try {
                 parserOutputStream.write(rootAst.getGrammarType());
@@ -77,7 +77,7 @@ public class OutputController {
         }
     }
 
-    public static void GenerationPrint(String str) throws IOException {
+    public static void generationPrint(String str) throws IOException {
         if (IsGenerationOutput) {
             generationOutputStream.write(str);
             generationOutputStream.newLine();

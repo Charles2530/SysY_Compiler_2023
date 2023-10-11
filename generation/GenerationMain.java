@@ -4,7 +4,7 @@ import generation.llvm.LLvmGenIR;
 import syntax.AstNode;
 
 public class GenerationMain {
-    private AstNode rootAst;
+    private final AstNode rootAst;
     private LLvmGenIR llvmGenIR;
     private static Module module;
 

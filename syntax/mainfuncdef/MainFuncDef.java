@@ -1,4 +1,4 @@
-package syntax.mainFuncDef;
+package syntax.mainfuncdef;
 
 import generation.utils.ErrorController;
 import generation.utils.ErrorToken;
@@ -10,7 +10,7 @@ import syntax.utils.Judge;
 import java.io.IOException;
 
 public class MainFuncDef {
-    private AstNode rootAst;
+    private final AstNode rootAst;
 
     public MainFuncDef(AstNode rootAst) throws IOException {
         this.rootAst = rootAst;
@@ -41,7 +41,7 @@ public class MainFuncDef {
                                 AstRecursion.getPreviousNoTerminalAst()
                                         .getSpan().getEndLine()));
                     }
-                    if (Judge.IsBlock()) {
+                    if (Judge.isBlock()) {
                         Definer.Block(mainFuncDefNode);
                     } else {
                         ErrorController.MainFuncDefPrintError();

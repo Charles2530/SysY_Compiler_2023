@@ -1,27 +1,27 @@
 package semantic;
 
 import generation.utils.ErrorController;
-import semantic.symbolTable.SymbolTable;
-import semantic.utils.symChecker;
+import semantic.symtable.SymbolTable;
+import semantic.utils.SymChecker;
 import syntax.AstNode;
 
 import java.io.IOException;
 
 public class SemanticAnalysis {
-    private AstNode rootAst;
-    private static symChecker rootChecker;
+    private final AstNode rootAst;
+    private static SymChecker rootChecker;
 
     public SemanticAnalysis(AstNode rootAst) {
         this.rootAst = rootAst;
-        new SymbolTable();
+        SymbolTable.init();
     }
 
-    public static symChecker getRootChecker() {
+    public static SymChecker getRootChecker() {
         return rootChecker;
     }
 
     public void analysis() throws IOException {
-        SemanticAnalysis.rootChecker = new symChecker();
+        SemanticAnalysis.rootChecker = new SymChecker();
         SemanticAnalysis.rootChecker.check(rootAst);
         ErrorController.printErrors();
     }

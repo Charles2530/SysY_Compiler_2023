@@ -73,7 +73,7 @@ public class LexicalAnalysis {
                 if (reservedWord != null) {
                     SymToken symToken = new SymToken(reservedWord, word, lineNum);
                     symTokens.add(symToken);
-                    OutputController.LexicalAnalysisPrint(symToken);
+                    OutputController.lexicalAnalysisPrint(symToken);
                 } else {
                     ErrorController.LexicalAnalysisPrintError(lineNum, word);
                 }

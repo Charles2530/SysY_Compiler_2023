@@ -5,10 +5,10 @@ import lexer.SymToken;
 import java.util.ArrayList;
 
 public class AstNode {
-    private String grammarType;
-    private ArrayList<AstNode> childList = new ArrayList<>();
+    private final String grammarType;
+    private final ArrayList<AstNode> childList = new ArrayList<>();
     private SymToken symToken = null;
-    private Span span;
+    private final Span span;
     private AstNode parent;
 
     public AstNode(String grammarType) {
