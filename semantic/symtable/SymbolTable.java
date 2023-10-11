@@ -21,6 +21,13 @@ public class SymbolTable {
         SymbolTable.curLevel = -1;
     }
 
+    public static void clear() {
+        SymbolTable.symbolTables.clear();
+        SymbolTable.isGlobalArea = true;
+        SymbolTable.loopLevel = 0;
+        SymbolTable.curLevel = -1;
+    }
+
     public static void setGlobalArea(boolean isGlobalArea) {
         SymbolTable.isGlobalArea = isGlobalArea;
     }

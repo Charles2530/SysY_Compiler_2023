@@ -23,7 +23,7 @@ public class IrNameController {
         return irPrefixHashMap.get(prefix);
     }
 
-    public String getBBName() {
+    public String getBbName() {
         return IrNameController.getPrefix(IrPrefix.BB_NAME) + bbNameIndex++;
     }
 

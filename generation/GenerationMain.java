@@ -2,6 +2,9 @@ package generation;
 
 import generation.llvm.LLvmGenIR;
 import generation.utils.IrNameController;
+import generation.value.Module;
+import iostream.OutputController;
+import semantic.symtable.SymbolTable;
 import syntax.AstNode;
 
 public class GenerationMain {
@@ -12,13 +15,18 @@ public class GenerationMain {
     public GenerationMain(AstNode rootAst) {
         this.rootAst = rootAst;
         GenerationMain.module = new Module();
+        SymbolTable.clear();
         IrNameController.init();
+    }
+
+    public static Module getModule() {
+        return module;
     }
 
     public void generate() {
         GenerationMain.llvmGenIR = new LLvmGenIR();
         GenerationMain.llvmGenIR.genIrAnalysis(rootAst);
-        printLlvm(module);
+        OutputController.generationPrint(module.toString());
     }
 
     public static void preTraverse(AstNode rootAst) {
@@ -30,11 +38,8 @@ public class GenerationMain {
         }
     }
 
-    private void printLlvm(Module module) {
-
-    }
-
-    public static Module getModule() {
-        return module;
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

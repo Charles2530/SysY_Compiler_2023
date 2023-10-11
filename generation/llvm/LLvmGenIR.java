@@ -1,6 +1,7 @@
 package generation.llvm;
 
 import generation.GenerationMain;
+import generation.value.Value;
 import syntax.AstNode;
 
 public class LLvmGenIR {
@@ -8,511 +9,442 @@ public class LLvmGenIR {
     public LLvmGenIR() {
     }
 
-    public void genIrAnalysis(AstNode rootAst) {
-        switch (rootAst.getGrammarType()) {
+    public Value genIrAnalysis(AstNode rootAst) {
+        return switch (rootAst.getGrammarType()) {
             //Decl.java
-            case "<Decl>":
-                genIrDeclChecker(rootAst);
-                break;
+            case "<Decl>" -> genIrDeclChecker(rootAst);
             //Definer.java
-            case "<ConstDecl>":
-                genIrConstDeclChecker(rootAst);
-                break;
-            case "<ConstDef>":
-                genIrConstDefChecker(rootAst);
-                break;
-            case "<ConstInitVal>":
-                genIrConstInitValChecker(rootAst);
-                break;
-            case "<VarDecl>":
-                genIrVarDeclChecker(rootAst);
-                break;
-            case "<VarDef>":
-                genIrVarDefChecker(rootAst);
-                break;
-            case "<InitVal>":
-                genIrInitValChecker(rootAst);
-                break;
-            case "<Block>":
-                genIrBlockChecker(rootAst);
-                break;
-            case "<BlockItem>":
-                genIrBlockItemChecker(rootAst);
-                break;
-            case "<Stmt>":
-                genIrStmtChecker(rootAst);
-                break;
-            case "IFTK":
-                genIrIfStmtChecker(rootAst);
-                break;
-            case "FORTK":
-                genIrForStmtChecker(rootAst);
-                break;
-            case "BREAKTK":
-                genIrBreakStmtChecker(rootAst);
-                break;
-            case "CONTINUETK":
-                genIrContinueStmtChecker(rootAst);
-                break;
-            case "RETURNTK":
-                genIrReturnStmtChecker(rootAst);
-                break;
-            case "PRINTFTK":
-                genIrPrintStmtChecker(rootAst);
-                break;
-            case "<ForStmt>":
-                genIrForStmtValChecker(rootAst);
-                break;
-            case "<Exp>":
-                genIrExpChecker(rootAst);
-                break;
-            case "<Cond>":
-                genIrCondChecker(rootAst);
-                break;
-            case "<LVal>":
-                genIrLValChecker(rootAst);
-                break;
-            case "<PrimaryExp>":
-                genIrPrimaryExpChecker(rootAst);
-                break;
-            case "<Number>":
-                genIrNumberCallChecker(rootAst);
-                break;
-            case "<UnaryExp>":
-                genIrUnaryExpChecker(rootAst);
-                break;
-            case "<UnaryOp>":
-                genIrUnaryOpChecker(rootAst);
-                break;
-            case "<FuncRParams>":
-                genIrFuncRParamsChecker(rootAst);
-                break;
-            case "<MulExp>":
-                genIrMulExpChecker(rootAst);
-                break;
-            case "<AddExp>":
-                genIrAddExpChecker(rootAst);
-                break;
-            case "<RelExp>":
-                genIrRelExpChecker(rootAst);
-                break;
-            case "<EqExp>":
-                genIrEqExpChecker(rootAst);
-                break;
-            case "<LAndExp>":
-                genIrLAndExpChecker(rootAst);
-                break;
-            case "<LOrExp>":
-                genIrLOrExpChecker(rootAst);
-                break;
-            case "<ConstExp>":
-                genIrConstExpChecker(rootAst);
-                break;
-            case "<BType>":
-                genIrBTypeChecker(rootAst);
-                break;
-            case "IDENFR":
-                genIrIdentChecker(rootAst);
-                break;
+            case "<ConstDecl>" -> genIrConstDeclChecker(rootAst);
+            case "<ConstDef>" -> genIrConstDefChecker(rootAst);
+            case "<ConstInitVal>" -> genIrConstInitValChecker(rootAst);
+            case "<VarDecl>" -> genIrVarDeclChecker(rootAst);
+            case "<VarDef>" -> genIrVarDefChecker(rootAst);
+            case "<InitVal>" -> genIrInitValChecker(rootAst);
+            case "<Block>" -> genIrBlockChecker(rootAst);
+            case "<BlockItem>" -> genIrBlockItemChecker(rootAst);
+            case "<Stmt>" -> genIrStmtChecker(rootAst);
+            case "IFTK" -> genIrIfStmtChecker(rootAst);
+            case "FORTK" -> genIrForStmtChecker(rootAst);
+            case "BREAKTK" -> genIrBreakStmtChecker(rootAst);
+            case "CONTINUETK" -> genIrContinueStmtChecker(rootAst);
+            case "RETURNTK" -> genIrReturnStmtChecker(rootAst);
+            case "PRINTFTK" -> genIrPrintStmtChecker(rootAst);
+            case "<ForStmt>" -> genIrForStmtValChecker(rootAst);
+            case "<Exp>" -> genIrExpChecker(rootAst);
+            case "<Cond>" -> genIrCondChecker(rootAst);
+            case "<LVal>" -> genIrLValChecker(rootAst);
+            case "<PrimaryExp>" -> genIrPrimaryExpChecker(rootAst);
+            case "<Number>" -> genIrNumberCallChecker(rootAst);
+            case "<UnaryExp>" -> genIrUnaryExpChecker(rootAst);
+            case "<UnaryOp>" -> genIrUnaryOpChecker(rootAst);
+            case "<FuncRParams>" -> genIrFuncRParamsChecker(rootAst);
+            case "<MulExp>" -> genIrMulExpChecker(rootAst);
+            case "<AddExp>" -> genIrAddExpChecker(rootAst);
+            case "<RelExp>" -> genIrRelExpChecker(rootAst);
+            case "<EqExp>" -> genIrEqExpChecker(rootAst);
+            case "<LAndExp>" -> genIrLAndExpChecker(rootAst);
+            case "<LOrExp>" -> genIrLOrExpChecker(rootAst);
+            case "<ConstExp>" -> genIrConstExpChecker(rootAst);
+            case "<BType>" -> genIrBTypeChecker(rootAst);
+            case "IDENFR" -> genIrIdentChecker(rootAst);
             //FuncDef.java
-            case "<FuncDef>":
-                genIrFuncDefChecker(rootAst);
-                break;
-            case "<FuncType>":
-                genIrFuncTypeChecker(rootAst);
-                break;
-            case "<FuncFParams>":
-                genIrFuncFParamsChecker(rootAst);
-                break;
-            case "<FuncFParam>":
-                genIrFuncFParamChecker(rootAst);
-                break;
+            case "<FuncDef>" -> genIrFuncDefChecker(rootAst);
+            case "<FuncType>" -> genIrFuncTypeChecker(rootAst);
+            case "<FuncFParams>" -> genIrFuncFParamsChecker(rootAst);
+            case "<FuncFParam>" -> genIrFuncFParamChecker(rootAst);
             //MainFuncDef.java
-            case "<MainFuncDef>":
-                genIrMainFuncDefChecker(rootAst);
-                break;
+            case "<MainFuncDef>" -> genIrMainFuncDefChecker(rootAst);
             //Lexer_part
-            case "INTTK":
-                genIrINTTKChecker(rootAst);
-                break;
-            case "VOIDTK":
-                genIrVOIDTKChecker(rootAst);
-                break;
-            case "MAINTK":
-                genIrMAINTKChecker(rootAst);
-                break;
-            case "LPARENT":
-                genIrLPARENTChecker(rootAst);
-                break;
-            case "RPARENT":
-                genIrRPARENTChecker(rootAst);
-                break;
-            case "LBRACE":
-                genIrLBRACEChecker(rootAst);
-                break;
-            case "RBRACE":
-                genIrRBRACEChecker(rootAst);
-                break;
-            case "LBRACK":
-                genIrLBRACKChecker(rootAst);
-                break;
-            case "RBRACK":
-                genIrRBRACKChecker(rootAst);
-                break;
-            case "SEMICN":
-                genIrSEMICNChecker(rootAst);
-                break;
-            case "COMMA":
-                genIrCOMMAChecker(rootAst);
-                break;
-            case "ASSIGN":
-                genIrASSIGNChecker(rootAst);
-                break;
-            case "PLUS":
-                genIrPLUSChecker(rootAst);
-                break;
-            case "MINU":
-                genIrMINUChecker(rootAst);
-                break;
-            case "INTCON":
-                genIrINTCONChecker(rootAst);
-                break;
-            case "NOT":
-                genIrNOTChecker(rootAst);
-                break;
-            case "DIV":
-                genIrDIVChecker(rootAst);
-                break;
-            case "MULT":
-                genIrMULTChecker(rootAst);
-                break;
-            case "MOD":
-                genIrMODChecker(rootAst);
-                break;
-            case "AND":
-                genIrANDChecker(rootAst);
-                break;
-            case "OR":
-                genIrORChecker(rootAst);
-                break;
-            case "NEQ":
-                genIrNEQChecker(rootAst);
-                break;
-            case "EQL":
-                genIrEQLChecker(rootAst);
-                break;
-            case "LSS":
-                genIrLSSChecker(rootAst);
-                break;
-            case "LEQ":
-                genIrLEQChecker(rootAst);
-                break;
-            case "GRE":
-                genIrGREChecker(rootAst);
-                break;
-            case "GEQ":
-                genIrGEQChecker(rootAst);
-                break;
-            case "STRCON":
-                genIrSTRCONChecker(rootAst);
-                break;
-            case "CONSTTK":
-                genIrCONSTTKChecker(rootAst);
-                break;
-            case "ELSETK":
-                genIrELSETKChecker(rootAst);
-                break;
-            case "GETINTTK":
-                genIrGETINTTKChecker(rootAst);
-                break;
-            default:
+            case "INTTK" -> genIrINTTKChecker(rootAst);
+            case "VOIDTK" -> genIrVOIDTKChecker(rootAst);
+            case "MAINTK" -> genIrMAINTKChecker(rootAst);
+            case "LPARENT" -> genIrLPARENTChecker(rootAst);
+            case "RPARENT" -> genIrRPARENTChecker(rootAst);
+            case "LBRACE" -> genIrLBRACEChecker(rootAst);
+            case "RBRACE" -> genIrRBRACEChecker(rootAst);
+            case "LBRACK" -> genIrLBRACKChecker(rootAst);
+            case "RBRACK" -> genIrRBRACKChecker(rootAst);
+            case "SEMICN" -> genIrSEMICNChecker(rootAst);
+            case "COMMA" -> genIrCOMMAChecker(rootAst);
+            case "ASSIGN" -> genIrASSIGNChecker(rootAst);
+            case "PLUS" -> genIrPLUSChecker(rootAst);
+            case "MINU" -> genIrMINUChecker(rootAst);
+            case "INTCON" -> genIrINTCONChecker(rootAst);
+            case "NOT" -> genIrNOTChecker(rootAst);
+            case "DIV" -> genIrDIVChecker(rootAst);
+            case "MULT" -> genIrMULTChecker(rootAst);
+            case "MOD" -> genIrMODChecker(rootAst);
+            case "AND" -> genIrANDChecker(rootAst);
+            case "OR" -> genIrORChecker(rootAst);
+            case "NEQ" -> genIrNEQChecker(rootAst);
+            case "EQL" -> genIrEQLChecker(rootAst);
+            case "LSS" -> genIrLSSChecker(rootAst);
+            case "LEQ" -> genIrLEQChecker(rootAst);
+            case "GRE" -> genIrGREChecker(rootAst);
+            case "GEQ" -> genIrGEQChecker(rootAst);
+            case "STRCON" -> genIrSTRCONChecker(rootAst);
+            case "CONSTTK" -> genIrCONSTTKChecker(rootAst);
+            case "ELSETK" -> genIrELSETKChecker(rootAst);
+            case "GETINTTK" -> genIrGETINTTKChecker(rootAst);
+            default -> {
                 GenerationMain.preTraverse(rootAst);
-                break;
-        }
+                yield null;
+            }
+        };
     }
 
     //Decl.java
-    private void genIrDeclChecker(AstNode rootAst) {
+    private Value genIrDeclChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
     //Definer.java
-    private void genIrConstDeclChecker(AstNode rootAst) {
+    private Value genIrConstDeclChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrConstDefChecker(AstNode rootAst) {
+    private Value genIrConstDefChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrConstInitValChecker(AstNode rootAst) {
+    private Value genIrConstInitValChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrVarDeclChecker(AstNode rootAst) {
+    private Value genIrVarDeclChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrVarDefChecker(AstNode rootAst) {
+    private Value genIrVarDefChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrInitValChecker(AstNode rootAst) {
+    private Value genIrInitValChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrBlockChecker(AstNode rootAst) {
+    private Value genIrBlockChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrBlockItemChecker(AstNode rootAst) {
+    private Value genIrBlockItemChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrStmtChecker(AstNode rootAst) {
+    private Value genIrStmtChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrIfStmtChecker(AstNode rootAst) {
+    private Value genIrIfStmtChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrForStmtChecker(AstNode rootAst) {
+    private Value genIrForStmtChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrBreakStmtChecker(AstNode rootAst) {
+    private Value genIrBreakStmtChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrContinueStmtChecker(AstNode rootAst) {
+    private Value genIrContinueStmtChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrReturnStmtChecker(AstNode rootAst) {
+    private Value genIrReturnStmtChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrPrintStmtChecker(AstNode rootAst) {
+    private Value genIrPrintStmtChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrForStmtValChecker(AstNode rootAst) {
+    private Value genIrForStmtValChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrExpChecker(AstNode rootAst) {
+    private Value genIrExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrCondChecker(AstNode rootAst) {
+    private Value genIrCondChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLValChecker(AstNode rootAst) {
+    private Value genIrLValChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrPrimaryExpChecker(AstNode rootAst) {
+    private Value genIrPrimaryExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrNumberCallChecker(AstNode rootAst) {
+    private Value genIrNumberCallChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrUnaryExpChecker(AstNode rootAst) {
+    private Value genIrUnaryExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrUnaryOpChecker(AstNode rootAst) {
+    private Value genIrUnaryOpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrFuncRParamsChecker(AstNode rootAst) {
+    private Value genIrFuncRParamsChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrMulExpChecker(AstNode rootAst) {
+    private Value genIrMulExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrAddExpChecker(AstNode rootAst) {
+    private Value genIrAddExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrRelExpChecker(AstNode rootAst) {
+    private Value genIrRelExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrEqExpChecker(AstNode rootAst) {
+    private Value genIrEqExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLAndExpChecker(AstNode rootAst) {
+    private Value genIrLAndExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLOrExpChecker(AstNode rootAst) {
+    private Value genIrLOrExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrConstExpChecker(AstNode rootAst) {
+    private Value genIrConstExpChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrBTypeChecker(AstNode rootAst) {
+    private Value genIrBTypeChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrIdentChecker(AstNode rootAst) {
+    private Value genIrIdentChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
     //FuncDef.java
-    private void genIrFuncDefChecker(AstNode rootAst) {
+    private Value genIrFuncDefChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrFuncTypeChecker(AstNode rootAst) {
+    private Value genIrFuncTypeChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrFuncFParamsChecker(AstNode rootAst) {
+    private Value genIrFuncFParamsChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrFuncFParamChecker(AstNode rootAst) {
+    private Value genIrFuncFParamChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
     //MainFuncDef.java
-    private void genIrMainFuncDefChecker(AstNode rootAst) {
+    private Value genIrMainFuncDefChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
     //Lexer_part
-    private void genIrINTTKChecker(AstNode rootAst) {
+    private Value genIrINTTKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrVOIDTKChecker(AstNode rootAst) {
+    private Value genIrVOIDTKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrMAINTKChecker(AstNode rootAst) {
+    private Value genIrMAINTKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLPARENTChecker(AstNode rootAst) {
+    private Value genIrLPARENTChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrRPARENTChecker(AstNode rootAst) {
+    private Value genIrRPARENTChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLBRACEChecker(AstNode rootAst) {
+    private Value genIrLBRACEChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrRBRACEChecker(AstNode rootAst) {
+    private Value genIrRBRACEChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLBRACKChecker(AstNode rootAst) {
+    private Value genIrLBRACKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrRBRACKChecker(AstNode rootAst) {
+    private Value genIrRBRACKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrSEMICNChecker(AstNode rootAst) {
+    private Value genIrSEMICNChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrCOMMAChecker(AstNode rootAst) {
+    private Value genIrCOMMAChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrASSIGNChecker(AstNode rootAst) {
+    private Value genIrASSIGNChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrPLUSChecker(AstNode rootAst) {
+    private Value genIrPLUSChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrMINUChecker(AstNode rootAst) {
+    private Value genIrMINUChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrINTCONChecker(AstNode rootAst) {
+    private Value genIrINTCONChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrNOTChecker(AstNode rootAst) {
+    private Value genIrNOTChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrDIVChecker(AstNode rootAst) {
+    private Value genIrDIVChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrMULTChecker(AstNode rootAst) {
+    private Value genIrMULTChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrMODChecker(AstNode rootAst) {
+    private Value genIrMODChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrANDChecker(AstNode rootAst) {
+    private Value genIrANDChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrORChecker(AstNode rootAst) {
+    private Value genIrORChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrNEQChecker(AstNode rootAst) {
+    private Value genIrNEQChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrEQLChecker(AstNode rootAst) {
+    private Value genIrEQLChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLSSChecker(AstNode rootAst) {
+    private Value genIrLSSChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrLEQChecker(AstNode rootAst) {
+    private Value genIrLEQChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrGREChecker(AstNode rootAst) {
+    private Value genIrGREChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrGEQChecker(AstNode rootAst) {
+    private Value genIrGEQChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrSTRCONChecker(AstNode rootAst) {
+    private Value genIrSTRCONChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrCONSTTKChecker(AstNode rootAst) {
+    private Value genIrCONSTTKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrELSETKChecker(AstNode rootAst) {
+    private Value genIrELSETKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 
-    private void genIrGETINTTKChecker(AstNode rootAst) {
+    private Value genIrGETINTTKChecker(AstNode rootAst) {
         GenerationMain.preTraverse(rootAst);
+        return null;
     }
 }
