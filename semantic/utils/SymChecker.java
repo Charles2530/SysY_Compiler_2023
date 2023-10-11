@@ -1,8 +1,8 @@
 package semantic.utils;
 
-import generation.utils.ErrorController;
-import generation.utils.ErrorToken;
-import generation.utils.OutputController;
+import iostream.ErrorController;
+import iostream.ErrorToken;
+import iostream.OutputController;
 import semantic.SemanticAnalysis;
 import semantic.SemanticAnalysisChecker;
 import semantic.symtable.Symbol;

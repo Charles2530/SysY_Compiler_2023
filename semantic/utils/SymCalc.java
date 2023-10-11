@@ -1,6 +1,6 @@
 package semantic.utils;
 
-import generation.utils.OutputController;
+import iostream.OutputController;
 import semantic.symtable.Symbol;
 import semantic.symtable.SymbolTable;
 import semantic.symtable.symbol.ConstSymbol;

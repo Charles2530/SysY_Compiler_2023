@@ -1,4 +1,4 @@
-package generation.utils;
+package iostream;
 
 public class ErrorToken {
     private final String errorCategoryCode;

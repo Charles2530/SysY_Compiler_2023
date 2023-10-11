@@ -1,4 +1,4 @@
-package generation.utils;
+package iostream;
 
 import lexer.SymToken;
 import syntax.AstNode;
@@ -77,10 +77,14 @@ public class OutputController {
         }
     }
 
-    public static void generationPrint(String str) throws IOException {
+    public static void generationPrint(String str) {
         if (IsGenerationOutput) {
-            generationOutputStream.write(str);
-            generationOutputStream.newLine();
+            try {
+                generationOutputStream.write(str);
+                generationOutputStream.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

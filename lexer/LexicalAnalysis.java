@@ -1,7 +1,7 @@
 package lexer;
 
-import generation.utils.ErrorController;
-import generation.utils.OutputController;
+import iostream.ErrorController;
+import iostream.OutputController;
 
 import java.io.IOException;
 import java.util.ArrayList;

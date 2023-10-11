@@ -1,7 +1,7 @@
 package syntax.utils;
 
-import generation.utils.ErrorController;
-import generation.utils.ErrorToken;
+import iostream.ErrorController;
+import iostream.ErrorToken;
 import syntax.AstNode;
 import syntax.AstRecursion;
 

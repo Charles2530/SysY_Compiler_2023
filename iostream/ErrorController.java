@@ -1,4 +1,4 @@
-package generation.utils;
+package iostream;
 
 import semantic.symtable.SymbolTable;
 import syntax.AstRecursion;

@@ -1,6 +1,6 @@
 package semantic;
 
-import generation.utils.ErrorController;
+import iostream.ErrorController;
 import semantic.symtable.SymbolTable;
 import semantic.utils.SymChecker;
 import syntax.AstNode;
