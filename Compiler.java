@@ -8,13 +8,13 @@ import syntax.SyntaxAnalysis;
 import java.io.*;
 
 public class Compiler {
-    private static final boolean fileInputMode = true;
-    private static final boolean detailMode = false;
-    private static final boolean IsCalcMode = false;
-    private static final boolean IsDebugMode = true;
-    private static final boolean IsLexerOutput = false;
-    private static final boolean IsParserOutput = false;
-    private static final boolean IsGenerationOutput = false;
+    private static boolean fileInputMode = true;
+    private static boolean detailMode = false;
+    private static boolean IsCalcMode = false;
+    private static boolean IsDebugMode = true;
+    private static boolean IsLexerOutput = false;
+    private static boolean IsParserOutput = false;
+    private static boolean IsGenerationOutput = false;
 
     public static void main(String[] args) throws IOException {
         // 将文件进行重定向

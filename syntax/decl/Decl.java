@@ -19,11 +19,11 @@ public class Decl {
         AstNode declNode = new AstNode("<Decl>");
         rootAst.addChild(declNode);
         if (Judge.isConstDecl()) {
-            Definer.ConstDecl(declNode);
+            Definer.genConstDecl(declNode);
         } else if (Judge.isVarDecl()) {
-            Definer.VarDecl(declNode);
+            Definer.genVarDecl(declNode);
         } else {
-            ErrorController.DeclPrintError();
+            ErrorController.printDeclPrintError();
         }
     }
 }

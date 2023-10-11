@@ -48,7 +48,7 @@ public class AstRecursion {
         return symTokens.get(symPos + pos);
     }
 
-    public void CompUnit(AstNode rootAst) throws IOException {
+    public void genCompUnit(AstNode rootAst) throws IOException {
         while (Judge.isDecl()) {
             new Decl(rootAst);
         }

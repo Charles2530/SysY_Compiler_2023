@@ -21,24 +21,24 @@ public class FuncDef {
         AstNode funcDefNode = new AstNode("<FuncDef>");
         rootAst.addChild(funcDefNode);
         if (Judge.isFuncType()) {
-            FuncType(funcDefNode);
+            genFuncType(funcDefNode);
         } else {
-            ErrorController.FuncDefPrintError();
+            ErrorController.printFuncDefPrintError();
         }
         if (Judge.isIdent()) {
-            Definer.Ident(funcDefNode);
+            Definer.genIdent(funcDefNode);
         } else {
-            ErrorController.FuncDefPrintError();
+            ErrorController.printFuncDefPrintError();
         }
         if (getPreSym().equals("LPARENT")) {
             AstNode lparentNode = new AstNode("LPARENT");
             funcDefNode.addChild(lparentNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.FuncDefPrintError();
+            ErrorController.printFuncDefPrintError();
         }
         if (Judge.isFuncFParams()) {
-            FuncFParams(funcDefNode);
+            genFuncFParams(funcDefNode);
         }
         if (getPreSym().equals("RPARENT")) {
             AstNode rparentNode = new AstNode("RPARENT");
@@ -49,13 +49,13 @@ public class FuncDef {
                     AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
         }
         if (Judge.isBlock()) {
-            Definer.Block(funcDefNode);
+            Definer.genBlock(funcDefNode);
         } else {
-            ErrorController.FuncDefPrintError();
+            ErrorController.printFuncDefPrintError();
         }
     }
 
-    private void FuncType(AstNode funcDefNode) throws IOException {
+    private void genFuncType(AstNode funcDefNode) throws IOException {
         AstNode funcTypeNode = new AstNode("<FuncType>");
         funcDefNode.addChild(funcTypeNode);
         if (getPreSym().equals("INTTK")) {
@@ -67,15 +67,15 @@ public class FuncDef {
             funcTypeNode.addChild(voidNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.FuncDefPrintError();
+            ErrorController.printFuncDefPrintError();
         }
     }
 
-    private void FuncFParams(AstNode funcDefNode) throws IOException {
+    private void genFuncFParams(AstNode funcDefNode) throws IOException {
         AstNode funcFParamsNode = new AstNode("<FuncFParams>");
         funcDefNode.addChild(funcFParamsNode);
         while (Judge.isFuncFParam()) {
-            FuncFParam(funcFParamsNode);
+            genFuncFParam(funcFParamsNode);
             if (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
                 funcFParamsNode.addChild(commaNode);
@@ -86,22 +86,22 @@ public class FuncDef {
         }
     }
 
-    private void FuncFParam(AstNode funcFParamsNode) throws IOException {
+    private void genFuncFParam(AstNode funcFParamsNode) throws IOException {
         AstNode funcFParamNode = new AstNode("<FuncFParam>");
         funcFParamsNode.addChild(funcFParamNode);
         if (getPreSym().equals("INTTK")) {
-            AstNode bTypeNode = new AstNode("<BType>");
-            funcFParamNode.addChild(bTypeNode);
+            AstNode btypeNode = new AstNode("<BType>");
+            funcFParamNode.addChild(btypeNode);
             AstNode intNode = new AstNode("INTTK");
-            bTypeNode.addChild(intNode);
+            btypeNode.addChild(intNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.FuncDefPrintError();
+            ErrorController.printFuncDefPrintError();
         }
         if (Judge.isIdent()) {
-            Definer.Ident(funcFParamNode);
+            Definer.genIdent(funcFParamNode);
         } else {
-            ErrorController.FuncDefPrintError();
+            ErrorController.printFuncDefPrintError();
         }
         if (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
@@ -121,9 +121,9 @@ public class FuncDef {
             funcFParamNode.addChild(lbrackNode);
             AstRecursion.nextSym();
             if (Judge.isConstExp()) {
-                Definer.ConstExp(funcFParamNode);
+                Definer.genConstExp(funcFParamNode);
             } else {
-                ErrorController.FuncDefPrintError();
+                ErrorController.printFuncDefPrintError();
             }
             if (getPreSym().equals("RBRACK")) {
                 AstNode rbrackNode = new AstNode("RBRACK");

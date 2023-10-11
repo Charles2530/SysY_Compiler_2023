@@ -42,18 +42,18 @@ public class MainFuncDef {
                                         .getSpan().getEndLine()));
                     }
                     if (Judge.isBlock()) {
-                        Definer.Block(mainFuncDefNode);
+                        Definer.genBlock(mainFuncDefNode);
                     } else {
-                        ErrorController.MainFuncDefPrintError();
+                        ErrorController.printMainFuncDefPrintError();
                     }
                 } else {
-                    ErrorController.MainFuncDefPrintError();
+                    ErrorController.printMainFuncDefPrintError();
                 }
             } else {
-                ErrorController.MainFuncDefPrintError();
+                ErrorController.printMainFuncDefPrintError();
             }
         } else {
-            ErrorController.MainFuncDefPrintError();
+            ErrorController.printMainFuncDefPrintError();
         }
     }
 

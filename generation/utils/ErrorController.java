@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class ErrorController {
-    private static final ArrayList<ErrorToken> errorlist = new ArrayList<>();
+    private static ArrayList<ErrorToken> errorlist = new ArrayList<>();
     private static BufferedWriter errorBufferedWriter;
     private static boolean isDebugMode;
     private static boolean detailMode;
@@ -33,7 +33,12 @@ public class ErrorController {
     public static void printErrors() throws IOException {
         if (isDebugMode) {
             errorlist.sort(Comparator.comparingInt(ErrorToken::getLineNum));
+            int lineNum = -1;
             for (ErrorToken error : errorlist) {
+                if (error.getLineNum() == lineNum) {
+                    continue;
+                }
+                lineNum = error.getLineNum();
                 printError(error);
             }
             printSymbolTable();
@@ -43,43 +48,43 @@ public class ErrorController {
     private static void printError(ErrorToken error) throws IOException {
         switch (error.getErrorCategoryCode()) {
             case "a":
-                IllegalTokenError(error.getLineNum(), "a");
+                printIllegalTokenError(error.getLineNum(), "a");
                 break;
             case "b":
-                RedefinitionError(error.getLineNum(), "b");
+                printRedefinitionError(error.getLineNum(), "b");
                 break;
             case "c":
-                UndefinedNameError(error.getLineNum(), "c");
+                printUndefinedNameError(error.getLineNum(), "c");
                 break;
             case "d":
-                FuncNumUnmatchError(error.getLineNum(), "d");
+                printFuncNumUnmatchError(error.getLineNum(), "d");
                 break;
             case "e":
-                FuncTypeUnmatchError(error.getLineNum(), "e");
+                printFuncTypeUnmatchError(error.getLineNum(), "e");
                 break;
             case "f":
-                UnmatchReturnError(error.getLineNum(), "f");
+                printUnmatchReturnError(error.getLineNum(), "f");
                 break;
             case "g":
-                MissingReturnError(error.getLineNum(), "g");
+                printMissingReturnError(error.getLineNum(), "g");
                 break;
             case "h":
-                AssignTypeConsError(error.getLineNum(), "h");
+                printAssignTypeConsError(error.getLineNum(), "h");
                 break;
             case "i":
-                MissSemicnError(error.getLineNum(), "i");
+                printMissSemicnError(error.getLineNum(), "i");
                 break;
             case "j":
-                MissRparentError(error.getLineNum(), "j");
+                printMissRparentError(error.getLineNum(), "j");
                 break;
             case "k":
-                MissRbrackError(error.getLineNum(), "k");
+                printMissRbrackError(error.getLineNum(), "k");
                 break;
             case "l":
-                UnmatchTokenNumError(error.getLineNum(), "l");
+                printUnmatchTokenNumError(error.getLineNum(), "l");
                 break;
             case "m":
-                UnmatchLoopError(error.getLineNum(), "m");
+                printUnmatchLoopError(error.getLineNum(), "m");
                 break;
             default:
                 break;
@@ -87,7 +92,7 @@ public class ErrorController {
     }
 
     // a. 非法符号
-    private static void IllegalTokenError(int lineNum, String type) throws IOException {
+    private static void printIllegalTokenError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: IllegalTokenError: " + lineNum);
@@ -99,7 +104,7 @@ public class ErrorController {
     }
 
     // b. 名字重定义
-    private static void RedefinitionError(int lineNum, String type) throws IOException {
+    private static void printRedefinitionError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: RedefinitionError: " + lineNum);
@@ -111,7 +116,7 @@ public class ErrorController {
     }
 
     // c. 未定义的名字
-    private static void UndefinedNameError(int lineNum, String type) throws IOException {
+    private static void printUndefinedNameError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UndefinedNameError: " + lineNum);
@@ -123,7 +128,7 @@ public class ErrorController {
     }
 
     // d. 函数参数个数不匹配
-    private static void FuncNumUnmatchError(int lineNum, String type) throws IOException {
+    private static void printFuncNumUnmatchError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: FuncNumUnmatchError: " + lineNum);
@@ -135,7 +140,7 @@ public class ErrorController {
     }
 
     // e. 函数参数类型不匹配
-    private static void FuncTypeUnmatchError(int lineNum, String type) throws IOException {
+    private static void printFuncTypeUnmatchError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: FuncTypeUnmatchError: " + lineNum);
@@ -147,7 +152,7 @@ public class ErrorController {
     }
 
     // f. 无返回值的函数存在不匹配的return语句
-    private static void UnmatchReturnError(int lineNum, String type) throws IOException {
+    private static void printUnmatchReturnError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UnmatchReturnError: " + lineNum);
@@ -159,7 +164,7 @@ public class ErrorController {
     }
 
     // g. 有返回值的函数缺少return语句或存在不匹配的return语句
-    private static void MissingReturnError(int lineNum, String type) throws IOException {
+    private static void printMissingReturnError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissingReturnError: " + lineNum);
@@ -171,7 +176,7 @@ public class ErrorController {
     }
 
     // h. 不能改变常量的值
-    private static void AssignTypeConsError(int lineNum, String type) throws IOException {
+    private static void printAssignTypeConsError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: AssignTypeConsError: " + lineNum);
@@ -183,7 +188,7 @@ public class ErrorController {
     }
 
     //  i. 语句缺少分号
-    private static void MissRbrackError(int lineNum, String type) throws IOException {
+    private static void printMissRbrackError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissRbrackError: " + lineNum);
@@ -195,7 +200,7 @@ public class ErrorController {
     }
 
     // j. 语句缺少右小括号
-    private static void MissRparentError(int lineNum, String type) throws IOException {
+    private static void printMissRparentError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissRparentError: " + lineNum);
@@ -207,7 +212,7 @@ public class ErrorController {
     }
 
     // k. 语句缺少右中括号
-    private static void MissSemicnError(int lineNum, String type) throws IOException {
+    private static void printMissSemicnError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissSemicnError: " + lineNum);
@@ -219,7 +224,7 @@ public class ErrorController {
     }
 
     // l. 语句缺少右大括号
-    private static void UnmatchTokenNumError(int lineNum, String type) throws IOException {
+    private static void printUnmatchTokenNumError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UnmatchTokenNumError: " + lineNum);
@@ -231,7 +236,7 @@ public class ErrorController {
     }
 
     // m. 非循环语句中出现break或continue语句
-    private static void UnmatchLoopError(int lineNum, String type) throws IOException {
+    private static void printUnmatchLoopError(int lineNum, String type) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UnmatchLoopError: " + lineNum);
@@ -242,7 +247,7 @@ public class ErrorController {
         }
     }
 
-    public static void LexicalWordCheckPrintError(int lineNum, String c) throws IOException {
+    public static void printLexicalWordCheckPrintError(int lineNum, String c) throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("error in " + lineNum +
                     " line,word:" + c + " can not be recognized");
@@ -250,14 +255,14 @@ public class ErrorController {
         }
     }
 
-    public static void SyntaxAnalysisError(String grammarType) throws IOException {
+    public static void printSyntaxAnalysisError(String grammarType) throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("grammarType:" + grammarType);
             errorBufferedWriter.newLine();
         }
     }
 
-    public static void DeclPrintError() throws IOException {
+    public static void printDeclPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: Decl: "
                     + AstRecursion.getPreSymToken().getLineNum() +
@@ -266,7 +271,7 @@ public class ErrorController {
         }
     }
 
-    public static void FuncDefPrintError() throws IOException {
+    public static void printFuncDefPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: FuncDef: "
                     + AstRecursion.getPreSymToken().getLineNum() +
@@ -275,7 +280,7 @@ public class ErrorController {
         }
     }
 
-    public static void MainFuncDefPrintError() throws IOException {
+    public static void printMainFuncDefPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: MainFuncDef: "
                     + AstRecursion.getPreSymToken().getLineNum() +
@@ -284,7 +289,7 @@ public class ErrorController {
         }
     }
 
-    public static void DefinerPrintError() throws IOException {
+    public static void printDefinerPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: Definer: BlockItem: "
                     + AstRecursion.getPreSymToken().getLineNum());
@@ -292,7 +297,7 @@ public class ErrorController {
         }
     }
 
-    public static void LexicalAnalysisPrintError(int lineNum, String word) throws IOException {
+    public static void printLexicalAnalysisPrintError(int lineNum, String word) throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("error in " + lineNum + " line,word:"
                     + word + " is not a reserved word");

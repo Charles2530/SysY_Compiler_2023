@@ -19,7 +19,7 @@ public class SyntaxAnalysis {
     public void analysis() throws IOException {
         AstRecursion astRecursion = new AstRecursion(symTokens);
         this.rootAst = new AstNode("<CompUnit>");
-        astRecursion.CompUnit(rootAst);
+        astRecursion.genCompUnit(rootAst);
         preTraverse(rootAst);
     }
 
@@ -31,7 +31,7 @@ public class SyntaxAnalysis {
             try {
                 OutputController.syntaxAnalysisPrintTerminal(rootAst);
             } catch (Exception e) {
-                ErrorController.SyntaxAnalysisError(rootAst.getGrammarType());
+                ErrorController.printSyntaxAnalysisError(rootAst.getGrammarType());
                 e.printStackTrace();
             }
         } else {

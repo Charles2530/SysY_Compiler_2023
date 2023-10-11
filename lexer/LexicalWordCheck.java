@@ -101,7 +101,7 @@ public class LexicalWordCheck {
                     words.add(String.valueOf(c));
                 }
             } else {
-                ErrorController.LexicalWordCheckPrintError(lineNum, String.valueOf(c));
+                ErrorController.printLexicalWordCheckPrintError(lineNum, String.valueOf(c));
             }
         }
         if (!word.isEmpty()) {

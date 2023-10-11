@@ -8,7 +8,7 @@ import syntax.AstRecursion;
 import java.io.IOException;
 
 public class Definer {
-    public static void ConstDecl(AstNode blockNode) throws IOException {
+    public static void genConstDecl(AstNode blockNode) throws IOException {
         AstNode constDeclNode = new AstNode("<ConstDecl>");
         blockNode.addChild(constDeclNode);
         AstNode constTkNode = new AstNode("CONSTTK");
@@ -22,9 +22,9 @@ public class Definer {
             AstRecursion.nextSym();
             while (true) {
                 if (Judge.isConstDef()) {
-                    ConstDef(constDeclNode);
+                    genConstDef(constDeclNode);
                 } else {
-                    ErrorController.DefinerPrintError();
+                    ErrorController.printDefinerPrintError();
                 }
                 if (getPreSym().equals("COMMA")) {
                     AstNode commaNode = new AstNode("COMMA");
@@ -35,7 +35,7 @@ public class Definer {
                 }
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
         if (getPreSym().equals("SEMICN")) {
             AstNode semicnNode = new AstNode("SEMICN");
@@ -47,7 +47,7 @@ public class Definer {
         }
     }
 
-    private static void ConstDef(AstNode constDeclNode) throws IOException {
+    private static void genConstDef(AstNode constDeclNode) throws IOException {
         AstNode constDefNode = new AstNode("<ConstDef>");
         constDeclNode.addChild(constDefNode);
         if (Judge.isIdent()) {
@@ -55,14 +55,14 @@ public class Definer {
             constDefNode.addChild(idenfrNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
         while (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
             constDefNode.addChild(lbrackNode);
             AstRecursion.nextSym();
             if (Judge.isConstExp()) {
-                ConstExp(constDefNode);
+                genConstExp(constDefNode);
             }
             if (getPreSym().equals("RBRACK")) {
                 AstNode rbrackNode = new AstNode("RBRACK");
@@ -78,35 +78,35 @@ public class Definer {
             constDefNode.addChild(assignNode);
             AstRecursion.nextSym();
             if (Judge.isConstInitVal()) {
-                ConstInitVal(constDefNode);
+                genConstInitVal(constDefNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void ConstInitVal(AstNode constDeclNode) throws IOException {
+    private static void genConstInitVal(AstNode constDeclNode) throws IOException {
         AstNode constInitValNode = new AstNode("<ConstInitVal>");
         constDeclNode.addChild(constInitValNode);
         if (Judge.isConstExp()) {
-            ConstExp(constInitValNode);
+            genConstExp(constInitValNode);
         } else if (getPreSym().equals("LBRACE")) {
             AstNode lbraceNode = new AstNode("LBRACE");
             constInitValNode.addChild(lbraceNode);
             AstRecursion.nextSym();
             if (Judge.isConstInitVal()) {
-                ConstInitVal(constInitValNode);
+                genConstInitVal(constInitValNode);
             }
             while (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
                 constInitValNode.addChild(commaNode);
                 AstRecursion.nextSym();
                 if (Judge.isConstInitVal()) {
-                    ConstInitVal(constInitValNode);
+                    genConstInitVal(constInitValNode);
                 } else {
-                    ErrorController.DefinerPrintError();
+                    ErrorController.printDefinerPrintError();
                 }
             }
             if (getPreSym().equals("RBRACE")) {
@@ -114,14 +114,14 @@ public class Definer {
                 constInitValNode.addChild(rbraceNode);
                 AstRecursion.nextSym();
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    public static void VarDecl(AstNode blockNode) throws IOException {
+    public static void genVarDecl(AstNode blockNode) throws IOException {
         AstNode varDeclNode = new AstNode("<VarDecl>");
         blockNode.addChild(varDeclNode);
         AstNode intNode = new AstNode("<BType>");
@@ -131,9 +131,9 @@ public class Definer {
         AstRecursion.nextSym();
         while (true) {
             if (Judge.isVarDef()) {
-                VarDef(varDeclNode);
+                genVarDef(varDeclNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
             if (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
@@ -153,7 +153,7 @@ public class Definer {
         }
     }
 
-    private static void VarDef(AstNode varDeclNode) throws IOException {
+    private static void genVarDef(AstNode varDeclNode) throws IOException {
         AstNode vardefNode = new AstNode("<VarDef>");
         varDeclNode.addChild(vardefNode);
         if (Judge.isIdent()) {
@@ -161,14 +161,14 @@ public class Definer {
             vardefNode.addChild(idenfrNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
         while (getPreSym().equals("LBRACK")) {
             AstNode lbrackNode = new AstNode("LBRACK");
             vardefNode.addChild(lbrackNode);
             AstRecursion.nextSym();
             if (Judge.isConstExp()) {
-                ConstExp(vardefNode);
+                genConstExp(vardefNode);
             }
             if (getPreSym().equals("RBRACK")) {
                 AstNode rbrackNode = new AstNode("RBRACK");
@@ -184,33 +184,33 @@ public class Definer {
             vardefNode.addChild(assignNode);
             AstRecursion.nextSym();
             if (Judge.isInitval()) {
-                InitVal(vardefNode);
+                genInitVal(vardefNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         }
     }
 
-    private static void InitVal(AstNode vardefNode) throws IOException {
+    private static void genInitVal(AstNode vardefNode) throws IOException {
         AstNode initValNode = new AstNode("<InitVal>");
         vardefNode.addChild(initValNode);
         if (Judge.isExp()) {
-            Exp(initValNode);
+            genExp(initValNode);
         } else if (getPreSym().equals("LBRACE")) {
             AstNode lbraceNode = new AstNode("LBRACE");
             initValNode.addChild(lbraceNode);
             AstRecursion.nextSym();
             if (Judge.isInitval()) {
-                InitVal(initValNode);
+                genInitVal(initValNode);
             }
             while (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
                 initValNode.addChild(commaNode);
                 AstRecursion.nextSym();
                 if (Judge.isInitval()) {
-                    InitVal(initValNode);
+                    genInitVal(initValNode);
                 } else {
-                    ErrorController.DefinerPrintError();
+                    ErrorController.printDefinerPrintError();
                 }
             }
             if (getPreSym().equals("RBRACE")) {
@@ -218,12 +218,12 @@ public class Definer {
                 initValNode.addChild(rbraceNode);
                 AstRecursion.nextSym();
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         }
     }
 
-    public static void Block(AstNode parent) throws IOException {
+    public static void genBlock(AstNode parent) throws IOException {
         AstNode blockNode = new AstNode("<Block>");
         parent.addChild(blockNode);
         if (getPreSym().equals("LBRACE")) {
@@ -231,49 +231,49 @@ public class Definer {
             blockNode.addChild(lbraceNode);
             AstRecursion.nextSym();
             while (Judge.isBlockItem()) {
-                Definer.BlockItem(blockNode);
+                Definer.genBlockItem(blockNode);
             }
             if (getPreSym().equals("RBRACE")) {
                 AstNode rbraceNode = new AstNode("RBRACE");
                 blockNode.addChild(rbraceNode);
                 AstRecursion.nextSym();
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    public static void BlockItem(AstNode blockNode) throws IOException {
+    public static void genBlockItem(AstNode blockNode) throws IOException {
         AstNode blockItemNode = new AstNode("<BlockItem>");
         blockNode.addChild(blockItemNode);
         if (Judge.isConstDecl()) {
             AstNode declNode = new AstNode("<Decl>");
             blockItemNode.addChild(declNode);
-            ConstDecl(declNode);
+            genConstDecl(declNode);
         } else if (Judge.isVarDecl()) {
             AstNode declNode = new AstNode("<Decl>");
             blockItemNode.addChild(declNode);
-            VarDecl(declNode);
+            genVarDecl(declNode);
         } else if (Judge.isStmt()) {
-            Stmt(blockItemNode);
+            genStmt(blockItemNode);
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    public static void Stmt(AstNode blockNode) throws IOException {
+    public static void genStmt(AstNode blockNode) throws IOException {
         AstNode stmtNode = new AstNode("<Stmt>");
         blockNode.addChild(stmtNode);
         if (Judge.isLVal()) {
-            LVal(stmtNode);
+            genLVal(stmtNode);
             if (getPreSym().equals("ASSIGN")) {
                 AstNode assignNode = new AstNode("ASSIGN");
                 stmtNode.addChild(assignNode);
                 AstRecursion.nextSym();
                 if (Judge.isExp()) {
-                    Exp(stmtNode);
+                    genExp(stmtNode);
                 } else if (getPreSym().equals("GETINTTK")) {
                     AstNode getinttkNode = new AstNode("GETINTTK");
                     stmtNode.addChild(getinttkNode);
@@ -292,10 +292,10 @@ public class Definer {
                                             .getSpan().getEndLine()));
                         }
                     } else {
-                        ErrorController.DefinerPrintError();
+                        ErrorController.printDefinerPrintError();
                     }
                 } else {
-                    ErrorController.DefinerPrintError();
+                    ErrorController.printDefinerPrintError();
                 }
                 if (getPreSym().equals("SEMICN")) {
                     AstNode semicnNode = new AstNode("SEMICN");
@@ -307,11 +307,11 @@ public class Definer {
                                     .getSpan().getEndLine()));
                 }
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         } else if (Judge.isExp() || getPreSym().equals("SEMICN")) {
             if (Judge.isExp()) {
-                Exp(stmtNode);
+                genExp(stmtNode);
             }
             if (getPreSym().equals("SEMICN")) {
                 AstNode semicnNode = new AstNode("SEMICN");
@@ -322,23 +322,23 @@ public class Definer {
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
         } else if (Judge.isBlock()) {
-            Block(stmtNode);
+            genBlock(stmtNode);
         } else if (getPreSym().equals("IFTK")) {
-            IfStmt(stmtNode);
+            genIfStmt(stmtNode);
         } else if (getPreSym().equals("FORTK")) {
-            ForStmt(stmtNode);
+            genForStmt(stmtNode);
         } else if (getPreSym().equals("BREAKTK")) {
-            BreakStmt(stmtNode);
+            genBreakStmt(stmtNode);
         } else if (getPreSym().equals("CONTINUETK")) {
-            ContinueStmt(stmtNode);
+            genContinueStmt(stmtNode);
         } else if (getPreSym().equals("RETURNTK")) {
-            ReturnStmt(stmtNode);
+            genReturnStmt(stmtNode);
         } else if (getPreSym().equals("PRINTFTK")) {
-            PrintfStmt(stmtNode);
+            genPrintfStmt(stmtNode);
         }
     }
 
-    private static void IfStmt(AstNode blockNode) throws IOException {
+    private static void genIfStmt(AstNode blockNode) throws IOException {
         AstNode ifStmtNode = new AstNode("IFTK");
         blockNode.addChild(ifStmtNode);
         AstRecursion.nextSym();
@@ -347,9 +347,9 @@ public class Definer {
             blockNode.addChild(lparentNode);
             AstRecursion.nextSym();
             if (Judge.isCond()) {
-                Cond(blockNode);
+                genCond(blockNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
             if (getPreSym().equals("RPARENT")) {
                 AstNode rparentNode = new AstNode("RPARENT");
@@ -360,26 +360,26 @@ public class Definer {
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
             if (Judge.isStmt()) {
-                Stmt(blockNode);
+                genStmt(blockNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
             if (getPreSym().equals("ELSETK")) {
                 AstNode elseTkNode = new AstNode("ELSETK");
                 blockNode.addChild(elseTkNode);
                 AstRecursion.nextSym();
                 if (Judge.isStmt()) {
-                    Stmt(blockNode);
+                    genStmt(blockNode);
                 } else {
-                    ErrorController.DefinerPrintError();
+                    ErrorController.printDefinerPrintError();
                 }
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void ForStmt(AstNode blockNode) throws IOException {
+    private static void genForStmt(AstNode blockNode) throws IOException {
         AstNode forStmtNode = new AstNode("FORTK");
         blockNode.addChild(forStmtNode);
         AstRecursion.nextSym();
@@ -388,7 +388,7 @@ public class Definer {
             blockNode.addChild(lparentNode);
             AstRecursion.nextSym();
             if (Judge.isForStmtVal()) {
-                ForStmtVal(blockNode);
+                genForStmtVal(blockNode);
             }
             if (getPreSym().equals("SEMICN")) {
                 AstNode semicnNode = new AstNode("SEMICN");
@@ -399,7 +399,7 @@ public class Definer {
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
             if (Judge.isCond()) {
-                Cond(blockNode);
+                genCond(blockNode);
             }
             if (getPreSym().equals("SEMICN")) {
                 AstNode semicnNode = new AstNode("SEMICN");
@@ -410,7 +410,7 @@ public class Definer {
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
             if (Judge.isForStmtVal()) {
-                ForStmtVal(blockNode);
+                genForStmtVal(blockNode);
             }
             if (getPreSym().equals("RPARENT")) {
                 AstNode rparentNode = new AstNode("RPARENT");
@@ -421,16 +421,16 @@ public class Definer {
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
             if (Judge.isStmt()) {
-                Stmt(blockNode);
+                genStmt(blockNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void BreakStmt(AstNode blockNode) throws IOException {
+    private static void genBreakStmt(AstNode blockNode) throws IOException {
         AstNode breakStmtNode = new AstNode("BREAKTK");
         blockNode.addChild(breakStmtNode);
         AstRecursion.nextSym();
@@ -444,7 +444,7 @@ public class Definer {
         }
     }
 
-    private static void ContinueStmt(AstNode blockNode) throws IOException {
+    private static void genContinueStmt(AstNode blockNode) throws IOException {
         AstNode continueStmtNode = new AstNode("CONTINUETK");
         blockNode.addChild(continueStmtNode);
         AstRecursion.nextSym();
@@ -458,12 +458,12 @@ public class Definer {
         }
     }
 
-    private static void ReturnStmt(AstNode blockNode) throws IOException {
+    private static void genReturnStmt(AstNode blockNode) throws IOException {
         AstNode returnStmtNode = new AstNode("RETURNTK");
         blockNode.addChild(returnStmtNode);
         AstRecursion.nextSym();
         if (Judge.isExp()) {
-            Exp(blockNode);
+            genExp(blockNode);
         }
         if (getPreSym().equals("SEMICN")) {
             AstNode semicnNode = new AstNode("SEMICN");
@@ -475,7 +475,7 @@ public class Definer {
         }
     }
 
-    private static void PrintfStmt(AstNode blockNode) throws IOException {
+    private static void genPrintfStmt(AstNode blockNode) throws IOException {
         AstNode printfStmtNode = new AstNode("PRINTFTK");
         blockNode.addChild(printfStmtNode);
         AstRecursion.nextSym();
@@ -492,13 +492,13 @@ public class Definer {
                     blockNode.addChild(commaNode);
                     AstRecursion.nextSym();
                     if (Judge.isExp()) {
-                        Exp(blockNode);
+                        genExp(blockNode);
                     } else {
-                        ErrorController.DefinerPrintError();
+                        ErrorController.printDefinerPrintError();
                     }
                 }
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
             if (getPreSym().equals("RPARENT")) {
                 AstNode rparentNode = new AstNode("RPARENT");
@@ -519,61 +519,61 @@ public class Definer {
         }
     }
 
-    private static void ForStmtVal(AstNode forStmtNode) throws IOException {
+    private static void genForStmtVal(AstNode forStmtNode) throws IOException {
         AstNode forStmtValNode = new AstNode("<ForStmt>");
         forStmtNode.addChild(forStmtValNode);
         if (Judge.isLVal()) {
-            LVal(forStmtValNode);
+            genLVal(forStmtValNode);
             if (getPreSym().equals("ASSIGN")) {
                 AstNode assignNode = new AstNode("ASSIGN");
                 forStmtValNode.addChild(assignNode);
                 AstRecursion.nextSym();
                 if (Judge.isExp()) {
-                    Exp(forStmtValNode);
+                    genExp(forStmtValNode);
                 } else {
-                    ErrorController.DefinerPrintError();
+                    ErrorController.printDefinerPrintError();
                 }
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void Exp(AstNode funcRParamsNode) throws IOException {
+    private static void genExp(AstNode funcRParamsNode) throws IOException {
         AstNode expNode = new AstNode("<Exp>");
         funcRParamsNode.addChild(expNode);
         if (Judge.isAddExp()) {
-            AddExp(expNode);
+            genAddExp(expNode);
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void Cond(AstNode forStmtNode) throws IOException {
+    private static void genCond(AstNode forStmtNode) throws IOException {
         AstNode condNode = new AstNode("<Cond>");
         forStmtNode.addChild(condNode);
-        LOrExp(condNode);
+        genLOrExp(condNode);
     }
 
-    private static void LVal(AstNode primaryExpNode) throws IOException {
-        AstNode lValNode = new AstNode("<LVal>");
-        primaryExpNode.addChild(lValNode);
+    private static void genLVal(AstNode primaryExpNode) throws IOException {
+        AstNode lvalNode = new AstNode("<LVal>");
+        primaryExpNode.addChild(lvalNode);
         if (Judge.isIdent()) {
-            Ident(lValNode);
+            genIdent(lvalNode);
             while (getPreSym().equals("LBRACK")) {
                 AstNode lbrackNode = new AstNode("LBRACK");
-                lValNode.addChild(lbrackNode);
+                lvalNode.addChild(lbrackNode);
                 AstRecursion.nextSym();
                 if (Judge.isExp()) {
-                    Exp(lValNode);
+                    genExp(lvalNode);
                 } else {
-                    ErrorController.DefinerPrintError();
+                    ErrorController.printDefinerPrintError();
                 }
                 if (getPreSym().equals("RBRACK")) {
                     AstNode rbrackNode = new AstNode("RBRACK");
-                    lValNode.addChild(rbrackNode);
+                    lvalNode.addChild(rbrackNode);
                     AstRecursion.nextSym();
                 } else {
                     ErrorController.addError(new ErrorToken("k",
@@ -581,11 +581,11 @@ public class Definer {
                 }
             }
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void PrimaryExp(AstNode constExpNode) throws IOException {
+    private static void genPrimaryExp(AstNode constExpNode) throws IOException {
         AstNode primaryExpNode = new AstNode("<PrimaryExp>");
         constExpNode.addChild(primaryExpNode);
         if (getPreSym().equals("LPARENT")) {
@@ -593,9 +593,9 @@ public class Definer {
             primaryExpNode.addChild(lparentNode);
             AstRecursion.nextSym();
             if (Judge.isExp()) {
-                Exp(primaryExpNode);
+                genExp(primaryExpNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
             if (getPreSym().equals("RPARENT")) {
                 AstNode rparentNode = new AstNode("RPARENT");
@@ -606,15 +606,15 @@ public class Definer {
                         AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
             }
         } else if (Judge.isIdent()) {
-            LVal(primaryExpNode);
+            genLVal(primaryExpNode);
         } else if (Judge.isNumber()) {
-            NumberCall(primaryExpNode);
+            genNumberCall(primaryExpNode);
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void NumberCall(AstNode primaryExpNode) throws IOException {
+    private static void genNumberCall(AstNode primaryExpNode) throws IOException {
         AstNode numberNode = new AstNode("<Number>");
         primaryExpNode.addChild(numberNode);
         if (getPreSym().equals("INTCON")) {
@@ -622,28 +622,28 @@ public class Definer {
             numberNode.addChild(intconNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void UnaryExp(AstNode constExpNode) throws IOException {
+    private static void genUnaryExp(AstNode constExpNode) throws IOException {
         AstNode unaryExpNode = new AstNode("<UnaryExp>");
         constExpNode.addChild(unaryExpNode);
         if (Judge.isUnaryOp()) {
-            UnaryOp(unaryExpNode);
+            genUnaryOp(unaryExpNode);
             if (Judge.isUnaryExp()) {
-                UnaryExp(unaryExpNode);
+                genUnaryExp(unaryExpNode);
             } else {
-                ErrorController.DefinerPrintError();
+                ErrorController.printDefinerPrintError();
             }
         } else if (Judge.isIdent() && getNextSym(1).equals("LPARENT")) {
-            Ident(unaryExpNode);
+            genIdent(unaryExpNode);
             if (getPreSym().equals("LPARENT")) {
                 AstNode lparentNode = new AstNode("LPARENT");
                 unaryExpNode.addChild(lparentNode);
                 AstRecursion.nextSym();
                 if (Judge.isFuncRParams()) {
-                    FuncRParams(unaryExpNode);
+                    genFuncRParams(unaryExpNode);
                 }
                 if (getPreSym().equals("RPARENT")) {
                     AstNode rparentNode = new AstNode("RPARENT");
@@ -655,13 +655,13 @@ public class Definer {
                 }
             }
         } else if (Judge.isPrimaryExp()) {
-            PrimaryExp(unaryExpNode);
+            genPrimaryExp(unaryExpNode);
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void UnaryOp(AstNode constExpNode) throws IOException {
+    private static void genUnaryOp(AstNode constExpNode) throws IOException {
         AstNode unaryOpNode = new AstNode("<UnaryOp>");
         constExpNode.addChild(unaryOpNode);
         if (getPreSym().equals("PLUS")) {
@@ -677,15 +677,15 @@ public class Definer {
             unaryOpNode.addChild(modNode);
             AstRecursion.nextSym();
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    private static void FuncRParams(AstNode constExpNode) throws IOException {
+    private static void genFuncRParams(AstNode constExpNode) throws IOException {
         AstNode funcRParamsNode = new AstNode("<FuncRParams>");
         constExpNode.addChild(funcRParamsNode);
         while (Judge.isExp()) {
-            Exp(funcRParamsNode);
+            genExp(funcRParamsNode);
             if (getPreSym().equals("COMMA")) {
                 AstNode commaNode = new AstNode("COMMA");
                 funcRParamsNode.addChild(commaNode);
@@ -696,9 +696,9 @@ public class Definer {
         }
     }
 
-    private static void MulExp(AstNode constExpNode) throws IOException {
+    private static void genMulExp(AstNode constExpNode) throws IOException {
         AstNode mulExpNode = new AstNode("<MulExp>");
-        UnaryExp(mulExpNode);
+        genUnaryExp(mulExpNode);
         AstNode father = mulExpNode;
         while (getPreSym().equals("MULT") || getPreSym().equals("DIV") ||
                 getPreSym().equals("MOD")) {
@@ -709,25 +709,25 @@ public class Definer {
                 AstNode multNode = new AstNode("MULT");
                 father.addChild(multNode);
                 AstRecursion.nextSym();
-                UnaryExp(father);
+                genUnaryExp(father);
             } else if (getPreSym().equals("DIV")) {
                 AstNode divNode = new AstNode("DIV");
                 father.addChild(divNode);
                 AstRecursion.nextSym();
-                UnaryExp(father);
+                genUnaryExp(father);
             } else if (getPreSym().equals("MOD")) {
                 AstNode modNode = new AstNode("MOD");
                 father.addChild(modNode);
                 AstRecursion.nextSym();
-                UnaryExp(father);
+                genUnaryExp(father);
             }
         }
         constExpNode.addChild(father);
     }
 
-    private static void AddExp(AstNode constExpNode) throws IOException {
+    private static void genAddExp(AstNode constExpNode) throws IOException {
         AstNode addExpNode = new AstNode("<AddExp>");
-        MulExp(addExpNode);
+        genMulExp(addExpNode);
         AstNode father = addExpNode;
         while (getPreSym().equals("PLUS") || getPreSym().equals("MINU")) {
             AstNode extraAddExpNode = new AstNode("<AddExp>");
@@ -737,20 +737,20 @@ public class Definer {
                 AstNode plusNode = new AstNode("PLUS");
                 father.addChild(plusNode);
                 AstRecursion.nextSym();
-                MulExp(father);
+                genMulExp(father);
             } else if (getPreSym().equals("MINU")) {
                 AstNode minuNode = new AstNode("MINU");
                 father.addChild(minuNode);
                 AstRecursion.nextSym();
-                MulExp(father);
+                genMulExp(father);
             }
         }
         constExpNode.addChild(father);
     }
 
-    private static void RelExp(AstNode equExpNode) throws IOException {
+    private static void genRelExp(AstNode equExpNode) throws IOException {
         AstNode relExpNode = new AstNode("<RelExp>");
-        AddExp(relExpNode);
+        genAddExp(relExpNode);
         AstNode father = relExpNode;
         while (getPreSym().equals("LSS") || getPreSym().equals("LEQ") ||
                 getPreSym().equals("GRE") || getPreSym().equals("GEQ")) {
@@ -761,30 +761,30 @@ public class Definer {
                 AstNode lssNode = new AstNode("LSS");
                 father.addChild(lssNode);
                 AstRecursion.nextSym();
-                AddExp(father);
+                genAddExp(father);
             } else if (getPreSym().equals("LEQ")) {
                 AstNode leqNode = new AstNode("LEQ");
                 father.addChild(leqNode);
                 AstRecursion.nextSym();
-                AddExp(father);
+                genAddExp(father);
             } else if (getPreSym().equals("GRE")) {
                 AstNode greNode = new AstNode("GRE");
                 father.addChild(greNode);
                 AstRecursion.nextSym();
-                AddExp(father);
+                genAddExp(father);
             } else if (getPreSym().equals("GEQ")) {
                 AstNode geqNode = new AstNode("GEQ");
                 father.addChild(geqNode);
                 AstRecursion.nextSym();
-                AddExp(father);
+                genAddExp(father);
             }
         }
         equExpNode.addChild(father);
     }
 
-    private static void EqExp(AstNode lAndExpNode) throws IOException {
+    private static void genEqExp(AstNode astNode) throws IOException {
         AstNode equExpNode = new AstNode("<EqExp>");
-        RelExp(equExpNode);
+        genRelExp(equExpNode);
         AstNode father = equExpNode;
         while (getPreSym().equals("EQL") || getPreSym().equals("NEQ")) {
             AstNode extraEqExpNode = new AstNode("<EqExp>");
@@ -794,21 +794,21 @@ public class Definer {
                 AstNode eqlNode = new AstNode("EQL");
                 father.addChild(eqlNode);
                 AstRecursion.nextSym();
-                RelExp(father);
+                genRelExp(father);
             } else if (getPreSym().equals("NEQ")) {
                 AstNode neqNode = new AstNode("NEQ");
                 father.addChild(neqNode);
                 AstRecursion.nextSym();
-                RelExp(father);
+                genRelExp(father);
             }
         }
-        lAndExpNode.addChild(father);
+        astNode.addChild(father);
     }
 
-    private static void LAndExp(AstNode lOrExpNode) throws IOException {
-        AstNode lAndExpNode = new AstNode("<LAndExp>");
-        EqExp(lAndExpNode);
-        AstNode father = lAndExpNode;
+    private static void genLAndExp(AstNode astNode) throws IOException {
+        AstNode landExpNode = new AstNode("<LAndExp>");
+        genEqExp(landExpNode);
+        AstNode father = landExpNode;
         while (getPreSym().equals("AND")) {
             AstNode extraLAndExpNode = new AstNode("<LAndExp>");
             extraLAndExpNode.addChild(father);
@@ -816,15 +816,15 @@ public class Definer {
             AstNode andNode = new AstNode("AND");
             father.addChild(andNode);
             AstRecursion.nextSym();
-            EqExp(father);
+            genEqExp(father);
         }
-        lOrExpNode.addChild(father);
+        astNode.addChild(father);
     }
 
-    private static void LOrExp(AstNode condNode) throws IOException {
-        AstNode lOrExpNode = new AstNode("<LOrExp>");
-        LAndExp(lOrExpNode);
-        AstNode father = lOrExpNode;
+    private static void genLOrExp(AstNode condNode) throws IOException {
+        AstNode lorExpNode = new AstNode("<LOrExp>");
+        genLAndExp(lorExpNode);
+        AstNode father = lorExpNode;
         while (getPreSym().equals("OR")) {
             AstNode extraLorExpNode = new AstNode("<LOrExp>");
             extraLorExpNode.addChild(father);
@@ -832,22 +832,22 @@ public class Definer {
             AstNode orNode = new AstNode("OR");
             father.addChild(orNode);
             AstRecursion.nextSym();
-            LAndExp(father);
+            genLAndExp(father);
         }
         condNode.addChild(father);
     }
 
-    public static void ConstExp(AstNode constDeclNode) throws IOException {
+    public static void genConstExp(AstNode constDeclNode) throws IOException {
         AstNode constExpNode = new AstNode("<ConstExp>");
         constDeclNode.addChild(constExpNode);
         if (Judge.isAddExp()) {
-            AddExp(constExpNode);
+            genAddExp(constExpNode);
         } else {
-            ErrorController.DefinerPrintError();
+            ErrorController.printDefinerPrintError();
         }
     }
 
-    public static void Ident(AstNode constExpNode) {
+    public static void genIdent(AstNode constExpNode) {
         AstNode idenfrNode = new AstNode("IDENFR");
         constExpNode.addChild(idenfrNode);
         AstRecursion.nextSym();

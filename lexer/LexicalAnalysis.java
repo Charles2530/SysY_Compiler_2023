@@ -75,7 +75,7 @@ public class LexicalAnalysis {
                     symTokens.add(symToken);
                     OutputController.lexicalAnalysisPrint(symToken);
                 } else {
-                    ErrorController.LexicalAnalysisPrintError(lineNum, word);
+                    ErrorController.printLexicalAnalysisPrintError(lineNum, word);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
