@@ -1,12 +1,11 @@
 package generation.llvm;
 
+import generation.GenerationMain;
 import syntax.AstNode;
 
 public class LLvmGenIR {
-    private final AstNode rootAst;
 
-    public LLvmGenIR(AstNode rootAst) {
-        this.rootAst = rootAst;
+    public LLvmGenIR() {
     }
 
     public void genIrAnalysis(AstNode rootAst) {
@@ -227,222 +226,293 @@ public class LLvmGenIR {
                 genIrGETINTTKChecker(rootAst);
                 break;
             default:
+                GenerationMain.preTraverse(rootAst);
                 break;
         }
     }
 
     //Decl.java
     private void genIrDeclChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     //Definer.java
     private void genIrConstDeclChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrConstDefChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrConstInitValChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrVarDeclChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrVarDefChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrInitValChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrBlockChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrBlockItemChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrStmtChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrIfStmtChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrForStmtChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrBreakStmtChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrContinueStmtChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrReturnStmtChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrPrintStmtChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrForStmtValChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrCondChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLValChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrPrimaryExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrNumberCallChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrUnaryExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrUnaryOpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrFuncRParamsChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrMulExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrAddExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrRelExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrEqExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLAndExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLOrExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrConstExpChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrBTypeChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrIdentChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     //FuncDef.java
     private void genIrFuncDefChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrFuncTypeChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrFuncFParamsChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrFuncFParamChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     //MainFuncDef.java
     private void genIrMainFuncDefChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     //Lexer_part
     private void genIrINTTKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrVOIDTKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrMAINTKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLPARENTChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrRPARENTChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLBRACEChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrRBRACEChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLBRACKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrRBRACKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrSEMICNChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrCOMMAChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrASSIGNChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrPLUSChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrMINUChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrINTCONChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrNOTChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrDIVChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrMULTChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrMODChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrANDChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrORChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrNEQChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrEQLChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLSSChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrLEQChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrGREChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrGEQChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrSTRCONChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrCONSTTKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrELSETKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 
     private void genIrGETINTTKChecker(AstNode rootAst) {
+        GenerationMain.preTraverse(rootAst);
     }
 }

@@ -5,7 +5,12 @@ import lexer.LexicalAnalysis;
 import semantic.SemanticAnalysis;
 import syntax.SyntaxAnalysis;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Compiler {
     private static boolean fileInputMode = true;
