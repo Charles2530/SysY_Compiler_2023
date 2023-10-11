@@ -62,10 +62,12 @@ public class SemanticAnalysisChecker {
         for (int i = 0; i < rootAst.getChildList().size(); i++) {
             if (rootAst.getChildList().get(i).getGrammarType().equals("LBRACK")) {
                 dim++;
-                if (rootAst.getChildList().get(i + 1).getGrammarType().equals("ConstExp")) {
-                    list.add(symCalc.calc(rootAst.getChildList().get(i + 1)));
-                } else {
-                    list.add(-1);
+                if (i + 1 < rootAst.getChildList().size()) {
+                    if (rootAst.getChildList().get(i + 1).getGrammarType().equals("ConstExp")) {
+                        list.add(symCalc.calc(rootAst.getChildList().get(i + 1)));
+                    } else {
+                        list.add(-1);
+                    }
                 }
             }
         }

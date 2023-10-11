@@ -148,7 +148,7 @@ public class symChecker {
 
     private void checkReturnStmtChecker(AstNode sonAst) throws IOException {
         AstNode rootAst = sonAst.getParent();
-        if (rootAst.getChildList().size() >= 3 &&
+        if (rootAst.getChildList().size() >= 2 &&
                 rootAst.getChildList().get(1).getGrammarType().equals("<Exp>")) {
             FuncSymbol func = SymbolTable.getCurrentFunc();
             if (func.getReturnType().equals(Symbol.SymType.VOID)) {
@@ -188,7 +188,9 @@ public class symChecker {
             AstNode lastSentence = block.getChildList().get(senNum - 2);
             if (lastSentence.isLeaf() || !(lastSentence.getChildList().get(0).
                     getChildList().get(0).getGrammarType().equals("RETURNTK") &&
-                    lastSentence.getChildList().get(0).getChildList().size() >= 3)) {
+                    lastSentence.getChildList().get(0).getChildList().size() >= 2 &&
+                    lastSentence.getChildList().get(0).getChildList().get(1)
+                            .getGrammarType().equals("<Exp>"))) {
                 ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
             }
         }
@@ -225,7 +227,9 @@ public class symChecker {
             AstNode lastSentence = block.getChildList().get(senNum - 2);
             if (lastSentence.isLeaf() || !(lastSentence.getChildList().get(0).
                     getChildList().get(0).getGrammarType().equals("RETURNTK") &&
-                    lastSentence.getChildList().get(0).getChildList().size() >= 3)) {
+                    lastSentence.getChildList().get(0).getChildList().size() >= 2 &&
+                    lastSentence.getChildList().get(0).getChildList().get(1)
+                            .getGrammarType().equals("<Exp>"))) {
                 ErrorController.addError(new ErrorToken("g", rootAst.getSpan().getEndLine()));
             }
         }
