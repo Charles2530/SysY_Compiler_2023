@@ -19,7 +19,7 @@ public class VarSymbol extends Symbol {
         this.dim = dim;
         this.initValue = (initValue == null) ? new ArrayList<>() : initValue;
         this.space = space;
-        this.spaceTot = this.space.get(0);
+        this.spaceTot = 1;
         // array init
         if (dim > 0) {
             int size = 1;

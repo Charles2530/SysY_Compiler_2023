@@ -19,7 +19,7 @@ public class ConstSymbol extends Symbol {
         this.dim = dim;
         this.initValue = initValue;
         this.space = space;
-        this.spaceTot = this.space.get(0);
+        this.spaceTot = 1;
         // array init
         if (dim > 0) {
             int size = 1;
