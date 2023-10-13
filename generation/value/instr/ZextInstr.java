@@ -8,7 +8,7 @@ public class ZextInstr extends Instr {
     private IrType target;
 
     public ZextInstr(String name, String instrType, Value val, IrType target) {
-        super(name, instrType);
+        super(target, name, instrType);
         this.target = target;
         this.operands.add(val);
     }

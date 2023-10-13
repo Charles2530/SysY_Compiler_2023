@@ -1,11 +1,12 @@
 package generation.value.instr;
 
+import generation.utils.irtype.VarType;
 import generation.value.Value;
 import generation.value.construction.user.Instr;
 
 public class IcmpInstr extends Instr {
     public IcmpInstr(String name, String instrType, Value ans, Value res) {
-        super(name, instrType);
+        super(new VarType(1), name, instrType);
         operands.add(ans);
         operands.add(res);
     }

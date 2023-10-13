@@ -1,10 +1,15 @@
 package generation.utils;
 
+import generation.utils.irtype.ArrayType;
+import generation.utils.irtype.PointerType;
+import generation.utils.irtype.VarType;
 import generation.value.construction.Module;
 import generation.value.construction.BasicBlock;
+import generation.value.construction.procedure.Loop;
 import generation.value.construction.user.Function;
 
 import java.util.HashMap;
+import java.util.Stack;
 
 public class IrNameController {
     private static HashMap<IrPrefix, String> irPrefixHashMap;
@@ -17,6 +22,7 @@ public class IrNameController {
     private static Module currentModule;
     private static BasicBlock currentBasicBlock;
     private static Function currentFunction;
+    private static Stack<Loop> loopProcedure;
 
     public static void init() {
         preFixInit();
@@ -24,7 +30,7 @@ public class IrNameController {
         IrNameController.currentModule = new Module();
         IrNameController.currentBasicBlock = null;
         IrNameController.currentFunction = null;
-
+        IrNameController.loopProcedure = new Stack<>();
     }
 
     private static void cntInit() {
@@ -94,4 +100,20 @@ public class IrNameController {
         return currentBasicBlock;
     }
 
+    public static Loop getCurrentLoop() {
+        return loopProcedure.peek();
+    }
+
+    public static void pushLoop(Loop loop) {
+        loopProcedure.push(loop);
+    }
+
+    public static void popLoop() {
+        loopProcedure.pop();
+    }
+
+    public static String getStringLiteral(String name, String content) {
+        PointerType type = new PointerType(new ArrayType(content.length() + 1, new VarType(8)));
+        return name + " = constant " + type.getTarget() + " c\"" + content + "\\00\"";
+    }
 }

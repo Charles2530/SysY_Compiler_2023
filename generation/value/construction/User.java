@@ -13,10 +13,16 @@ public class User extends Value {
         this.operands = new ArrayList<>();
     }
 
-    public void addOperand(Value operand) {
-        operands.add(operand);
-        if (operand != null) {
-            //operand.addUse(this);
+    public void addOperand(Value value, Integer...cnt) {
+        int times = 1;
+        if (cnt.length != 0) {
+            times = cnt[0];
+        }
+        for (int i = 0; i < times; i++) {
+            operands.add(value);
+            if (value != null) {
+                //value.addUse(this);
+            }
         }
     }
 

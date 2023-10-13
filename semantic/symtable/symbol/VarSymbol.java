@@ -9,6 +9,7 @@ public class VarSymbol extends Symbol {
     private final int dim;
     private final ArrayList<Integer> initValue;
     private final ArrayList<Integer> space;
+    private Integer spaceTot;
 
     private Value value;
 
@@ -18,19 +19,21 @@ public class VarSymbol extends Symbol {
         this.dim = dim;
         this.initValue = (initValue == null) ? new ArrayList<>() : initValue;
         this.space = space;
+        this.spaceTot = this.space.get(0);
         // array init
         if (dim > 0) {
             int size = 1;
             for (Integer integer : space) {
                 size *= integer;
             }
+            this.spaceTot = size;
             for (int i = 0; i < size - this.initValue.size(); i++) {
                 this.initValue.add(0);
             }
         }
     }
 
-    public int getDim() {
+    public Integer getDim() {
         return dim;
     }
 
@@ -69,5 +72,9 @@ public class VarSymbol extends Symbol {
 
     public void setValue(Value value) {
         this.value = value;
+    }
+
+    public Integer getSpaceTot() {
+        return spaceTot;
     }
 }

@@ -1,5 +1,6 @@
 package generation.value.instr;
 
+import generation.utils.irtype.VarType;
 import generation.value.construction.BasicBlock;
 import generation.value.construction.user.Instr;
 
@@ -9,8 +10,9 @@ public class PhiInstr extends Instr {
     private ArrayList<BasicBlock> preBlockList;
 
     public PhiInstr(String name, String instrType, ArrayList<BasicBlock> preBlockList) {
-        super(name, instrType);
+        super(new VarType(32), name, instrType);
         this.preBlockList = preBlockList;
+        addOperand(null, preBlockList.size());
     }
 
     @Override

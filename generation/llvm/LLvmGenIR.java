@@ -3,22 +3,30 @@ package generation.llvm;
 import generation.GenerationMain;
 import generation.utils.IrNameController;
 import generation.utils.IrType;
+import generation.utils.irtype.ArrayType;
 import generation.utils.irtype.VarType;
 import generation.value.Value;
 import generation.value.construction.BasicBlock;
 import generation.value.construction.Constant;
 import generation.value.construction.Param;
+import generation.value.construction.procedure.Loop;
 import generation.value.construction.user.Function;
+import generation.value.construction.user.GlobalVar;
 import generation.value.construction.user.Instr;
 import generation.value.instr.*;
+import iostream.declare.GetIntDeclare;
+import iostream.declare.PutIntDeclare;
+import iostream.declare.PutStrDeclare;
 import semantic.SemanticAnalysisChecker;
 import semantic.symtable.Symbol;
 import semantic.symtable.SymbolTable;
+import semantic.symtable.symbol.ConstSymbol;
 import semantic.symtable.symbol.FuncSymbol;
 import semantic.symtable.symbol.VarSymbol;
 import syntax.AstNode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LLvmGenIR {
     private final SemanticAnalysisChecker semanticAnalysisChecker;
@@ -29,81 +37,33 @@ public class LLvmGenIR {
 
     public Value genIrAnalysis(AstNode rootAst) {
         return switch (rootAst.getGrammarType()) {
-            //Decl.java
-            case "<Decl>" -> genIrDeclChecker(rootAst);
+            case "<CompUnit>" -> genIrCompUnitChecker(rootAst);
             //Definer.java
-            case "<ConstDecl>" -> genIrConstDeclChecker(rootAst);
             case "<ConstDef>" -> genIrConstDefChecker(rootAst);
-            case "<ConstInitVal>" -> genIrConstInitValChecker(rootAst);
-            case "<VarDecl>" -> genIrVarDeclChecker(rootAst);
             case "<VarDef>" -> genIrVarDefChecker(rootAst);
-            case "<InitVal>" -> genIrInitValChecker(rootAst);
             case "<Block>" -> genIrBlockChecker(rootAst);
-            case "<BlockItem>" -> genIrBlockItemChecker(rootAst);
-            case "<Stmt>" -> genIrStmtChecker(rootAst);
             case "IFTK" -> genIrIfStmtChecker(rootAst);
             case "FORTK" -> genIrForStmtChecker(rootAst);
             case "BREAKTK" -> genIrBreakStmtChecker(rootAst);
             case "CONTINUETK" -> genIrContinueStmtChecker(rootAst);
             case "RETURNTK" -> genIrReturnStmtChecker(rootAst);
             case "PRINTFTK" -> genIrPrintStmtChecker(rootAst);
-            case "<ForStmt>" -> genIrForStmtValChecker(rootAst);
             case "<Exp>" -> genIrExpChecker(rootAst);
-            case "<Cond>" -> genIrCondChecker(rootAst);
-            case "<LVal>" -> genIrLValChecker(rootAst);
             case "<PrimaryExp>" -> genIrPrimaryExpChecker(rootAst);
             case "<Number>" -> genIrNumberCallChecker(rootAst);
             case "<UnaryExp>" -> genIrUnaryExpChecker(rootAst);
-            case "<UnaryOp>" -> genIrUnaryOpChecker(rootAst);
-            case "<FuncRParams>" -> genIrFuncRParamsChecker(rootAst);
             case "<MulExp>" -> genIrMulExpChecker(rootAst);
             case "<AddExp>" -> genIrAddExpChecker(rootAst);
             case "<RelExp>" -> genIrRelExpChecker(rootAst);
             case "<EqExp>" -> genIrEqExpChecker(rootAst);
-            case "<LAndExp>" -> genIrLAndExpChecker(rootAst);
-            case "<LOrExp>" -> genIrLOrExpChecker(rootAst);
-            case "<ConstExp>" -> genIrConstExpChecker(rootAst);
-            case "<BType>" -> genIrBTypeChecker(rootAst);
-            case "IDENFR" -> genIrIdentChecker(rootAst);
             //FuncDef.java
             case "<FuncDef>" -> genIrFuncDefChecker(rootAst);
-            case "<FuncType>" -> genIrFuncTypeChecker(rootAst);
-            case "<FuncFParams>" -> genIrFuncFParamsChecker(rootAst);
             case "<FuncFParam>" -> genIrFuncFParamChecker(rootAst);
             //MainFuncDef.java
             case "<MainFuncDef>" -> genIrMainFuncDefChecker(rootAst);
             //Lexer_part
-            case "INTTK" -> genIrINTTKChecker(rootAst);
-            case "VOIDTK" -> genIrVOIDTKChecker(rootAst);
-            case "MAINTK" -> genIrMAINTKChecker(rootAst);
-            case "LPARENT" -> genIrLPARENTChecker(rootAst);
-            case "RPARENT" -> genIrRPARENTChecker(rootAst);
-            case "LBRACE" -> genIrLBRACEChecker(rootAst);
-            case "RBRACE" -> genIrRBRACEChecker(rootAst);
-            case "LBRACK" -> genIrLBRACKChecker(rootAst);
-            case "RBRACK" -> genIrRBRACKChecker(rootAst);
-            case "SEMICN" -> genIrSEMICNChecker(rootAst);
-            case "COMMA" -> genIrCOMMAChecker(rootAst);
-            case "ASSIGN" -> genIrASSIGNChecker(rootAst);
-            case "PLUS" -> genIrPLUSChecker(rootAst);
-            case "MINU" -> genIrMINUChecker(rootAst);
-            case "INTCON" -> genIrINTCONChecker(rootAst);
-            case "NOT" -> genIrNOTChecker(rootAst);
-            case "DIV" -> genIrDIVChecker(rootAst);
-            case "MULT" -> genIrMULTChecker(rootAst);
-            case "MOD" -> genIrMODChecker(rootAst);
-            case "AND" -> genIrANDChecker(rootAst);
-            case "OR" -> genIrORChecker(rootAst);
-            case "NEQ" -> genIrNEQChecker(rootAst);
-            case "EQL" -> genIrEQLChecker(rootAst);
-            case "LSS" -> genIrLSSChecker(rootAst);
-            case "LEQ" -> genIrLEQChecker(rootAst);
-            case "GRE" -> genIrGREChecker(rootAst);
-            case "GEQ" -> genIrGEQChecker(rootAst);
-            case "STRCON" -> genIrSTRCONChecker(rootAst);
-            case "CONSTTK" -> genIrCONSTTKChecker(rootAst);
-            case "ELSETK" -> genIrELSETKChecker(rootAst);
-            case "GETINTTK" -> genIrGETINTTKChecker(rootAst);
+            case "ASSIGN" -> genIrAssignChecker(rootAst);
+            case "GETINTTK" -> genIrGetIntChecker(rootAst);
             default -> {
                 GenerationMain.preTraverse(rootAst);
                 yield null;
@@ -111,90 +71,219 @@ public class LLvmGenIR {
         };
     }
 
-    //Decl.java
-    private Value genIrDeclChecker(AstNode rootAst) {
+    private Value genIrCompUnitChecker(AstNode rootAst) {
+        SymbolTable.setGlobalArea(true);
+        SymbolTable.createStackSymbolTable();
         GenerationMain.preTraverse(rootAst);
+        SymbolTable.destroyStackSymbolTable();
         return null;
     }
 
     //Definer.java
-    private Value genIrConstDeclChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
     private Value genIrConstDefChecker(AstNode rootAst) {
+        ConstSymbol constSymbol = (ConstSymbol) semanticAnalysisChecker
+                .createConstDefChecker(rootAst);
+        SymbolTable.addSymbol(constSymbol);
+        if (constSymbol.getSymbolLevel().equals(0)) {
+            String globalVarName = IrNameController.getGlobalVarName(constSymbol.getSymbolName());
+            GlobalVar globalVar = null;
+            // =new GlobalVar(new PointerType(IrType.getIrType(constSymbol.getSymbolType())),
+            // globalVarName,null);
+            constSymbol.setValue(globalVar);
+        } else {
+            Instr instr;
+            if (constSymbol.getDim().equals(0)) {
+                instr = new AllocaInstr(IrNameController.getLocalVarName(),
+                        "alloca", new VarType(32));
+                constSymbol.setValue(instr);
+                Value value = null;
+                //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                new StoreInstr(IrNameController.getLocalVarName(),
+                        "store", value, instr);
+
+            } else {
+                instr = new AllocaInstr(IrNameController.getLocalVarName(), "alloca",
+                        new ArrayType(constSymbol.getSpaceTot(), new VarType(32)));
+                constSymbol.setValue(instr);
+                Value pointer = instr;
+                ArrayList<Value> valuelist = null;
+                //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                int off = 0;
+                for (Value value : valuelist) {
+                    instr = new GetEleInstr(IrNameController.getLocalVarName(), "getEle",
+                            pointer, new Constant(String.valueOf(off), new VarType(32)));
+                    new StoreInstr(IrNameController.getLocalVarName(),
+                            "store", value, instr);
+                    off++;
+                }
+            }
+        }
         GenerationMain.preTraverse(rootAst);
         return null;
     }
 
-    private Value genIrConstInitValChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrVarDeclChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
+    /*TODO:change later*/
     private Value genIrVarDefChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrInitValChecker(AstNode rootAst) {
+        VarSymbol varSymbol = (VarSymbol) semanticAnalysisChecker.createVarDefChecker(rootAst);
+        SymbolTable.addSymbol(varSymbol);
+        if (varSymbol.getSymbolLevel().equals(0)) {
+            String globalVarName = IrNameController.getGlobalVarName(varSymbol.getSymbolName());
+            GlobalVar globalVar = null;
+            // =new GlobalVar(new PointerType(IrType.getIrType(varSymbol.getSymbolType())),
+            // globalVarName,null);
+            varSymbol.setValue(globalVar);
+        } else {
+            Instr instr;
+            if (varSymbol.getDim().equals(0)) {
+                instr = new AllocaInstr(IrNameController.getLocalVarName(),
+                        "alloca", new VarType(32));
+                varSymbol.setValue(instr);
+                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
+                        .getGrammarType().equals("<InitVal>")) {
+                    Value value = null;
+                    //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                    new StoreInstr(IrNameController.getLocalVarName(),
+                            "store", value, instr);
+                }
+            } else {
+                instr = new AllocaInstr(IrNameController.getLocalVarName(), "alloca",
+                        new ArrayType(varSymbol.getSpaceTot(), new VarType(32)));
+                varSymbol.setValue(instr);
+                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
+                        .getGrammarType().equals("<InitVal>")) {
+                    Value pointer = instr;
+                    ArrayList<Value> valuelist = null;
+                    //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                    int off = 0;
+                    for (Value value : valuelist) {
+                        instr = new GetEleInstr(IrNameController.getLocalVarName(), "getEle",
+                                pointer, new Constant(String.valueOf(off), new VarType(32)));
+                        new StoreInstr(IrNameController.getLocalVarName(),
+                                "store", value, instr);
+                        off++;
+                    }
+                }
+            }
+        }
         GenerationMain.preTraverse(rootAst);
         return null;
     }
 
     private Value genIrBlockChecker(AstNode rootAst) {
+        SymbolTable.createStackSymbolTable();
         GenerationMain.preTraverse(rootAst);
+        SymbolTable.destroyStackSymbolTable();
         return null;
     }
 
-    private Value genIrBlockItemChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
+    /*TODO:change later*/
+    private Value genIrIfStmtChecker(AstNode sonAst) {
+        AstNode rootAst = sonAst.getParent();
+        BasicBlock thenblock = new BasicBlock(IrNameController.getBlockName());
+        if (rootAst.getChildList().size() > 5) {
+            BasicBlock elseblock = new BasicBlock(IrNameController.getBlockName());
+            BasicBlock followblock = new BasicBlock(IrNameController.getBlockName());
+            //((CondExp) rootAst.getChildList().get(2)).genIrForCond(thenblock, elseblock);
+            IrNameController.setCurrentBlock(thenblock);
+            genIrAnalysis(rootAst.getChildList().get(4));
+            new JumpInstr(IrNameController.getLocalVarName(), followblock);
+            IrNameController.setCurrentBlock(elseblock);
+            genIrAnalysis(rootAst.getChildList().get(6));
+            new JumpInstr(IrNameController.getLocalVarName(), followblock);
+            IrNameController.setCurrentBlock(followblock);
+            IrNameController.setCurrentBlock(followblock);
+        } else {
+            BasicBlock followblock = new BasicBlock(IrNameController.getBlockName());
+            //((CondExp) rootAst.getChildList().get(2)).genIrForCond(thenblock, followblock);
+            IrNameController.setCurrentBlock(thenblock);
+            genIrAnalysis(rootAst.getChildList().get(4));
+            new JumpInstr(IrNameController.getLocalVarName(), followblock);
+            IrNameController.setCurrentBlock(followblock);
+        }
+        GenerationMain.preTraverse(sonAst);
         return null;
     }
 
-    private Value genIrStmtChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrIfStmtChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrForStmtChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
+    /*TODO:change later*/
+    private Value genIrForStmtChecker(AstNode sonAst) {
+        SymbolTable.enterLoop();
+        AstNode rootAst = sonAst.getParent();
+        BasicBlock condBlock = new BasicBlock(IrNameController.getBlockName());
+        BasicBlock currentLoopBlock = new BasicBlock(IrNameController.getBlockName());
+        BasicBlock followBlock = new BasicBlock(IrNameController.getBlockName());
+        IrNameController.pushLoop(new Loop(condBlock, currentLoopBlock, followBlock));
+        new JumpInstr(IrNameController.getLocalVarName(), condBlock);
+        IrNameController.setCurrentBlock(condBlock);
+        //((CondExp) rootAst.getChildList().get(2)).genIrForCond(CurrentLoopBlock, followBlock);
+        IrNameController.setCurrentBlock(currentLoopBlock);
+        genIrAnalysis(rootAst.getChildList().get(4));
+        new JumpInstr(IrNameController.getLocalVarName(), condBlock);
+        IrNameController.setCurrentBlock(followBlock);
+        IrNameController.popLoop();
+        SymbolTable.leaveLoop();
         return null;
     }
 
     private Value genIrBreakStmtChecker(AstNode rootAst) {
+        new JumpInstr(IrNameController.getLocalVarName(),
+                IrNameController.getCurrentLoop().getFollowBlock());
         GenerationMain.preTraverse(rootAst);
         return null;
     }
 
     private Value genIrContinueStmtChecker(AstNode rootAst) {
+        new JumpInstr(IrNameController.getLocalVarName(),
+                IrNameController.getCurrentLoop().getCondBlock());
         GenerationMain.preTraverse(rootAst);
         return null;
     }
 
-    private Value genIrReturnStmtChecker(AstNode rootAst) {
+    private Value genIrReturnStmtChecker(AstNode sonAst) {
+        AstNode rootAst = sonAst.getParent();
+        Value retValue;
+        if (rootAst.getChildList().get(1).getGrammarType().equals("<Exp>")) {
+            retValue = genIrAnalysis(rootAst.getChildList().get(1));
+        } else {
+            retValue = new Constant("0", new VarType(32));
+        }
+        Instr instr = new RetInstr(IrNameController.getLocalVarName(), "return", retValue);
         GenerationMain.preTraverse(rootAst);
-        return null;
+        return instr;
     }
 
-    private Value genIrPrintStmtChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrForStmtValChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
+    private Value genIrPrintStmtChecker(AstNode sonAst) {
+        AstNode rootAst = sonAst.getParent();
+        StringBuilder sb = new StringBuilder();
+        List<Value> expValueList = rootAst.getChildList().stream().
+                filter(child -> child.getGrammarType().equals("<Exp>")).
+                map(this::genIrAnalysis).toList();
+        String subformatString = rootAst.getChildList().get(2).getSymToken().getWord().substring(1,
+                rootAst.getChildList().get(2).getSymToken().getWord().length() - 1);
+        int expCnt = 0;
+        for (int i = 0; i < subformatString.length(); i++) {
+            if (subformatString.charAt(i) == '%') {
+                if (!sb.isEmpty()) {
+                    String str = IrNameController.getStringLiteral(
+                            IrNameController.getStringLiteralName(), sb.toString());
+                    new PutStrDeclare(IrNameController.getLocalVarName(), str);
+                    sb.setLength(0);
+                }
+                Value value = expValueList.get(expCnt++);
+                new PutIntDeclare(IrNameController.getLocalVarName(), value);
+                i = i + 1;
+            } else if (subformatString.charAt(i) == '\\') {
+                sb.append('\n');
+                i = i + 1;
+            } else {
+                sb.append(subformatString.charAt(i));
+            }
+        }
+        if (!sb.isEmpty()) {
+            String str = IrNameController.getStringLiteral(
+                    IrNameController.getStringLiteralName(), sb.toString());
+            new PutStrDeclare(IrNameController.getLocalVarName(), str);
+        }
+        GenerationMain.preTraverse(sonAst);
         return null;
     }
 
@@ -202,16 +291,6 @@ public class LLvmGenIR {
         Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         GenerationMain.preTraverse(rootAst);
         return ans;
-    }
-
-    private Value genIrCondChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrLValChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
     }
 
     /*TODO:change later */
@@ -272,16 +351,6 @@ public class LLvmGenIR {
             GenerationMain.preTraverse(rootAst);
             return ans;
         }
-    }
-
-    private Value genIrUnaryOpChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrFuncRParamsChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
     }
 
     private Value genIrMulExpChecker(AstNode rootAst) {
@@ -374,33 +443,35 @@ public class LLvmGenIR {
         return ans;
     }
 
-    private Value genIrLAndExpChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrLOrExpChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrConstExpChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrBTypeChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrIdentChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
     //FuncDef.java
     private Value genIrFuncDefChecker(AstNode rootAst) {
+        return genFuncDefSubChecker(rootAst);
+    }
+
+    private Value genIrFuncFParamChecker(AstNode rootAst) {
+        VarSymbol symbol = (VarSymbol) semanticAnalysisChecker.createFuncFParamChecker(rootAst);
+        SymbolTable.addSymbol(symbol);
+        IrType type = symbol.getDim() == 0 ? new VarType(32) : new VarType(0);
+        Param param = new Param(type, IrNameController.getParamName());
+        if (param.getType().isInt32()) {
+            Instr allocaInstr = new AllocaInstr(IrNameController.getLocalVarName(),
+                    "alloca", param.getType());
+            symbol.setValue(allocaInstr);
+            allocaInstr = new StoreInstr(IrNameController.getLocalVarName(),
+                    "store", param, allocaInstr);
+        } else {
+            symbol.setValue(param);
+        }
+        GenerationMain.preTraverse(rootAst);
+        return null;
+    }
+
+    //MainFuncDef.java
+    private Value genIrMainFuncDefChecker(AstNode rootAst) {
+        return genFuncDefSubChecker(rootAst);
+    }
+
+    private Value genFuncDefSubChecker(AstNode rootAst) {
         SymbolTable.setGlobalArea(false);
         FuncSymbol funcSymbol = (FuncSymbol) semanticAnalysisChecker.createFuncDefChecker(rootAst);
         SymbolTable.addSymbol(funcSymbol);
@@ -430,193 +501,25 @@ public class LLvmGenIR {
         return null;
     }
 
-    private Value genIrFuncTypeChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrFuncFParamsChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrFuncFParamChecker(AstNode rootAst) {
-        VarSymbol symbol = (VarSymbol) semanticAnalysisChecker.createFuncFParamChecker(rootAst);
-        SymbolTable.addSymbol(symbol);
-        IrType type = symbol.getDim() == 0 ? new VarType(32) : new VarType(0);
-        Param param = new Param(type, IrNameController.getParamName());
-        if (param.getType().isInt32()) {
-            Instr allocaInstr = new AllocaInstr(IrNameController.getLocalVarName(),
-                    "alloca", param.getType());
-            symbol.setValue(allocaInstr);
-            allocaInstr = new StoreInstr(IrNameController.getLocalVarName(),
-                    "store", param, allocaInstr);
-        } else {
-            symbol.setValue(param);
-        }
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    //MainFuncDef.java
-    private Value genIrMainFuncDefChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
     //Lexer_part
-    private Value genIrINTTKChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
+    /*TODO:change later*/
+    private Value genIrAssignChecker(AstNode sonAst) {
+        AstNode rootAst = sonAst.getParent();
+        Value lval = genIrAnalysis(rootAst.getChildList().get(0));//Error
+        Value exp = genIrAnalysis(rootAst.getChildList().get(2));
+        Instr instr = new StoreInstr(IrNameController.getLocalVarName(), "store", exp, lval);
+        GenerationMain.preTraverse(sonAst);
+        return instr;
     }
 
-    private Value genIrVOIDTKChecker(AstNode rootAst) {
+    /*TODO:change later*/
+    private Value genIrGetIntChecker(AstNode rootAst) {
+        Value pointer = null;//Error
+        GetIntDeclare getIntDeclare = new GetIntDeclare(IrNameController.getLocalVarName(),
+                "call");
+        Instr instr = new StoreInstr(IrNameController.getLocalVarName(),
+                "store", getIntDeclare, pointer);
         GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrMAINTKChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrLPARENTChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrRPARENTChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrLBRACEChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrRBRACEChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrLBRACKChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrRBRACKChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrSEMICNChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrCOMMAChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrASSIGNChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrPLUSChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrMINUChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrINTCONChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrNOTChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrDIVChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrMULTChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrMODChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrANDChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrORChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrNEQChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrEQLChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrLSSChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrLEQChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrGREChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrGEQChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrSTRCONChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrCONSTTKChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrELSETKChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
-    }
-
-    private Value genIrGETINTTKChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
+        return instr;
     }
 }
