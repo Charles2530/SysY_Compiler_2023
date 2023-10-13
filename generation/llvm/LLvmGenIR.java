@@ -144,6 +144,7 @@ public class LLvmGenIR {
                     //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
                     new StoreInstr(IrNameController.getLocalVarName(),
                             "store", value, instr);
+
                 }
             } else {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(), "alloca",
