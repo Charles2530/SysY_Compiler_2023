@@ -1,10 +1,19 @@
 package generation.value.instr;
 
-import generation.value.construction.Instr;
+import generation.value.Value;
+import generation.value.construction.user.Function;
+import generation.value.construction.user.Instr;
+
+import java.util.ArrayList;
 
 public class CallInstr extends Instr {
-    public CallInstr(String name, String instrType) {
-        super(name, instrType);
+    public CallInstr(String name, String instrType,
+                     Function targetFunc, ArrayList<Value> paramList) {
+        super(targetFunc.getType(), name, instrType);
+        addOperand(targetFunc);
+        for (Value param : paramList) {
+            addOperand(param);
+        }
     }
 
     @Override

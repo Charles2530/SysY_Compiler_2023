@@ -25,6 +25,13 @@ public class IrType {
         return false;
     }
 
+    public boolean isInt32() {
+        if (this instanceof VarType) {
+            return ((VarType) this).getBits() == 32;
+        }
+        return false;
+    }
+
     public boolean isArray() {
         return this instanceof ArrayType;
     }

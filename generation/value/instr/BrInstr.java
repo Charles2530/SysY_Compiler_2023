@@ -1,6 +1,6 @@
 package generation.value.instr;
 
-import generation.value.construction.Instr;
+import generation.value.construction.user.Instr;
 
 public class BrInstr extends Instr {
     public BrInstr(String name, String instrType) {

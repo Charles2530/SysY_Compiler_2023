@@ -1,7 +1,7 @@
 package generation.value.instr;
 
 import generation.value.Value;
-import generation.value.construction.Instr;
+import generation.value.construction.user.Instr;
 
 public class CalcInstr extends Instr {
     public CalcInstr(String name, String instrType, Value op1, Value op2) {

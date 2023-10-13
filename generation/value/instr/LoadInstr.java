@@ -1,6 +1,6 @@
 package generation.value.instr;
 
-import generation.value.construction.Instr;
+import generation.value.construction.user.Instr;
 
 public class LoadInstr extends Instr {
     public LoadInstr(String name, String instrType) {

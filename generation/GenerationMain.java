@@ -2,7 +2,7 @@ package generation;
 
 import generation.llvm.LLvmGenIR;
 import generation.utils.IrNameController;
-import generation.value.Module;
+import generation.value.construction.Module;
 import iostream.OutputController;
 import semantic.symtable.SymbolTable;
 import syntax.AstNode;

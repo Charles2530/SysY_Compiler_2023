@@ -1,10 +1,14 @@
 package generation.value.instr;
 
-import generation.value.construction.Instr;
+import generation.utils.irtype.VarType;
+import generation.value.Value;
+import generation.value.construction.user.Instr;
 
 public class StoreInstr extends Instr {
-    public StoreInstr(String name, String instrType) {
-        super(name, instrType);
+    public StoreInstr(String name, String instrType, Value ans, Value res) {
+        super(new VarType(0), name, instrType);
+        addOperand(ans);
+        addOperand(res);
     }
 
     @Override

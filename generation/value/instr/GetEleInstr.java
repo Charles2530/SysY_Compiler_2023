@@ -2,7 +2,7 @@ package generation.value.instr;
 
 import generation.utils.IrType;
 import generation.utils.irtype.PointerType;
-import generation.value.construction.Instr;
+import generation.value.construction.user.Instr;
 
 public class GetEleInstr extends Instr {
     public GetEleInstr(String name, String instrType) {

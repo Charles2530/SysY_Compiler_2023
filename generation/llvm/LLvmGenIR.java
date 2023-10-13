@@ -1,12 +1,30 @@
 package generation.llvm;
 
 import generation.GenerationMain;
+import generation.utils.IrNameController;
+import generation.utils.IrType;
+import generation.utils.irtype.VarType;
 import generation.value.Value;
+import generation.value.construction.BasicBlock;
+import generation.value.construction.Constant;
+import generation.value.construction.Param;
+import generation.value.construction.user.Function;
+import generation.value.construction.user.Instr;
+import generation.value.instr.*;
+import semantic.SemanticAnalysisChecker;
+import semantic.symtable.Symbol;
+import semantic.symtable.SymbolTable;
+import semantic.symtable.symbol.FuncSymbol;
+import semantic.symtable.symbol.VarSymbol;
 import syntax.AstNode;
 
+import java.util.ArrayList;
+
 public class LLvmGenIR {
+    private final SemanticAnalysisChecker semanticAnalysisChecker;
 
     public LLvmGenIR() {
+        this.semanticAnalysisChecker = new SemanticAnalysisChecker();
     }
 
     public Value genIrAnalysis(AstNode rootAst) {
@@ -181,8 +199,9 @@ public class LLvmGenIR {
     }
 
     private Value genIrExpChecker(AstNode rootAst) {
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         GenerationMain.preTraverse(rootAst);
-        return null;
+        return ans;
     }
 
     private Value genIrCondChecker(AstNode rootAst) {
@@ -195,19 +214,64 @@ public class LLvmGenIR {
         return null;
     }
 
+    /*TODO:change later */
     private Value genIrPrimaryExpChecker(AstNode rootAst) {
+        AstNode child = rootAst.getChildList().get(0);
+        Value ans;
+        if (child.getGrammarType().equals("LPARENT")) {
+            ans = genIrAnalysis(rootAst.getChildList().get(1));
+        } else if (child.getGrammarType().equals("<LVal>")) {
+            ans = genIrAnalysis(child);
+        } else {
+            ans = genIrAnalysis(child);
+        }
         GenerationMain.preTraverse(rootAst);
-        return null;
+        return ans;
     }
 
     private Value genIrNumberCallChecker(AstNode rootAst) {
+        Constant constant = new Constant(rootAst.getChildList().get(0)
+                .getSymToken().getWord(), new VarType(32));
         GenerationMain.preTraverse(rootAst);
-        return null;
+        return constant;
     }
 
     private Value genIrUnaryExpChecker(AstNode rootAst) {
-        GenerationMain.preTraverse(rootAst);
-        return null;
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<PrimaryExp>")) {
+            GenerationMain.preTraverse(rootAst);
+            return ans;
+        } else if (rootAst.getChildList().get(0).getGrammarType().equals("<UnaryOp>")) {
+            ans = genIrAnalysis(rootAst.getChildList().get(1));
+            if (rootAst.getChildList().get(0).getChildList().
+                    get(0).getGrammarType().equals("MINU")) {
+                ans = new CalcInstr(IrNameController.getLocalVarName(),
+                        "sub", new Constant("0", new VarType(32)), ans);
+            } else {
+                ans = new IcmpInstr(IrNameController.getLocalVarName(),
+                        "eq", ans, new Constant("0", new VarType(32)));
+                ans = new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", ans, new VarType(32));
+            }
+            GenerationMain.preTraverse(rootAst);
+            return ans;
+        } else {
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTable.getSymByName(
+                    rootAst.getChildList().get(0).getSymToken().getWord());
+            Function function = funcSymbol.getfunction();
+            ArrayList<Value> params = new ArrayList<>();
+            if (rootAst.getChildList().get(2).getGrammarType().equals("<FuncRParams>")) {
+                for (AstNode child : rootAst.getChildList().get(2).getChildList()) {
+                    if (child.getGrammarType().equals("<Exp>")) {
+                        params.add(genIrAnalysis(child));
+                    }
+                }
+            }
+            ans = new CallInstr(IrNameController.getLocalVarName(), "call",
+                    function, params);
+            GenerationMain.preTraverse(rootAst);
+            return ans;
+        }
     }
 
     private Value genIrUnaryOpChecker(AstNode rootAst) {
@@ -221,23 +285,93 @@ public class LLvmGenIR {
     }
 
     private Value genIrMulExpChecker(AstNode rootAst) {
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        for (int i = 1; i < rootAst.getChildList().size(); i++) {
+            if (rootAst.getChildList().get(i).getGrammarType().equals("MULT")) {
+                Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
+                ans = new CalcInstr(IrNameController.getLocalVarName(), "mul", ans, operand2);
+            } else if (rootAst.getChildList().get(i).getGrammarType().equals("DIV")) {
+                Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
+                ans = new CalcInstr(IrNameController.getLocalVarName(), "sdiv", ans, operand2);
+            } else {
+                Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
+                ans = new CalcInstr(IrNameController.getLocalVarName(), "srem", ans, operand2);
+            }
+        }
         GenerationMain.preTraverse(rootAst);
         return null;
     }
 
     private Value genIrAddExpChecker(AstNode rootAst) {
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        for (int i = 1; i < rootAst.getChildList().size(); i++) {
+            Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
+            if (rootAst.getChildList().get(i).getGrammarType().equals("PLUS")) {
+                ans = new CalcInstr(IrNameController.getLocalVarName(), "add", ans, operand2);
+            } else {
+                ans = new CalcInstr(IrNameController.getLocalVarName(), "sub", ans, operand2);
+            }
+        }
         GenerationMain.preTraverse(rootAst);
-        return null;
+        return ans;
     }
 
     private Value genIrRelExpChecker(AstNode rootAst) {
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        if (rootAst.getChildList().size() == 1) {
+            GenerationMain.preTraverse(rootAst);
+            return ans;
+        }
+        for (int i = 1; i < rootAst.getChildList().size(); i++) {
+            if (!ans.getType().isInt32()) {
+                ans = new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", ans, new VarType(32));
+            }
+            Value res = genIrAnalysis(rootAst.getChildList().get(++i));
+            if (!res.getType().isInt32()) {
+                res = new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", res, new VarType(32));
+            }
+            ans = switch (rootAst.getChildList().get(i).getGrammarType()) {
+                case "LSS" -> new IcmpInstr(IrNameController.getLocalVarName(), "slt", ans, res);
+                case "LEQ" -> new IcmpInstr(IrNameController.getLocalVarName(), "sle", ans, res);
+                case "GRE" -> new IcmpInstr(IrNameController.getLocalVarName(), "sgt", ans, res);
+                case "GEQ" -> new IcmpInstr(IrNameController.getLocalVarName(), "sge", ans, res);
+                default -> ans;
+            };
+        }
         GenerationMain.preTraverse(rootAst);
-        return null;
+        return ans;
     }
 
     private Value genIrEqExpChecker(AstNode rootAst) {
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        if (rootAst.getChildList().size() == 1) {
+            if (ans.getType().isInt32()) {
+                ans = new IcmpInstr(IrNameController.getLocalVarName(),
+                        "ne", ans, new Constant("0", new VarType(32)));
+            }
+            GenerationMain.preTraverse(rootAst);
+            return ans;
+        }
+        for (int i = 1; i < rootAst.getChildList().size(); i++) {
+            if (!ans.getType().isInt32()) {
+                ans = new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", ans, new VarType(32));
+            }
+            Value res = genIrAnalysis(rootAst.getChildList().get(++i));
+            if (!res.getType().isInt32()) {
+                res = new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", res, new VarType(32));
+            }
+            if (rootAst.getChildList().get(i).getGrammarType().equals("EQL")) {
+                ans = new IcmpInstr(IrNameController.getLocalVarName(), "eq", ans, res);
+            } else if (rootAst.getChildList().get(i).getGrammarType().equals("NEQ")) {
+                ans = new IcmpInstr(IrNameController.getLocalVarName(), "ne", ans, res);
+            }
+        }
         GenerationMain.preTraverse(rootAst);
-        return null;
+        return ans;
     }
 
     private Value genIrLAndExpChecker(AstNode rootAst) {
@@ -267,7 +401,32 @@ public class LLvmGenIR {
 
     //FuncDef.java
     private Value genIrFuncDefChecker(AstNode rootAst) {
+        SymbolTable.setGlobalArea(false);
+        FuncSymbol funcSymbol = (FuncSymbol) semanticAnalysisChecker.createFuncDefChecker(rootAst);
+        SymbolTable.addSymbol(funcSymbol);
+        SymbolTable.setCurrentFunc(funcSymbol);
+        SymbolTable.createStackSymbolTable();
+        String funcName = IrNameController.getFuncName(funcSymbol.getSymbolName());
+        IrType returnType = funcSymbol.getReturnType().equals(Symbol.SymType.INT) ?
+                new VarType(32) : new VarType(0);
+        Function function = new Function(funcName, returnType);
+        funcSymbol.setFunction(function);
+        IrNameController.setCurrentFunc(function);
+        String blockName = IrNameController.getBlockName();
+        BasicBlock basicBlock = new BasicBlock(blockName);
+        IrNameController.setCurrentBlock(basicBlock);
         GenerationMain.preTraverse(rootAst);
+        BasicBlock lastBlock = IrNameController.getCurrentBlock();
+        if (lastBlock.isEmpty() || !(lastBlock.getLastInstr() instanceof RetInstr)) {
+            if (returnType.isInt32()) {
+                new RetInstr(IrNameController.getLocalVarName(),
+                        "return", new Constant("0", new VarType(32)));
+            } else {
+                new RetInstr(IrNameController.getLocalVarName(),
+                        "return", null);
+            }
+        }
+        SymbolTable.destroyStackSymbolTable();
         return null;
     }
 
@@ -282,6 +441,19 @@ public class LLvmGenIR {
     }
 
     private Value genIrFuncFParamChecker(AstNode rootAst) {
+        VarSymbol symbol = (VarSymbol) semanticAnalysisChecker.createFuncFParamChecker(rootAst);
+        SymbolTable.addSymbol(symbol);
+        IrType type = symbol.getDim() == 0 ? new VarType(32) : new VarType(0);
+        Param param = new Param(type, IrNameController.getParamName());
+        if (param.getType().isInt32()) {
+            Instr allocaInstr = new AllocaInstr(IrNameController.getLocalVarName(),
+                    "alloca", param.getType());
+            symbol.setValue(allocaInstr);
+            allocaInstr = new StoreInstr(IrNameController.getLocalVarName(),
+                    "store", param, allocaInstr);
+        } else {
+            symbol.setValue(param);
+        }
         GenerationMain.preTraverse(rootAst);
         return null;
     }

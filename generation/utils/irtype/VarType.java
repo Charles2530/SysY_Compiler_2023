@@ -5,7 +5,7 @@ import generation.utils.IrType;
 public class VarType extends IrType {
     private int bits;
 
-    private VarType(int bits) {
+    public VarType(int bits) {
         this.bits = bits;
     }
 

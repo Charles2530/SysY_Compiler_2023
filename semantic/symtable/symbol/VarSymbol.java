@@ -1,5 +1,6 @@
 package semantic.symtable.symbol;
 
+import generation.value.Value;
 import semantic.symtable.Symbol;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ public class VarSymbol extends Symbol {
     private final int dim;
     private final ArrayList<Integer> initValue;
     private final ArrayList<Integer> space;
+
+    private Value value;
 
     public VarSymbol(String symbolName, SymType symbolType, int dim,
                      ArrayList<Integer> initValue, ArrayList<Integer> space) {
@@ -58,5 +61,13 @@ public class VarSymbol extends Symbol {
             }
             initValue.set(idx[0] * space.get(0) + idx[1], val);
         }
+    }
+
+    public Value getValue() {
+        return value;
+    }
+
+    public void setValue(Value value) {
+        this.value = value;
     }
 }

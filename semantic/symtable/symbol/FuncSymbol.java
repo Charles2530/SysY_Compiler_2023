@@ -1,5 +1,6 @@
 package semantic.symtable.symbol;
 
+import generation.value.construction.user.Function;
 import semantic.symtable.Symbol;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ public class FuncSymbol extends Symbol {
     private ArrayList<SymType> fparamTypes;
     private ArrayList<Integer> fparamDims;
     private final SymType returnType;
+
+    private Function function;
 
     public FuncSymbol(String symbolName, SymType symbolType) {
         super(symbolName, symbolType);
@@ -34,5 +37,13 @@ public class FuncSymbol extends Symbol {
 
     public ArrayList<Integer> getFparamDims() {
         return fparamDims;
+    }
+
+    public Function getfunction() {
+        return function;
+    }
+
+    public void setFunction(Function function) {
+        this.function = function;
     }
 }

@@ -1,7 +1,9 @@
-package generation.value;
+package generation.value.construction;
 
-import generation.value.construction.Function;
-import generation.value.construction.GlobalVar;
+import generation.utils.irtype.StructType;
+import generation.value.Value;
+import generation.value.construction.user.Function;
+import generation.value.construction.user.GlobalVar;
 import iostream.declare.GetIntDeclare;
 import iostream.declare.PutIntDeclare;
 import iostream.declare.PutStrDeclare;
@@ -14,7 +16,7 @@ public class Module extends Value {
     private final ArrayList<String> stringLiterals;
 
     public Module() {
-        super("module");
+        super(new StructType("module"), "module");
         this.globalVars = new ArrayList<>();
         this.functions = new ArrayList<>();
         this.stringLiterals = new ArrayList<>();

@@ -1,14 +1,40 @@
 package generation.utils;
 
+import generation.value.construction.Module;
+import generation.value.construction.BasicBlock;
+import generation.value.construction.user.Function;
+
 import java.util.HashMap;
 
 public class IrNameController {
     private static HashMap<IrPrefix, String> irPrefixHashMap;
-    private Integer bbNameIndex = 0;
-    private Integer paramNameIndex = 0;
-    private Integer stringLiteralNameIndex = 0;
+    private static Integer blockNameIndex;
+    private static Integer paramNameIndex;
+    private static Integer stringLiteralNameIndex;
+
+    private static HashMap<Function, Integer> localVarNameIndexHashMap;
+
+    private static Module currentModule;
+    private static BasicBlock currentBasicBlock;
+    private static Function currentFunction;
 
     public static void init() {
+        preFixInit();
+        cntInit();
+        IrNameController.currentModule = new Module();
+        IrNameController.currentBasicBlock = null;
+        IrNameController.currentFunction = null;
+
+    }
+
+    private static void cntInit() {
+        IrNameController.blockNameIndex = 0;
+        IrNameController.paramNameIndex = 0;
+        IrNameController.stringLiteralNameIndex = 0;
+        IrNameController.localVarNameIndexHashMap = new HashMap<>();
+    }
+
+    private static void preFixInit() {
         IrNameController.irPrefixHashMap = new HashMap<>();
         IrNameController.irPrefixHashMap.put(IrPrefix.BB_NAME, "block_label_");
         IrNameController.irPrefixHashMap.put(IrPrefix.FUNC_NAME, "@f_");
@@ -22,19 +48,50 @@ public class IrNameController {
         return irPrefixHashMap.get(prefix);
     }
 
-    public String getBbName() {
-        return IrNameController.getPrefix(IrPrefix.BB_NAME) + bbNameIndex++;
+    public static String getLocalVarName() {
+        int localVarNameIndex = localVarNameIndexHashMap.get(currentFunction);
+        localVarNameIndexHashMap.put(currentFunction, localVarNameIndex + 1);
+        return IrNameController.getPrefix(IrPrefix.LOCAL_VAR_NAME) + localVarNameIndex;
     }
 
-    public String getGlobalVarName(String varName) {
+    public static String getBlockName() {
+        return IrNameController.getPrefix(IrPrefix.BB_NAME) + blockNameIndex++;
+    }
+
+    public static String getGlobalVarName(String varName) {
         return IrNameController.getPrefix(IrPrefix.GLOBAL_VAR_NAME) + varName;
     }
 
-    public String getParamName() {
+    public static String getParamName() {
         return IrNameController.getPrefix(IrPrefix.PARAM_NAME) + paramNameIndex++;
     }
 
-    public String getStringLiteralName() {
+    public static String getStringLiteralName() {
         return IrNameController.getPrefix(IrPrefix.STRING_LITERAL_NAME) + stringLiteralNameIndex++;
     }
+
+    public static String getFuncName(String funcName) {
+        if (funcName.equals("main")) {
+            return "@main";
+        }
+        return IrNameController.getPrefix(IrPrefix.FUNC_NAME) + funcName;
+    }
+
+    public static void setCurrentFunc(Function function) {
+        IrNameController.currentFunction = function;
+        localVarNameIndexHashMap.put(function, 0);
+    }
+
+    public static Function getCurrentFunc() {
+        return currentFunction;
+    }
+
+    public static void setCurrentBlock(BasicBlock basicBlock) {
+        IrNameController.currentBasicBlock = basicBlock;
+    }
+
+    public static BasicBlock getCurrentBlock() {
+        return currentBasicBlock;
+    }
+
 }

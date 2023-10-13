@@ -7,7 +7,8 @@ public class Value {
 
     protected String name;
 
-    public Value(String name) {
+    public Value(IrType type, String name) {
+        this.type = type;
         this.name = name;
     }
 

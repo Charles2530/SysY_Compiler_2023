@@ -1,11 +1,15 @@
 package generation.value.instr;
 
+import generation.utils.irtype.VarType;
 import generation.value.Value;
-import generation.value.construction.Instr;
+import generation.value.construction.user.Instr;
 
 public class RetInstr extends Instr {
-    public RetInstr(String name, String instrType) {
-        super(name, instrType);
+    public RetInstr(String name, String instrType, Value retValue) {
+        super(new VarType(0), name, instrType);
+        if (retValue != null) {
+            addOperand(retValue);
+        }
     }
 
     @Override

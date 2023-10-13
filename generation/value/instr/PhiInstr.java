@@ -1,7 +1,7 @@
 package generation.value.instr;
 
 import generation.value.construction.BasicBlock;
-import generation.value.construction.Instr;
+import generation.value.construction.user.Instr;
 
 import java.util.ArrayList;
 
