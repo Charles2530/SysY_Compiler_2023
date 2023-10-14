@@ -1,6 +1,8 @@
 package semantic.symtable.symbol;
 
+import generation.utils.irtype.VarType;
 import generation.value.Value;
+import generation.value.construction.procedure.Initial;
 import semantic.symtable.Symbol;
 
 import java.util.ArrayList;
@@ -10,7 +12,6 @@ public class VarSymbol extends Symbol {
     private final ArrayList<Integer> initValue;
     private final ArrayList<Integer> space;
     private Integer spaceTot;
-
     private Value value;
 
     public VarSymbol(String symbolName, SymType symbolType, int dim,
@@ -74,7 +75,16 @@ public class VarSymbol extends Symbol {
         this.value = value;
     }
 
+    public ArrayList<Integer> getSpace() {
+        return space;
+    }
+
     public Integer getSpaceTot() {
         return spaceTot;
+    }
+
+    /*TODO:change later*/
+    public Initial getInitial() {
+        return new Initial(new VarType(32), initValue);
     }
 }

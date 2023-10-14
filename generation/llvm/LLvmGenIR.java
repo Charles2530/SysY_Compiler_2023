@@ -4,16 +4,26 @@ import generation.GenerationMain;
 import generation.utils.IrNameController;
 import generation.utils.IrType;
 import generation.utils.irtype.ArrayType;
+import generation.utils.irtype.PointerType;
 import generation.utils.irtype.VarType;
 import generation.value.Value;
 import generation.value.construction.BasicBlock;
 import generation.value.construction.Constant;
 import generation.value.construction.Param;
+import generation.value.construction.procedure.Initial;
 import generation.value.construction.procedure.Loop;
 import generation.value.construction.user.Function;
 import generation.value.construction.user.GlobalVar;
 import generation.value.construction.user.Instr;
-import generation.value.instr.*;
+import generation.value.instr.AllocaInstr;
+import generation.value.instr.CalcInstr;
+import generation.value.instr.CallInstr;
+import generation.value.instr.GetEleInstr;
+import generation.value.instr.IcmpInstr;
+import generation.value.instr.JumpInstr;
+import generation.value.instr.RetInstr;
+import generation.value.instr.StoreInstr;
+import generation.value.instr.ZextInstr;
 import iostream.declare.GetIntDeclare;
 import iostream.declare.PutIntDeclare;
 import iostream.declare.PutStrDeclare;
@@ -23,6 +33,7 @@ import semantic.symtable.SymbolTable;
 import semantic.symtable.symbol.ConstSymbol;
 import semantic.symtable.symbol.FuncSymbol;
 import semantic.symtable.symbol.VarSymbol;
+import semantic.utils.SymDefiner;
 import syntax.AstNode;
 
 import java.util.ArrayList;
@@ -30,9 +41,11 @@ import java.util.List;
 
 public class LLvmGenIR {
     private final SemanticAnalysisChecker semanticAnalysisChecker;
+    private final LLvmGenUtils llvmGenUtils;
 
     public LLvmGenIR() {
         this.semanticAnalysisChecker = new SemanticAnalysisChecker();
+        this.llvmGenUtils = new LLvmGenUtils(this);
     }
 
     public Value genIrAnalysis(AstNode rootAst) {
@@ -86,9 +99,9 @@ public class LLvmGenIR {
         SymbolTable.addSymbol(constSymbol);
         if (constSymbol.getSymbolLevel().equals(0)) {
             String globalVarName = IrNameController.getGlobalVarName(constSymbol.getSymbolName());
-            GlobalVar globalVar = null;
-            // =new GlobalVar(new PointerType(IrType.getIrType(constSymbol.getSymbolType())),
-            // globalVarName,null);
+            GlobalVar globalVar = new GlobalVar(new PointerType(
+                    constSymbol.getInitial().getType()), globalVarName,
+                    constSymbol.getInitial());
             constSymbol.setValue(globalVar);
         } else {
             Instr instr;
@@ -96,8 +109,8 @@ public class LLvmGenIR {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(),
                         "alloca", new VarType(32));
                 constSymbol.setValue(instr);
-                Value value = null;
-                //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                Value value = SymDefiner.genIrValues(rootAst.getChildList().get(
+                        rootAst.getChildList().size() - 1), 0).get(0);
                 new StoreInstr(IrNameController.getLocalVarName(),
                         "store", value, instr);
 
@@ -106,8 +119,8 @@ public class LLvmGenIR {
                         new ArrayType(constSymbol.getSpaceTot(), new VarType(32)));
                 constSymbol.setValue(instr);
                 Value pointer = instr;
-                ArrayList<Value> valuelist = null;
-                //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                ArrayList<Value> valuelist = SymDefiner.genIrValues(rootAst.getChildList().get(
+                        rootAst.getChildList().size() - 1), constSymbol.getDim());
                 int off = 0;
                 for (Value value : valuelist) {
                     instr = new GetEleInstr(IrNameController.getLocalVarName(), "getEle",
@@ -122,15 +135,14 @@ public class LLvmGenIR {
         return null;
     }
 
-    /*TODO:change later*/
     private Value genIrVarDefChecker(AstNode rootAst) {
         VarSymbol varSymbol = (VarSymbol) semanticAnalysisChecker.createVarDefChecker(rootAst);
         SymbolTable.addSymbol(varSymbol);
+        Initial initial = varSymbol.getInitial();
         if (varSymbol.getSymbolLevel().equals(0)) {
             String globalVarName = IrNameController.getGlobalVarName(varSymbol.getSymbolName());
-            GlobalVar globalVar = null;
-            // =new GlobalVar(new PointerType(IrType.getIrType(varSymbol.getSymbolType())),
-            // globalVarName,null);
+            GlobalVar globalVar = new GlobalVar(new PointerType(
+                    initial.getType()), globalVarName, initial);
             varSymbol.setValue(globalVar);
         } else {
             Instr instr;
@@ -140,11 +152,10 @@ public class LLvmGenIR {
                 varSymbol.setValue(instr);
                 if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
                         .getGrammarType().equals("<InitVal>")) {
-                    Value value = null;
-                    //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                    Value value = SymDefiner.genIrValues(rootAst.getChildList().get(
+                            rootAst.getChildList().size() - 1), 0).get(0);
                     new StoreInstr(IrNameController.getLocalVarName(),
                             "store", value, instr);
-
                 }
             } else {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(), "alloca",
@@ -153,8 +164,8 @@ public class LLvmGenIR {
                 if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
                         .getGrammarType().equals("<InitVal>")) {
                     Value pointer = instr;
-                    ArrayList<Value> valuelist = null;
-                    //=rootAst.getChildList().get(rootAst.getChildList().size() - 1);//Error
+                    ArrayList<Value> valuelist = SymDefiner.genIrValues(rootAst.getChildList().get(
+                            rootAst.getChildList().size() - 1), varSymbol.getDim());
                     int off = 0;
                     for (Value value : valuelist) {
                         instr = new GetEleInstr(IrNameController.getLocalVarName(), "getEle",
@@ -177,14 +188,13 @@ public class LLvmGenIR {
         return null;
     }
 
-    /*TODO:change later*/
     private Value genIrIfStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
         BasicBlock thenblock = new BasicBlock(IrNameController.getBlockName());
         if (rootAst.getChildList().size() > 5) {
             BasicBlock elseblock = new BasicBlock(IrNameController.getBlockName());
             BasicBlock followblock = new BasicBlock(IrNameController.getBlockName());
-            //((CondExp) rootAst.getChildList().get(2)).genIrForCond(thenblock, elseblock);
+            llvmGenUtils.genCondIr(rootAst.getChildList().get(2), thenblock, elseblock);
             IrNameController.setCurrentBlock(thenblock);
             genIrAnalysis(rootAst.getChildList().get(4));
             new JumpInstr(IrNameController.getLocalVarName(), followblock);
@@ -195,7 +205,7 @@ public class LLvmGenIR {
             IrNameController.setCurrentBlock(followblock);
         } else {
             BasicBlock followblock = new BasicBlock(IrNameController.getBlockName());
-            //((CondExp) rootAst.getChildList().get(2)).genIrForCond(thenblock, followblock);
+            llvmGenUtils.genCondIr(rootAst.getChildList().get(2), thenblock, followblock);
             IrNameController.setCurrentBlock(thenblock);
             genIrAnalysis(rootAst.getChildList().get(4));
             new JumpInstr(IrNameController.getLocalVarName(), followblock);
@@ -205,7 +215,6 @@ public class LLvmGenIR {
         return null;
     }
 
-    /*TODO:change later*/
     private Value genIrForStmtChecker(AstNode sonAst) {
         SymbolTable.enterLoop();
         AstNode rootAst = sonAst.getParent();
@@ -215,7 +224,7 @@ public class LLvmGenIR {
         IrNameController.pushLoop(new Loop(condBlock, currentLoopBlock, followBlock));
         new JumpInstr(IrNameController.getLocalVarName(), condBlock);
         IrNameController.setCurrentBlock(condBlock);
-        //((CondExp) rootAst.getChildList().get(2)).genIrForCond(CurrentLoopBlock, followBlock);
+        llvmGenUtils.genCondIr(rootAst.getChildList().get(4), currentLoopBlock, followBlock);
         IrNameController.setCurrentBlock(currentLoopBlock);
         genIrAnalysis(rootAst.getChildList().get(4));
         new JumpInstr(IrNameController.getLocalVarName(), condBlock);
@@ -294,14 +303,13 @@ public class LLvmGenIR {
         return ans;
     }
 
-    /*TODO:change later */
     private Value genIrPrimaryExpChecker(AstNode rootAst) {
         AstNode child = rootAst.getChildList().get(0);
         Value ans;
         if (child.getGrammarType().equals("LPARENT")) {
             ans = genIrAnalysis(rootAst.getChildList().get(1));
         } else if (child.getGrammarType().equals("<LVal>")) {
-            ans = genIrAnalysis(child);
+            ans = llvmGenUtils.genValueIr(child);
         } else {
             ans = genIrAnalysis(child);
         }
@@ -458,7 +466,7 @@ public class LLvmGenIR {
             Instr allocaInstr = new AllocaInstr(IrNameController.getLocalVarName(),
                     "alloca", param.getType());
             symbol.setValue(allocaInstr);
-            allocaInstr = new StoreInstr(IrNameController.getLocalVarName(),
+            new StoreInstr(IrNameController.getLocalVarName(),
                     "store", param, allocaInstr);
         } else {
             symbol.setValue(param);
@@ -503,19 +511,17 @@ public class LLvmGenIR {
     }
 
     //Lexer_part
-    /*TODO:change later*/
     private Value genIrAssignChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
-        Value lval = genIrAnalysis(rootAst.getChildList().get(0));//Error
+        Value lval = llvmGenUtils.genAssignIr(rootAst.getChildList().get(0));
         Value exp = genIrAnalysis(rootAst.getChildList().get(2));
         Instr instr = new StoreInstr(IrNameController.getLocalVarName(), "store", exp, lval);
         GenerationMain.preTraverse(sonAst);
         return instr;
     }
 
-    /*TODO:change later*/
     private Value genIrGetIntChecker(AstNode rootAst) {
-        Value pointer = null;//Error
+        Value pointer = llvmGenUtils.genAssignIr(rootAst.getChildList().get(0));
         GetIntDeclare getIntDeclare = new GetIntDeclare(IrNameController.getLocalVarName(),
                 "call");
         Instr instr = new StoreInstr(IrNameController.getLocalVarName(),

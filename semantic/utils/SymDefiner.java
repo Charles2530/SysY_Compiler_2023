@@ -1,5 +1,7 @@
 package semantic.utils;
 
+import generation.llvm.LLvmGenIR;
+import generation.value.Value;
 import semantic.symtable.Symbol;
 import semantic.symtable.SymbolTable;
 import semantic.symtable.symbol.ConstSymbol;
@@ -10,6 +12,8 @@ import syntax.AstNode;
 import java.util.ArrayList;
 
 public class SymDefiner {
+    private static LLvmGenIR lLvmGenIR = new LLvmGenIR();
+
     public static void setParamInfo(AstNode astNode, FuncSymbol symbol) {
         ArrayList<Symbol.SymType> fparamTypes = new ArrayList<>();
         ArrayList<Integer> fparamDims = new ArrayList<>();
@@ -80,5 +84,21 @@ public class SymDefiner {
         } else {
             return getExpDim(astNode.getChildList().get(1));
         }
+    }
+
+    public static ArrayList<Value> genIrValues(AstNode rootAst, int dim) {
+        ArrayList<Value> ans = new ArrayList<>();
+        if (dim == 0) {
+            Value value = lLvmGenIR.genIrAnalysis(rootAst.getChildList().get(0));
+            ans.add(value);
+        } else {
+            for (AstNode child : rootAst.getChildList()) {
+                if (child.getGrammarType().equals("<InitVal>")) {
+                    ArrayList<Value> temp = genIrValues(child, dim - 1);
+                    ans.addAll(temp);
+                }
+            }
+        }
+        return ans;
     }
 }

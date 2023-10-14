@@ -1,6 +1,7 @@
 package semantic.symtable.symbol;
 
 import generation.value.Value;
+import generation.value.construction.procedure.Initial;
 import semantic.symtable.Symbol;
 
 import java.util.ArrayList;
@@ -61,7 +62,15 @@ public class ConstSymbol extends Symbol {
         this.value = value;
     }
 
+    public ArrayList<Integer> getSpace() {
+        return space;
+    }
+
     public Integer getSpaceTot() {
         return spaceTot;
+    }
+
+    public Initial getInitial() {
+        return new Initial(value.getType(), initValue);
     }
 }
