@@ -4,6 +4,7 @@ import iostream.OutputController;
 import frontend.lexer.LexicalAnalysis;
 import frontend.semantic.SemanticAnalysis;
 import frontend.syntax.SyntaxAnalysis;
+import midend.simplify.OptimizerUnit;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -46,6 +47,9 @@ public class Compiler {
         // 生成中间代码
         GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
         generationMain.generate();
+        // 优化中间代码
+        OptimizerUnit optimizerUnit = new OptimizerUnit(generationMain.getModule());
+        optimizerUnit.optimize();
         compilerEnd();
     }
 
