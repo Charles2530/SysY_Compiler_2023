@@ -66,7 +66,7 @@ public class SymCalc {
         int ans = calc(astNode.getChildList().get(0));
         for (int i = 1; i < astNode.getChildList().size(); i++) {
             switch (astNode.getChildList().get(i).getGrammarType()) {
-                case "MUL" -> ans *= calc(astNode.getChildList().get(++i));
+                case "MULT" -> ans *= calc(astNode.getChildList().get(++i));
                 case "DIV" -> ans /= calc(astNode.getChildList().get(++i));
                 case "MOD" -> ans %= calc(astNode.getChildList().get(++i));
                 default -> {

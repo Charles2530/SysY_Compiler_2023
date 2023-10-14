@@ -99,11 +99,8 @@ public class LLvmGenUtils {
         }
         Symbol symbol = SymbolTable.getSymByName(
                 rootAst.getChildList().get(0).getSymToken().getWord());
-        if (symbol instanceof VarSymbol) {
-            return genVarValueIr((VarSymbol) symbol, values, expNum);
-        } else {
-            return genConstValueIr((ConstSymbol) symbol, values, expNum);
-        }
+        return (symbol instanceof VarSymbol) ? genVarValueIr((VarSymbol) symbol, values, expNum) :
+                genConstValueIr((ConstSymbol) symbol, values, expNum);
     }
 
     private Value genConstValueIr(ConstSymbol constSymbol, ArrayList<Value> values, int expNum) {
@@ -113,16 +110,12 @@ public class LLvmGenUtils {
             return new LoadInstr(IrNameController.getLocalVarName(),
                     "load", constSymbol.getValue());
         } else if (dim.equals(1)) {
-            if (expNum == 0) {
-                return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", constSymbol.getValue(),
-                        new Constant("0", new VarType(32)));
-            } else {
-                Instr instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", constSymbol.getValue(), values.get(0));
-                return new LoadInstr(IrNameController.getLocalVarName(), "load", instr);
-
-            }
+            return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
+                    "getelementptr", constSymbol.getValue(),
+                    new Constant("0", new VarType(32))) :
+                    new LoadInstr(IrNameController.getLocalVarName(), "load",
+                            new GetEleInstr(IrNameController.getLocalVarName(),
+                                    "getelementptr", constSymbol.getValue(), values.get(0)));
         } else {
             if (expNum == 0) {
                 return new GetEleInstr(IrNameController.getLocalVarName(),
@@ -151,14 +144,12 @@ public class LLvmGenUtils {
         if (dim.equals(0)) {
             return new LoadInstr(IrNameController.getLocalVarName(), "load", varSymbol.getValue());
         } else if (dim.equals(1)) {
-            if (expNum == 0) {
-                return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", varSymbol.getValue(), new Constant("0", new VarType(32)));
-            } else {
-                Instr instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", varSymbol.getValue(), values.get(0));
-                return new LoadInstr(IrNameController.getLocalVarName(), "load", instr);
-            }
+            return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
+                    "getelementptr", varSymbol.getValue(),
+                    new Constant("0", new VarType(32))) :
+                    new LoadInstr(IrNameController.getLocalVarName(), "load",
+                            new GetEleInstr(IrNameController.getLocalVarName(),
+                                    "getelementptr", varSymbol.getValue(), values.get(0)));
         } else {
             if (expNum == 0) {
                 return new GetEleInstr(IrNameController.getLocalVarName(),
