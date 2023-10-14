@@ -1,7 +1,7 @@
 package iostream.declare;
 
-import generation.utils.irtype.VarType;
-import generation.value.Value;
+import midend.generation.utils.irtype.VarType;
+import midend.generation.value.Value;
 import iostream.IoStreamGeneration;
 
 public class PutIntDeclare extends IoStreamGeneration {

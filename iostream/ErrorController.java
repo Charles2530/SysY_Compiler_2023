@@ -1,7 +1,7 @@
 package iostream;
 
-import semantic.symtable.SymbolTable;
-import syntax.AstRecursion;
+import frontend.semantic.symtable.SymbolTable;
+import frontend.syntax.AstRecursion;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

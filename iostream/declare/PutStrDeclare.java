@@ -1,11 +1,11 @@
 package iostream.declare;
 
-import generation.utils.irtype.VarType;
-import generation.value.construction.FormatString;
+import midend.generation.utils.irtype.VarType;
+import midend.generation.value.construction.FormatString;
 import iostream.IoStreamGeneration;
 
 public class PutStrDeclare extends IoStreamGeneration {
-    private FormatString str;
+    private final FormatString str;
 
     public PutStrDeclare(String name, FormatString str) {
         super(name, "io", new VarType(0));

@@ -1,6 +1,6 @@
 package iostream.declare;
 
-import generation.utils.irtype.VarType;
+import midend.generation.utils.irtype.VarType;
 import iostream.IoStreamGeneration;
 
 public class GetIntDeclare extends IoStreamGeneration {

@@ -1,7 +1,7 @@
 package iostream;
 
-import lexer.SymToken;
-import syntax.AstNode;
+import frontend.lexer.SymToken;
+import frontend.syntax.AstNode;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
