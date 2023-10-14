@@ -15,6 +15,6 @@ public class StoreInstr extends Instr {
     public String toString() {
         return "store " + operands.get(0).getType() + " " +
                 operands.get(0).getName() + ", " + operands.get(1).getType()
-                + "* " + operands.get(1).getName();
+                + " " + operands.get(1).getName();
     }
 }

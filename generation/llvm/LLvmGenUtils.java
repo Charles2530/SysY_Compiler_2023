@@ -70,8 +70,8 @@ public class LLvmGenUtils {
                 values.add(llvmGenIR.genIrAnalysis(child));
             }
         }
-        VarSymbol varSymbol = (VarSymbol) SymbolTable.getSymByName(
-                rootAst.getChildList().get(0).getSymToken().getWord());
+        VarSymbol varSymbol = (VarSymbol) SymbolTable.getSymByName(rootAst.getChildList()
+                .get(0).getSymToken().getWord());
         Integer dim = varSymbol.getDim();
         ArrayList<Integer> space = varSymbol.getSpace();
         if (dim.equals(0)) {

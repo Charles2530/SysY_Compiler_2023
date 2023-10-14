@@ -1,6 +1,5 @@
 package semantic.utils;
 
-import iostream.OutputController;
 import semantic.symtable.Symbol;
 import semantic.symtable.SymbolTable;
 import semantic.symtable.symbol.ConstSymbol;
@@ -39,20 +38,16 @@ public class SymCalc {
     }
 
     public static int calc(AstNode astNode) {
-        if (OutputController.getIsCalcMode()) {
-            return switch (astNode.getGrammarType()) {
-                case "<Exp>", "<ConstExp>" -> calc(astNode.getChildList().get(0));
-                case "<AddExp>" -> calcAddExp(astNode);
-                case "<MulExp>" -> calcMulExp(astNode);
-                case "<UnaryExp>" -> calcUnaryExp(astNode);
-                case "<PrimaryExp>" -> calcPrimaryExp(astNode);
-                case "<Number>" -> calcNumber(astNode);
-                case "<LVal>" -> calcLValExp(astNode);
-                default -> 0;
-            };
-        } else {
-            return 0;
-        }
+        return switch (astNode.getGrammarType()) {
+            case "<Exp>", "<ConstExp>" -> calc(astNode.getChildList().get(0));
+            case "<AddExp>" -> calcAddExp(astNode);
+            case "<MulExp>" -> calcMulExp(astNode);
+            case "<UnaryExp>" -> calcUnaryExp(astNode);
+            case "<PrimaryExp>" -> calcPrimaryExp(astNode);
+            case "<Number>" -> calcNumber(astNode);
+            case "<LVal>" -> calcLValExp(astNode);
+            default -> 0;
+        };
     }
 
     private static int calcAddExp(AstNode astNode) {

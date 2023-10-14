@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Module extends Value {
     private final ArrayList<GlobalVar> globalVars;
     private final ArrayList<Function> functions;
-    private final ArrayList<String> stringLiterals;
+    private final ArrayList<FormatString> stringLiterals;
 
     public Module() {
         super(new StructType("module"), "module");
@@ -30,7 +30,7 @@ public class Module extends Value {
         functions.add(function);
     }
 
-    public void addStringLiteral(String stringLiteral) {
+    public void addStringLiteral(FormatString stringLiteral) {
         stringLiterals.add(stringLiteral);
     }
 
@@ -40,7 +40,7 @@ public class Module extends Value {
         sb.append(GetIntDeclare.getDeclare()).append("\n");
         sb.append(PutIntDeclare.getDeclare()).append("\n");
         sb.append(PutStrDeclare.getDeclare()).append("\n\n");
-        for (String stringLiteral : stringLiterals) {
+        for (FormatString stringLiteral : stringLiterals) {
             sb.append(stringLiteral).append("\n");
         }
         sb.append("\n");
@@ -53,4 +53,5 @@ public class Module extends Value {
         }
         return sb.toString();
     }
+
 }

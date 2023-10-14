@@ -12,4 +12,9 @@ public class PointerType extends IrType {
     public IrType getTarget() {
         return target;
     }
+
+    @Override
+    public String toString() {
+        return target.toString() + "*";
+    }
 }

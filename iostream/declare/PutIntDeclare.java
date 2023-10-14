@@ -14,4 +14,8 @@ public class PutIntDeclare extends IoStreamGeneration {
         return "declare void @putint(i32)";
     }
 
+    @Override
+    public String toString() {
+        return "call void @putint(i32 " + operands.get(0).getName() + ")";
+    }
 }

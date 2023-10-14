@@ -3,10 +3,14 @@ package generation.utils;
 import generation.utils.irtype.ArrayType;
 import generation.utils.irtype.PointerType;
 import generation.utils.irtype.VarType;
+import generation.value.construction.FormatString;
 import generation.value.construction.Module;
 import generation.value.construction.BasicBlock;
+import generation.value.construction.Param;
 import generation.value.construction.procedure.Loop;
 import generation.value.construction.user.Function;
+import generation.value.construction.user.GlobalVar;
+import generation.value.construction.user.Instr;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -24,10 +28,10 @@ public class IrNameController {
     private static Function currentFunction;
     private static Stack<Loop> loopProcedure;
 
-    public static void init() {
+    public static void init(Module module) {
         preFixInit();
         cntInit();
-        IrNameController.currentModule = new Module();
+        IrNameController.currentModule = module;
         IrNameController.currentBasicBlock = null;
         IrNameController.currentFunction = null;
         IrNameController.loopProcedure = new Stack<>();
@@ -115,5 +119,36 @@ public class IrNameController {
     public static String getStringLiteral(String name, String content) {
         PointerType type = new PointerType(new ArrayType(content.length() + 1, new VarType(8)));
         return name + " = constant " + type.getTarget() + " c\"" + content + "\\00\"";
+    }
+
+    public static void addGlobalVar(GlobalVar globalVar) {
+        currentModule.addGlobalVar(globalVar);
+    }
+
+    public static void addFunction(Function function) {
+        currentModule.addFunction(function);
+    }
+
+    public static void addStringLiteral(FormatString stringLiteral) {
+        currentModule.addStringLiteral(stringLiteral);
+    }
+
+    public static void addBasicBlock(BasicBlock basicBlock) {
+        currentFunction.addBasicBlock(basicBlock);
+        basicBlock.setBelongingFunc(currentFunction);
+    }
+
+    public static void addParam(Param param) {
+        currentFunction.addParam(param);
+        param.setBelongingFunc(currentFunction);
+    }
+
+    public static void addInstr(Instr instr) {
+        currentBasicBlock.addInstr(instr);
+        instr.setBelongingBlock(currentBasicBlock);
+    }
+
+    public static void addFormatString(FormatString formatString) {
+        currentModule.addStringLiteral(formatString);
     }
 }

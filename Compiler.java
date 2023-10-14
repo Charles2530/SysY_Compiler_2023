@@ -16,10 +16,10 @@ public class Compiler {
     private static boolean fileInputMode = true;
     private static boolean detailMode = false;
     private static boolean IsCalcMode = false;
-    private static boolean IsDebugMode = true;
+    private static boolean IsDebugMode = false;
     private static boolean IsLexerOutput = false;
     private static boolean IsParserOutput = false;
-    private static boolean IsGenerationOutput = false;
+    private static boolean IsGenerationOutput = true;
 
     public static void main(String[] args) throws IOException {
         // 将文件进行重定向

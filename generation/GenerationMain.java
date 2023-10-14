@@ -16,7 +16,7 @@ public class GenerationMain {
         this.rootAst = rootAst;
         GenerationMain.module = new Module();
         SymbolTable.clear();
-        IrNameController.init();
+        IrNameController.init(module);
     }
 
     public static Module getModule() {
@@ -34,7 +34,23 @@ public class GenerationMain {
             return;
         }
         for (AstNode astNode : rootAst.getChildList()) {
+            boolean flag = false;
+            if (astNode.getGrammarType().equals("ASSIGN")) {
+                for (AstNode child : rootAst.getChildList()) {
+                    if (child.getGrammarType().equals("GETINTTK")) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if (flag) {
+                continue;
+            }
             GenerationMain.llvmGenIR.genIrAnalysis(astNode);
+            if (astNode.getGrammarType().matches(
+                    "IFTK|FORTK|BREAKTK|CONTINUETK|RETURNTK|PRINTFTK|ASSIGN|GETINTTK")) {
+                break;
+            }
         }
     }
 

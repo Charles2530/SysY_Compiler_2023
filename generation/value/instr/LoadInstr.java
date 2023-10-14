@@ -12,7 +12,7 @@ public class LoadInstr extends Instr {
 
     @Override
     public String toString() {
-        return name + " = load " + operands.get(0).getType() + ", " +
-                operands.get(0).getType() + "* " + operands.get(0).getName();
+        return name + " = load " + type + ", " +
+                operands.get(0).getType() + " " + operands.get(0).getName();
     }
 }
