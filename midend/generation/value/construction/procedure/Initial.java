@@ -12,9 +12,6 @@ public class Initial {
     public Initial(IrType type, ArrayList<Integer> initValue) {
         this.type = type;
         this.initValue = initValue;
-        if (initValue == null) {
-            this.initValue = new ArrayList<>();
-        }
     }
 
     public IrType getType() {

@@ -5,8 +5,8 @@ import midend.generation.value.Value;
 import iostream.IoStreamGeneration;
 
 public class PutIntDeclare extends IoStreamGeneration {
-    public PutIntDeclare(String name, Value target) {
-        super(name, "io", new VarType(0));
+    public PutIntDeclare(Value target) {
+        super("PutIntDeclare", "io", new VarType(0));
         addOperand(target);
     }
 

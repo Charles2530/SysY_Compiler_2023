@@ -7,6 +7,5 @@ public class IoStreamGeneration extends Instr {
 
     public IoStreamGeneration(String name, String instrType, IrType type) {
         super(type, name, instrType);
-
     }
 }

@@ -57,8 +57,8 @@ public class LLvmGenIR {
             case "<Block>" -> genIrBlockChecker(rootAst);
             case "IFTK" -> genIrIfStmtChecker(rootAst);
             case "FORTK" -> genIrForStmtChecker(rootAst);
-            case "BREAKTK" -> genIrBreakStmtChecker(rootAst);
-            case "CONTINUETK" -> genIrContinueStmtChecker(rootAst);
+            case "BREAKTK" -> genIrBreakStmtChecker();
+            case "CONTINUETK" -> genIrContinueStmtChecker();
             case "RETURNTK" -> genIrReturnStmtChecker(rootAst);
             case "PRINTFTK" -> genIrPrintStmtChecker(rootAst);
             case "<Exp>" -> genIrExpChecker(rootAst);
@@ -97,9 +97,9 @@ public class LLvmGenIR {
                 .createConstDefChecker(rootAst);
         SymbolTable.addSymbol(constSymbol);
         if (constSymbol.getSymbolLevel().equals(0)) {
-            String globalVarName = IrNameController.getGlobalVarName(constSymbol.getSymbolName());
-            GlobalVar globalVar = new GlobalVar(new PointerType(
-                    constSymbol.getInitial().getType()), globalVarName,
+            GlobalVar globalVar = new GlobalVar(
+                    new PointerType(constSymbol.getInitial().getType()),
+                    IrNameController.getGlobalVarName(constSymbol.getSymbolName()),
                     constSymbol.getInitial());
             constSymbol.setValue(globalVar);
         } else {
@@ -136,9 +136,8 @@ public class LLvmGenIR {
         SymbolTable.addSymbol(intSymbol);
         Initial initial = intSymbol.getInitial();
         if (intSymbol.getSymbolLevel().equals(0)) {
-            String globalVarName = IrNameController.getGlobalVarName(intSymbol.getSymbolName());
-            GlobalVar globalVar = new GlobalVar(new PointerType(
-                    initial.getType()), globalVarName, initial);
+            GlobalVar globalVar = new GlobalVar(new PointerType(initial.getType()),
+                    IrNameController.getGlobalVarName(intSymbol.getSymbolName()), initial);
             intSymbol.setValue(globalVar);
         } else {
             Instr instr;
@@ -233,12 +232,12 @@ public class LLvmGenIR {
         return null;
     }
 
-    private Value genIrBreakStmtChecker(AstNode rootAst) {
+    private Value genIrBreakStmtChecker() {
         new JumpInstr(IrNameController.getCurrentLoop().getFollowBlock());
         return null;
     }
 
-    private Value genIrContinueStmtChecker(AstNode rootAst) {
+    private Value genIrContinueStmtChecker() {
         new JumpInstr(IrNameController.getCurrentLoop().getCondBlock());
         return null;
     }
@@ -268,11 +267,11 @@ public class LLvmGenIR {
                 if (!sb.isEmpty()) {
                     FormatString str = new FormatString(IrNameController.getStringLiteralName(),
                             sb.toString());
-                    new PutStrDeclare(IrNameController.getLocalVarName(), str);
+                    new PutStrDeclare(str);
                     sb.setLength(0);
                 }
                 Value value = expValueList.get(expCnt++);
-                new PutIntDeclare(IrNameController.getLocalVarName(), value);
+                new PutIntDeclare(value);
                 i = i + 1;
             } else if (subformatString.charAt(i) == '\\') {
                 sb.append('\n');
@@ -284,7 +283,7 @@ public class LLvmGenIR {
         if (!sb.isEmpty()) {
             FormatString str = new FormatString(IrNameController.getStringLiteralName(),
                     sb.toString());
-            new PutStrDeclare(IrNameController.getLocalVarName(), str);
+            new PutStrDeclare(str);
         }
         return null;
     }
@@ -469,10 +468,10 @@ public class LLvmGenIR {
         SymbolTable.addSymbol(funcSymbol);
         SymbolTable.setCurrentFunc(funcSymbol);
         SymbolTable.createStackSymbolTable();
-        String funcName = IrNameController.getFuncName(funcSymbol.getSymbolName());
         IrType returnType = funcSymbol.getReturnType().equals(Symbol.SymType.INT) ?
                 new VarType(32) : new VarType(0);
-        Function function = new Function(funcName, returnType);
+        Function function = new Function(
+                IrNameController.getFuncName(funcSymbol.getSymbolName()), returnType);
         funcSymbol.setFunction(function);
         IrNameController.setCurrentFunc(function);
         String blockName = IrNameController.getBlockName();

@@ -7,8 +7,8 @@ import iostream.IoStreamGeneration;
 public class PutStrDeclare extends IoStreamGeneration {
     private final FormatString str;
 
-    public PutStrDeclare(String name, FormatString str) {
-        super(name, "io", new VarType(0));
+    public PutStrDeclare(FormatString str) {
+        super("PutStrDeclare", "io", new VarType(0));
         this.str = str;
     }
 

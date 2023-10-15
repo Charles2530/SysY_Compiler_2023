@@ -107,68 +107,44 @@ public class LLvmGenUtils {
     }
 
     private Value genConstValueIr(ConstSymbol constSymbol, ArrayList<Value> values, int expNum) {
-        Integer dim = constSymbol.getDim();
-        ArrayList<Integer> space = constSymbol.getSpace();
+        return getSubValueIr(values, expNum, constSymbol.getDim(),
+                constSymbol.getSpace(), constSymbol.getValue());
+    }
+
+    private Value genVarValueIr(IntSymbol intSymbol, ArrayList<Value> values, int expNum) {
+        return getSubValueIr(values, expNum, intSymbol.getDim(),
+                intSymbol.getSpace(), intSymbol.getValue());
+    }
+
+    private Value getSubValueIr(ArrayList<Value> values, int expNum,
+                                Integer dim, ArrayList<Integer> space, Value value) {
         if (dim.equals(0)) {
             return new LoadInstr(IrNameController.getLocalVarName(),
-                    constSymbol.getValue());
+                    value);
         } else if (dim.equals(1)) {
             return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
-                    constSymbol.getValue(),
+                    value,
                     new Constant("0", new VarType(32))) :
                     new LoadInstr(IrNameController.getLocalVarName(),
                             new GetEleInstr(IrNameController.getLocalVarName(),
-                                    constSymbol.getValue(), values.get(0)));
+                                    value, values.get(0)));
         } else {
             if (expNum == 0) {
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        constSymbol.getValue(),
+                        value,
                         new Constant("0", new VarType(32)));
             } else if (expNum == 1) {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        constSymbol.getValue(), instr);
+                        value, instr);
             } else {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 instr = new CalcInstr(IrNameController.getLocalVarName(),
                         "add", instr, values.get(1));
                 instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        constSymbol.getValue(), instr);
-                return new LoadInstr(IrNameController.getLocalVarName(), instr);
-            }
-        }
-    }
-
-    private Value genVarValueIr(IntSymbol intSymbol, ArrayList<Value> values, int expNum) {
-        Integer dim = intSymbol.getDim();
-        ArrayList<Integer> space = intSymbol.getSpace();
-        if (dim.equals(0)) {
-            return new LoadInstr(IrNameController.getLocalVarName(), intSymbol.getValue());
-        } else if (dim.equals(1)) {
-            return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
-                    intSymbol.getValue(),
-                    new Constant("0", new VarType(32))) :
-                    new LoadInstr(IrNameController.getLocalVarName(),
-                            new GetEleInstr(IrNameController.getLocalVarName(),
-                                    intSymbol.getValue(), values.get(0)));
-        } else {
-            if (expNum == 0) {
-                return new GetEleInstr(IrNameController.getLocalVarName(),
-                        intSymbol.getValue(), new Constant("0", new VarType(32)));
-            } else if (expNum == 1) {
-                Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
-                        new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
-                return new GetEleInstr(IrNameController.getLocalVarName(),
-                        intSymbol.getValue(), instr);
-            } else {
-                Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
-                        new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
-                instr = new CalcInstr(IrNameController.getLocalVarName(),
-                        "add", instr, values.get(1));
-                instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        intSymbol.getValue(), instr);
+                        value, instr);
                 return new LoadInstr(IrNameController.getLocalVarName(), instr);
             }
         }
