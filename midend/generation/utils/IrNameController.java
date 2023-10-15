@@ -78,10 +78,8 @@ public class IrNameController {
     }
 
     public static String getFuncName(String funcName) {
-        if (funcName.equals("main")) {
-            return "@main";
-        }
-        return IrNameController.getPrefix(IrPrefix.FUNC_NAME) + funcName;
+        return (funcName.equals("main")) ? "@main" :
+                IrNameController.getPrefix(IrPrefix.FUNC_NAME) + funcName;
     }
 
     public static void setCurrentFunc(Function function) {

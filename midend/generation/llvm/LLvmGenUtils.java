@@ -55,13 +55,11 @@ public class LLvmGenUtils {
             if (node.getGrammarType().equals("<EqExp>")) {
                 if (child.getChildList().indexOf(node) == child.getChildList().size() - 1) {
                     Value cond = llvmGenIR.genIrAnalysis(node);
-                    new BrInstr(IrNameController.getLocalVarName(),
-                            "br", cond, thenBlock, elseBlock);
+                    new BrInstr(cond, thenBlock, elseBlock);
                 } else {
                     BasicBlock nextBlock = new BasicBlock(IrNameController.getBlockName());
                     Value cond = llvmGenIR.genIrAnalysis(node);
-                    new BrInstr(IrNameController.getLocalVarName(),
-                            "br", cond, thenBlock, elseBlock);
+                    new BrInstr(cond, thenBlock, elseBlock);
                     IrNameController.setCurrentBlock(nextBlock);
                 }
             }
@@ -83,13 +81,13 @@ public class LLvmGenUtils {
             return intSymbol.getValue();
         } else if (dim.equals(1)) {
             return new GetEleInstr(IrNameController.getLocalVarName(),
-                    "getelementptr", intSymbol.getValue(), values.get(0));
+                    intSymbol.getValue(), values.get(0));
         } else {
             Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                     new Constant(String.valueOf(space.get(0)), new VarType(32)), values.get(0));
             instr = new CalcInstr(IrNameController.getLocalVarName(), "add", instr, values.get(1));
             return new GetEleInstr(IrNameController.getLocalVarName(),
-                    "getelementptr", intSymbol.getValue(), instr);
+                    intSymbol.getValue(), instr);
         }
     }
 
@@ -113,32 +111,32 @@ public class LLvmGenUtils {
         ArrayList<Integer> space = constSymbol.getSpace();
         if (dim.equals(0)) {
             return new LoadInstr(IrNameController.getLocalVarName(),
-                    "load", constSymbol.getValue());
+                    constSymbol.getValue());
         } else if (dim.equals(1)) {
             return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
-                    "getelementptr", constSymbol.getValue(),
+                    constSymbol.getValue(),
                     new Constant("0", new VarType(32))) :
-                    new LoadInstr(IrNameController.getLocalVarName(), "load",
+                    new LoadInstr(IrNameController.getLocalVarName(),
                             new GetEleInstr(IrNameController.getLocalVarName(),
-                                    "getelementptr", constSymbol.getValue(), values.get(0)));
+                                    constSymbol.getValue(), values.get(0)));
         } else {
             if (expNum == 0) {
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", constSymbol.getValue(),
+                        constSymbol.getValue(),
                         new Constant("0", new VarType(32)));
             } else if (expNum == 1) {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", constSymbol.getValue(), instr);
+                        constSymbol.getValue(), instr);
             } else {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 instr = new CalcInstr(IrNameController.getLocalVarName(),
                         "add", instr, values.get(1));
                 instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", constSymbol.getValue(), instr);
-                return new LoadInstr(IrNameController.getLocalVarName(), "load", instr);
+                        constSymbol.getValue(), instr);
+                return new LoadInstr(IrNameController.getLocalVarName(), instr);
             }
         }
     }
@@ -147,31 +145,31 @@ public class LLvmGenUtils {
         Integer dim = intSymbol.getDim();
         ArrayList<Integer> space = intSymbol.getSpace();
         if (dim.equals(0)) {
-            return new LoadInstr(IrNameController.getLocalVarName(), "load", intSymbol.getValue());
+            return new LoadInstr(IrNameController.getLocalVarName(), intSymbol.getValue());
         } else if (dim.equals(1)) {
             return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
-                    "getelementptr", intSymbol.getValue(),
+                    intSymbol.getValue(),
                     new Constant("0", new VarType(32))) :
-                    new LoadInstr(IrNameController.getLocalVarName(), "load",
+                    new LoadInstr(IrNameController.getLocalVarName(),
                             new GetEleInstr(IrNameController.getLocalVarName(),
-                                    "getelementptr", intSymbol.getValue(), values.get(0)));
+                                    intSymbol.getValue(), values.get(0)));
         } else {
             if (expNum == 0) {
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", intSymbol.getValue(), new Constant("0", new VarType(32)));
+                        intSymbol.getValue(), new Constant("0", new VarType(32)));
             } else if (expNum == 1) {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", intSymbol.getValue(), instr);
+                        intSymbol.getValue(), instr);
             } else {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 instr = new CalcInstr(IrNameController.getLocalVarName(),
                         "add", instr, values.get(1));
                 instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", intSymbol.getValue(), instr);
-                return new LoadInstr(IrNameController.getLocalVarName(), "load", instr);
+                        intSymbol.getValue(), instr);
+                return new LoadInstr(IrNameController.getLocalVarName(), instr);
             }
         }
     }
@@ -180,7 +178,6 @@ public class LLvmGenUtils {
         Value pointer = genAssignIr(rootAst.getChildList().get(0));
         GetIntDeclare getIntDeclare = new GetIntDeclare(IrNameController.getLocalVarName(),
                 "call");
-        return new StoreInstr(IrNameController.getLocalVarName(),
-                "store", getIntDeclare, pointer);
+        return new StoreInstr(getIntDeclare, pointer);
     }
 }

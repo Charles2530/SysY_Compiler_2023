@@ -7,8 +7,8 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
 public class GetEleInstr extends Instr {
-    public GetEleInstr(String name, String instrType, Value ptr, Value off) {
-        super(new PointerType(new VarType(32)), name, instrType);
+    public GetEleInstr(String name, Value ptr, Value off) {
+        super(new PointerType(new VarType(32)), name, "getEle");
         addOperand(ptr);
         addOperand(off);
     }

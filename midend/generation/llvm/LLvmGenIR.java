@@ -106,15 +106,14 @@ public class LLvmGenIR {
             Instr instr;
             if (constSymbol.getDim().equals(0)) {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(),
-                        "alloca", new VarType(32));
+                        new VarType(32));
                 constSymbol.setValue(instr);
                 Value value = new Constant(String.valueOf(constSymbol.getConstValue()),
                         new VarType(32));
-                new StoreInstr(IrNameController.getLocalVarName(),
-                        "store", value, instr);
+                new StoreInstr(value, instr);
 
             } else {
-                instr = new AllocaInstr(IrNameController.getLocalVarName(), "alloca",
+                instr = new AllocaInstr(IrNameController.getLocalVarName(),
                         new ArrayType(constSymbol.getSpaceTot(), new VarType(32)));
                 constSymbol.setValue(instr);
                 Value pointer = instr;
@@ -122,10 +121,9 @@ public class LLvmGenIR {
                         rootAst.getChildList().size() - 1), constSymbol.getDim());
                 int off = 0;
                 for (Value value : valuelist) {
-                    instr = new GetEleInstr(IrNameController.getLocalVarName(), "getEle",
+                    instr = new GetEleInstr(IrNameController.getLocalVarName(),
                             pointer, new Constant(String.valueOf(off), new VarType(32)));
-                    new StoreInstr(IrNameController.getLocalVarName(),
-                            "store", value, instr);
+                    new StoreInstr(value, instr);
                     off++;
                 }
             }
@@ -146,17 +144,16 @@ public class LLvmGenIR {
             Instr instr;
             if (intSymbol.getDim().equals(0)) {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(),
-                        "alloca", new VarType(32));
+                        new VarType(32));
                 intSymbol.setValue(instr);
                 if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
                         .getGrammarType().equals("<InitVal>")) {
                     Value value = SymDefiner.genIrValues(rootAst.getChildList().get(
                             rootAst.getChildList().size() - 1), 0).get(0);
-                    new StoreInstr(IrNameController.getLocalVarName(),
-                            "store", value, instr);
+                    new StoreInstr(value, instr);
                 }
             } else {
-                instr = new AllocaInstr(IrNameController.getLocalVarName(), "alloca",
+                instr = new AllocaInstr(IrNameController.getLocalVarName(),
                         new ArrayType(intSymbol.getSpaceTot(), new VarType(32)));
                 intSymbol.setValue(instr);
                 if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
@@ -166,10 +163,9 @@ public class LLvmGenIR {
                             rootAst.getChildList().size() - 1), intSymbol.getDim());
                     int off = 0;
                     for (Value value : valuelist) {
-                        instr = new GetEleInstr(IrNameController.getLocalVarName(), "getEle",
+                        instr = new GetEleInstr(IrNameController.getLocalVarName(),
                                 pointer, new Constant(String.valueOf(off), new VarType(32)));
-                        new StoreInstr(IrNameController.getLocalVarName(),
-                                "store", value, instr);
+                        new StoreInstr(value, instr);
                         off++;
                     }
                 }
@@ -194,10 +190,10 @@ public class LLvmGenIR {
             IrNameController.setCurrentBlock(thenblock);
             genIrAnalysis(rootAst.getChildList().get(4));
             BasicBlock followblock = new BasicBlock(IrNameController.getBlockName());
-            new JumpInstr(IrNameController.getLocalVarName(), followblock);
+            new JumpInstr(followblock);
             IrNameController.setCurrentBlock(elseblock);
             genIrAnalysis(rootAst.getChildList().get(6));
-            new JumpInstr(IrNameController.getLocalVarName(), followblock);
+            new JumpInstr(followblock);
             IrNameController.setCurrentBlock(followblock);
             IrNameController.setCurrentBlock(followblock);
         } else {
@@ -205,7 +201,7 @@ public class LLvmGenIR {
             llvmGenUtils.genCondIr(rootAst.getChildList().get(2), thenblock, followblock);
             IrNameController.setCurrentBlock(thenblock);
             genIrAnalysis(rootAst.getChildList().get(4));
-            new JumpInstr(IrNameController.getLocalVarName(), followblock);
+            new JumpInstr(followblock);
             IrNameController.setCurrentBlock(followblock);
         }
         return null;
@@ -217,7 +213,7 @@ public class LLvmGenIR {
         BasicBlock currentLoopBlock = new BasicBlock(IrNameController.getBlockName());
         BasicBlock followBlock = new BasicBlock(IrNameController.getBlockName());
         IrNameController.pushLoop(new Loop(condBlock, currentLoopBlock, followBlock));
-        new JumpInstr(IrNameController.getLocalVarName(), condBlock);
+        new JumpInstr(condBlock);
         IrNameController.setCurrentBlock(condBlock);
         AstNode rootAst = sonAst.getParent();
         AstNode condAst = null;
@@ -230,7 +226,7 @@ public class LLvmGenIR {
         llvmGenUtils.genCondIr(condAst, currentLoopBlock, followBlock);
         IrNameController.setCurrentBlock(currentLoopBlock);
         genIrAnalysis(rootAst.getChildList().get(rootAst.getChildList().size() - 1));
-        new JumpInstr(IrNameController.getLocalVarName(), condBlock);
+        new JumpInstr(condBlock);
         IrNameController.setCurrentBlock(followBlock);
         IrNameController.popLoop();
         SymbolTable.leaveLoop();
@@ -238,14 +234,12 @@ public class LLvmGenIR {
     }
 
     private Value genIrBreakStmtChecker(AstNode rootAst) {
-        new JumpInstr(IrNameController.getLocalVarName(),
-                IrNameController.getCurrentLoop().getFollowBlock());
+        new JumpInstr(IrNameController.getCurrentLoop().getFollowBlock());
         return null;
     }
 
     private Value genIrContinueStmtChecker(AstNode rootAst) {
-        new JumpInstr(IrNameController.getLocalVarName(),
-                IrNameController.getCurrentLoop().getCondBlock());
+        new JumpInstr(IrNameController.getCurrentLoop().getCondBlock());
         return null;
     }
 
@@ -257,7 +251,7 @@ public class LLvmGenIR {
         } else if (IrNameController.getCurrentFunc().getReturnType().isInt32()) {
             retValue = new Constant("0", new VarType(32));
         }
-        return new RetInstr(IrNameController.getLocalVarName(), "return", retValue);
+        return new RetInstr(retValue);
     }
 
     private Value genIrPrintStmtChecker(AstNode sonAst) {
@@ -324,16 +318,18 @@ public class LLvmGenIR {
         } else if (rootAst.getChildList().get(0).getGrammarType().equals("<UnaryOp>")) {
             ans = genIrAnalysis(rootAst.getChildList().get(1));
             if (rootAst.getChildList().get(0).getChildList().
+                    get(0).getGrammarType().equals("PLUS")) {
+                return ans;
+            } else if (rootAst.getChildList().get(0).getChildList().
                     get(0).getGrammarType().equals("MINU")) {
-                ans = new CalcInstr(IrNameController.getLocalVarName(),
+                return new CalcInstr(IrNameController.getLocalVarName(),
                         "sub", new Constant("0", new VarType(32)), ans);
             } else {
                 ans = new IcmpInstr(IrNameController.getLocalVarName(),
                         "eq", ans, new Constant("0", new VarType(32)));
-                ans = new ZextInstr(IrNameController.getLocalVarName(),
+                return new ZextInstr(IrNameController.getLocalVarName(),
                         "zext", ans, new VarType(32));
             }
-            return ans;
         } else {
             FuncSymbol funcSymbol = (FuncSymbol) SymbolTable.getSymByName(
                     rootAst.getChildList().get(0).getSymToken().getWord());
@@ -346,7 +342,7 @@ public class LLvmGenIR {
                     }
                 }
             }
-            ans = new CallInstr(IrNameController.getLocalVarName(), "call",
+            ans = new CallInstr(IrNameController.getLocalVarName(),
                     function, params);
             return ans;
         }
@@ -451,10 +447,9 @@ public class LLvmGenIR {
         Param param = new Param(type, IrNameController.getParamName());
         if (param.getType().isInt32()) {
             Instr allocaInstr = new AllocaInstr(IrNameController.getLocalVarName(),
-                    "alloca", param.getType());
+                    param.getType());
             symbol.setValue(allocaInstr);
-            new StoreInstr(IrNameController.getLocalVarName(),
-                    "store", param, allocaInstr);
+            new StoreInstr(param, allocaInstr);
         } else {
             symbol.setValue(param);
         }
@@ -487,11 +482,9 @@ public class LLvmGenIR {
         BasicBlock lastBlock = IrNameController.getCurrentBlock();
         if (lastBlock.isEmpty() || !(lastBlock.getLastInstr() instanceof RetInstr)) {
             if (returnType.isInt32()) {
-                new RetInstr(IrNameController.getLocalVarName(),
-                        "return", new Constant("0", new VarType(32)));
+                new RetInstr(new Constant("0", new VarType(32)));
             } else {
-                new RetInstr(IrNameController.getLocalVarName(),
-                        "return", null);
+                new RetInstr(null);
             }
         }
         SymbolTable.destroyStackSymbolTable();
@@ -506,7 +499,7 @@ public class LLvmGenIR {
         } else {
             Value lval = llvmGenUtils.genAssignIr(rootAst.getChildList().get(0));
             Value exp = genIrAnalysis(rootAst.getChildList().get(2));
-            return new StoreInstr(IrNameController.getLocalVarName(), "store", exp, lval);
+            return new StoreInstr(exp, lval);
         }
     }
 }

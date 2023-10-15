@@ -5,7 +5,7 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
 public class ZextInstr extends Instr {
-    private IrType target;
+    private final IrType target;
 
     public ZextInstr(String name, String instrType, Value val, IrType target) {
         super(target, name, instrType);

@@ -5,8 +5,8 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
 public class LoadInstr extends Instr {
-    public LoadInstr(String name, String instrType, Value ptr) {
-        super(((PointerType) ptr.getType()).getTarget(), name, instrType);
+    public LoadInstr(String name, Value ptr) {
+        super(((PointerType) ptr.getType()).getTarget(), name, "load");
         addOperand(ptr);
     }
 

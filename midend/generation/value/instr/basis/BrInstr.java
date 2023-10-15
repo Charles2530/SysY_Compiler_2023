@@ -6,9 +6,8 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 
 public class BrInstr extends Instr {
-    public BrInstr(String name, String instrType, Value con,
-                   BasicBlock thenBlock, BasicBlock elseBlock) {
-        super(new VarType(0), name, instrType);
+    public BrInstr(Value con, BasicBlock thenBlock, BasicBlock elseBlock) {
+        super(new VarType(0), "BrInstr", "br");
         addOperand(con);
         addOperand(thenBlock);
         addOperand(elseBlock);

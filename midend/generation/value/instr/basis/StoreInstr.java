@@ -5,8 +5,8 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
 public class StoreInstr extends Instr {
-    public StoreInstr(String name, String instrType, Value ans, Value res) {
-        super(new VarType(0), name, instrType);
+    public StoreInstr(Value ans, Value res) {
+        super(new VarType(0), "StoreInstr", "store");
         addOperand(ans);
         addOperand(res);
     }

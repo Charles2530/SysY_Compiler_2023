@@ -7,9 +7,8 @@ import midend.generation.value.construction.user.Instr;
 import java.util.ArrayList;
 
 public class CallInstr extends Instr {
-    public CallInstr(String name, String instrType,
-                     Function targetFunc, ArrayList<Value> paramList) {
-        super(targetFunc.getType(), name, instrType);
+    public CallInstr(String name, Function targetFunc, ArrayList<Value> paramList) {
+        super(targetFunc.getType(), name, "call");
         addOperand(targetFunc);
         for (Value param : paramList) {
             addOperand(param);

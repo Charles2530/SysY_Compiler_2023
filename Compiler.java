@@ -20,7 +20,7 @@ public class Compiler {
     private static boolean IsDebugMode = true;
     private static boolean IsLexerOutput = false;
     private static boolean IsParserOutput = false;
-    private static boolean IsGenerationOutput = false;
+    private static boolean IsGenerationOutput = true;
     private static boolean IsOptimize = false;
     private static BufferedReader fileInputStream = null;
     private static BufferedWriter errorOutputStream = null;
@@ -46,10 +46,8 @@ public class Compiler {
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();
         // 生成中间代码
-        if (IsGenerationOutput) {
-            GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
-            generationMain.generate();
-        }
+        GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
+        generationMain.generate();
         // 优化中间代码
         if (IsOptimize) {
             OptimizerUnit optimizerUnit = new OptimizerUnit(GenerationMain.getModule());

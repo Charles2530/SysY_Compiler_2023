@@ -5,8 +5,8 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
 public class RetInstr extends Instr {
-    public RetInstr(String name, String instrType, Value retValue) {
-        super(new VarType(0), name, instrType);
+    public RetInstr(Value retValue) {
+        super(new VarType(0), "RetInstr", "return");
         if (retValue != null) {
             addOperand(retValue);
         }
