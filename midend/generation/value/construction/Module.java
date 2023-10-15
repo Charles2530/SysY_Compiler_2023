@@ -49,7 +49,7 @@ public class Module extends Value {
         }
         sb.append("\n");
         for (Function function : functions) {
-            sb.append(function.toString()).append("\n");
+            sb.append(function.toString()).append("\n\n");
         }
         return sb.toString();
     }

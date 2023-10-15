@@ -16,6 +16,7 @@ public class VarSymbol extends Symbol {
     protected Integer spaceTot;
 
     protected Value value;
+    protected Integer totalOffset;
 
     public VarSymbol(String symbolName, SymType symbolType, int dim,
                      ArrayList<Integer> initValue, ArrayList<Integer> space) {
@@ -24,6 +25,7 @@ public class VarSymbol extends Symbol {
         this.initValue = (initValue == null) ? new ArrayList<>() : initValue;
         this.space = space;
         this.spaceTot = 1;
+        this.totalOffset = initValue.size();
         // array init
         if (dim > 0) {
             int size = 1;
@@ -31,7 +33,8 @@ public class VarSymbol extends Symbol {
                 size *= space.get(i);
             }
             this.spaceTot = size;
-            for (int i = 0; i < size - initValue.size(); i++) {
+            int res = size - initValue.size();
+            for (int i = 0; i < res; i++) {
                 this.initValue.add(0);
             }
         }
@@ -74,7 +77,7 @@ public class VarSymbol extends Symbol {
     }
 
     public Initial getInitial() {
-        IrType type = (dim == 0) ? new VarType(32) : new ArrayType(spaceTot, new VarType(32));
-        return new Initial(type, initValue);
+        IrType type = (dim == 0) ? new VarType(32) : new ArrayType(space, new VarType(32));
+        return new Initial(type, initValue, space, totalOffset);
     }
 }

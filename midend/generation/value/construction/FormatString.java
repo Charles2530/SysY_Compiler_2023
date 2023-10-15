@@ -6,11 +6,13 @@ import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 
+import java.util.ArrayList;
+
 public class FormatString extends Value {
     private final String string;
 
-    public FormatString(String name, String string) {
-        super(new PointerType(new ArrayType(string.length() + 1, new VarType(8))), name);
+    public FormatString(String name, String string, ArrayList<Integer> arrayList) {
+        super(new PointerType(new ArrayType(arrayList, new VarType(8))), name);
         this.string = string;
         IrNameController.addFormatString(this);
     }

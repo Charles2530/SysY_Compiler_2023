@@ -14,7 +14,7 @@ import java.util.Stack;
 
 public class IrNameController {
     private static HashMap<IrPrefix, String> irPrefixHashMap;
-    private static Integer blockNameIndex;
+    private static HashMap<Function, Integer> blockNameIndexHashMap;
     private static Integer paramNameIndex;
     private static Integer stringLiteralNameIndex;
 
@@ -35,7 +35,7 @@ public class IrNameController {
     }
 
     private static void cntInit() {
-        IrNameController.blockNameIndex = 0;
+        IrNameController.blockNameIndexHashMap = new HashMap<>();
         IrNameController.paramNameIndex = 0;
         IrNameController.stringLiteralNameIndex = 0;
         IrNameController.localVarNameIndexHashMap = new HashMap<>();
@@ -62,7 +62,11 @@ public class IrNameController {
     }
 
     public static String getBlockName() {
-        return IrNameController.getPrefix(IrPrefix.BB_NAME) + blockNameIndex++;
+        int blockNameIndex = blockNameIndexHashMap.get(currentFunction);
+        blockNameIndexHashMap.put(currentFunction, blockNameIndex + 1);
+        String funcName = currentFunction.getName().equals("@main") ? "main" :
+                currentFunction.getName().substring(3);
+        return funcName + "_" + IrNameController.getPrefix(IrPrefix.BB_NAME) + blockNameIndex;
     }
 
     public static String getGlobalVarName(String varName) {
@@ -85,6 +89,7 @@ public class IrNameController {
     public static void setCurrentFunc(Function function) {
         IrNameController.currentFunction = function;
         localVarNameIndexHashMap.put(function, 0);
+        blockNameIndexHashMap.put(function, 0);
     }
 
     public static Function getCurrentFunc() {

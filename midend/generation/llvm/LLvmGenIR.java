@@ -114,7 +114,7 @@ public class LLvmGenIR {
 
             } else {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(),
-                        new ArrayType(constSymbol.getSpaceTot(), new VarType(32)));
+                        new ArrayType(constSymbol.getSpace(), new VarType(32)));
                 constSymbol.setValue(instr);
                 Value pointer = instr;
                 ArrayList<Value> valuelist = SymDefiner.genIrValues(rootAst.getChildList().get(
@@ -153,7 +153,7 @@ public class LLvmGenIR {
                 }
             } else {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(),
-                        new ArrayType(intSymbol.getSpaceTot(), new VarType(32)));
+                        new ArrayType(intSymbol.getSpace(), new VarType(32)));
                 intSymbol.setValue(instr);
                 if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
                         .getGrammarType().equals("<InitVal>")) {
@@ -265,8 +265,10 @@ public class LLvmGenIR {
         for (int i = 0; i < subformatString.length(); i++) {
             if (subformatString.charAt(i) == '%') {
                 if (!sb.isEmpty()) {
+                    ArrayList<Integer> arrayList = new ArrayList<>();
+                    arrayList.add(sb.length() + 1);
                     FormatString str = new FormatString(IrNameController.getStringLiteralName(),
-                            sb.toString());
+                            sb.toString(), arrayList);
                     new PutStrDeclare(str);
                     sb.setLength(0);
                 }
@@ -281,8 +283,10 @@ public class LLvmGenIR {
             }
         }
         if (!sb.isEmpty()) {
+            ArrayList<Integer> arrayList = new ArrayList<>();
+            arrayList.add(sb.length() + 1);
             FormatString str = new FormatString(IrNameController.getStringLiteralName(),
-                    sb.toString());
+                    sb.toString(), arrayList);
             new PutStrDeclare(str);
         }
         return null;
@@ -348,7 +352,12 @@ public class LLvmGenIR {
     }
 
     private Value genIrMulExpChecker(AstNode rootAst) {
-        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        Value ans;
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<MulExp>")) {
+            ans = genIrAnalysis(rootAst.getChildList().get(0).getChildList().get(0));
+        } else {
+            ans = genIrAnalysis(rootAst.getChildList().get(0));
+        }
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (rootAst.getChildList().get(i).getGrammarType().equals("MULT")) {
                 Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
@@ -365,7 +374,12 @@ public class LLvmGenIR {
     }
 
     private Value genIrAddExpChecker(AstNode rootAst) {
-        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        Value ans;
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<AddExp>")) {
+            ans = genIrAnalysis(rootAst.getChildList().get(0).getChildList().get(0));
+        } else {
+            ans = genIrAnalysis(rootAst.getChildList().get(0));
+        }
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (rootAst.getChildList().get(i).getGrammarType().equals("PLUS")) {
                 Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
@@ -379,7 +393,12 @@ public class LLvmGenIR {
     }
 
     private Value genIrRelExpChecker(AstNode rootAst) {
-        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        Value ans;
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<RelExp>")) {
+            ans = genIrAnalysis(rootAst.getChildList().get(0).getChildList().get(0));
+        } else {
+            ans = genIrAnalysis(rootAst.getChildList().get(0));
+        }
         if (rootAst.getChildList().size() == 1) {
             return ans;
         }
@@ -405,7 +424,12 @@ public class LLvmGenIR {
     }
 
     private Value genIrEqExpChecker(AstNode rootAst) {
-        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
+        Value ans;
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<EqExp>")) {
+            ans = genIrAnalysis(rootAst.getChildList().get(0).getChildList().get(0));
+        } else {
+            ans = genIrAnalysis(rootAst.getChildList().get(0));
+        }
         if (rootAst.getChildList().size() == 1) {
             if (ans.getType().isInt32()) {
                 ans = new IcmpInstr(IrNameController.getLocalVarName(),
@@ -414,19 +438,21 @@ public class LLvmGenIR {
             return ans;
         }
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
-            if (!ans.getType().isInt32()) {
-                ans = new ZextInstr(IrNameController.getLocalVarName(),
-                        "zext", ans, new VarType(32));
-            }
-            Value res = genIrAnalysis(rootAst.getChildList().get(++i));
-            if (!res.getType().isInt32()) {
-                res = new ZextInstr(IrNameController.getLocalVarName(),
-                        "zext", res, new VarType(32));
-            }
-            if (rootAst.getChildList().get(i).getGrammarType().equals("EQL")) {
-                ans = new IcmpInstr(IrNameController.getLocalVarName(), "eq", ans, res);
-            } else if (rootAst.getChildList().get(i).getGrammarType().equals("NEQ")) {
-                ans = new IcmpInstr(IrNameController.getLocalVarName(), "ne", ans, res);
+            if (rootAst.getChildList().get(i).getGrammarType().matches("EQL|NEQ")) {
+                if (!ans.getType().isInt32()) {
+                    ans = new ZextInstr(IrNameController.getLocalVarName(),
+                            "zext", ans, new VarType(32));
+                }
+                Value res = genIrAnalysis(rootAst.getChildList().get(i + 1));
+                if (!res.getType().isInt32()) {
+                    res = new ZextInstr(IrNameController.getLocalVarName(),
+                            "zext", res, new VarType(32));
+                }
+                if (rootAst.getChildList().get(i).getGrammarType().equals("EQL")) {
+                    ans = new IcmpInstr(IrNameController.getLocalVarName(), "eq", ans, res);
+                } else if (rootAst.getChildList().get(i).getGrammarType().equals("NEQ")) {
+                    ans = new IcmpInstr(IrNameController.getLocalVarName(), "ne", ans, res);
+                }
             }
         }
         return ans;

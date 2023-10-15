@@ -45,11 +45,14 @@ public class Function extends User {
                 sb.append(", ");
             }
         }
-        sb.append(") {\n");
-        for (BasicBlock basicBlock : basicBlocks) {
-            sb.append(basicBlock.toString()).append("\n");
+        sb.append(") {\n\n");
+        for (int i = 0; i < basicBlocks.size(); i++) {
+            sb.append(basicBlocks.get(i).toString());
+            if (i != basicBlocks.size() - 1) {
+                sb.append("\n\n");
+            }
         }
-        sb.append("}");
+        sb.append("\n}");
         return sb.toString();
     }
 }

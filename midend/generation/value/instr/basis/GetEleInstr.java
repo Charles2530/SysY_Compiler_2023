@@ -18,7 +18,9 @@ public class GetEleInstr extends Instr {
         StringBuilder sb = new StringBuilder();
         PointerType ptrType = (PointerType) (operands.get(0).getType());
         IrType type = ptrType.getTarget();
-        sb.append(name).append(" = getelementptr inbounds ").append(type).append(" ")
+        sb.append(name).append(" = getelementptr inbounds ")
+                .append(type).append(", ")
+                .append(ptrType).append(" ")
                 .append(operands.get(0).getName())
                 .append((type.isArray() ? ", i32 " : ", i32 0, i32 "))
                 .append(operands.get(1).getName());

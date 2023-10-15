@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class CallInstr extends Instr {
     public CallInstr(String name, Function targetFunc, ArrayList<Value> paramList) {
-        super(targetFunc.getType(), name, "call");
+        super(targetFunc.getReturnType(), name, "call");
         addOperand(targetFunc);
         for (Value param : paramList) {
             addOperand(param);
