@@ -6,10 +6,10 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.user.Instr;
-import midend.generation.value.instr.BrInstr;
-import midend.generation.value.instr.CalcInstr;
-import midend.generation.value.instr.GetEleInstr;
-import midend.generation.value.instr.LoadInstr;
+import midend.generation.value.instr.basis.BrInstr;
+import midend.generation.value.instr.basis.CalcInstr;
+import midend.generation.value.instr.basis.GetEleInstr;
+import midend.generation.value.instr.basis.LoadInstr;
 import frontend.semantic.symtable.Symbol;
 import frontend.semantic.symtable.SymbolTable;
 import frontend.semantic.symtable.symbol.ConstSymbol;
@@ -26,6 +26,9 @@ public class LLvmGenUtils {
     }
 
     public void genCondIr(AstNode rootAst, BasicBlock thenBlock, BasicBlock elseBlock) {
+        if (rootAst == null) {
+            return;
+        }
         if (rootAst.getChildList().get(0).getGrammarType().equals("<LOrExp>")) {
             genOrIr(rootAst.getChildList().get(0), thenBlock, elseBlock);
         }

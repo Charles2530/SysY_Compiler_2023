@@ -19,8 +19,9 @@ public class Compiler {
     private static boolean IsCalcMode = false;
     private static boolean IsDebugMode = false;
     private static boolean IsLexerOutput = false;
-    private static boolean IsParserOutput = false;
-    private static boolean IsGenerationOutput = true;
+    private static boolean IsParserOutput = true;
+    private static boolean IsGenerationOutput = false;
+    private static boolean IsOptimize = false;
     private static BufferedReader fileInputStream = null;
     private static BufferedWriter errorOutputStream = null;
     private static BufferedWriter lexerOutputStream = null;
@@ -48,8 +49,10 @@ public class Compiler {
         GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
         generationMain.generate();
         // 优化中间代码
-        OptimizerUnit optimizerUnit = new OptimizerUnit(generationMain.getModule());
-        optimizerUnit.optimize();
+        if (IsOptimize) {
+            OptimizerUnit optimizerUnit = new OptimizerUnit(GenerationMain.getModule());
+            optimizerUnit.optimize();
+        }
         compilerEnd();
     }
 

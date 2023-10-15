@@ -16,15 +16,15 @@ import midend.generation.value.construction.procedure.Loop;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.GlobalVar;
 import midend.generation.value.construction.user.Instr;
-import midend.generation.value.instr.AllocaInstr;
-import midend.generation.value.instr.CalcInstr;
-import midend.generation.value.instr.CallInstr;
-import midend.generation.value.instr.GetEleInstr;
-import midend.generation.value.instr.IcmpInstr;
-import midend.generation.value.instr.JumpInstr;
-import midend.generation.value.instr.RetInstr;
-import midend.generation.value.instr.StoreInstr;
-import midend.generation.value.instr.ZextInstr;
+import midend.generation.value.instr.basis.AllocaInstr;
+import midend.generation.value.instr.basis.CalcInstr;
+import midend.generation.value.instr.basis.CallInstr;
+import midend.generation.value.instr.basis.GetEleInstr;
+import midend.generation.value.instr.basis.IcmpInstr;
+import midend.generation.value.instr.basis.JumpInstr;
+import midend.generation.value.instr.basis.RetInstr;
+import midend.generation.value.instr.basis.StoreInstr;
+import midend.generation.value.instr.basis.ZextInstr;
 import iostream.declare.GetIntDeclare;
 import iostream.declare.PutIntDeclare;
 import iostream.declare.PutStrDeclare;
@@ -110,8 +110,8 @@ public class LLvmGenIR {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(),
                         "alloca", new VarType(32));
                 constSymbol.setValue(instr);
-                Value value = SymDefiner.genIrValues(rootAst.getChildList().get(
-                        rootAst.getChildList().size() - 1), 0).get(0);
+                Value value = new Constant(String.valueOf(constSymbol.getConstValue()),
+                        new VarType(32));
                 new StoreInstr(IrNameController.getLocalVarName(),
                         "store", value, instr);
 
@@ -222,9 +222,16 @@ public class LLvmGenIR {
         new JumpInstr(IrNameController.getLocalVarName(), condBlock);
         IrNameController.setCurrentBlock(condBlock);
         AstNode rootAst = sonAst.getParent();
-        llvmGenUtils.genCondIr(rootAst.getChildList().get(4), currentLoopBlock, followBlock);
+        AstNode condAst = null;
+        for (int i = 0; i < rootAst.getChildList().size(); i++) {
+            if (rootAst.getChildList().get(i).getGrammarType().equals("<Cond>")) {
+                condAst = rootAst.getChildList().get(i);
+                break;
+            }
+        }
+        llvmGenUtils.genCondIr(condAst, currentLoopBlock, followBlock);
         IrNameController.setCurrentBlock(currentLoopBlock);
-        genIrAnalysis(rootAst.getChildList().get(4));
+        genIrAnalysis(rootAst.getChildList().get(rootAst.getChildList().size() - 1));
         new JumpInstr(IrNameController.getLocalVarName(), condBlock);
         IrNameController.setCurrentBlock(followBlock);
         IrNameController.popLoop();

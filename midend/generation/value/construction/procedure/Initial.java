@@ -23,7 +23,7 @@ public class Initial {
 
     @Override
     public String toString() {
-        if (initValue == null) {
+        if (initValue == null || initValue.isEmpty()) {
             return (type.isInt32()) ? type + " 0" : type + " zeroinitializer";
         } else {
             return (type.isInt32()) ? type + " " + initValue.get(0) :

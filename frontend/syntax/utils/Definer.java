@@ -244,6 +244,80 @@ public class Definer {
         }
     }
 
+    public static void genStmtCon(AstNode blockNode) throws IOException {
+        AstNode stmtNode = new AstNode("<Stmt>");
+        blockNode.addChild(stmtNode);
+        if (Judge.isExp() || getPreSym().equals("SEMICN")) {
+            genExp(stmtNode);
+            switch (getPreSym()) {
+                case "SEMICN":
+                    AstNode semicnNode = new AstNode("SEMICN");
+                    stmtNode.addChild(semicnNode);
+                    AstRecursion.nextSym();
+                    break;
+                case "ASSIGN":
+                    extractedExp(stmtNode);
+                    AstNode assignNode = new AstNode("ASSIGN");
+                    stmtNode.addChild(assignNode);
+                    AstRecursion.nextSym();
+                    if (Judge.isExp()) {
+                        genExp(stmtNode);
+                    } else {
+                        ErrorController.printDefinerPrintError();
+                    }
+                    if (getPreSym().equals("SEMICN")) {
+                        AstNode semicnAst = new AstNode("SEMICN");
+                        stmtNode.addChild(semicnAst);
+                        AstRecursion.nextSym();
+                    } else {
+                        ErrorController.addError(new ErrorToken("i",
+                                AstRecursion.getPreviousNoTerminalAst()
+                                        .getSpan().getEndLine()));
+                    }
+                    break;
+                default:
+                    ErrorController.addError(new ErrorToken("i",
+                            AstRecursion.getPreviousNoTerminalAst()
+                                    .getSpan().getEndLine()));
+            }
+        } else if (Judge.isBlock()) {
+            genBlock(stmtNode);
+        } else if (getPreSym().equals("IFTK")) {
+            genIfStmt(stmtNode);
+        } else if (getPreSym().equals("FORTK")) {
+            genForStmt(stmtNode);
+        } else if (getPreSym().equals("BREAKTK")) {
+            genBreakStmt(stmtNode);
+        } else if (getPreSym().equals("CONTINUETK")) {
+            genContinueStmt(stmtNode);
+        } else if (getPreSym().equals("RETURNTK")) {
+            genReturnStmt(stmtNode);
+        } else if (getPreSym().equals("PRINTFTK")) {
+            genPrintfStmt(stmtNode);
+        }
+
+    }
+
+    private static void extractedExp(AstNode stmtNode) {
+        AstNode expNode = null;
+        for (AstNode child : stmtNode.getChildList()) {
+            if (child.getGrammarType().equals("<Exp>")) {
+                expNode = child;
+                break;
+            }
+        }
+        stmtNode.deleteChild(expNode);
+        AstNode lvalNode = null;
+        while (expNode != null && !expNode.getChildList().isEmpty()) {
+            expNode = expNode.getChildList().get(0);
+            if (expNode.getGrammarType().equals("<LVal>")) {
+                lvalNode = expNode;
+                break;
+            }
+        }
+        stmtNode.addChild(lvalNode);
+    }
+
     public static void genStmt(AstNode blockNode) throws IOException {
         AstNode stmtNode = new AstNode("<Stmt>");
         blockNode.addChild(stmtNode);

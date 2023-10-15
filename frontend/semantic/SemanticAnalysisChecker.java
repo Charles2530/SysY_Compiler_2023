@@ -1,6 +1,7 @@
 package frontend.semantic;
 
 import frontend.semantic.symtable.Symbol;
+import frontend.semantic.symtable.SymbolTable;
 import frontend.semantic.symtable.symbol.ConstSymbol;
 import frontend.semantic.symtable.symbol.FuncSymbol;
 import frontend.semantic.symtable.symbol.VarSymbol;
@@ -48,7 +49,7 @@ public class SemanticAnalysisChecker {
         }
         Symbol.SymType symbolType = Symbol.SymType.INT;
         ArrayList<Integer> initValue = new ArrayList<>();
-        if (initValAst != null) {
+        if (initValAst != null && SymbolTable.isIsGlobalArea()) {
             initValue = SymCalc.calcInitVal(dim, initValAst);
         }
         return new VarSymbol(symbolName, symbolType, dim, initValue, space);

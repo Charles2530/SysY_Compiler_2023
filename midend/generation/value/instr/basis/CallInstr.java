@@ -1,4 +1,4 @@
-package midend.generation.value.instr;
+package midend.generation.value.instr.basis;
 
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;

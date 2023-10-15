@@ -9,11 +9,11 @@ public class GetIntDeclare extends IoStreamGeneration {
     }
 
     public static String getDeclare() {
-        return "declare i32 @getint(...) ";
+        return "declare i32 @getint() ";
     }
 
     @Override
     public String toString() {
-        return name + " = call i32 (...) @getint()";
+        return name + " = call i32 @getint()";
     }
 }

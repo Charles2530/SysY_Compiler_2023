@@ -1,4 +1,4 @@
-package midend.generation.value.instr;
+package midend.generation.value.instr.basis;
 
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.construction.BasicBlock;

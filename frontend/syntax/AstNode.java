@@ -39,6 +39,10 @@ public class AstNode {
         }
     }
 
+    public void deleteChild(AstNode astNode) {
+        childList.remove(astNode);
+    }
+
     public Span getSpan() {
         return span;
     }

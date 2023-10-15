@@ -45,10 +45,10 @@ public class IrNameController {
         IrNameController.irPrefixHashMap = new HashMap<>();
         IrNameController.irPrefixHashMap.put(IrPrefix.BB_NAME, "block_label_");
         IrNameController.irPrefixHashMap.put(IrPrefix.FUNC_NAME, "@f_");
-        IrNameController.irPrefixHashMap.put(IrPrefix.GLOBAL_VAR_NAME, "@");
-        IrNameController.irPrefixHashMap.put(IrPrefix.LOCAL_VAR_NAME, "%v");
-        IrNameController.irPrefixHashMap.put(IrPrefix.PARAM_NAME, "%a");
-        IrNameController.irPrefixHashMap.put(IrPrefix.STRING_LITERAL_NAME, "@s");
+        IrNameController.irPrefixHashMap.put(IrPrefix.GLOBAL_VAR_NAME, "@g_");
+        IrNameController.irPrefixHashMap.put(IrPrefix.LOCAL_VAR_NAME, "%v_");
+        IrNameController.irPrefixHashMap.put(IrPrefix.PARAM_NAME, "%a_");
+        IrNameController.irPrefixHashMap.put(IrPrefix.STRING_LITERAL_NAME, "@s_");
     }
 
     public static String getPrefix(IrPrefix prefix) {

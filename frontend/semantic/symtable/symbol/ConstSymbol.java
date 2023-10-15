@@ -1,5 +1,8 @@
 package frontend.semantic.symtable.symbol;
 
+import midend.generation.utils.IrType;
+import midend.generation.utils.irtype.ArrayType;
+import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.procedure.Initial;
 import frontend.semantic.symtable.Symbol;
@@ -54,6 +57,7 @@ public class ConstSymbol extends Symbol {
         }
     }
 
+
     public Value getValue() {
         return value;
     }
@@ -71,6 +75,7 @@ public class ConstSymbol extends Symbol {
     }
 
     public Initial getInitial() {
-        return new Initial(value.getType(), initValue);
+        IrType type = (dim == 0) ? new VarType(32) : new ArrayType(spaceTot, new VarType(32));
+        return new Initial(type, initValue);
     }
 }
