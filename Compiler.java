@@ -101,5 +101,4 @@ public class Compiler {
             generationOutputStream.close();
         }
     }
-
 }
