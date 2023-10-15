@@ -244,11 +244,13 @@ public class Definer {
         }
     }
 
-    public static void genStmtCon(AstNode blockNode) throws IOException {
+    public static void genStmt(AstNode blockNode) throws IOException {
         AstNode stmtNode = new AstNode("<Stmt>");
         blockNode.addChild(stmtNode);
         if (Judge.isExp() || getPreSym().equals("SEMICN")) {
-            genExp(stmtNode);
+            if (Judge.isExp()) {
+                genExp(stmtNode);
+            }
             switch (getPreSym()) {
                 case "SEMICN":
                     AstNode semicnNode = new AstNode("SEMICN");
@@ -262,8 +264,24 @@ public class Definer {
                     AstRecursion.nextSym();
                     if (Judge.isExp()) {
                         genExp(stmtNode);
-                    } else {
-                        ErrorController.printDefinerPrintError();
+                    } else if (getPreSym().equals("GETINTTK")) {
+                        AstNode getinttkNode = new AstNode("GETINTTK");
+                        stmtNode.addChild(getinttkNode);
+                        AstRecursion.nextSym();
+                        if (getPreSym().equals("LPARENT")) {
+                            AstNode lparentNode = new AstNode("LPARENT");
+                            stmtNode.addChild(lparentNode);
+                            AstRecursion.nextSym();
+                            if (getPreSym().equals("RPARENT")) {
+                                AstNode rparentNode = new AstNode("RPARENT");
+                                stmtNode.addChild(rparentNode);
+                                AstRecursion.nextSym();
+                            } else {
+                                ErrorController.addError(new ErrorToken("j",
+                                        AstRecursion.getPreviousNoTerminalAst()
+                                                .getSpan().getEndLine()));
+                            }
+                        }
                     }
                     if (getPreSym().equals("SEMICN")) {
                         AstNode semicnAst = new AstNode("SEMICN");
@@ -316,81 +334,6 @@ public class Definer {
             }
         }
         stmtNode.addChild(lvalNode);
-    }
-
-    public static void genStmt(AstNode blockNode) throws IOException {
-        AstNode stmtNode = new AstNode("<Stmt>");
-        blockNode.addChild(stmtNode);
-        if (Judge.isLVal()) {
-            genLVal(stmtNode);
-            if (getPreSym().equals("ASSIGN")) {
-                AstNode assignNode = new AstNode("ASSIGN");
-                stmtNode.addChild(assignNode);
-                AstRecursion.nextSym();
-                if (Judge.isExp()) {
-                    genExp(stmtNode);
-                } else if (getPreSym().equals("GETINTTK")) {
-                    AstNode getinttkNode = new AstNode("GETINTTK");
-                    stmtNode.addChild(getinttkNode);
-                    AstRecursion.nextSym();
-                    if (getPreSym().equals("LPARENT")) {
-                        AstNode lparentNode = new AstNode("LPARENT");
-                        stmtNode.addChild(lparentNode);
-                        AstRecursion.nextSym();
-                        if (getPreSym().equals("RPARENT")) {
-                            AstNode rparentNode = new AstNode("RPARENT");
-                            stmtNode.addChild(rparentNode);
-                            AstRecursion.nextSym();
-                        } else {
-                            ErrorController.addError(new ErrorToken("j",
-                                    AstRecursion.getPreviousNoTerminalAst()
-                                            .getSpan().getEndLine()));
-                        }
-                    } else {
-                        ErrorController.printDefinerPrintError();
-                    }
-                } else {
-                    ErrorController.printDefinerPrintError();
-                }
-                if (getPreSym().equals("SEMICN")) {
-                    AstNode semicnNode = new AstNode("SEMICN");
-                    stmtNode.addChild(semicnNode);
-                    AstRecursion.nextSym();
-                } else {
-                    ErrorController.addError(new ErrorToken("i",
-                            AstRecursion.getPreviousNoTerminalAst()
-                                    .getSpan().getEndLine()));
-                }
-            } else {
-                ErrorController.printDefinerPrintError();
-            }
-        } else if (Judge.isExp() || getPreSym().equals("SEMICN")) {
-            if (Judge.isExp()) {
-                genExp(stmtNode);
-            }
-            if (getPreSym().equals("SEMICN")) {
-                AstNode semicnNode = new AstNode("SEMICN");
-                stmtNode.addChild(semicnNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("i",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
-        } else if (Judge.isBlock()) {
-            genBlock(stmtNode);
-        } else if (getPreSym().equals("IFTK")) {
-            genIfStmt(stmtNode);
-        } else if (getPreSym().equals("FORTK")) {
-            genForStmt(stmtNode);
-        } else if (getPreSym().equals("BREAKTK")) {
-            genBreakStmt(stmtNode);
-        } else if (getPreSym().equals("CONTINUETK")) {
-            genContinueStmt(stmtNode);
-        } else if (getPreSym().equals("RETURNTK")) {
-            genReturnStmt(stmtNode);
-        } else if (getPreSym().equals("PRINTFTK")) {
-            genPrintfStmt(stmtNode);
-        }
     }
 
     private static void genIfStmt(AstNode blockNode) throws IOException {

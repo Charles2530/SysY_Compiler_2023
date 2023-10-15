@@ -57,7 +57,6 @@ public class ConstSymbol extends Symbol {
         }
     }
 
-
     public Value getValue() {
         return value;
     }

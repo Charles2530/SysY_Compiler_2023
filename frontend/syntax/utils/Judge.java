@@ -27,24 +27,12 @@ public class Judge {
         return isConstExp() || getPreSym().equals("LBRACE");
     }
 
-    /*TODO:bug here*/
     public static boolean isLVal() {
-        int k = 1;
-        while (getNextSym(k).equals("LBRACK") && !getNextSym(k).equals("EOF")) {
-            while (!getNextSym(k).equals("RBRACK")) {
-                k++;
-                if (k > 10) {
-                    break;
-                }
-            }
-            k++;
-        }
-        return isIdent() && !getNextSym(k).matches(
-                "LPARENT|PLUS|MINU|MULT|DIV|LSS|LEQ|GRE|GEQ|EQL|NEQ|SEMICN");
+        return isIdent();
     }
 
     public static boolean isUnaryExp() {
-        return isPrimaryExp() || isUnaryOp() || isIdent() && getNextSym(1).equals("LPARENT");
+        return isPrimaryExp() || isUnaryOp() || isIdent();
     }
 
     public static boolean isIdent() {
