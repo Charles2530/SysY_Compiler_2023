@@ -1,8 +1,8 @@
 package frontend.semantic.symtable;
 
-import frontend.semantic.symtable.symbol.ConstSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
 import frontend.semantic.symtable.symbol.FuncSymbol;
-import frontend.semantic.symtable.symbol.VarSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,12 +113,12 @@ public class SymbolTable {
                         System.out.println("\t\t" + type + " \t" + key +
                                 " \tlevel:" + funcSymbol.getSymbolLevel() +
                                 " \tparamNum:" + funcSymbol.getParamNum());
-                    } else if (symbol instanceof VarSymbol varSymbol) {
+                    } else if (symbol instanceof IntSymbol intSymbol) {
                         System.out.println("\t\t" + type + " \t" + key +
-                                " \tdim:" + varSymbol.getDim() +
-                                " \tlevel:" + varSymbol.getSymbolLevel() +
-                                " \tvalue:" + (varSymbol.getConstValue() == null ?
-                                "NAN" : varSymbol.getConstValue()));
+                                " \tdim:" + intSymbol.getDim() +
+                                " \tlevel:" + intSymbol.getSymbolLevel() +
+                                " \tvalue:" + (intSymbol.getConstValue() == null ?
+                                "NAN" : intSymbol.getConstValue()));
                     } else if (symbol instanceof ConstSymbol constSymbol) {
                         System.out.println("\t\t" + type + " \t" + key +
                                 " \tdim:" + constSymbol.getDim() +

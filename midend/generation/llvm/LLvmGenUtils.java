@@ -1,20 +1,22 @@
 package midend.generation.llvm;
 
+import iostream.declare.GetIntDeclare;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.user.Instr;
+import frontend.semantic.symtable.Symbol;
+import frontend.semantic.symtable.SymbolTable;
+import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
+import frontend.syntax.AstNode;
 import midend.generation.value.instr.basis.BrInstr;
 import midend.generation.value.instr.basis.CalcInstr;
 import midend.generation.value.instr.basis.GetEleInstr;
 import midend.generation.value.instr.basis.LoadInstr;
-import frontend.semantic.symtable.Symbol;
-import frontend.semantic.symtable.SymbolTable;
-import frontend.semantic.symtable.symbol.ConstSymbol;
-import frontend.semantic.symtable.symbol.VarSymbol;
-import frontend.syntax.AstNode;
+import midend.generation.value.instr.basis.StoreInstr;
 
 import java.util.ArrayList;
 
@@ -73,21 +75,21 @@ public class LLvmGenUtils {
                 values.add(llvmGenIR.genIrAnalysis(child));
             }
         }
-        VarSymbol varSymbol = (VarSymbol) SymbolTable.getSymByName(rootAst.getChildList()
+        IntSymbol intSymbol = (IntSymbol) SymbolTable.getSymByName(rootAst.getChildList()
                 .get(0).getSymToken().getWord());
-        Integer dim = varSymbol.getDim();
-        ArrayList<Integer> space = varSymbol.getSpace();
+        Integer dim = intSymbol.getDim();
+        ArrayList<Integer> space = intSymbol.getSpace();
         if (dim.equals(0)) {
-            return varSymbol.getValue();
+            return intSymbol.getValue();
         } else if (dim.equals(1)) {
             return new GetEleInstr(IrNameController.getLocalVarName(),
-                    "getelementptr", varSymbol.getValue(), values.get(0));
+                    "getelementptr", intSymbol.getValue(), values.get(0));
         } else {
             Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                     new Constant(String.valueOf(space.get(0)), new VarType(32)), values.get(0));
             instr = new CalcInstr(IrNameController.getLocalVarName(), "add", instr, values.get(1));
             return new GetEleInstr(IrNameController.getLocalVarName(),
-                    "getelementptr", varSymbol.getValue(), instr);
+                    "getelementptr", intSymbol.getValue(), instr);
         }
     }
 
@@ -102,7 +104,7 @@ public class LLvmGenUtils {
         }
         Symbol symbol = SymbolTable.getSymByName(
                 rootAst.getChildList().get(0).getSymToken().getWord());
-        return (symbol instanceof VarSymbol) ? genVarValueIr((VarSymbol) symbol, values, expNum) :
+        return (symbol instanceof IntSymbol) ? genVarValueIr((IntSymbol) symbol, values, expNum) :
                 genConstValueIr((ConstSymbol) symbol, values, expNum);
     }
 
@@ -141,36 +143,44 @@ public class LLvmGenUtils {
         }
     }
 
-    private Value genVarValueIr(VarSymbol varSymbol, ArrayList<Value> values, int expNum) {
-        Integer dim = varSymbol.getDim();
-        ArrayList<Integer> space = varSymbol.getSpace();
+    private Value genVarValueIr(IntSymbol intSymbol, ArrayList<Value> values, int expNum) {
+        Integer dim = intSymbol.getDim();
+        ArrayList<Integer> space = intSymbol.getSpace();
         if (dim.equals(0)) {
-            return new LoadInstr(IrNameController.getLocalVarName(), "load", varSymbol.getValue());
+            return new LoadInstr(IrNameController.getLocalVarName(), "load", intSymbol.getValue());
         } else if (dim.equals(1)) {
             return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
-                    "getelementptr", varSymbol.getValue(),
+                    "getelementptr", intSymbol.getValue(),
                     new Constant("0", new VarType(32))) :
                     new LoadInstr(IrNameController.getLocalVarName(), "load",
                             new GetEleInstr(IrNameController.getLocalVarName(),
-                                    "getelementptr", varSymbol.getValue(), values.get(0)));
+                                    "getelementptr", intSymbol.getValue(), values.get(0)));
         } else {
             if (expNum == 0) {
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", varSymbol.getValue(), new Constant("0", new VarType(32)));
+                        "getelementptr", intSymbol.getValue(), new Constant("0", new VarType(32)));
             } else if (expNum == 1) {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 return new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", varSymbol.getValue(), instr);
+                        "getelementptr", intSymbol.getValue(), instr);
             } else {
                 Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
                         new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
                 instr = new CalcInstr(IrNameController.getLocalVarName(),
                         "add", instr, values.get(1));
                 instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        "getelementptr", varSymbol.getValue(), instr);
+                        "getelementptr", intSymbol.getValue(), instr);
                 return new LoadInstr(IrNameController.getLocalVarName(), "load", instr);
             }
         }
+    }
+
+    public Value genIrGetIntChecker(AstNode rootAst) {
+        Value pointer = genAssignIr(rootAst.getChildList().get(0));
+        GetIntDeclare getIntDeclare = new GetIntDeclare(IrNameController.getLocalVarName(),
+                "call");
+        return new StoreInstr(IrNameController.getLocalVarName(),
+                "store", getIntDeclare, pointer);
     }
 }

@@ -2,9 +2,9 @@ package frontend.semantic;
 
 import frontend.semantic.symtable.Symbol;
 import frontend.semantic.symtable.SymbolTable;
-import frontend.semantic.symtable.symbol.ConstSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
 import frontend.semantic.symtable.symbol.FuncSymbol;
-import frontend.semantic.symtable.symbol.VarSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
 import frontend.semantic.utils.SymCalc;
 import frontend.syntax.AstNode;
 
@@ -52,7 +52,7 @@ public class SemanticAnalysisChecker {
         if (initValAst != null && SymbolTable.isIsGlobalArea()) {
             initValue = SymCalc.calcInitVal(dim, initValAst);
         }
-        return new VarSymbol(symbolName, symbolType, dim, initValue, space);
+        return new IntSymbol(symbolName, symbolType, dim, initValue, space);
     }
 
     public Symbol createFuncFParamChecker(AstNode rootAst) {
@@ -74,7 +74,7 @@ public class SemanticAnalysisChecker {
         AstNode bytType = rootAst.getChildList().get(0);
         Symbol.SymType symbolType = bytType.getChildList().get(0).getGrammarType().equals("INTTK") ?
                 Symbol.SymType.INT : Symbol.SymType.VOID;
-        return new VarSymbol(symbolName, symbolType, dim, new ArrayList<>(), list);
+        return new IntSymbol(symbolName, symbolType, dim, new ArrayList<>(), list);
     }
 
     public Symbol createMainFuncDefChecker(AstNode rootAst) {

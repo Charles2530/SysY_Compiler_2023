@@ -7,9 +7,9 @@ import frontend.semantic.SemanticAnalysis;
 import frontend.semantic.SemanticAnalysisChecker;
 import frontend.semantic.symtable.Symbol;
 import frontend.semantic.symtable.SymbolTable;
-import frontend.semantic.symtable.symbol.ConstSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
 import frontend.semantic.symtable.symbol.FuncSymbol;
-import frontend.semantic.symtable.symbol.VarSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
 import frontend.syntax.AstNode;
 
 import java.io.IOException;
@@ -228,8 +228,8 @@ public class SymChecker {
                         String name = child.getSymToken().getWord();
                         symbol = SymbolTable.getSymByName(name);
                     } else if (child.getGrammarType().equals("<Exp>")) {
-                        if (symbol instanceof VarSymbol && tempDim.size() !=
-                                ((VarSymbol) symbol).getDim()) {
+                        if (symbol instanceof IntSymbol && tempDim.size() !=
+                                ((IntSymbol) symbol).getDim()) {
                             tempDim.add(SymCalc.calc(child));
                         }
                     }
@@ -239,14 +239,14 @@ public class SymChecker {
                 }
             } else if (astNode.getGrammarType().equals("<Exp>")) {
                 if (OutputController.getIsCalcMode()) {
-                    if (symbol instanceof VarSymbol) {
+                    if (symbol instanceof IntSymbol) {
                         int value = SymCalc.calc(astNode);
                         if (tempDim.isEmpty()) {
-                            ((VarSymbol) symbol).updateValue(value);
+                            ((IntSymbol) symbol).updateValue(value);
                         } else if (tempDim.size() == 1) {
-                            ((VarSymbol) symbol).updateValue(value, tempDim.get(0));
+                            ((IntSymbol) symbol).updateValue(value, tempDim.get(0));
                         } else {
-                            ((VarSymbol) symbol).updateValue(value, tempDim.get(0), tempDim.get(1));
+                            ((IntSymbol) symbol).updateValue(value, tempDim.get(0), tempDim.get(1));
                         }
                     }
                 }

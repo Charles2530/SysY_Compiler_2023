@@ -34,21 +34,9 @@ public class GenerationMain {
             return;
         }
         for (AstNode astNode : rootAst.getChildList()) {
-            boolean flag = false;
-            if (astNode.getGrammarType().equals("ASSIGN")) {
-                for (AstNode child : rootAst.getChildList()) {
-                    if (child.getGrammarType().equals("GETINTTK")) {
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-            if (flag) {
-                continue;
-            }
             GenerationMain.llvmGenIR.genIrAnalysis(astNode);
             if (astNode.getGrammarType().matches(
-                    "IFTK|FORTK|BREAKTK|CONTINUETK|RETURNTK|PRINTFTK|ASSIGN|GETINTTK")) {
+                    "IFTK|FORTK|BREAKTK|CONTINUETK|RETURNTK|PRINTFTK|ASSIGN")) {
                 break;
             }
         }

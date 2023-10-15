@@ -22,5 +22,4 @@ public class VarType extends IrType {
             default -> "void";
         };
     }
-
 }

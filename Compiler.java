@@ -46,8 +46,10 @@ public class Compiler {
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();
         // 生成中间代码
-        GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
-        generationMain.generate();
+        if (IsGenerationOutput) {
+            GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
+            generationMain.generate();
+        }
         // 优化中间代码
         if (IsOptimize) {
             OptimizerUnit optimizerUnit = new OptimizerUnit(GenerationMain.getModule());

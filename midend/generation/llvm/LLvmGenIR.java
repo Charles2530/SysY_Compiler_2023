@@ -1,5 +1,15 @@
 package midend.generation.llvm;
 
+import frontend.semantic.SemanticAnalysisChecker;
+import frontend.semantic.symtable.Symbol;
+import frontend.semantic.symtable.SymbolTable;
+import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
+import frontend.semantic.symtable.symbol.FuncSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
+import frontend.semantic.utils.SymDefiner;
+import frontend.syntax.AstNode;
+import iostream.declare.PutIntDeclare;
+import iostream.declare.PutStrDeclare;
 import midend.generation.GenerationMain;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
@@ -25,17 +35,6 @@ import midend.generation.value.instr.basis.JumpInstr;
 import midend.generation.value.instr.basis.RetInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.basis.ZextInstr;
-import iostream.declare.GetIntDeclare;
-import iostream.declare.PutIntDeclare;
-import iostream.declare.PutStrDeclare;
-import frontend.semantic.SemanticAnalysisChecker;
-import frontend.semantic.symtable.Symbol;
-import frontend.semantic.symtable.SymbolTable;
-import frontend.semantic.symtable.symbol.ConstSymbol;
-import frontend.semantic.symtable.symbol.FuncSymbol;
-import frontend.semantic.symtable.symbol.VarSymbol;
-import frontend.semantic.utils.SymDefiner;
-import frontend.syntax.AstNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,6 @@ public class LLvmGenIR {
             case "<MainFuncDef>" -> genIrMainFuncDefChecker(rootAst);
             //Lexer_part
             case "ASSIGN" -> genIrAssignChecker(rootAst);
-            case "GETINTTK" -> genIrGetIntChecker(rootAst);
             default -> {
                 GenerationMain.preTraverse(rootAst);
                 yield null;
@@ -136,20 +134,20 @@ public class LLvmGenIR {
     }
 
     private Value genIrVarDefChecker(AstNode rootAst) {
-        VarSymbol varSymbol = (VarSymbol) semanticAnalysisChecker.createVarDefChecker(rootAst);
-        SymbolTable.addSymbol(varSymbol);
-        Initial initial = varSymbol.getInitial();
-        if (varSymbol.getSymbolLevel().equals(0)) {
-            String globalVarName = IrNameController.getGlobalVarName(varSymbol.getSymbolName());
+        IntSymbol intSymbol = (IntSymbol) semanticAnalysisChecker.createVarDefChecker(rootAst);
+        SymbolTable.addSymbol(intSymbol);
+        Initial initial = intSymbol.getInitial();
+        if (intSymbol.getSymbolLevel().equals(0)) {
+            String globalVarName = IrNameController.getGlobalVarName(intSymbol.getSymbolName());
             GlobalVar globalVar = new GlobalVar(new PointerType(
                     initial.getType()), globalVarName, initial);
-            varSymbol.setValue(globalVar);
+            intSymbol.setValue(globalVar);
         } else {
             Instr instr;
-            if (varSymbol.getDim().equals(0)) {
+            if (intSymbol.getDim().equals(0)) {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(),
                         "alloca", new VarType(32));
-                varSymbol.setValue(instr);
+                intSymbol.setValue(instr);
                 if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
                         .getGrammarType().equals("<InitVal>")) {
                     Value value = SymDefiner.genIrValues(rootAst.getChildList().get(
@@ -159,13 +157,13 @@ public class LLvmGenIR {
                 }
             } else {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(), "alloca",
-                        new ArrayType(varSymbol.getSpaceTot(), new VarType(32)));
-                varSymbol.setValue(instr);
+                        new ArrayType(intSymbol.getSpaceTot(), new VarType(32)));
+                intSymbol.setValue(instr);
                 if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
                         .getGrammarType().equals("<InitVal>")) {
                     Value pointer = instr;
                     ArrayList<Value> valuelist = SymDefiner.genIrValues(rootAst.getChildList().get(
-                            rootAst.getChildList().size() - 1), varSymbol.getDim());
+                            rootAst.getChildList().size() - 1), intSymbol.getDim());
                     int off = 0;
                     for (Value value : valuelist) {
                         instr = new GetEleInstr(IrNameController.getLocalVarName(), "getEle",
@@ -447,7 +445,7 @@ public class LLvmGenIR {
     }
 
     private Value genIrFuncFParamChecker(AstNode rootAst) {
-        VarSymbol symbol = (VarSymbol) semanticAnalysisChecker.createFuncFParamChecker(rootAst);
+        IntSymbol symbol = (IntSymbol) semanticAnalysisChecker.createFuncFParamChecker(rootAst);
         SymbolTable.addSymbol(symbol);
         IrType type = symbol.getDim() == 0 ? new VarType(32) : new PointerType(new VarType(0));
         Param param = new Param(type, IrNameController.getParamName());
@@ -503,17 +501,12 @@ public class LLvmGenIR {
     //Lexer_part
     private Value genIrAssignChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
-        Value lval = llvmGenUtils.genAssignIr(rootAst.getChildList().get(0));
-        Value exp = genIrAnalysis(rootAst.getChildList().get(2));
-        return new StoreInstr(IrNameController.getLocalVarName(), "store", exp, lval);
-    }
-
-    private Value genIrGetIntChecker(AstNode sonAst) {
-        AstNode rootAst = sonAst.getParent();
-        Value pointer = llvmGenUtils.genAssignIr(rootAst.getChildList().get(0));
-        GetIntDeclare getIntDeclare = new GetIntDeclare(IrNameController.getLocalVarName(),
-                "call");
-        return new StoreInstr(IrNameController.getLocalVarName(),
-                "store", getIntDeclare, pointer);
+        if (rootAst.getChildList().get(2).getGrammarType().equals("GETINTTK")) {
+            return llvmGenUtils.genIrGetIntChecker(rootAst);
+        } else {
+            Value lval = llvmGenUtils.genAssignIr(rootAst.getChildList().get(0));
+            Value exp = genIrAnalysis(rootAst.getChildList().get(2));
+            return new StoreInstr(IrNameController.getLocalVarName(), "store", exp, lval);
+        }
     }
 }

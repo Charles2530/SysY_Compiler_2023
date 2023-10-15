@@ -8,4 +8,9 @@ public class StructType extends IrType {
     public StructType(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "i32";
+    }
 }

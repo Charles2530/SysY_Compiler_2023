@@ -2,8 +2,8 @@ package frontend.semantic.utils;
 
 import frontend.semantic.symtable.Symbol;
 import frontend.semantic.symtable.SymbolTable;
-import frontend.semantic.symtable.symbol.ConstSymbol;
-import frontend.semantic.symtable.symbol.VarSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
 import frontend.syntax.AstNode;
 
 import java.util.ArrayList;
@@ -125,13 +125,13 @@ public class SymCalc {
             }
             return constSymbol.getConstValue(bracketVal.get(0), bracketVal.get(1));
         } else {
-            VarSymbol varSymbol = (VarSymbol) symbol;
-            if (varSymbol.getDim() == 0) {
-                return varSymbol.getConstValue();
-            } else if (varSymbol.getDim() == 1) {
-                return varSymbol.getConstValue(bracketVal.get(0));
+            IntSymbol intSymbol = (IntSymbol) symbol;
+            if (intSymbol.getDim() == 0) {
+                return intSymbol.getConstValue();
+            } else if (intSymbol.getDim() == 1) {
+                return intSymbol.getConstValue(bracketVal.get(0));
             }
-            return varSymbol.getConstValue(bracketVal.get(0), bracketVal.get(1));
+            return intSymbol.getConstValue(bracketVal.get(0), bracketVal.get(1));
         }
     }
 }

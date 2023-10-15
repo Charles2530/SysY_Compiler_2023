@@ -1,18 +1,21 @@
 package frontend.semantic.symtable.symbol;
 
+import frontend.semantic.symtable.Symbol;
+import midend.generation.utils.IrType;
+import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.procedure.Initial;
-import frontend.semantic.symtable.Symbol;
 
 import java.util.ArrayList;
 
 public class VarSymbol extends Symbol {
-    private final int dim;
-    private final ArrayList<Integer> initValue;
-    private final ArrayList<Integer> space;
-    private Integer spaceTot;
-    private Value value;
+    protected final int dim;
+    protected final ArrayList<Integer> initValue;
+    protected final ArrayList<Integer> space;
+    protected Integer spaceTot;
+
+    protected Value value;
 
     public VarSymbol(String symbolName, SymType symbolType, int dim,
                      ArrayList<Integer> initValue, ArrayList<Integer> space) {
@@ -24,11 +27,11 @@ public class VarSymbol extends Symbol {
         // array init
         if (dim > 0) {
             int size = 1;
-            for (Integer integer : space) {
-                size *= integer;
+            for (int i = 0; i < dim; i++) {
+                size *= space.get(i);
             }
             this.spaceTot = size;
-            for (int i = 0; i < size - this.initValue.size(); i++) {
+            for (int i = 0; i < size - initValue.size(); i++) {
                 this.initValue.add(0);
             }
         }
@@ -54,19 +57,6 @@ public class VarSymbol extends Symbol {
         }
     }
 
-    public void updateValue(int val, int... idx) {
-        if (idx.length == 0) {
-            initValue.set(0, val);
-        } else if (idx.length == 1) {
-            initValue.set(idx[0], val);
-        } else {
-            if (idx[0] == 0) {
-                initValue.set(idx[1], val);
-            }
-            initValue.set(idx[0] * space.get(0) + idx[1], val);
-        }
-    }
-
     public Value getValue() {
         return value;
     }
@@ -83,8 +73,8 @@ public class VarSymbol extends Symbol {
         return spaceTot;
     }
 
-    /*TODO:change later*/
     public Initial getInitial() {
-        return new Initial(new VarType(32), initValue);
+        IrType type = (dim == 0) ? new VarType(32) : new ArrayType(spaceTot, new VarType(32));
+        return new Initial(type, initValue);
     }
 }

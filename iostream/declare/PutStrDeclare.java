@@ -13,7 +13,7 @@ public class PutStrDeclare extends IoStreamGeneration {
     }
 
     public static String getDeclare() {
-        return "declare void @putch(i32)\ndeclare void @putstr(i8* )";
+        return "declare void @putch(i32)\ndeclare void @putstr(i8*)";
     }
 
     @Override

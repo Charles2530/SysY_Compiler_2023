@@ -4,9 +4,9 @@ import midend.generation.llvm.LLvmGenIR;
 import midend.generation.value.Value;
 import frontend.semantic.symtable.Symbol;
 import frontend.semantic.symtable.SymbolTable;
-import frontend.semantic.symtable.symbol.ConstSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
 import frontend.semantic.symtable.symbol.FuncSymbol;
-import frontend.semantic.symtable.symbol.VarSymbol;
+import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
 import frontend.syntax.AstNode;
 
 import java.util.ArrayList;
@@ -61,8 +61,8 @@ public class SymDefiner {
                 reduceDim++;
             }
         }
-        if (symbol instanceof VarSymbol) {
-            return ((VarSymbol) symbol).getDim() - reduceDim;
+        if (symbol instanceof IntSymbol) {
+            return ((IntSymbol) symbol).getDim() - reduceDim;
         } else if (symbol instanceof ConstSymbol) {
             return ((ConstSymbol) symbol).getDim() - reduceDim;
         } else {
