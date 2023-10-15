@@ -468,7 +468,7 @@ public class LLvmGenIR {
     private Value genIrFuncFParamChecker(AstNode rootAst) {
         IntSymbol symbol = (IntSymbol) semanticAnalysisChecker.createFuncFParamChecker(rootAst);
         SymbolTable.addSymbol(symbol);
-        IrType type = symbol.getDim() == 0 ? new VarType(32) : new PointerType(new VarType(0));
+        IrType type = symbol.getDim() == 0 ? new VarType(32) : new PointerType(new VarType(32));
         Param param = new Param(type, IrNameController.getParamName());
         if (param.getType().isInt32()) {
             Instr allocaInstr = new AllocaInstr(IrNameController.getLocalVarName(),
