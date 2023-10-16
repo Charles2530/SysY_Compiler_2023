@@ -1,10 +1,10 @@
 import backend.AssemblyGeneration;
-import midend.generation.GenerationMain;
-import iostream.ErrorController;
-import iostream.OutputController;
 import frontend.lexer.LexicalAnalysis;
 import frontend.semantic.SemanticAnalysis;
 import frontend.syntax.SyntaxAnalysis;
+import iostream.ErrorController;
+import iostream.OutputController;
+import midend.generation.GenerationMain;
 import midend.simplify.OptimizerUnit;
 
 import java.io.BufferedReader;

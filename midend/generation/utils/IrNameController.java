@@ -13,20 +13,16 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class IrNameController {
-    private static HashMap<IrPrefix, String> irPrefixHashMap;
     private static HashMap<Function, Integer> blockNameIndexHashMap;
     private static Integer paramNameIndex;
     private static Integer stringLiteralNameIndex;
-
     private static HashMap<Function, Integer> localVarNameIndexHashMap;
-
     private static Module currentModule;
     private static BasicBlock currentBasicBlock;
     private static Function currentFunction;
     private static Stack<Loop> loopProcedure;
 
     public static void init(Module module) {
-        preFixInit();
         cntInit();
         IrNameController.currentModule = module;
         IrNameController.currentBasicBlock = null;
@@ -41,24 +37,10 @@ public class IrNameController {
         IrNameController.localVarNameIndexHashMap = new HashMap<>();
     }
 
-    private static void preFixInit() {
-        IrNameController.irPrefixHashMap = new HashMap<>();
-        IrNameController.irPrefixHashMap.put(IrPrefix.BB_NAME, "block_label_");
-        IrNameController.irPrefixHashMap.put(IrPrefix.FUNC_NAME, "@f_");
-        IrNameController.irPrefixHashMap.put(IrPrefix.GLOBAL_VAR_NAME, "@g_");
-        IrNameController.irPrefixHashMap.put(IrPrefix.LOCAL_VAR_NAME, "%v_");
-        IrNameController.irPrefixHashMap.put(IrPrefix.PARAM_NAME, "%a_");
-        IrNameController.irPrefixHashMap.put(IrPrefix.STRING_LITERAL_NAME, "@s_");
-    }
-
-    public static String getPrefix(IrPrefix prefix) {
-        return irPrefixHashMap.get(prefix);
-    }
-
     public static String getLocalVarName() {
         int localVarNameIndex = localVarNameIndexHashMap.get(currentFunction);
         localVarNameIndexHashMap.put(currentFunction, localVarNameIndex + 1);
-        return IrNameController.getPrefix(IrPrefix.LOCAL_VAR_NAME) + localVarNameIndex;
+        return IrPrefix.LOCAL_VAR_NAME.toString() + localVarNameIndex;
     }
 
     public static String getBlockName() {
@@ -66,24 +48,23 @@ public class IrNameController {
         blockNameIndexHashMap.put(currentFunction, blockNameIndex + 1);
         String funcName = currentFunction.getName().equals("@main") ? "main" :
                 currentFunction.getName().substring(3);
-        return funcName + "_" + IrNameController.getPrefix(IrPrefix.BB_NAME) + blockNameIndex;
+        return funcName + "_" + IrPrefix.BB_NAME + blockNameIndex;
     }
 
     public static String getGlobalVarName(String varName) {
-        return IrNameController.getPrefix(IrPrefix.GLOBAL_VAR_NAME) + varName;
+        return IrPrefix.GLOBAL_VAR_NAME + varName;
     }
 
     public static String getParamName() {
-        return IrNameController.getPrefix(IrPrefix.PARAM_NAME) + paramNameIndex++;
+        return IrPrefix.PARAM_NAME.toString() + paramNameIndex++;
     }
 
     public static String getStringLiteralName() {
-        return IrNameController.getPrefix(IrPrefix.STRING_LITERAL_NAME) + stringLiteralNameIndex++;
+        return IrPrefix.STRING_LITERAL_NAME.toString() + stringLiteralNameIndex++;
     }
 
     public static String getFuncName(String funcName) {
-        return (funcName.equals("main")) ? "@main" :
-                IrNameController.getPrefix(IrPrefix.FUNC_NAME) + funcName;
+        return (funcName.equals("main")) ? "@main" : IrPrefix.FUNC_NAME + funcName;
     }
 
     public static void setCurrentFunc(Function function) {
