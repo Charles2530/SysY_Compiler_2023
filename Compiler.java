@@ -19,10 +19,10 @@ public class Compiler {
     private static boolean detailMode = false;
     private static boolean generationMode = true;
     private static boolean IsCalcMode = false;
-    private static boolean IsDebugMode = false;
+    private static boolean IsDebugMode = true;
     private static boolean IsLexerOutput = false;
     private static boolean IsParserOutput = false;
-    private static boolean IsGenerationOutput = true;
+    private static boolean IsGenerationOutput = false;
     private static boolean IsOptimize = false;
     private static boolean IsAssemblyOutput = false;
     private static BufferedReader fileInputStream = null;
@@ -49,7 +49,7 @@ public class Compiler {
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();
-        if (generationMode) {
+        if (generationMode && !ErrorController.hasError()) {
             // 生成中间代码
             GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
             generationMain.generate();

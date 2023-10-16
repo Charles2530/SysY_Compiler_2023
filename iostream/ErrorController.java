@@ -45,6 +45,10 @@ public class ErrorController {
         }
     }
 
+    public static boolean hasError() {
+        return isDebugMode && !errorlist.isEmpty();
+    }
+
     private static void printError(ErrorToken error) throws IOException {
         switch (error.getErrorCategoryCode()) {
             case "a":

@@ -1,5 +1,7 @@
 package backend.mips;
 
+import backend.mips.asm.Assembly;
+
 import java.util.ArrayList;
 
 public class Segment {

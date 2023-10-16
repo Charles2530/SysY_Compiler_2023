@@ -1,22 +1,22 @@
 package backend.utils;
 
-import backend.mips.Assembly;
+import backend.mips.asm.Assembly;
 import backend.mips.Segment;
 
 public class AssemblyData {
-    private Segment textSegment;
-    private Segment dataSegment;
+    private static Segment textSegment;
+    private static Segment dataSegment;
 
     public AssemblyData() {
-        this.textSegment = new Segment();
-        this.dataSegment = new Segment();
+        AssemblyData.textSegment = new Segment();
+        AssemblyData.dataSegment = new Segment();
     }
 
-    public void addTextAssembly(Assembly assembly) {
+    public static void addTextAssembly(Assembly assembly) {
         textSegment.addAssembly(assembly);
     }
 
-    public void addDataAssembly(Assembly assembly) {
+    public static void addDataAssembly(Assembly assembly) {
         dataSegment.addAssembly(assembly);
     }
 
