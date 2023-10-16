@@ -314,4 +314,15 @@ public class ErrorController {
             SymbolTable.printSymbolTable();
         }
     }
+
+    public static void printStackOverflowError() {
+        if (isDebugMode && detailMode) {
+            try {
+                errorBufferedWriter.write("Stack pointer overflow");
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

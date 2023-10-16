@@ -22,9 +22,6 @@ public class AssemblyData {
 
     @Override
     public String toString() {
-        return ".data\n" +
-                dataSegment +
-                "\n\n\n.text\n" +
-                textSegment;
+        return ".data\n" + dataSegment + "\n\n\n.text\n" + textSegment;
     }
 }

@@ -1,6 +1,7 @@
 package backend;
 
 import backend.utils.AssemblyData;
+import backend.utils.AssemblyUnit;
 import iostream.OutputController;
 import midend.generation.value.construction.Module;
 
@@ -15,6 +16,7 @@ public class AssemblyGeneration {
 
     public void generate() {
         module.generateAssembly();
+        new AssemblyUnit(assemblyData);
         OutputController.assemblyPrint(assemblyData);
     }
 }

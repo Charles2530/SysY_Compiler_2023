@@ -13,6 +13,14 @@ public class ArrayType extends IrType {
         this.eleType = eleType;
     }
 
+    public Integer calcSpaceTot() {
+        Integer tot = 1;
+        for (Integer i : eleSpace) {
+            tot *= i;
+        }
+        return tot;
+    }
+
     @Override
     public String toString() {
         return (eleSpace.size() == 1) ? "[" + eleSpace.get(0) + " x " + eleType + "]"

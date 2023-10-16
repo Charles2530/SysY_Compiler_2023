@@ -1,5 +1,12 @@
 package midend.generation.value.instr.basis;
 
+import backend.mips.Register;
+import backend.mips.asm.datasegment.complex.MoveAsm;
+import backend.mips.asm.datasegment.mipsinstr.ItypeAsm;
+import backend.mips.asm.datasegment.mipsinstr.JtypeAsm;
+import backend.mips.asm.datasegment.mipsinstr.MemTypeAsm;
+import backend.utils.AssemblyUnit;
+import backend.utils.RegisterUtils;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
@@ -32,5 +39,45 @@ public class CallInstr extends Instr {
         }
         sb.append(")");
         return sb.toString();
+    }
+
+    @Override
+    public void generateAssembly() {
+        super.generateAssembly();
+        ArrayList<Register> allocatedRegs = AssemblyUnit.getAllocatedRegister();
+        int registerOffset = 0;
+        int currentOffset = AssemblyUnit.getCurrentOffset();
+        for (Register register : allocatedRegs) {
+            registerOffset += 4;
+            new MemTypeAsm("sw", null, register, Register.SP, currentOffset - registerOffset);
+        }
+        new MemTypeAsm("sw", null, Register.SP, Register.SP, currentOffset - registerOffset - 4);
+        new MemTypeAsm("sw", null, Register.RA, Register.SP, currentOffset - registerOffset - 8);
+        int paraNum = 0;
+        for (Value para : operands.subList(1, operands.size())) {
+            paraNum++;
+            if (paraNum <= 3 && AssemblyUnit.getRegisterController().getRegisterHashMap() != null) {
+                Register paraReg = Register.regTransform(Register.A0.ordinal() + paraNum);
+                RegisterUtils.extractedReg(para, paraReg, currentOffset, allocatedRegs);
+            } else {
+                Register tempReg = Register.K0;
+                RegisterUtils.extractedMem(para, tempReg, currentOffset, allocatedRegs, paraNum);
+            }
+        }
+        new ItypeAsm("addi", Register.SP, Register.SP, currentOffset - registerOffset - 8);
+        new JtypeAsm("jal", operands.get(0).getName().substring(2));
+        new MemTypeAsm("lw", null, Register.SP, Register.SP, 0);
+        new MemTypeAsm("lw", null, Register.RA, Register.SP, 4);
+        for (int offset = 0; offset < allocatedRegs.size(); offset++) {
+            new MemTypeAsm("lw", null, allocatedRegs.get(offset),
+                    Register.SP, currentOffset - (offset + 1) * 4);
+        }
+        if (AssemblyUnit.getRegisterController().getRegister(this) == null) {
+            AssemblyUnit.moveCurrentOffset(-4);
+            AssemblyUnit.addOffset(this, AssemblyUnit.getCurrentOffset());
+            new MemTypeAsm("sw", null, Register.V0, Register.SP, AssemblyUnit.getCurrentOffset());
+        } else {
+            new MoveAsm(AssemblyUnit.getRegisterController().getRegister(this), Register.V0);
+        }
     }
 }
