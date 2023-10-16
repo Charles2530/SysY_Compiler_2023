@@ -1,3 +1,4 @@
+import backend.AssemblyGeneration;
 import midend.generation.GenerationMain;
 import iostream.ErrorController;
 import iostream.OutputController;
@@ -22,11 +23,13 @@ public class Compiler {
     private static boolean IsParserOutput = false;
     private static boolean IsGenerationOutput = true;
     private static boolean IsOptimize = false;
+    private static boolean IsAssemblyOutput = false;
     private static BufferedReader fileInputStream = null;
     private static BufferedWriter errorOutputStream = null;
     private static BufferedWriter lexerOutputStream = null;
     private static BufferedWriter parserOutputStream = null;
     private static BufferedWriter generationOutputStream = null;
+    private static BufferedWriter assemblyOutputStream = null;
 
     public static void main(String[] args) throws IOException {
         compilerInit();
@@ -53,6 +56,9 @@ public class Compiler {
             OptimizerUnit optimizerUnit = new OptimizerUnit(GenerationMain.getModule());
             optimizerUnit.optimize();
         }
+        // 生成汇编代码
+        AssemblyGeneration assemblyGeneration = new AssemblyGeneration(GenerationMain.getModule());
+        assemblyGeneration.generate();
         compilerEnd();
     }
 
@@ -69,6 +75,8 @@ public class Compiler {
                 new FileWriter("output.txt", false)) : null;
         generationOutputStream = IsGenerationOutput ? new BufferedWriter(
                 new FileWriter("llvm_ir.txt", false)) : null;
+        assemblyOutputStream = IsAssemblyOutput ? new BufferedWriter(
+                new FileWriter("mips.txt", false)) : null;
         // 错误处理初始化
         ErrorController.setBufferedWriter(errorOutputStream);
         ErrorController.setIsDebugMode(IsDebugMode);
@@ -78,9 +86,11 @@ public class Compiler {
         OutputController.setBufferedLexerWriter(lexerOutputStream);
         OutputController.setBufferedParserWriter(parserOutputStream);
         OutputController.setBufferedGenerationWriter(generationOutputStream);
+        OutputController.setBufferedAssemblyWriter(assemblyOutputStream);
         OutputController.setLexerOutput(IsLexerOutput);
         OutputController.setParserOutput(IsParserOutput);
         OutputController.setGenerationOutput(IsGenerationOutput);
+        OutputController.setAssemblyOutput(IsAssemblyOutput);
     }
 
     private static void compilerEnd() throws IOException {
@@ -97,6 +107,9 @@ public class Compiler {
         }
         if (IsGenerationOutput) {
             generationOutputStream.close();
+        }
+        if (IsAssemblyOutput) {
+            assemblyOutputStream.close();
         }
     }
 }

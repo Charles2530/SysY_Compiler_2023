@@ -1,5 +1,6 @@
 package iostream;
 
+import backend.utils.AssemblyData;
 import frontend.lexer.SymToken;
 import frontend.syntax.AstNode;
 
@@ -14,6 +15,8 @@ public class OutputController {
     private static boolean IsParserOutput;
     private static BufferedWriter generationOutputStream;
     private static boolean IsGenerationOutput;
+    private static BufferedWriter assemblyOutputStream;
+    private static boolean IsAssemblyOutput;
 
     public static void lexicalAnalysisPrint(SymToken symToken) throws IOException {
         if (IsLexerOutput) {
@@ -42,6 +45,10 @@ public class OutputController {
         OutputController.generationOutputStream = generationOutputStream;
     }
 
+    public static void setBufferedAssemblyWriter(BufferedWriter assemblyOutputStream) {
+        OutputController.assemblyOutputStream = assemblyOutputStream;
+    }
+
     public static void setLexerOutput(boolean isLexerOutput) {
         OutputController.IsLexerOutput = isLexerOutput;
     }
@@ -52,6 +59,10 @@ public class OutputController {
 
     public static void setGenerationOutput(boolean isGenerationOutput) {
         OutputController.IsGenerationOutput = isGenerationOutput;
+    }
+
+    public static void setAssemblyOutput(boolean isAssemblyOutput) {
+        OutputController.IsAssemblyOutput = isAssemblyOutput;
     }
 
     public static void syntaxAnalysisPrintTerminal(AstNode rootAst) {
@@ -82,6 +93,17 @@ public class OutputController {
             try {
                 generationOutputStream.write(str);
                 generationOutputStream.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void assemblyPrint(AssemblyData assemblyData) {
+        if (IsAssemblyOutput) {
+            try {
+                assemblyOutputStream.write(assemblyData.toString());
+                assemblyOutputStream.newLine();
             } catch (Exception e) {
                 e.printStackTrace();
             }

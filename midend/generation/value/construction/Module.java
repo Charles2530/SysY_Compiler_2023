@@ -54,4 +54,8 @@ public class Module extends Value {
         return sb.toString();
     }
 
+    @Override
+    public void generateAssembly() {
+        super.generateAssembly();
+    }
 }

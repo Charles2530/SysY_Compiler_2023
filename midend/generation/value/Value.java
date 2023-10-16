@@ -19,4 +19,7 @@ public class Value {
     public IrType getType() {
         return type;
     }
+
+    public void generateAssembly() {
+    }
 }
