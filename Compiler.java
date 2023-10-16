@@ -17,8 +17,9 @@ import java.io.InputStreamReader;
 public class Compiler {
     private static boolean fileInputMode = true;
     private static boolean detailMode = false;
+    private static boolean generationMode = true;
     private static boolean IsCalcMode = false;
-    private static boolean IsDebugMode = true;
+    private static boolean IsDebugMode = false;
     private static boolean IsLexerOutput = false;
     private static boolean IsParserOutput = false;
     private static boolean IsGenerationOutput = true;
@@ -48,17 +49,20 @@ public class Compiler {
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();
-        // 生成中间代码
-        GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
-        generationMain.generate();
-        // 优化中间代码
-        if (IsOptimize) {
-            OptimizerUnit optimizerUnit = new OptimizerUnit(GenerationMain.getModule());
-            optimizerUnit.optimize();
+        if (generationMode) {
+            // 生成中间代码
+            GenerationMain generationMain = new GenerationMain(syntaxAnalysis.getAst());
+            generationMain.generate();
+            // 优化中间代码
+            if (IsOptimize) {
+                OptimizerUnit optimizerUnit = new OptimizerUnit(GenerationMain.getModule());
+                optimizerUnit.optimize();
+            }
+            // 生成汇编代码
+            AssemblyGeneration assemblyGeneration =
+                    new AssemblyGeneration(GenerationMain.getModule());
+            assemblyGeneration.generate();
         }
-        // 生成汇编代码
-        AssemblyGeneration assemblyGeneration = new AssemblyGeneration(GenerationMain.getModule());
-        assemblyGeneration.generate();
         compilerEnd();
     }
 

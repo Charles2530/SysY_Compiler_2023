@@ -48,11 +48,15 @@ public class LLvmGenUtils {
                     IrNameController.setCurrentBlock(nextBlock);
                 }
             } else if (child.getGrammarType().equals("<LOrExp>")) {
+                AstNode father = child.getChildList().get(0);
+                while (father.getGrammarType().equals("<LOrExp>")) {
+                    father = father.getChildList().get(0);
+                }
                 if (astNode.getChildList().indexOf(child) == astNode.getChildList().size() - 1) {
-                    genAndIr(child.getChildList().get(0), thenBlock, elseBlock);
+                    genAndIr(father, thenBlock, elseBlock);
                 } else {
                     BasicBlock nextBlock = new BasicBlock(IrNameController.getBlockName());
-                    genAndIr(child.getChildList().get(0), thenBlock, nextBlock);
+                    genAndIr(father, thenBlock, nextBlock);
                     IrNameController.setCurrentBlock(nextBlock);
                 }
             }
@@ -72,12 +76,16 @@ public class LLvmGenUtils {
                     IrNameController.setCurrentBlock(nextBlock);
                 }
             } else if (node.getGrammarType().equals("<LAndExp>")) {
+                AstNode father = node.getChildList().get(0);
+                while (father.getGrammarType().equals("<LAndExp>")) {
+                    father = father.getChildList().get(0);
+                }
                 if (child.getChildList().indexOf(node) == child.getChildList().size() - 1) {
-                    Value cond = llvmGenIR.genIrAnalysis(node.getChildList().get(0));
+                    Value cond = llvmGenIR.genIrAnalysis(father);
                     new BrInstr(cond, thenBlock, elseBlock);
                 } else {
                     BasicBlock nextBlock = new BasicBlock(IrNameController.getBlockName());
-                    Value cond = llvmGenIR.genIrAnalysis(node.getChildList().get(0));
+                    Value cond = llvmGenIR.genIrAnalysis(father);
                     new BrInstr(cond, thenBlock, elseBlock);
                     IrNameController.setCurrentBlock(nextBlock);
                 }
