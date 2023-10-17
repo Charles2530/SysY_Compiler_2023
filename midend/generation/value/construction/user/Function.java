@@ -38,6 +38,10 @@ public class Function extends User {
         basicBlocks.add(basicBlock);
     }
 
+    public ArrayList<BasicBlock> getBasicBlocks() {
+        return basicBlocks;
+    }
+
     public void addParam(Param param) {
         params.add(param);
     }
@@ -85,6 +89,12 @@ public class Function extends User {
         }
         for (BasicBlock basicBlock : basicBlocks) {
             basicBlock.generateAssembly();
+        }
+    }
+
+    public void simplifyBlock() {
+        for (BasicBlock basicBlock : basicBlocks) {
+            basicBlock.simplifyBlock();
         }
     }
 }

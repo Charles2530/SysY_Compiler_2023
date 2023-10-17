@@ -11,11 +11,24 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 
 public class BrInstr extends Instr {
+    private final BasicBlock thenBlock;
+    private final BasicBlock elseBlock;
+
     public BrInstr(Value con, BasicBlock thenBlock, BasicBlock elseBlock) {
         super(new VarType(0), "BrInstr", "br");
         addOperand(con);
+        this.thenBlock = thenBlock;
         addOperand(thenBlock);
+        this.elseBlock = elseBlock;
         addOperand(elseBlock);
+    }
+
+    public BasicBlock getThenBlock() {
+        return thenBlock;
+    }
+
+    public BasicBlock getElseBlock() {
+        return elseBlock;
     }
 
     @Override

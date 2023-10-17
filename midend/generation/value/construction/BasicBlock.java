@@ -6,11 +6,12 @@ import midend.generation.utils.irtype.StructType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.method.BlockSimplifyUnit;
 
 import java.util.ArrayList;
 
 public class BasicBlock extends Value {
-    private final ArrayList<Instr> instrArrayList;
+    private ArrayList<Instr> instrArrayList;
 
     private Function belongingFunc;
 
@@ -30,6 +31,14 @@ public class BasicBlock extends Value {
 
     public Instr getLastInstr() {
         return instrArrayList.get(instrArrayList.size() - 1);
+    }
+
+    public void setInstrArrayList(ArrayList<Instr> instrArrayList) {
+        this.instrArrayList = instrArrayList;
+    }
+
+    public ArrayList<Instr> getInstrArrayList() {
+        return instrArrayList;
     }
 
     public Function getBelongingFunc() {
@@ -59,5 +68,9 @@ public class BasicBlock extends Value {
         for (Instr instr : instrArrayList) {
             instr.generateAssembly();
         }
+    }
+
+    public void simplifyBlock() {
+        BlockSimplifyUnit.deleteDuplicateBranch(this);
     }
 }

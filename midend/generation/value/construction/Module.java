@@ -10,6 +10,7 @@ import midend.generation.value.construction.user.GlobalVar;
 import iostream.declare.GetIntDeclare;
 import iostream.declare.PutIntDeclare;
 import iostream.declare.PutStrDeclare;
+import midend.simplify.method.BlockSimplifyUnit;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,10 @@ public class Module extends Value {
 
     public void addFunction(Function function) {
         functions.add(function);
+    }
+
+    public ArrayList<Function> getFunctions() {
+        return functions;
     }
 
     public void addStringLiteral(FormatString stringLiteral) {
@@ -72,5 +77,14 @@ public class Module extends Value {
             function.generateAssembly();
         }
         new Label("end");
+    }
+
+    public void simplifyBlock() {
+        for (Function function : this.getFunctions()) {
+            function.simplifyBlock();
+        }
+        for (Function function : this.getFunctions()) {
+            BlockSimplifyUnit.deleteDeadBlock(function);
+        }
     }
 }
