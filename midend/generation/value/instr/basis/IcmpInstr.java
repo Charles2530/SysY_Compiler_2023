@@ -25,9 +25,9 @@ public class IcmpInstr extends Instr {
     public void generateAssembly() {
         super.generateAssembly();
         Register rs = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        rs = RegisterUtils.loadRegVal(operands.get(0), rs, Register.K0);
+        rs = RegisterUtils.loadVariableValue(operands.get(0), rs, Register.K0);
         Register rt = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
-        rt = RegisterUtils.loadRegVal(operands.get(1), rt, Register.K1);
+        rt = RegisterUtils.loadVariableValue(operands.get(1), rt, Register.K1);
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
         new RtypeAsm(instrType, target, rs, rt);

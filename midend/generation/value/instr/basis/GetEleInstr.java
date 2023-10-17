@@ -36,7 +36,7 @@ public class GetEleInstr extends Instr {
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
         Register pointerReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        pointerReg = RegisterUtils.extractedPointer(operands.get(0), pointerReg, Register.K0);
+        pointerReg = RegisterUtils.loadPointerValue(operands.get(0), pointerReg, Register.K0);
         Register offsetReg = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
         RegisterUtils.extractedOffset(operands.get(1), Register.K1, target, pointerReg, offsetReg);
         RegisterUtils.reAllocReg(this, target);

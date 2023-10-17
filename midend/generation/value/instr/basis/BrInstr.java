@@ -5,6 +5,7 @@ import backend.mips.asm.datasegment.mipsinstr.BtypeAsm;
 import backend.mips.asm.datasegment.mipsinstr.JtypeAsm;
 import backend.mips.asm.datasegment.mipsinstr.MemTypeAsm;
 import backend.utils.AssemblyUnit;
+import backend.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
@@ -24,15 +25,12 @@ public class BrInstr extends Instr {
                 operands.get(1).getName() + ", label %" + operands.get(2).getName();
     }
 
+    /*TODO:probabaly error*/
     @Override
     public void generateAssembly() {
         super.generateAssembly();
         Register reg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        if (reg == null) {
-            reg = Register.K0;
-            new MemTypeAsm("lw", null, reg,
-                    Register.SP, AssemblyUnit.getOffset(operands.get(0)));
-        }
+        reg = RegisterUtils.loadRegisterValue(operands.get(0), Register.K0, reg);
         new BtypeAsm("bne", operands.get(1).getName(), reg, Register.ZERO);
         new JtypeAsm("j", operands.get(2).getName());
     }

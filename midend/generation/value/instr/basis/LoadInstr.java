@@ -24,7 +24,7 @@ public class LoadInstr extends Instr {
     public void generateAssembly() {
         super.generateAssembly();
         Register pointerReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        pointerReg = RegisterUtils.extractedPointer(operands.get(0), pointerReg, Register.K0);
+        pointerReg = RegisterUtils.loadPointerValue(operands.get(0), pointerReg, Register.K0);
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
         new MemTypeAsm("lw", null, target, pointerReg, 0);

@@ -57,10 +57,10 @@ public class CallInstr extends Instr {
         for (Value para : operands.subList(1, operands.size())) {
             paraNum++;
             if (paraNum <= 3 && AssemblyUnit.getRegisterController().getRegisterHashMap() != null) {
-                RegisterUtils.extractedReg(para, Register.regTransform(
+                RegisterUtils.allocParamReg(para, Register.regTransform(
                         Register.A0.ordinal() + paraNum), currentOffset, allocatedRegs);
             } else {
-                RegisterUtils.extractedMem(para, Register.K0,
+                RegisterUtils.allocParamMem(para, Register.K0,
                         currentOffset, allocatedRegs, paraNum);
             }
         }
@@ -73,9 +73,7 @@ public class CallInstr extends Instr {
                     Register.SP, currentOffset - (offset + 1) * 4);
         }
         if (AssemblyUnit.getRegisterController().getRegister(this) == null) {
-            AssemblyUnit.moveCurrentOffset(-4);
-            AssemblyUnit.addOffset(this, AssemblyUnit.getCurrentOffset());
-            new MemTypeAsm("sw", null, Register.V0, Register.SP, AssemblyUnit.getCurrentOffset());
+            RegisterUtils.allocReg(this, Register.V0);
         } else {
             new MoveAsm(AssemblyUnit.getRegisterController().getRegister(this), Register.V0);
         }

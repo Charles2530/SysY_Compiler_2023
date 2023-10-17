@@ -27,7 +27,11 @@ public class ZextInstr extends Instr {
         super.generateAssembly();
         if (operands.get(0).getType().isInt1() && target.isInt32()) {
             Register oriReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-            RegisterUtils.extractedZext(this, operands.get(0), oriReg);
+            if (oriReg != null) {
+                RegisterUtils.allocReg(this, oriReg);
+            } else {
+                AssemblyUnit.addOffset(this, AssemblyUnit.getOffset(operands.get(0)));
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ public class PutIntDeclare extends IoStreamGeneration {
     public void generateAssembly() {
         super.generateAssembly();
         Register targetReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        targetReg = RegisterUtils.loadRegVal(operands.get(0), targetReg, Register.A0);
+        targetReg = RegisterUtils.loadVariableValue(operands.get(0), targetReg, Register.A0);
         if (targetReg != Register.A0) {
             new MoveAsm(Register.A0, targetReg);
         }

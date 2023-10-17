@@ -31,7 +31,7 @@ public class RetInstr extends Instr {
         Value retValue = operands.isEmpty() ? null : operands.get(0);
         if (retValue != null) {
             Register retReg = AssemblyUnit.getRegisterController().getRegister(retValue);
-            retReg = RegisterUtils.loadRegVal(retValue, retReg, Register.V0);
+            retReg = RegisterUtils.loadVariableValue(retValue, retReg, Register.V0);
             if (retReg != Register.V0) {
                 new RtypeAsm("move", Register.V0, retReg, null);
             }

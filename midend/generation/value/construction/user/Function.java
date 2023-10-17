@@ -26,6 +26,7 @@ public class Function extends User {
         this.returnType = returnType;
         this.basicBlocks = new ArrayList<>();
         this.params = new ArrayList<>();
+        this.registerHashMap = new HashMap<>();
         IrNameController.addFunction(this);
     }
 

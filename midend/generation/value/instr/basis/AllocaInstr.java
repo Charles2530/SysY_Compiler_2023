@@ -4,6 +4,7 @@ import backend.mips.Register;
 import backend.mips.asm.datasegment.mipsinstr.ItypeAsm;
 import backend.mips.asm.datasegment.mipsinstr.MemTypeAsm;
 import backend.utils.AssemblyUnit;
+import backend.utils.RegisterUtils;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
@@ -32,9 +33,7 @@ public class AllocaInstr extends Instr {
             new ItypeAsm("addi", reg, Register.SP, AssemblyUnit.getCurrentOffset());
         } else {
             new ItypeAsm("addi", Register.K0, Register.SP, AssemblyUnit.getCurrentOffset());
-            AssemblyUnit.moveCurrentOffset(-4);
-            AssemblyUnit.addOffset(this, AssemblyUnit.getCurrentOffset());
-            new MemTypeAsm("sw", null, Register.K0, Register.SP, AssemblyUnit.getCurrentOffset());
+            RegisterUtils.allocReg(this, Register.K0);
         }
     }
 }
