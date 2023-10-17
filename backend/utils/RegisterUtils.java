@@ -1,12 +1,12 @@
 package backend.utils;
 
 import backend.mips.Register;
-import backend.mips.asm.datasegment.complex.LaAsm;
-import backend.mips.asm.datasegment.complex.LiAsm;
-import backend.mips.asm.datasegment.complex.MoveAsm;
-import backend.mips.asm.datasegment.mipsinstr.ItypeAsm;
-import backend.mips.asm.datasegment.mipsinstr.MemTypeAsm;
-import backend.mips.asm.datasegment.mipsinstr.RtypeAsm;
+import backend.mips.asm.textsegment.complex.LaAsm;
+import backend.mips.asm.textsegment.complex.LiAsm;
+import backend.mips.asm.textsegment.complex.MoveAsm;
+import backend.mips.asm.textsegment.mipsinstr.ItypeAsm;
+import backend.mips.asm.textsegment.mipsinstr.MemTypeAsm;
+import backend.mips.asm.textsegment.mipsinstr.RtypeAsm;
 import midend.generation.value.Value;
 import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.Param;
@@ -15,11 +15,6 @@ import midend.generation.value.construction.user.GlobalVar;
 import java.util.ArrayList;
 
 public class RegisterUtils {
-    public static void allocReg(Value value, Register target) {
-        moveValueOffset(value);
-        new MemTypeAsm("sw", null, target, Register.SP, AssemblyUnit.getCurrentOffset());
-    }
-
     public static Integer moveValueOffset(Value value) {
         Integer valueOffset;
         AssemblyUnit.moveCurrentOffset(-4);
@@ -28,31 +23,34 @@ public class RegisterUtils {
         return valueOffset;
     }
 
+    public static void allocReg(Value value, Register target) {
+        moveValueOffset(value);
+        new MemTypeAsm("sw", null, target, Register.SP, AssemblyUnit.getCurrentOffset());
+    }
+
+    public static void reAllocReg(Value value, Register target) {
+        if (AssemblyUnit.getRegisterController().getRegister(value) == null) {
+            allocReg(value, target);
+        }
+    }
+
     public static Register loadRegisterValue(Value operand, Register instead, Register reg) {
         Register register = reg;
         if (register == null) {
             register = instead;
             Integer offset = AssemblyUnit.getOffset(operand);
-            if (offset == null) {
-                offset = moveValueOffset(operand);
-            }
+            offset = (offset == null) ? moveValueOffset(operand) : offset;
             new MemTypeAsm("lw", null, register, Register.SP, offset);
         }
         return register;
     }
 
-    public static boolean reAllocReg(Value value, Register target) {
-        if (AssemblyUnit.getRegisterController().getRegister(value) == null) {
-            allocReg(value, target);
-            return true;
-        }
-        return false;
-    }
 
     public static Register loadVariableValue(Value operand, Register reg, Register instead) {
         Register register = reg;
         if (operand instanceof Constant) {
             new LiAsm(instead, Integer.parseInt(operand.getName()));
+            return instead;
         }
         register = loadRegisterValue(operand, instead, register);
         return register;
@@ -62,13 +60,14 @@ public class RegisterUtils {
         Register register = pointerReg;
         if (operand instanceof GlobalVar) {
             new LaAsm(instead, operand.getName().substring(1));
+            return instead;
         }
         register = loadRegisterValue(operand, instead, register);
         return register;
     }
 
-    public static Register extractedOffset(Value operand, Register instead, Register target,
-                                           Register pointerReg, Register offsetReg) {
+    public static Register loadMemoryOffset(Value operand, Register instead, Register target,
+                                            Register pointerReg, Register offsetReg) {
         Register register = offsetReg;
         if (operand instanceof Constant) {
             new ItypeAsm("addi", target, pointerReg, ((Constant) operand).getVal() * 4);
@@ -84,6 +83,7 @@ public class RegisterUtils {
                                          int currentOffset, ArrayList<Register> allocatedRegs) {
         if (para instanceof Constant) {
             new LiAsm(paraReg, ((Constant) para).getVal());
+            return paraReg;
         }
         if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
             Register sourceReg = AssemblyUnit.getRegisterController().getRegister(para);
@@ -104,6 +104,7 @@ public class RegisterUtils {
         Register register = paraReg;
         if (para instanceof Constant) {
             new LiAsm(register, ((Constant) para).getVal());
+            return register;
         }
         if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
             Register sourceReg = AssemblyUnit.getRegisterController().getRegister(para);

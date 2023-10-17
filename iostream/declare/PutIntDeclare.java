@@ -1,9 +1,9 @@
 package iostream.declare;
 
 import backend.mips.Register;
-import backend.mips.asm.datasegment.complex.LiAsm;
-import backend.mips.asm.datasegment.complex.MoveAsm;
-import backend.mips.asm.datasegment.mipsinstr.SyscallAsm;
+import backend.mips.asm.textsegment.complex.LiAsm;
+import backend.mips.asm.textsegment.complex.MoveAsm;
+import backend.mips.asm.textsegment.mipsinstr.SyscallAsm;
 import backend.utils.AssemblyUnit;
 import backend.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;

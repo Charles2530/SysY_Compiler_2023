@@ -1,4 +1,4 @@
-package backend.mips.asm.datasegment.mipsinstr;
+package backend.mips.asm.textsegment.mipsinstr;
 
 import backend.mips.Register;
 import backend.mips.asm.Assembly;
@@ -17,7 +17,7 @@ public class ItypeAsm extends Assembly {
         this.rs = rs;
         this.rd = rd;
         this.number = number;
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

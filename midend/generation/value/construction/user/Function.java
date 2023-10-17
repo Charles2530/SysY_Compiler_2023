@@ -1,7 +1,7 @@
 package midend.generation.value.construction.user;
 
 import backend.mips.Register;
-import backend.mips.asm.datasegment.structure.Label;
+import backend.mips.asm.textsegment.structure.Label;
 import backend.utils.AssemblyUnit;
 import backend.utils.RegisterUtils;
 import midend.generation.utils.IrNameController;
@@ -19,7 +19,7 @@ public class Function extends User {
     private final IrType returnType;
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
-    private HashMap<Value, Register> registerHashMap;
+    private final HashMap<Value, Register> registerHashMap;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);

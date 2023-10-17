@@ -1,8 +1,8 @@
-package backend.mips.asm.textsegment;
+package backend.mips.asm.datasegment;
 
-import backend.mips.asm.TextAssembly;
+import backend.mips.asm.DataAssembly;
 
-public class SpaceAsm extends TextAssembly {
+public class SpaceAsm extends DataAssembly {
     public SpaceAsm(String label, String value) {
         super(label, value);
     }

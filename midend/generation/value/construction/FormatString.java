@@ -1,6 +1,6 @@
 package midend.generation.value.construction;
 
-import backend.mips.asm.textsegment.AsciizAsm;
+import backend.mips.asm.datasegment.AsciizAsm;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;

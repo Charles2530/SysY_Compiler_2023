@@ -1,11 +1,11 @@
-package backend.mips.asm.datasegment.mipsinstr;
+package backend.mips.asm.textsegment.mipsinstr;
 
 import backend.mips.asm.Assembly;
 import backend.utils.AssemblyData;
 
 public class SyscallAsm extends Assembly {
     public SyscallAsm() {
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

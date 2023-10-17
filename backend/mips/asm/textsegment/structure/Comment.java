@@ -1,4 +1,4 @@
-package backend.mips.asm.datasegment.structure;
+package backend.mips.asm.textsegment.structure;
 
 import backend.mips.asm.Assembly;
 import backend.utils.AssemblyData;
@@ -8,7 +8,7 @@ public class Comment extends Assembly {
 
     public Comment(String comment) {
         this.comment = comment;
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

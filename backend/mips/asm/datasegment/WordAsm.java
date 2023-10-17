@@ -1,8 +1,8 @@
-package backend.mips.asm.textsegment;
+package backend.mips.asm.datasegment;
 
-import backend.mips.asm.TextAssembly;
+import backend.mips.asm.DataAssembly;
 
-public class WordAsm extends TextAssembly {
+public class WordAsm extends DataAssembly {
     public WordAsm(String label, String value) {
         super(label, value);
     }

@@ -1,6 +1,6 @@
 package midend.generation.value.instr.basis;
 
-import backend.mips.asm.datasegment.mipsinstr.JtypeAsm;
+import backend.mips.asm.textsegment.mipsinstr.JtypeAsm;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;

@@ -1,4 +1,4 @@
-package backend.mips.asm.datasegment.complex;
+package backend.mips.asm.textsegment.complex;
 
 import backend.mips.Register;
 import backend.mips.asm.Assembly;
@@ -11,7 +11,7 @@ public class LaAsm extends Assembly {
     public LaAsm(Register rd, String label) {
         this.rd = rd;
         this.label = label;
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

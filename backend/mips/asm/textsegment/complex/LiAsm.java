@@ -1,4 +1,4 @@
-package backend.mips.asm.datasegment.complex;
+package backend.mips.asm.textsegment.complex;
 
 import backend.mips.Register;
 import backend.mips.asm.Assembly;
@@ -11,7 +11,7 @@ public class LiAsm extends Assembly {
     public LiAsm(Register rd, Integer number) {
         this.rd = rd;
         this.number = number;
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

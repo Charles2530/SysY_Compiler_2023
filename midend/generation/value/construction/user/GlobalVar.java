@@ -1,10 +1,10 @@
 package midend.generation.value.construction.user;
 
 import backend.mips.Register;
-import backend.mips.asm.datasegment.complex.LiAsm;
-import backend.mips.asm.datasegment.mipsinstr.MemTypeAsm;
-import backend.mips.asm.textsegment.SpaceAsm;
-import backend.mips.asm.textsegment.WordAsm;
+import backend.mips.asm.textsegment.complex.LiAsm;
+import backend.mips.asm.textsegment.mipsinstr.MemTypeAsm;
+import backend.mips.asm.datasegment.SpaceAsm;
+import backend.mips.asm.datasegment.WordAsm;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;

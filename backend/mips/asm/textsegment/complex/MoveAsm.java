@@ -1,4 +1,4 @@
-package backend.mips.asm.datasegment.complex;
+package backend.mips.asm.textsegment.complex;
 
 import backend.mips.Register;
 import backend.mips.asm.Assembly;
@@ -11,7 +11,7 @@ public class MoveAsm extends Assembly {
     public MoveAsm(Register dst, Register src) {
         this.dst = dst;
         this.src = src;
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

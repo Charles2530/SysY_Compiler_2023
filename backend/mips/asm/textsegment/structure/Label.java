@@ -1,4 +1,4 @@
-package backend.mips.asm.datasegment.structure;
+package backend.mips.asm.textsegment.structure;
 
 import backend.mips.asm.Assembly;
 import backend.utils.AssemblyData;
@@ -8,7 +8,7 @@ public class Label extends Assembly {
 
     public Label(String label) {
         this.label = label;
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package midend.generation.value.construction;
 
-import backend.mips.asm.datasegment.mipsinstr.JtypeAsm;
-import backend.mips.asm.datasegment.structure.Comment;
-import backend.mips.asm.datasegment.structure.Label;
+import backend.mips.asm.textsegment.mipsinstr.JtypeAsm;
+import backend.mips.asm.textsegment.structure.Comment;
+import backend.mips.asm.textsegment.structure.Label;
 import midend.generation.utils.irtype.StructType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;

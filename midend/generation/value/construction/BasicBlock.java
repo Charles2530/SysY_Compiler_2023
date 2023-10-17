@@ -1,6 +1,6 @@
 package midend.generation.value.construction;
 
-import backend.mips.asm.datasegment.structure.Label;
+import backend.mips.asm.textsegment.structure.Label;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.StructType;
 import midend.generation.value.Value;

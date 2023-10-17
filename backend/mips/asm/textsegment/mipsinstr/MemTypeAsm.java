@@ -1,4 +1,4 @@
-package backend.mips.asm.datasegment.mipsinstr;
+package backend.mips.asm.textsegment.mipsinstr;
 
 import backend.mips.Register;
 import backend.mips.asm.Assembly;
@@ -18,7 +18,7 @@ public class MemTypeAsm extends Assembly {
         this.rd = rd;
         this.base = base;
         this.offset = offset;
-        AssemblyData.addDataAssembly(this);
+        AssemblyData.addTextAssembly(this);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package midend.generation.value.instr.basis;
 
 import backend.mips.Register;
-import backend.mips.asm.datasegment.mipsinstr.MdTypeAsm;
-import backend.mips.asm.datasegment.mipsinstr.RtypeAsm;
+import backend.mips.asm.textsegment.mipsinstr.MdTypeAsm;
+import backend.mips.asm.textsegment.mipsinstr.RtypeAsm;
 import backend.utils.AssemblyUnit;
 import backend.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;

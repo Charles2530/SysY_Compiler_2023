@@ -1,6 +1,6 @@
 package midend.generation.value.construction.user;
 
-import backend.mips.asm.datasegment.structure.Comment;
+import backend.mips.asm.textsegment.structure.Comment;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.construction.BasicBlock;
