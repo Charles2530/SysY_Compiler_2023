@@ -1,7 +1,6 @@
 package midend.generation.value.instr.basis;
 
 import backend.mips.Register;
-import backend.mips.asm.datasegment.mipsinstr.MemTypeAsm;
 import backend.utils.AssemblyUnit;
 import backend.utils.RegisterUtils;
 import midend.generation.utils.IrType;
@@ -37,14 +36,9 @@ public class GetEleInstr extends Instr {
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
         Register pointerReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        RegisterUtils.extractedPointer(operands.get(0), pointerReg, Register.K0);
+        pointerReg = RegisterUtils.extractedPointer(operands.get(0), pointerReg, Register.K0);
         Register offsetReg = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
         RegisterUtils.extractedOffset(operands.get(1), Register.K1, target, pointerReg, offsetReg);
-        if (AssemblyUnit.getRegisterController().getRegister(this) == null) {
-            AssemblyUnit.moveCurrentOffset(-4);
-            AssemblyUnit.addOffset(this, AssemblyUnit.getCurrentOffset());
-            new MemTypeAsm("sw", null, target, Register.SP, AssemblyUnit.getCurrentOffset());
-        }
+        RegisterUtils.reAllocReg(this, target);
     }
-
 }

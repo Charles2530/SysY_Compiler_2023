@@ -1,5 +1,9 @@
 package iostream.declare;
 
+import backend.mips.Register;
+import backend.mips.asm.datasegment.complex.LaAsm;
+import backend.mips.asm.datasegment.complex.LiAsm;
+import backend.mips.asm.datasegment.mipsinstr.SyscallAsm;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.construction.FormatString;
 import iostream.IoStreamGeneration;
@@ -22,5 +26,13 @@ public class PutStrDeclare extends IoStreamGeneration {
                 str.getPointer().getTarget() + ", " +
                 str.getPointer() + " " +
                 str.getName() + ", i64 0, i64 0))";
+    }
+
+    @Override
+    public void generateAssembly() {
+        super.generateAssembly();
+        new LaAsm(Register.A0, str.getName().substring(1));
+        new LiAsm(Register.V0, 4);
+        new SyscallAsm();
     }
 }

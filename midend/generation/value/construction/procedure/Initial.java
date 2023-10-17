@@ -19,6 +19,10 @@ public class Initial {
         this.offset = offset;
     }
 
+    public ArrayList<Integer> getInitValue() {
+        return initValue;
+    }
+
     public IrType getType() {
         return type;
     }

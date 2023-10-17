@@ -1,5 +1,8 @@
 package midend.generation.value.construction;
 
+import backend.mips.asm.datasegment.mipsinstr.JtypeAsm;
+import backend.mips.asm.datasegment.structure.Comment;
+import backend.mips.asm.datasegment.structure.Label;
 import midend.generation.utils.irtype.StructType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;
@@ -56,6 +59,18 @@ public class Module extends Value {
 
     @Override
     public void generateAssembly() {
-        super.generateAssembly();
+        for (GlobalVar globalVar : globalVars) {
+            globalVar.generateAssembly();
+        }
+        for (FormatString stringLiteral : stringLiterals) {
+            stringLiteral.generateAssembly();
+        }
+        new Comment("jump to main function");
+        new JtypeAsm("jal", "main");
+        new JtypeAsm("j", "end");
+        for (Function function : functions) {
+            function.generateAssembly();
+        }
+        new Label("end");
     }
 }

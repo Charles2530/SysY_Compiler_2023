@@ -57,11 +57,11 @@ public class CallInstr extends Instr {
         for (Value para : operands.subList(1, operands.size())) {
             paraNum++;
             if (paraNum <= 3 && AssemblyUnit.getRegisterController().getRegisterHashMap() != null) {
-                Register paraReg = Register.regTransform(Register.A0.ordinal() + paraNum);
-                RegisterUtils.extractedReg(para, paraReg, currentOffset, allocatedRegs);
+                RegisterUtils.extractedReg(para, Register.regTransform(
+                        Register.A0.ordinal() + paraNum), currentOffset, allocatedRegs);
             } else {
-                Register tempReg = Register.K0;
-                RegisterUtils.extractedMem(para, tempReg, currentOffset, allocatedRegs, paraNum);
+                RegisterUtils.extractedMem(para, Register.K0,
+                        currentOffset, allocatedRegs, paraNum);
             }
         }
         new ItypeAsm("addi", Register.SP, Register.SP, currentOffset - registerOffset - 8);

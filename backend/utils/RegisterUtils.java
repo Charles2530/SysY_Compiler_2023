@@ -15,26 +15,49 @@ import midend.generation.value.construction.user.GlobalVar;
 import java.util.ArrayList;
 
 public class RegisterUtils {
-    public static void loadRegVal(Value operand, Register reg, Register instead) {
-        if (operand instanceof Constant) {
-            new LiAsm(instead, Integer.parseInt(operand.getName()));
-        } else if (reg == null) {
-            reg = instead;
-            Integer offset = AssemblyUnit.getOffset(operand);
-            if (offset == null) {
-                AssemblyUnit.moveCurrentOffset(-4);
-                offset = AssemblyUnit.getCurrentOffset();
-                AssemblyUnit.addOffset(operand, offset);
-            }
-            new MemTypeAsm("lw", null, reg, Register.SP, offset);
-        }
+    public static void allocReg(Value value, Register target) {
+        moveValueOffset(value);
+        new MemTypeAsm("sw", null, target, Register.SP, AssemblyUnit.getCurrentOffset());
     }
 
-    public static void extractedReg(Value para, Register paraReg,
-                                    int currentOffset, ArrayList<Register> allocatedRegs) {
+    public static Integer moveValueOffset(Value value) {
+        Integer valueOffset;
+        AssemblyUnit.moveCurrentOffset(-4);
+        valueOffset = AssemblyUnit.getCurrentOffset();
+        AssemblyUnit.addOffset(value, valueOffset);
+        return valueOffset;
+    }
+
+    public static boolean reAllocReg(Value value, Register target) {
+        if (AssemblyUnit.getRegisterController().getRegister(value) == null) {
+            allocReg(value, target);
+            return true;
+        }
+        return false;
+    }
+
+    public static Register loadRegVal(Value operand, Register reg, Register instead) {
+        Register register = reg;
+        if (operand instanceof Constant) {
+            new LiAsm(instead, Integer.parseInt(operand.getName()));
+        }
+        if (register == null) {
+            register = instead;
+            Integer offset = AssemblyUnit.getOffset(operand);
+            if (offset == null) {
+                offset = moveValueOffset(operand);
+            }
+            new MemTypeAsm("lw", null, register, Register.SP, offset);
+        }
+        return register;
+    }
+
+    public static Register extractedReg(Value para, Register paraReg,
+                                        int currentOffset, ArrayList<Register> allocatedRegs) {
         if (para instanceof Constant) {
             new LiAsm(paraReg, ((Constant) para).getVal());
-        } else if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
+        }
+        if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
             Register sourceReg = AssemblyUnit.getRegisterController().getRegister(para);
             if (para instanceof Param) {
                 new MemTypeAsm("lw", null, paraReg,
@@ -45,53 +68,72 @@ public class RegisterUtils {
         } else {
             new MemTypeAsm("lw", null, paraReg, Register.SP, AssemblyUnit.getOffset(para));
         }
+        return paraReg;
     }
 
-    public static void extractedMem(Value para, Register paraReg, int currentOffset,
-                                    ArrayList<Register> allocatedRegs, int paraNum) {
+    public static Register extractedMem(Value para, Register paraReg, int currentOffset,
+                                        ArrayList<Register> allocatedRegs, int paraNum) {
+        Register register = paraReg;
         if (para instanceof Constant) {
-            new LiAsm(paraReg, ((Constant) para).getVal());
-        } else if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
+            new LiAsm(register, ((Constant) para).getVal());
+        }
+        if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
             Register sourceReg = AssemblyUnit.getRegisterController().getRegister(para);
             if (para instanceof Param) {
-                new MemTypeAsm("lw", null, paraReg,
+                new MemTypeAsm("lw", null, register,
                         Register.SP, currentOffset - (allocatedRegs.indexOf(sourceReg) + 1) * 4);
             } else {
-                paraReg = sourceReg;
+                register = sourceReg;
             }
         } else {
-            new MemTypeAsm("lw", null, paraReg, Register.SP, AssemblyUnit.getOffset(para));
+            new MemTypeAsm("lw", null, register, Register.SP, AssemblyUnit.getOffset(para));
         }
-        new MemTypeAsm("sw", null, paraReg,
+        new MemTypeAsm("sw", null, register,
                 Register.SP, currentOffset - allocatedRegs.size() * 4 - 8 - 4 * paraNum);
+        return register;
     }
 
-    public static void extractedPointer(Value operand, Register pointerReg, Register instead) {
+    public static Register extractedPointer(Value operand, Register pointerReg, Register instead) {
+        Register register = pointerReg;
         if (operand instanceof GlobalVar) {
             new LaAsm(instead, operand.getName().substring(1));
-        } else if (pointerReg == null) {
-            pointerReg = instead;
-            new MemTypeAsm("lw", null, pointerReg, Register.SP, AssemblyUnit.getOffset(operand));
         }
+        if (register == null) {
+            register = instead;
+            Integer offset = AssemblyUnit.getOffset(operand);
+            if (offset == null) {
+                offset = moveValueOffset(operand);
+            }
+            new MemTypeAsm("lw", null, register, Register.SP, offset);
+        }
+        return register;
     }
 
-    public static void extractedOffset(Value operand, Register instead,
-                                       Register target, Register pointerReg, Register offsetReg) {
+    public static Register extractedOffset(Value operand, Register instead, Register target,
+                                           Register pointerReg, Register offsetReg) {
+        Register register = offsetReg;
         if (operand instanceof Constant) {
             new ItypeAsm("addi", target, pointerReg, ((Constant) operand).getVal() * 4);
         } else {
-            if (offsetReg == null) {
-                offsetReg = instead;
+            if (register == null) {
+                register = instead;
                 Integer offset = AssemblyUnit.getOffset(operand);
                 if (offset == null) {
-                    AssemblyUnit.moveCurrentOffset(-4);
-                    offset = AssemblyUnit.getCurrentOffset();
-                    AssemblyUnit.addOffset(operand, offset);
+                    offset = moveValueOffset(operand);
                 }
-                new MemTypeAsm("lw", null, offsetReg, Register.SP, AssemblyUnit.getOffset(operand));
+                new MemTypeAsm("lw", null, register, Register.SP, offset);
             }
-            new ItypeAsm("sll", instead, offsetReg, 2);
+            new ItypeAsm("sll", instead, register, 2);
             new RtypeAsm("addu", target, instead, pointerReg);
+        }
+        return register;
+    }
+
+    public static void extractedZext(Value value, Value oriValue, Register oriReg) {
+        if (oriReg != null) {
+            allocReg(value, oriReg);
+        } else {
+            AssemblyUnit.addOffset(value, AssemblyUnit.getOffset(oriValue));
         }
     }
 }

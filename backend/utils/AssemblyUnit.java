@@ -15,7 +15,7 @@ public class AssemblyUnit {
     private static RegisterController registerController;
     private static HashMap<Value, Integer> stackOffsetHashMap;
 
-    public AssemblyUnit(AssemblyData assemblyData) {
+    public void init(AssemblyData assemblyData) {
         AssemblyUnit.assemblyData = assemblyData;
         AssemblyUnit.currentFunction = null;
         AssemblyUnit.currentOffset = 0;
@@ -56,4 +56,5 @@ public class AssemblyUnit {
         return (registerController == null) ? new ArrayList<>() :
                 new ArrayList<>(registerController.getRegisterHashMap().values());
     }
+
 }

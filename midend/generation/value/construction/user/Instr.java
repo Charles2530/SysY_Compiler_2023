@@ -1,5 +1,6 @@
 package midend.generation.value.construction.user;
 
+import backend.mips.asm.datasegment.structure.Comment;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.construction.BasicBlock;
@@ -17,5 +18,10 @@ public class Instr extends User {
 
     public void setBelongingBlock(BasicBlock currentBasicBlock) {
         this.parent = currentBasicBlock;
+    }
+
+    @Override
+    public void generateAssembly() {
+        new Comment(this.toString());
     }
 }

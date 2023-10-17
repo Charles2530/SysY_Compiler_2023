@@ -2,7 +2,6 @@ package midend.generation.value.instr.basis;
 
 import backend.mips.Register;
 import backend.mips.asm.datasegment.mipsinstr.MdTypeAsm;
-import backend.mips.asm.datasegment.mipsinstr.MemTypeAsm;
 import backend.mips.asm.datasegment.mipsinstr.RtypeAsm;
 import backend.utils.AssemblyUnit;
 import backend.utils.RegisterUtils;
@@ -19,11 +18,9 @@ public class CalcInstr extends Instr {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(name).append(" = ").append(instrType).append(" i32 ")
-                .append(operands.get(0).getName()).append(
-                        ", ").append(operands.get(1).getName());
-        return sb.toString();
+        return name + " = " + instrType + " i32 " +
+                operands.get(0).getName() +
+                ", " + operands.get(1).getName();
     }
 
     @Override
@@ -32,9 +29,9 @@ public class CalcInstr extends Instr {
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
         Register rs = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        RegisterUtils.loadRegVal(operands.get(0), rs, Register.K0);
+        rs = RegisterUtils.loadRegVal(operands.get(0), rs, Register.K0);
         Register rt = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
-        RegisterUtils.loadRegVal(operands.get(1), rt, Register.K1);
+        rt = RegisterUtils.loadRegVal(operands.get(1), rt, Register.K1);
         switch (instrType) {
             case "add":
                 new RtypeAsm("addu", target, rs, rt);
@@ -63,10 +60,6 @@ public class CalcInstr extends Instr {
             default:
                 throw new RuntimeException("Unknown instruction type: " + instrType);
         }
-        if (AssemblyUnit.getRegisterController().getRegister(this) == null) {
-            AssemblyUnit.moveCurrentOffset(-4);
-            AssemblyUnit.addOffset(this, AssemblyUnit.getCurrentOffset());
-            new MemTypeAsm("sw", null, target, Register.SP, AssemblyUnit.getCurrentOffset());
-        }
+        RegisterUtils.reAllocReg(this, target);
     }
 }

@@ -15,8 +15,8 @@ public class AssemblyGeneration {
     }
 
     public void generate() {
+        new AssemblyUnit().init(assemblyData);
         module.generateAssembly();
-        new AssemblyUnit(assemblyData);
         OutputController.assemblyPrint(assemblyData);
     }
 }

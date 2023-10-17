@@ -1,6 +1,9 @@
 package midend.generation.value.construction.user;
 
 import backend.mips.Register;
+import backend.mips.asm.datasegment.structure.Label;
+import backend.utils.AssemblyUnit;
+import backend.utils.RegisterUtils;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.StructType;
@@ -38,6 +41,10 @@ public class Function extends User {
         params.add(param);
     }
 
+    public HashMap<Value, Register> getRegisterHashMap() {
+        return registerHashMap;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -60,7 +67,19 @@ public class Function extends User {
         return sb.toString();
     }
 
-    public HashMap<Value, Register> getRegisterHashMap() {
-        return registerHashMap;
+    @Override
+    public void generateAssembly() {
+        new Label(name.substring(1));
+        AssemblyUnit.resetFunctionConfig(this);
+        for (int i = 0; i < params.size(); i++) {
+            if (i < 3) {
+                AssemblyUnit.getRegisterController().allocRegister(params.get(i),
+                        Register.regTransform(Register.A0.ordinal() + i + 1));
+            }
+            RegisterUtils.moveValueOffset(params.get(i));
+        }
+        for (BasicBlock basicBlock : basicBlocks) {
+            basicBlock.generateAssembly();
+        }
     }
 }

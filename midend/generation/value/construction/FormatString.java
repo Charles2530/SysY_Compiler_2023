@@ -1,5 +1,6 @@
 package midend.generation.value.construction;
 
+import backend.mips.asm.textsegment.AsciizAsm;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
@@ -29,5 +30,10 @@ public class FormatString extends Value {
     public String toString() {
         return name + " = constant " + ((PointerType) type).getTarget() +
                 " c\"" + string + "\\00\"";
+    }
+
+    @Override
+    public void generateAssembly() {
+        new AsciizAsm(name.substring(1), string);
     }
 }

@@ -29,7 +29,8 @@ public class BrInstr extends Instr {
         super.generateAssembly();
         Register reg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         if (reg == null) {
-            new MemTypeAsm("lw", null, Register.K0,
+            reg = Register.K0;
+            new MemTypeAsm("lw", null, reg,
                     Register.SP, AssemblyUnit.getOffset(operands.get(0)));
         }
         new BtypeAsm("bne", operands.get(1).getName(), reg, Register.ZERO);
