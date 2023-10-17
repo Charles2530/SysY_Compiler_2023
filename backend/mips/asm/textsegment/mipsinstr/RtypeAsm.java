@@ -31,6 +31,6 @@ public class RtypeAsm extends Assembly {
     @Override
     public String toString() {
         return (rs == null && rt == null) ? operation + " " + rd :
-                operation + " " + rd + ", " + rs + ", " + rt;
+                operation + " " + rd + " " + rs + " " + rt;
     }
 }

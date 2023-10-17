@@ -45,7 +45,6 @@ public class RegisterUtils {
         return register;
     }
 
-
     public static Register loadVariableValue(Value operand, Register reg, Register instead) {
         Register register = reg;
         if (operand instanceof Constant) {

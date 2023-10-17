@@ -26,7 +26,7 @@ public class AllocaInstr extends Instr {
     public void generateAssembly() {
         super.generateAssembly();
         AssemblyUnit.moveCurrentOffset(
-                (type.isArray()) ? -1 * ((ArrayType) type).calcSpaceTot() : -4);
+                (type.isArray()) ? (-4 * ((ArrayType) type).calcSpaceTot()) : -4);
         Register reg = AssemblyUnit.getRegisterController().getRegister(this);
         if (reg != null) {
             new ItypeAsm("addi", reg, Register.SP, AssemblyUnit.getCurrentOffset());

@@ -24,7 +24,7 @@ public class AssemblyUnit {
 
     public static void moveCurrentOffset(int offset) {
         AssemblyUnit.currentOffset += offset;
-        if (AssemblyUnit.currentOffset < 0) {
+        if (AssemblyUnit.currentOffset > 0) {
             ErrorController.printStackOverflowError();
         }
     }
@@ -53,7 +53,7 @@ public class AssemblyUnit {
     }
 
     public static ArrayList<Register> getAllocatedRegister() {
-        return (registerController == null) ? new ArrayList<>() :
+        return (registerController.getRegisterHashMap() == null) ? new ArrayList<>() :
                 new ArrayList<>(registerController.getRegisterHashMap().values());
     }
 

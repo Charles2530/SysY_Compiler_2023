@@ -9,7 +9,7 @@ public class RegisterController {
     private static HashMap<Value, Register> valueRegisterHashMap;
 
     public RegisterController() {
-        RegisterController.valueRegisterHashMap = new HashMap<>();
+        RegisterController.valueRegisterHashMap = null;
     }
 
     public Register getRegister(Value value) {

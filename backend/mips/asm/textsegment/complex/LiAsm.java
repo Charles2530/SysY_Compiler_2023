@@ -16,6 +16,6 @@ public class LiAsm extends Assembly {
 
     @Override
     public String toString() {
-        return "li " + rd + ", " + number;
+        return "li " + rd + " " + number;
     }
 }

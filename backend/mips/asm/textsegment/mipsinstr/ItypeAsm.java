@@ -22,6 +22,6 @@ public class ItypeAsm extends Assembly {
 
     @Override
     public String toString() {
-        return operation + " " + rd + ", " + rs + ", " + number;
+        return operation + " " + rd + " " + rs + " " + number;
     }
 }

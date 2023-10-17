@@ -19,14 +19,14 @@ public class Function extends User {
     private final IrType returnType;
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
-    private final HashMap<Value, Register> registerHashMap;
+    private HashMap<Value, Register> registerHashMap;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
         this.returnType = returnType;
         this.basicBlocks = new ArrayList<>();
         this.params = new ArrayList<>();
-        this.registerHashMap = new HashMap<>();
+        this.registerHashMap = null;
         IrNameController.addFunction(this);
     }
 
@@ -40,6 +40,10 @@ public class Function extends User {
 
     public void addParam(Param param) {
         params.add(param);
+    }
+
+    public void setRegisterHashMap(HashMap<Value, Register> registerHashMap) {
+        this.registerHashMap = registerHashMap;
     }
 
     public HashMap<Value, Register> getRegisterHashMap() {

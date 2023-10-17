@@ -25,10 +25,10 @@ public class StoreInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
-        Register fromReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
-        fromReg = RegisterUtils.loadVariableValue(operands.get(0), fromReg, Register.K0);
         Register toReg = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
         toReg = RegisterUtils.loadPointerValue(operands.get(1), toReg, Register.K1);
+        Register fromReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
+        fromReg = RegisterUtils.loadVariableValue(operands.get(0), fromReg, Register.K0);
         new MemTypeAsm("sw", null, fromReg, toReg, 0);
     }
 }
