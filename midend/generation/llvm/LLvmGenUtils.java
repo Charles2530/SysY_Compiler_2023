@@ -49,7 +49,8 @@ public class LLvmGenUtils {
                 }
             } else if (child.getGrammarType().equals("<LOrExp>")) {
                 AstNode father = child.getChildList().get(0);
-                while (father.getGrammarType().equals("<LOrExp>")) {
+                while (father.getGrammarType().equals("<LOrExp>")
+                        && father.getChildList().size() == 1) {
                     father = father.getChildList().get(0);
                 }
                 if (astNode.getChildList().indexOf(child) == astNode.getChildList().size() - 1) {
@@ -77,7 +78,8 @@ public class LLvmGenUtils {
                 }
             } else if (node.getGrammarType().equals("<LAndExp>")) {
                 AstNode father = node.getChildList().get(0);
-                while (father.getGrammarType().equals("<LAndExp>")) {
+                while (father.getGrammarType().equals("<LAndExp>")
+                        && father.getChildList().size() == 1) {
                     father = father.getChildList().get(0);
                 }
                 if (child.getChildList().indexOf(node) == child.getChildList().size() - 1) {

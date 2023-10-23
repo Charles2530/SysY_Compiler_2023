@@ -353,9 +353,11 @@ public class LLvmGenIR {
 
     private Value genIrMulExpChecker(AstNode rootAst) {
         Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<MulExp>")) {
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<MulExp>")
+                && rootAst.getChildList().size() == 1) {
             AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<MulExp>")) {
+            while (father.getGrammarType().equals("<MulExp>")
+                    && rootAst.getChildList().size() == 1) {
                 father = father.getChildList().get(0);
             }
             ans = genIrAnalysis(father);
@@ -379,9 +381,11 @@ public class LLvmGenIR {
 
     private Value genIrAddExpChecker(AstNode rootAst) {
         Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<AddExp>")) {
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<AddExp>")
+                && rootAst.getChildList().size() == 1) {
             AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<AddExp>")) {
+            while (father.getGrammarType().equals("<AddExp>")
+                    && rootAst.getChildList().size() == 1) {
                 father = father.getChildList().get(0);
             }
             ans = genIrAnalysis(father);
@@ -402,9 +406,11 @@ public class LLvmGenIR {
 
     private Value genIrRelExpChecker(AstNode rootAst) {
         Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<RelExp>")) {
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<RelExp>")
+                && rootAst.getChildList().size() == 1) {
             AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<RelExp>")) {
+            while (father.getGrammarType().equals("<RelExp>")
+                    && rootAst.getChildList().size() == 1) {
                 father = father.getChildList().get(0);
             }
             ans = genIrAnalysis(father);
@@ -437,9 +443,11 @@ public class LLvmGenIR {
 
     private Value genIrEqExpChecker(AstNode rootAst) {
         Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<EqExp>")) {
+        if (rootAst.getChildList().get(0).getGrammarType().equals("<EqExp>")
+                && rootAst.getChildList().size() == 1) {
             AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<EqExp>")) {
+            while (father.getGrammarType().equals("<EqExp>")
+                    && rootAst.getChildList().size() == 1) {
                 father = father.getChildList().get(0);
             }
             ans = genIrAnalysis(father);
