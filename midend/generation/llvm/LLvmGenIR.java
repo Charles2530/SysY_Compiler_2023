@@ -229,7 +229,8 @@ public class LLvmGenIR {
         BasicBlock condBlock = new BasicBlock(IrNameController.getBlockName());
         BasicBlock currentLoopBlock = new BasicBlock(IrNameController.getBlockName());
         BasicBlock followBlock = new BasicBlock(IrNameController.getBlockName());
-        IrNameController.pushLoop(new Loop(condBlock, currentLoopBlock, followBlock));
+        IrNameController.pushLoop(new Loop(forStmtVal1, condBlock,
+                forStmtVal2, currentLoopBlock, followBlock));
         new JumpInstr(condBlock);
         IrNameController.setCurrentBlock(condBlock);
         if (condAst != null) {
@@ -253,6 +254,9 @@ public class LLvmGenIR {
     }
 
     private Value genIrContinueStmtChecker() {
+        if (IrNameController.getCurrentLoop().getForStmtVal2() != null) {
+            genIrAnalysis(IrNameController.getCurrentLoop().getForStmtVal2());
+        }
         new JumpInstr(IrNameController.getCurrentLoop().getCondBlock());
         return null;
     }
