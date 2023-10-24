@@ -226,22 +226,31 @@ public class LLvmGenIR {
             genIrAnalysis(forStmtVal1);
         }
         SymbolTable.enterLoop();
-        BasicBlock condBlock = new BasicBlock(IrNameController.getBlockName());
+        BasicBlock condBlock = null;
+        if (condAst != null) {
+            condBlock = new BasicBlock(IrNameController.getBlockName());
+        }
         BasicBlock currentLoopBlock = new BasicBlock(IrNameController.getBlockName());
         BasicBlock followBlock = new BasicBlock(IrNameController.getBlockName());
         IrNameController.pushLoop(new Loop(forStmtVal1, condBlock,
                 forStmtVal2, currentLoopBlock, followBlock));
-        new JumpInstr(condBlock);
-        IrNameController.setCurrentBlock(condBlock);
         if (condAst != null) {
+            new JumpInstr(condBlock);
+            IrNameController.setCurrentBlock(condBlock);
             llvmGenUtils.genCondIr(condAst, currentLoopBlock, followBlock);
+        } else {
+            new JumpInstr(currentLoopBlock);
         }
         IrNameController.setCurrentBlock(currentLoopBlock);
         genIrAnalysis(rootAst.getChildList().get(rootAst.getChildList().size() - 1));
         if (forStmtVal2 != null) {
             genIrAnalysis(forStmtVal2);
         }
-        new JumpInstr(condBlock);
+        if (condAst != null) {
+            new JumpInstr(condBlock);
+        } else {
+            new JumpInstr(currentLoopBlock);
+        }
         IrNameController.setCurrentBlock(followBlock);
         IrNameController.popLoop();
         SymbolTable.leaveLoop();
