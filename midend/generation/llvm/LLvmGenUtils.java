@@ -83,7 +83,7 @@ public class LLvmGenUtils {
                     intSymbol.getValue(), values.get(0));
         } else {
             Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
-                    new Constant(String.valueOf(space.get(0)), new VarType(32)), values.get(0));
+                    new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
             instr = new CalcInstr(IrNameController.getLocalVarName(), "add", instr, values.get(1));
             return new GetEleInstr(IrNameController.getLocalVarName(),
                     intSymbol.getValue(), instr);
@@ -118,12 +118,10 @@ public class LLvmGenUtils {
     private Value getSubValueIr(ArrayList<Value> values, int expNum,
                                 Integer dim, ArrayList<Integer> space, Value value) {
         if (dim.equals(0)) {
-            return new LoadInstr(IrNameController.getLocalVarName(),
-                    value);
+            return new LoadInstr(IrNameController.getLocalVarName(), value);
         } else if (dim.equals(1)) {
             return (expNum == 0) ? new GetEleInstr(IrNameController.getLocalVarName(),
-                    value,
-                    new Constant("0", new VarType(32))) :
+                    value, new Constant("0", new VarType(32))) :
                     new LoadInstr(IrNameController.getLocalVarName(),
                             new GetEleInstr(IrNameController.getLocalVarName(),
                                     value, values.get(0)));

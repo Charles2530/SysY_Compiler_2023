@@ -101,4 +101,20 @@ public class SymDefiner {
         }
         return ans;
     }
+
+    public static ArrayList<Value> genIrConstValues(AstNode rootAst, int dim) {
+        ArrayList<Value> ans = new ArrayList<>();
+        if (dim == 0) {
+            Value value = lLvmGenIR.genIrAnalysis(rootAst.getChildList().get(0));
+            ans.add(value);
+        } else {
+            for (AstNode child : rootAst.getChildList()) {
+                if (child.getGrammarType().equals("<ConstInitVal>")) {
+                    ArrayList<Value> temp = genIrConstValues(child, dim - 1);
+                    ans.addAll(temp);
+                }
+            }
+        }
+        return ans;
+    }
 }
