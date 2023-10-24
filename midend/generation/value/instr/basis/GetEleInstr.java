@@ -54,4 +54,5 @@ public class GetEleInstr extends Instr {
         RegisterUtils.loadMemoryOffset(operands.get(1), Register.K1, target, pointerReg, offsetReg);
         RegisterUtils.reAllocReg(this, target);
     }
+
 }
