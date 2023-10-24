@@ -207,6 +207,24 @@ public class LLvmGenIR {
     }
 
     private Value genIrForStmtChecker(AstNode sonAst) {
+        AstNode rootAst = sonAst.getParent();
+        AstNode forStmtVal1 = null;
+        AstNode condAst = null;
+        AstNode forStmtVal2 = null;
+        for (int i = 0; i < rootAst.getChildList().size(); i++) {
+            if (rootAst.getChildList().get(i).getGrammarType().equals("<ForStmt>")) {
+                if (i == 2) {
+                    forStmtVal1 = rootAst.getChildList().get(i);
+                } else {
+                    forStmtVal2 = rootAst.getChildList().get(i);
+                }
+            } else if (rootAst.getChildList().get(i).getGrammarType().equals("<Cond>")) {
+                condAst = rootAst.getChildList().get(i);
+            }
+        }
+        if (forStmtVal1 != null) {
+            genIrAnalysis(forStmtVal1);
+        }
         SymbolTable.enterLoop();
         BasicBlock condBlock = new BasicBlock(IrNameController.getBlockName());
         BasicBlock currentLoopBlock = new BasicBlock(IrNameController.getBlockName());
@@ -214,17 +232,14 @@ public class LLvmGenIR {
         IrNameController.pushLoop(new Loop(condBlock, currentLoopBlock, followBlock));
         new JumpInstr(condBlock);
         IrNameController.setCurrentBlock(condBlock);
-        AstNode rootAst = sonAst.getParent();
-        AstNode condAst = null;
-        for (int i = 0; i < rootAst.getChildList().size(); i++) {
-            if (rootAst.getChildList().get(i).getGrammarType().equals("<Cond>")) {
-                condAst = rootAst.getChildList().get(i);
-                break;
-            }
+        if (condAst != null) {
+            llvmGenUtils.genCondIr(condAst, currentLoopBlock, followBlock);
         }
-        llvmGenUtils.genCondIr(condAst, currentLoopBlock, followBlock);
         IrNameController.setCurrentBlock(currentLoopBlock);
         genIrAnalysis(rootAst.getChildList().get(rootAst.getChildList().size() - 1));
+        if (forStmtVal2 != null) {
+            genIrAnalysis(forStmtVal2);
+        }
         new JumpInstr(condBlock);
         IrNameController.setCurrentBlock(followBlock);
         IrNameController.popLoop();
@@ -425,7 +440,7 @@ public class LLvmGenIR {
                 ans = new ZextInstr(IrNameController.getLocalVarName(),
                         "zext", ans, new VarType(32));
             }
-            Value res = genIrAnalysis(rootAst.getChildList().get(++i));
+            Value res = genIrAnalysis(rootAst.getChildList().get(i + 1));
             if (!res.getType().isInt32()) {
                 res = new ZextInstr(IrNameController.getLocalVarName(),
                         "zext", res, new VarType(32));
@@ -437,6 +452,7 @@ public class LLvmGenIR {
                 case "GEQ" -> new IcmpInstr(IrNameController.getLocalVarName(), "sge", ans, res);
                 default -> ans;
             };
+            i++;
         }
         return ans;
     }

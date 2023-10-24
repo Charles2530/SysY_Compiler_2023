@@ -28,9 +28,6 @@ public class LLvmGenUtils {
     }
 
     public void genCondIr(AstNode rootAst, BasicBlock thenBlock, BasicBlock elseBlock) {
-        if (rootAst == null) {
-            return;
-        }
         if (rootAst.getChildList().get(0).getGrammarType().equals("<LOrExp>")) {
             genOrIr(rootAst.getChildList().get(0), thenBlock, elseBlock);
         }
