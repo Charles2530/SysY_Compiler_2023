@@ -371,18 +371,7 @@ public class LLvmGenIR {
     }
 
     private Value genIrMulExpChecker(AstNode rootAst) {
-        Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<MulExp>")
-                && rootAst.getChildList().size() == 1) {
-            AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<MulExp>")
-                    && rootAst.getChildList().size() == 1) {
-                father = father.getChildList().get(0);
-            }
-            ans = genIrAnalysis(father);
-        } else {
-            ans = genIrAnalysis(rootAst.getChildList().get(0));
-        }
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (rootAst.getChildList().get(i).getGrammarType().equals("MULT")) {
                 Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
@@ -399,18 +388,7 @@ public class LLvmGenIR {
     }
 
     private Value genIrAddExpChecker(AstNode rootAst) {
-        Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<AddExp>")
-                && rootAst.getChildList().size() == 1) {
-            AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<AddExp>")
-                    && rootAst.getChildList().size() == 1) {
-                father = father.getChildList().get(0);
-            }
-            ans = genIrAnalysis(father);
-        } else {
-            ans = genIrAnalysis(rootAst.getChildList().get(0));
-        }
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (rootAst.getChildList().get(i).getGrammarType().equals("PLUS")) {
                 Value operand2 = genIrAnalysis(rootAst.getChildList().get(++i));
@@ -424,21 +402,7 @@ public class LLvmGenIR {
     }
 
     private Value genIrRelExpChecker(AstNode rootAst) {
-        Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<RelExp>")
-                && rootAst.getChildList().size() == 1) {
-            AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<RelExp>")
-                    && rootAst.getChildList().size() == 1) {
-                father = father.getChildList().get(0);
-            }
-            ans = genIrAnalysis(father);
-        } else {
-            ans = genIrAnalysis(rootAst.getChildList().get(0));
-        }
-        if (rootAst.getChildList().size() == 1) {
-            return ans;
-        }
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (!ans.getType().isInt32()) {
                 ans = new ZextInstr(IrNameController.getLocalVarName(),
@@ -462,25 +426,7 @@ public class LLvmGenIR {
     }
 
     private Value genIrEqExpChecker(AstNode rootAst) {
-        Value ans;
-        if (rootAst.getChildList().get(0).getGrammarType().equals("<EqExp>")
-                && rootAst.getChildList().size() == 1) {
-            AstNode father = rootAst.getChildList().get(0);
-            while (father.getGrammarType().equals("<EqExp>")
-                    && rootAst.getChildList().size() == 1) {
-                father = father.getChildList().get(0);
-            }
-            ans = genIrAnalysis(father);
-        } else {
-            ans = genIrAnalysis(rootAst.getChildList().get(0));
-        }
-        if (rootAst.getChildList().size() == 1) {
-            if (ans.getType().isInt32()) {
-                ans = new IcmpInstr(IrNameController.getLocalVarName(),
-                        "ne", ans, new Constant("0", new VarType(32)));
-            }
-            return ans;
-        }
+        Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (rootAst.getChildList().get(i).getGrammarType().matches("EQL|NEQ")) {
                 if (!ans.getType().isInt32()) {
