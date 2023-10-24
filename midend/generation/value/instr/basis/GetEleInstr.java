@@ -4,10 +4,13 @@ import backend.mips.Register;
 import backend.utils.AssemblyUnit;
 import backend.utils.RegisterUtils;
 import midend.generation.utils.IrType;
+import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
+
+import java.util.ArrayList;
 
 public class GetEleInstr extends Instr {
     public GetEleInstr(String name, Value ptr, Value off) {
@@ -25,8 +28,18 @@ public class GetEleInstr extends Instr {
                 .append(type).append(", ")
                 .append(ptrType).append(" ")
                 .append(operands.get(0).getName())
-                .append((type.isArray() ? ", i32 " : ", i32 0, i32 "))
-                .append(operands.get(1).getName());
+                .append((type.isArray() ? ", i32 0, i32 " : ", i32 "));
+        if (type.isArray() && ((ArrayType) type).getEleSpace().size() == 2) {
+            if (operands.get(1).getName().matches("[0-9]+")) {
+                ArrayList<Integer> spaces = ((ArrayType) type).getEleSpace();
+                Integer offset = Integer.parseInt(operands.get(1).getName());
+                sb.append(offset / spaces.get(1)).append(", i32 ").append(offset % spaces.get(1));
+            } else {
+                sb.append("0, i32 ").append(operands.get(1).getName());
+            }
+        } else {
+            sb.append(operands.get(1).getName());
+        }
         return sb.toString();
     }
 

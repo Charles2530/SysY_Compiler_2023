@@ -21,6 +21,10 @@ public class ArrayType extends IrType {
         return tot;
     }
 
+    public ArrayList<Integer> getEleSpace() {
+        return eleSpace;
+    }
+
     @Override
     public String toString() {
         return (eleSpace.size() == 1) ? "[" + eleSpace.get(0) + " x " + eleType + "]"
