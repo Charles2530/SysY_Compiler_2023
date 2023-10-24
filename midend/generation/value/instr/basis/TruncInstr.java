@@ -5,7 +5,7 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
 public class TruncInstr extends Instr {
-    private IrType target;
+    private final IrType target;
 
     public TruncInstr(String name, String instrType, Value val, IrType target) {
         super(target, name, instrType);

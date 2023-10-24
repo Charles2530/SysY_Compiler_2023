@@ -23,10 +23,8 @@ public class GlobalVar extends User {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(name).append(" = dso_local global ");
-        sb.append(initial.toString());
-        return sb.toString();
+        return name + " = dso_local global " +
+                initial.toString();
     }
 
     @Override

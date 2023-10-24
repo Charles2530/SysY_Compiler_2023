@@ -72,10 +72,6 @@ public class VarSymbol extends Symbol {
         return space;
     }
 
-    public Integer getSpaceTot() {
-        return spaceTot;
-    }
-
     public Initial getInitial() {
         IrType type = (dim == 0) ? new VarType(32) : new ArrayType(space, new VarType(32));
         return new Initial(type, initValue, space, totalOffset);
