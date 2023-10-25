@@ -19,9 +19,9 @@ public class WordAsm extends DataAssembly {
         } else {
             int offsetTot = Integer.parseInt(value) - initValue.size();
             StringBuilder res = new StringBuilder(label + ": .word ");
-            for (int i = initValue.size() - 1; i >= 0; i--) {
+            for (int i = 0; i <= initValue.size() - 1; i++) {
                 res.append(initValue.get(i));
-                if (i != 0) {
+                if (i != initValue.size() - 1) {
                     res.append(", ");
                 }
             }

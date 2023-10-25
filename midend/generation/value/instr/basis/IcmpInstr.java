@@ -30,7 +30,15 @@ public class IcmpInstr extends Instr {
         rt = RegisterUtils.loadVariableValue(operands.get(1), rt, Register.K1);
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
-        new RtypeAsm(instrType, target, rs, rt);
+        switch (instrType) {
+            case "eq" -> new RtypeAsm("seq", target, rs, rt);
+            case "ne" -> new RtypeAsm("sne", target, rs, rt);
+            case "sgt" -> new RtypeAsm("sgt", target, rs, rt);
+            case "sge" -> new RtypeAsm("sge", target, rs, rt);
+            case "slt" -> new RtypeAsm("slt", target, rs, rt);
+            case "sle" -> new RtypeAsm("sle", target, rs, rt);
+            default -> throw new RuntimeException("Invalid icmp instruction type");
+        }
         RegisterUtils.reAllocReg(this, target);
     }
 }

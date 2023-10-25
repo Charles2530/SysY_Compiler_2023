@@ -73,7 +73,7 @@ public class RegisterUtils {
         } else {
             register = loadRegisterValue(operand, instead, register);
             new ItypeAsm("sll", instead, register, 2);
-            new RtypeAsm("addu", target, instead, pointerReg);
+            new RtypeAsm("add", target, instead, pointerReg);
         }
         return register;
     }
@@ -103,6 +103,8 @@ public class RegisterUtils {
         Register register = paraReg;
         if (para instanceof Constant) {
             new LiAsm(register, ((Constant) para).getVal());
+            new MemTypeAsm("sw", null, register,
+                    Register.SP, currentOffset - allocatedRegs.size() * 4 - 8 - 4 * paraNum);
             return register;
         }
         if (AssemblyUnit.getRegisterController().getRegister(para) != null) {

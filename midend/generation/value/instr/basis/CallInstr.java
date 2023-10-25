@@ -65,7 +65,7 @@ public class CallInstr extends Instr {
             }
         }
         new ItypeAsm("addi", Register.SP, Register.SP, currentOffset - registerOffset - 8);
-        new JtypeAsm("jal", operands.get(0).getName().substring(2));
+        new JtypeAsm("jal", operands.get(0).getName().substring(1));
         new MemTypeAsm("lw", null, Register.RA, Register.SP, 0);
         new MemTypeAsm("lw", null, Register.SP, Register.SP, 4);
         for (int offset = 0; offset < allocatedRegs.size(); offset++) {
