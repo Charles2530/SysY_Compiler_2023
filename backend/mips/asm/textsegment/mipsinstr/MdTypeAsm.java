@@ -10,7 +10,7 @@ public class MdTypeAsm extends Assembly {
     private final Register rs;
     private final Register rt;
 
-    // mul,div,mflo,mfhi,mthi,mtlo
+    // mult,div,mflo,mfhi,mthi,mtlo
     public MdTypeAsm(String operation, Register... registers) {
         this.operation = operation;
         if (registers.length == 2) {

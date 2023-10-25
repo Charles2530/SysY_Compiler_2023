@@ -14,13 +14,20 @@ public class WordAsm extends DataAssembly {
 
     @Override
     public String toString() {
-        if (!value.equals("array")) {
+        if (initValue == null) {
             return label + ": .word " + value;
         } else {
+            int offsetTot = Integer.parseInt(value) - initValue.size();
             StringBuilder res = new StringBuilder(label + ": .word ");
-            for (Integer integer : initValue) {
-                res.append(integer);
-                if (!integer.equals(initValue.get(initValue.size() - 1))) {
+            for (int i = initValue.size() - 1; i >= 0; i--) {
+                res.append(initValue.get(i));
+                if (i != 0) {
+                    res.append(", ");
+                }
+            }
+            for (int i = 0; i < offsetTot; i++) {
+                res.append("0");
+                if (i != offsetTot - 1) {
                     res.append(", ");
                 }
             }

@@ -46,7 +46,7 @@ public class CalcInstr extends Instr {
                 new RtypeAsm("or", target, rs, rt);
                 break;
             case "mul":
-                new MdTypeAsm("mul", rs, rt);
+                new MdTypeAsm("mult", rs, rt);
                 new MdTypeAsm("mflo", target);
                 break;
             case "sdiv":

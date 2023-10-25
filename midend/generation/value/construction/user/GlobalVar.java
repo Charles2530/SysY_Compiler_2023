@@ -1,10 +1,6 @@
 package midend.generation.value.construction.user;
 
-import backend.mips.Register;
-import backend.mips.asm.datasegment.SpaceAsm;
 import backend.mips.asm.datasegment.WordAsm;
-import backend.mips.asm.textsegment.complex.LiAsm;
-import backend.mips.asm.textsegment.mipsinstr.MemTypeAsm;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;
@@ -33,20 +29,10 @@ public class GlobalVar extends User {
         if (target.isInt32()) {
             new WordAsm(name.substring(1),
                     String.valueOf(initial.getInitValue().isEmpty() ? 0 :
-                            initial.getInitValue().get(0)), initial.getInitValue());
+                            initial.getInitValue().get(0)), null);
         } else {
-            /*TODO:change to word array*/
-            new SpaceAsm(name.substring(1),
-                    String.valueOf(((ArrayType) target).calcSpaceTot() * 4));
-            if (!initial.getInitValue().isEmpty()) {
-                int offset = 0;
-                for (Integer value : initial.getInitValue()) {
-                    new LiAsm(Register.T0, value);
-                    new MemTypeAsm("sw", name.substring(1), Register.T0, null, offset);
-                    offset += 4;
-                }
-            }
-            //new WordAsm(name.substring(1),"array",initial.getInitValue());
+            new WordAsm(name.substring(1), String.valueOf(((ArrayType) target)
+                    .calcSpaceTot()), initial.getInitValue());
         }
     }
 }
