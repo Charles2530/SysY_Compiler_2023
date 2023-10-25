@@ -9,15 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AssemblyUnit {
-    private static Function currentFunction;
-    private static AssemblyData assemblyData;
     private static Integer currentOffset;
     private static RegisterController registerController;
     private static HashMap<Value, Integer> stackOffsetHashMap;
 
-    public void init(AssemblyData assemblyData) {
-        AssemblyUnit.assemblyData = assemblyData;
-        AssemblyUnit.currentFunction = null;
+    public void init() {
         AssemblyUnit.currentOffset = 0;
         AssemblyUnit.registerController = new RegisterController();
     }
@@ -30,7 +26,6 @@ public class AssemblyUnit {
     }
 
     public static void resetFunctionConfig(Function function) {
-        AssemblyUnit.currentFunction = function;
         AssemblyUnit.currentOffset = 0;
         AssemblyUnit.stackOffsetHashMap = new HashMap<>();
         registerController.setValueRegisterHashMap(function.getRegisterHashMap());
@@ -56,5 +51,4 @@ public class AssemblyUnit {
         return (registerController.getRegisterHashMap() == null) ? new ArrayList<>() :
                 new ArrayList<>(registerController.getRegisterHashMap().values());
     }
-
 }
