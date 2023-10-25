@@ -45,10 +45,10 @@ public class Initial {
                     } else {
                         sb.append(type).append(" [");
                         for (int i = 0; i < space.get(0); i++) {
-                            if (i * space.get(0) < offset) {
+                            if (i * space.get(1) < offset) {
                                 sb.append("[").append(space.get(1)).append(" x i32]").append("[");
                                 for (int j = 0; j < space.get(1); j++) {
-                                    sb.append("i32 ").append(initValue.get(i * space.get(0) + j));
+                                    sb.append("i32 ").append(initValue.get(i * space.get(1) + j));
                                     if (j != space.get(1) - 1) {
                                         sb.append(", ");
                                     }
