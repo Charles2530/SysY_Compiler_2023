@@ -1,6 +1,6 @@
 package midend.generation.value.construction.user;
 
-import backend.mips.asm.datasegment.WordAsm;
+import backend.generation.mips.asm.datasegment.WordAsm;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;

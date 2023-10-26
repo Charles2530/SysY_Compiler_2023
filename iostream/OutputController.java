@@ -1,6 +1,6 @@
 package iostream;
 
-import backend.utils.AssemblyData;
+import backend.generation.utils.AssemblyData;
 import frontend.lexer.SymToken;
 import frontend.syntax.AstNode;
 

@@ -1,11 +1,12 @@
-import backend.AssemblyGeneration;
+import backend.generation.AssemblyGeneration;
+import backend.simplify.BackEndOptimizerUnit;
 import frontend.lexer.LexicalAnalysis;
 import frontend.semantic.SemanticAnalysis;
 import frontend.syntax.SyntaxAnalysis;
 import iostream.ErrorController;
 import iostream.OutputController;
 import midend.generation.GenerationMain;
-import midend.simplify.OptimizerUnit;
+import midend.simplify.MidEndOptimizerUnit;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -55,8 +56,12 @@ public class Compiler {
             generationMain.generate();
             // 优化中间代码
             if (IsOptimize) {
-                OptimizerUnit optimizerUnit = new OptimizerUnit(GenerationMain.getModule());
-                optimizerUnit.optimize();
+                MidEndOptimizerUnit midEndOptimizerUnit =
+                        new MidEndOptimizerUnit(GenerationMain.getModule());
+                midEndOptimizerUnit.optimize();
+                BackEndOptimizerUnit backEndOptimizerUnit =
+                        new BackEndOptimizerUnit(GenerationMain.getModule());
+                backEndOptimizerUnit.optimize();
             }
             // 生成汇编代码
             AssemblyGeneration assemblyGeneration =

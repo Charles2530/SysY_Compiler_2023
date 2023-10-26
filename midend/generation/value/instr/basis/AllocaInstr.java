@@ -1,9 +1,9 @@
 package midend.generation.value.instr.basis;
 
-import backend.mips.Register;
-import backend.mips.asm.textsegment.mipsinstr.ItypeAsm;
-import backend.utils.AssemblyUnit;
-import backend.utils.RegisterUtils;
+import backend.generation.mips.Register;
+import backend.generation.mips.asm.textsegment.mipsinstr.ItypeAsm;
+import backend.generation.utils.AssemblyUnit;
+import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;

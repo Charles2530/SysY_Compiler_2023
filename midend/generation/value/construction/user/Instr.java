@@ -1,10 +1,11 @@
 package midend.generation.value.construction.user;
 
-import backend.mips.asm.textsegment.structure.Comment;
+import backend.generation.mips.asm.textsegment.structure.Comment;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.User;
+import midend.simplify.method.Mem2RegUnit;
 
 public class Instr extends User {
     protected String instrType;
@@ -23,5 +24,10 @@ public class Instr extends User {
     @Override
     public void generateAssembly() {
         new Comment(this.toString());
+    }
+
+    public void insertPhiProcess() {
+        Mem2RegUnit.reConfig(this);
+        Mem2RegUnit.insertPhi(this);
     }
 }

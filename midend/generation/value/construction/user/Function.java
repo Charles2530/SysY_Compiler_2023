@@ -1,9 +1,9 @@
 package midend.generation.value.construction.user;
 
-import backend.mips.Register;
-import backend.mips.asm.textsegment.structure.Label;
-import backend.utils.AssemblyUnit;
-import backend.utils.RegisterUtils;
+import backend.generation.mips.Register;
+import backend.generation.mips.asm.textsegment.structure.Label;
+import backend.generation.utils.AssemblyUnit;
+import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.StructType;
@@ -91,6 +91,12 @@ public class Function extends User {
     public void simplifyBlock() {
         for (BasicBlock basicBlock : basicBlocks) {
             basicBlock.simplifyBlock();
+        }
+    }
+
+    public void insertPhiProcess() {
+        for (BasicBlock basicBlock : basicBlocks) {
+            basicBlock.insertPhiProcess();
         }
     }
 }

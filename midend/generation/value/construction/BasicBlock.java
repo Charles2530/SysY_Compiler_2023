@@ -1,12 +1,15 @@
 package midend.generation.value.construction;
 
-import backend.mips.asm.textsegment.structure.Label;
+import backend.generation.mips.asm.textsegment.structure.Label;
 import midend.generation.utils.IrNameController;
+import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.StructType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
+import midend.generation.value.instr.basis.AllocaInstr;
 import midend.simplify.method.BlockSimplifyUnit;
+import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
 
@@ -72,5 +75,15 @@ public class BasicBlock extends Value {
 
     public void simplifyBlock() {
         BlockSimplifyUnit.deleteDuplicateBranch(this);
+    }
+
+    public void insertPhiProcess() {
+        for (Instr instr : instrArrayList) {
+            if (instr instanceof AllocaInstr &&
+                    ((PointerType) instr.getType()).getTarget().isInt32()) {
+                instr.insertPhiProcess();
+                Mem2RegUnit.varRename();
+            }
+        }
     }
 }
