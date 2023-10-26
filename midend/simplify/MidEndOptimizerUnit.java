@@ -26,5 +26,4 @@ public class MidEndOptimizerUnit {
             DeadCodeEliminationUnit.run(module);
         }
     }
-
 }
