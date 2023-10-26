@@ -82,11 +82,11 @@ public class LLvmGenUtils {
             return new GetEleInstr(IrNameController.getLocalVarName(),
                     intSymbol.getValue(), values.get(0));
         } else {
-            Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
-                    new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
-            instr = new CalcInstr(IrNameController.getLocalVarName(), "add", instr, values.get(1));
-            return new GetEleInstr(IrNameController.getLocalVarName(),
-                    intSymbol.getValue(), instr);
+            return new GetEleInstr(IrNameController.getLocalVarName(), intSymbol.getValue(),
+                    new CalcInstr(IrNameController.getLocalVarName(), "add",
+                            new CalcInstr(IrNameController.getLocalVarName(), "mul",
+                                    new Constant(String.valueOf(space.get(1)), new VarType(32)),
+                                    values.get(0)), values.get(1)));
         }
     }
 
@@ -136,13 +136,12 @@ public class LLvmGenUtils {
                 return new GetEleInstr(IrNameController.getLocalVarName(),
                         value, instr);
             } else {
-                Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "mul",
-                        new Constant(String.valueOf(space.get(1)), new VarType(32)), values.get(0));
-                instr = new CalcInstr(IrNameController.getLocalVarName(),
-                        "add", instr, values.get(1));
-                instr = new GetEleInstr(IrNameController.getLocalVarName(),
-                        value, instr);
-                return new LoadInstr(IrNameController.getLocalVarName(), instr);
+                Instr instr = new CalcInstr(IrNameController.getLocalVarName(), "add",
+                        new CalcInstr(IrNameController.getLocalVarName(), "mul",
+                                new Constant(String.valueOf(space.get(1)), new VarType(32)),
+                                values.get(0)), values.get(1));
+                return new LoadInstr(IrNameController.getLocalVarName(),
+                        new GetEleInstr(IrNameController.getLocalVarName(), value, instr));
             }
         }
     }

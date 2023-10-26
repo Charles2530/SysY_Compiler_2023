@@ -5,31 +5,19 @@ import midend.generation.utils.irtype.VarType;
 
 public class IrType {
     public boolean isVoid() {
-        if (this instanceof VarType) {
-            return ((VarType) this).getBits() == 0;
-        }
-        return false;
+        return this instanceof VarType && ((VarType) this).getBits() == 0;
     }
 
     public boolean isInt1() {
-        if (this instanceof VarType) {
-            return ((VarType) this).getBits() == 1;
-        }
-        return false;
+        return this instanceof VarType && ((VarType) this).getBits() == 1;
     }
 
     public boolean isInt8() {
-        if (this instanceof VarType) {
-            return ((VarType) this).getBits() == 8;
-        }
-        return false;
+        return this instanceof VarType && ((VarType) this).getBits() == 8;
     }
 
     public boolean isInt32() {
-        if (this instanceof VarType) {
-            return ((VarType) this).getBits() == 32;
-        }
-        return false;
+        return this instanceof VarType && ((VarType) this).getBits() == 32;
     }
 
     public boolean isArray() {

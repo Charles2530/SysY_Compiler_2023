@@ -10,7 +10,7 @@ import midend.generation.value.construction.user.Instr;
 
 public class RetInstr extends Instr {
     public RetInstr(Value retValue) {
-        super(new VarType(0), "RetInstr", "return");
+        super(new VarType(0), "RetInstr", "ret");
         if (retValue != null) {
             addOperand(retValue);
         }
@@ -20,9 +20,9 @@ public class RetInstr extends Instr {
     public String toString() {
         Value retValue = operands.isEmpty() ? null : operands.get(0);
         if (retValue != null) {
-            return "ret " + retValue.getType() + " " + retValue.getName();
+            return instrType + " " + retValue.getType() + " " + retValue.getName();
         }
-        return "ret void";
+        return instrType + " void";
     }
 
     @Override

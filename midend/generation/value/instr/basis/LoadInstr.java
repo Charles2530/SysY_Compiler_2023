@@ -16,7 +16,7 @@ public class LoadInstr extends Instr {
 
     @Override
     public String toString() {
-        return name + " = load " + type + ", " +
+        return name + " = " + instrType + " " + type + ", " +
                 operands.get(0).getType() + " " + operands.get(0).getName();
     }
 

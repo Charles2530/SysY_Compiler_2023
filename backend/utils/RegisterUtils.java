@@ -104,7 +104,7 @@ public class RegisterUtils {
         if (para instanceof Constant) {
             new LiAsm(register, ((Constant) para).getVal());
             new MemTypeAsm("sw", null, register,
-                    Register.SP, currentOffset - allocatedRegs.size() * 4 - 8 - 4 * paraNum);
+                    Register.SP, currentOffset - (allocatedRegs.size() + 2 + paraNum) * 4);
             return register;
         }
         if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
@@ -119,7 +119,7 @@ public class RegisterUtils {
             new MemTypeAsm("lw", null, register, Register.SP, AssemblyUnit.getOffset(para));
         }
         new MemTypeAsm("sw", null, register,
-                Register.SP, currentOffset - allocatedRegs.size() * 4 - 8 - 4 * paraNum);
+                Register.SP, currentOffset - (allocatedRegs.size() + 2 + paraNum) * 4);
         return register;
     }
 }

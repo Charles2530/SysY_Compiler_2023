@@ -53,9 +53,8 @@ public class CallInstr extends Instr {
         }
         new MemTypeAsm("sw", null, Register.SP, Register.SP, currentOffset - registerOffset - 4);
         new MemTypeAsm("sw", null, Register.RA, Register.SP, currentOffset - registerOffset - 8);
-        int paraNum = 0;
-        for (Value para : operands.subList(1, operands.size())) {
-            paraNum++;
+        for (int paraNum = 1; paraNum < operands.size(); paraNum++) {
+            Value para = operands.get(paraNum);
             if (paraNum <= 3 && AssemblyUnit.getRegisterController().getRegisterHashMap() != null) {
                 RegisterUtils.allocParamReg(para, Register.regTransform(
                         Register.A0.ordinal() + paraNum), currentOffset, allocatedRegs);

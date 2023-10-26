@@ -33,11 +33,10 @@ public class BrInstr extends Instr {
 
     @Override
     public String toString() {
-        return "br i1 " + operands.get(0).getName() + ", label %" +
+        return instrType + " i1 " + operands.get(0).getName() + ", label %" +
                 operands.get(1).getName() + ", label %" + operands.get(2).getName();
     }
 
-    /*TODO:probabaly error*/
     @Override
     public void generateAssembly() {
         super.generateAssembly();

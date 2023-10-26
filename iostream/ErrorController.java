@@ -52,43 +52,43 @@ public class ErrorController {
     private static void printError(ErrorToken error) throws IOException {
         switch (error.getErrorCategoryCode()) {
             case "a":
-                printIllegalTokenError(error.getLineNum(), "a");
+                printIllegalTokenError(error.getLineNum());
                 break;
             case "b":
-                printRedefinitionError(error.getLineNum(), "b");
+                printRedefinitionError(error.getLineNum());
                 break;
             case "c":
-                printUndefinedNameError(error.getLineNum(), "c");
+                printUndefinedNameError(error.getLineNum());
                 break;
             case "d":
-                printFuncNumUnmatchError(error.getLineNum(), "d");
+                printFuncNumUnmatchError(error.getLineNum());
                 break;
             case "e":
-                printFuncTypeUnmatchError(error.getLineNum(), "e");
+                printFuncTypeUnmatchError(error.getLineNum());
                 break;
             case "f":
-                printUnmatchReturnError(error.getLineNum(), "f");
+                printUnmatchReturnError(error.getLineNum());
                 break;
             case "g":
-                printMissingReturnError(error.getLineNum(), "g");
+                printMissingReturnError(error.getLineNum());
                 break;
             case "h":
-                printAssignTypeConsError(error.getLineNum(), "h");
+                printAssignTypeConsError(error.getLineNum());
                 break;
             case "i":
-                printMissSemicnError(error.getLineNum(), "i");
+                printMissSemicnError(error.getLineNum());
                 break;
             case "j":
-                printMissRparentError(error.getLineNum(), "j");
+                printMissRparentError(error.getLineNum());
                 break;
             case "k":
-                printMissRbrackError(error.getLineNum(), "k");
+                printMissRbrackError(error.getLineNum());
                 break;
             case "l":
-                printUnmatchTokenNumError(error.getLineNum(), "l");
+                printUnmatchTokenNumError(error.getLineNum());
                 break;
             case "m":
-                printUnmatchLoopError(error.getLineNum(), "m");
+                printUnmatchLoopError(error.getLineNum());
                 break;
             default:
                 break;
@@ -96,156 +96,156 @@ public class ErrorController {
     }
 
     // a. 非法符号
-    private static void printIllegalTokenError(int lineNum, String type) throws IOException {
+    private static void printIllegalTokenError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: IllegalTokenError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " a");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // b. 名字重定义
-    private static void printRedefinitionError(int lineNum, String type) throws IOException {
+    private static void printRedefinitionError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: RedefinitionError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " b");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // c. 未定义的名字
-    private static void printUndefinedNameError(int lineNum, String type) throws IOException {
+    private static void printUndefinedNameError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UndefinedNameError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " c");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // d. 函数参数个数不匹配
-    private static void printFuncNumUnmatchError(int lineNum, String type) throws IOException {
+    private static void printFuncNumUnmatchError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: FuncNumUnmatchError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " d");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // e. 函数参数类型不匹配
-    private static void printFuncTypeUnmatchError(int lineNum, String type) throws IOException {
+    private static void printFuncTypeUnmatchError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: FuncTypeUnmatchError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " e");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // f. 无返回值的函数存在不匹配的return语句
-    private static void printUnmatchReturnError(int lineNum, String type) throws IOException {
+    private static void printUnmatchReturnError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UnmatchReturnError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " f");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // g. 有返回值的函数缺少return语句或存在不匹配的return语句
-    private static void printMissingReturnError(int lineNum, String type) throws IOException {
+    private static void printMissingReturnError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissingReturnError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " g");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // h. 不能改变常量的值
-    private static void printAssignTypeConsError(int lineNum, String type) throws IOException {
+    private static void printAssignTypeConsError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: AssignTypeConsError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " h");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     //  i. 语句缺少分号
-    private static void printMissRbrackError(int lineNum, String type) throws IOException {
+    private static void printMissRbrackError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissRbrackError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " k");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // j. 语句缺少右小括号
-    private static void printMissRparentError(int lineNum, String type) throws IOException {
+    private static void printMissRparentError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissRparentError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " j");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // k. 语句缺少右中括号
-    private static void printMissSemicnError(int lineNum, String type) throws IOException {
+    private static void printMissSemicnError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: MissSemicnError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " i");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // l. 语句缺少右大括号
-    private static void printUnmatchTokenNumError(int lineNum, String type) throws IOException {
+    private static void printUnmatchTokenNumError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UnmatchTokenNumError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " l");
             }
             errorBufferedWriter.newLine();
         }
     }
 
     // m. 非循环语句中出现break或continue语句
-    private static void printUnmatchLoopError(int lineNum, String type) throws IOException {
+    private static void printUnmatchLoopError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
                 errorBufferedWriter.write("Error: UnmatchLoopError: " + lineNum);
             } else {
-                errorBufferedWriter.write(lineNum + " " + type);
+                errorBufferedWriter.write(lineNum + " m");
             }
             errorBufferedWriter.newLine();
         }

@@ -19,7 +19,7 @@ public class AllocaInstr extends Instr {
 
     @Override
     public String toString() {
-        return name + " = alloca " + type;
+        return name + " = " + instrType + " " + type;
     }
 
     @Override

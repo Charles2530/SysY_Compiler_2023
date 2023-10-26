@@ -17,7 +17,7 @@ public class StoreInstr extends Instr {
 
     @Override
     public String toString() {
-        return "store " + operands.get(0).getType() + " " +
+        return instrType + " " + operands.get(0).getType() + " " +
                 operands.get(0).getName() + ", " + operands.get(1).getType()
                 + " " + operands.get(1).getName();
     }
