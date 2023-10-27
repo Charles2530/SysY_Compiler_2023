@@ -11,6 +11,7 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Param;
 import midend.generation.value.construction.User;
+import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 
 import java.util.ArrayList;
@@ -23,11 +24,6 @@ public class Function extends User {
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
     private final HashMap<Value, Register> registerHashMap;
-    private HashMap<BasicBlock, ArrayList<BasicBlock>> indBasicBlocks;
-    private HashMap<BasicBlock, ArrayList<BasicBlock>> outBasicBlocks;
-
-    private HashMap<BasicBlock, ArrayList<BasicBlock>> childList;
-    private HashMap<BasicBlock, BasicBlock> parent;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
@@ -114,22 +110,6 @@ public class Function extends User {
         }
     }
 
-    public void setIndBasicBlocks(HashMap<BasicBlock, ArrayList<BasicBlock>> indBasicBlocks) {
-        this.indBasicBlocks = indBasicBlocks;
-    }
-
-    public void setOutBasicBlocks(HashMap<BasicBlock, ArrayList<BasicBlock>> outBasicBlocks) {
-        this.outBasicBlocks = outBasicBlocks;
-    }
-
-    public HashMap<BasicBlock, ArrayList<BasicBlock>> getIndBasicBlocks() {
-        return indBasicBlocks;
-    }
-
-    public HashMap<BasicBlock, ArrayList<BasicBlock>> getOutBasicBlocks() {
-        return outBasicBlocks;
-    }
-
     public void searchBlockDominateSet() {
         BasicBlock entry = basicBlocks.get(0);
         for (BasicBlock basicBlock : basicBlocks) {
@@ -141,31 +121,23 @@ public class Function extends User {
                     domList.add(bb);
                 }
             }
-            DominatorTree.addDominateSet(basicBlock, domList);
-            basicBlock.setDominateSet(domList);
+            DominatorTree.addBlockDominateSet(basicBlock, domList);
         }
     }
 
     public void searchBlockDominanceFrontier() {
-        for (Map.Entry<BasicBlock, ArrayList<BasicBlock>> entry : outBasicBlocks.entrySet()) {
+        for (Map.Entry<BasicBlock, ArrayList<BasicBlock>> entry :
+                ControlFlowGraph.getFunctionOutBasicBlock(this).entrySet()) {
             BasicBlock from = entry.getKey();
             ArrayList<BasicBlock> outBasicBlocks = entry.getValue();
             for (BasicBlock to : outBasicBlocks) {
                 BasicBlock runner = from;
-                while (!runner.getDominateSet().contains(to) || runner.equals(to)) {
+                while (!DominatorTree.getBlockDominateSet(runner).contains(to)
+                        || runner.equals(to)) {
                     DominatorTree.addBlockDominanceFrontier(runner, to);
-                    runner = runner.getParent();
+                    runner = DominatorTree.getBlockDominateParent(runner);
                 }
             }
         }
-        for (BasicBlock basicBlock : basicBlocks) {
-            basicBlock.setDominanceFrontier(DominatorTree.getBlockDominanceFrontier(basicBlock));
-        }
-    }
-
-    public void updateDominateTree(HashMap<BasicBlock, BasicBlock> parent,
-                                   HashMap<BasicBlock, ArrayList<BasicBlock>> childList) {
-        this.parent = parent;
-        this.childList = childList;
     }
 }

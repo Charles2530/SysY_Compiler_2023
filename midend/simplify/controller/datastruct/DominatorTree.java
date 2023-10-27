@@ -9,17 +9,33 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class DominatorTree {
+    private static HashMap<Function, HashMap<BasicBlock,
+            ArrayList<BasicBlock>>> dominateFunctionHashMap;
     private static HashMap<BasicBlock, ArrayList<BasicBlock>> dominateHashMap;
+    private static HashMap<Function, HashMap<BasicBlock,
+            ArrayList<BasicBlock>>> dominanceFrontierFunctionHashMap;
     private static HashMap<BasicBlock, ArrayList<BasicBlock>> dominanceFrontierHashMap;
+    private static HashMap<Function, HashMap<BasicBlock, BasicBlock>> parentFunctionHashMap;
     private static HashMap<BasicBlock, BasicBlock> parent;
+    private static HashMap<Function, HashMap<BasicBlock,
+            ArrayList<BasicBlock>>> childListFunctionHashMap;
     private static HashMap<BasicBlock, ArrayList<BasicBlock>> childList;
 
     public static void build(Module module) {
+        DominatorTree.dominateFunctionHashMap = new HashMap<>();
+        DominatorTree.dominanceFrontierFunctionHashMap = new HashMap<>();
+        DominatorTree.parentFunctionHashMap = new HashMap<>();
+        DominatorTree.childListFunctionHashMap = new HashMap<>();
         for (Function function : module.getFunctions()) {
             DominatorTree.dominateHashMap = new HashMap<>();
+            DominatorTree.dominateFunctionHashMap.put(function, DominatorTree.dominateHashMap);
             DominatorTree.dominanceFrontierHashMap = new HashMap<>();
+            DominatorTree.dominanceFrontierFunctionHashMap.put(function,
+                    DominatorTree.dominanceFrontierHashMap);
             DominatorTree.parent = new HashMap<>();
+            DominatorTree.parentFunctionHashMap.put(function, DominatorTree.parent);
             DominatorTree.childList = new HashMap<>();
+            DominatorTree.childListFunctionHashMap.put(function, DominatorTree.childList);
             for (BasicBlock basicBlock : function.getBasicBlocks()) {
                 DominatorTree.dominateHashMap.put(basicBlock, new ArrayList<>());
                 DominatorTree.dominanceFrontierHashMap.put(basicBlock, new ArrayList<>());
@@ -41,18 +57,14 @@ public class DominatorTree {
                 }
             }
         }
-        for (BasicBlock basicBlock : function.getBasicBlocks()) {
-            basicBlock.updateDominateTree(parent.get(basicBlock), childList.get(basicBlock));
-        }
-        function.updateDominateTree(parent, childList);
     }
 
     private static boolean isImmediateDominator(BasicBlock basicBlock, BasicBlock dominateBlock) {
-        boolean flag = basicBlock.getDominateSet().contains(dominateBlock) &&
+        boolean flag = DominatorTree.getBlockDominateSet(basicBlock).contains(dominateBlock) &&
                 !dominateBlock.equals(basicBlock);
-        for (BasicBlock midBlock : basicBlock.getDominateSet()) {
+        for (BasicBlock midBlock : DominatorTree.getBlockDominateSet(basicBlock)) {
             if (!midBlock.equals(dominateBlock) && !midBlock.equals(basicBlock)
-                    && basicBlock.getDominateSet().contains(midBlock)) {
+                    && DominatorTree.getBlockDominateSet(basicBlock).contains(midBlock)) {
                 flag = false;
                 break;
             }
@@ -73,15 +85,52 @@ public class DominatorTree {
         }
     }
 
-    public static void addDominateSet(BasicBlock basicBlock, ArrayList<BasicBlock> domList) {
-        DominatorTree.dominateHashMap.put(basicBlock, domList);
+    public static HashMap<BasicBlock,
+            ArrayList<BasicBlock>> getFunctionDominate(Function function) {
+        return DominatorTree.dominateFunctionHashMap.get(function);
+    }
+
+    public static HashMap<BasicBlock,
+            ArrayList<BasicBlock>> getFunctionDominanceFrontier(Function function) {
+        return DominatorTree.dominanceFrontierFunctionHashMap.get(function);
+    }
+
+    public static HashMap<BasicBlock, BasicBlock> getFunctionDominateParent(Function function) {
+        return DominatorTree.parentFunctionHashMap.get(function);
+    }
+
+    public static HashMap<BasicBlock,
+            ArrayList<BasicBlock>> getFunctionDominateChildList(Function function) {
+        return DominatorTree.childListFunctionHashMap.get(function);
+    }
+
+    public static void addBlockDominateSet(BasicBlock basicBlock, ArrayList<BasicBlock> domList) {
+        DominatorTree.getFunctionDominate(basicBlock.getBelongingFunc()).put(basicBlock,
+                domList);
+    }
+
+    public static ArrayList<BasicBlock> getBlockDominateSet(BasicBlock basicBlock) {
+        return DominatorTree.getFunctionDominate(basicBlock.getBelongingFunc())
+                .get(basicBlock);
     }
 
     public static void addBlockDominanceFrontier(BasicBlock runner, BasicBlock to) {
-        DominatorTree.dominanceFrontierHashMap.get(runner).add(to);
+        DominatorTree.getFunctionDominanceFrontier(runner.getBelongingFunc())
+                .get(runner).add(to);
     }
 
     public static ArrayList<BasicBlock> getBlockDominanceFrontier(BasicBlock basicBlock) {
-        return DominatorTree.dominanceFrontierHashMap.get(basicBlock);
+        return DominatorTree.getFunctionDominanceFrontier(basicBlock.getBelongingFunc())
+                .get(basicBlock);
+    }
+
+    public static BasicBlock getBlockDominateParent(BasicBlock basicBlock) {
+        return DominatorTree.getFunctionDominateParent(basicBlock.getBelongingFunc())
+                .get(basicBlock);
+    }
+
+    public static ArrayList<BasicBlock> getBlockDominateChildList(BasicBlock basicBlock) {
+        return DominatorTree.getFunctionDominateChildList(basicBlock.getBelongingFunc())
+                .get(basicBlock);
     }
 }

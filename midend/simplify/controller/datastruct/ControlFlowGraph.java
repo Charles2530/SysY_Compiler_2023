@@ -11,24 +11,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ControlFlowGraph {
+    private static HashMap<Function, HashMap<BasicBlock,
+            ArrayList<BasicBlock>>> indBasicBlockFunctionMap;
     private static HashMap<BasicBlock, ArrayList<BasicBlock>> indBasicBlockMap;
+    private static HashMap<Function, HashMap<BasicBlock,
+            ArrayList<BasicBlock>>> outBasicBlockFunctionMap;
     private static HashMap<BasicBlock, ArrayList<BasicBlock>> outBasicBlockMap;
 
     public static void build(Module module) {
+        ControlFlowGraph.indBasicBlockFunctionMap = new HashMap<>();
+        ControlFlowGraph.outBasicBlockFunctionMap = new HashMap<>();
         for (Function function : module.getFunctions()) {
             ControlFlowGraph.indBasicBlockMap = new HashMap<>();
+            ControlFlowGraph.indBasicBlockFunctionMap
+                    .put(function, ControlFlowGraph.indBasicBlockMap);
             ControlFlowGraph.outBasicBlockMap = new HashMap<>();
+            ControlFlowGraph.outBasicBlockFunctionMap
+                    .put(function, ControlFlowGraph.outBasicBlockMap);
             for (BasicBlock basicBlock : function.getBasicBlocks()) {
                 ControlFlowGraph.indBasicBlockMap.put(basicBlock, new ArrayList<>());
                 ControlFlowGraph.outBasicBlockMap.put(basicBlock, new ArrayList<>());
             }
             ControlFlowGraph.buildControlFlowGraph(function);
-            for (BasicBlock basicBlock : function.getBasicBlocks()) {
-                basicBlock.setIndBasicBlocks(ControlFlowGraph.indBasicBlockMap.get(basicBlock));
-                basicBlock.setOutBasicBlocks(ControlFlowGraph.outBasicBlockMap.get(basicBlock));
-            }
-            function.setIndBasicBlocks(ControlFlowGraph.indBasicBlockMap);
-            function.setOutBasicBlocks(ControlFlowGraph.outBasicBlockMap);
         }
     }
 
@@ -37,24 +41,46 @@ public class ControlFlowGraph {
             Instr lastInstr = basicBlock.getLastInstr();
             if (lastInstr instanceof JumpInstr jumpInstr) {
                 BasicBlock targetBasicBlock = jumpInstr.getTarget();
-                ControlFlowGraph.addIndBasicBlock(targetBasicBlock, basicBlock);
-                ControlFlowGraph.addOutBasicBlock(basicBlock, targetBasicBlock);
+                ControlFlowGraph.addBlockIndBasicBlock(targetBasicBlock, basicBlock);
+                ControlFlowGraph.addBlockOutBasicBlock(basicBlock, targetBasicBlock);
             } else if (lastInstr instanceof BrInstr brInstr) {
                 BasicBlock thenBasicBlock = brInstr.getThenBlock();
-                ControlFlowGraph.addIndBasicBlock(thenBasicBlock, basicBlock);
-                ControlFlowGraph.addOutBasicBlock(basicBlock, thenBasicBlock);
+                ControlFlowGraph.addBlockIndBasicBlock(thenBasicBlock, basicBlock);
+                ControlFlowGraph.addBlockOutBasicBlock(basicBlock, thenBasicBlock);
                 BasicBlock elseBasicBlock = brInstr.getElseBlock();
-                ControlFlowGraph.addIndBasicBlock(elseBasicBlock, basicBlock);
-                ControlFlowGraph.addOutBasicBlock(basicBlock, elseBasicBlock);
+                ControlFlowGraph.addBlockIndBasicBlock(elseBasicBlock, basicBlock);
+                ControlFlowGraph.addBlockOutBasicBlock(basicBlock, elseBasicBlock);
             }
         }
     }
 
-    private static void addIndBasicBlock(BasicBlock basicBlock, BasicBlock indBasicBlock) {
-        ControlFlowGraph.indBasicBlockMap.get(basicBlock).add(indBasicBlock);
+    public static HashMap<BasicBlock,
+            ArrayList<BasicBlock>> getFunctionIndBasicBlock(Function function) {
+        return ControlFlowGraph.indBasicBlockFunctionMap.get(function);
     }
 
-    private static void addOutBasicBlock(BasicBlock basicBlock, BasicBlock outBasicBlock) {
-        ControlFlowGraph.outBasicBlockMap.get(basicBlock).add(outBasicBlock);
+    public static HashMap<BasicBlock,
+            ArrayList<BasicBlock>> getFunctionOutBasicBlock(Function function) {
+        return ControlFlowGraph.outBasicBlockFunctionMap.get(function);
+    }
+
+    public static void addBlockIndBasicBlock(BasicBlock basicBlock, BasicBlock indBasicBlock) {
+        ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                .get(basicBlock).add(indBasicBlock);
+    }
+
+    public static void addBlockOutBasicBlock(BasicBlock basicBlock, BasicBlock outBasicBlock) {
+        ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                .get(basicBlock).add(outBasicBlock);
+    }
+
+    public static ArrayList<BasicBlock> getBlockIndBasicBlock(BasicBlock basicBlock) {
+        return ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                .get(basicBlock);
+    }
+
+    public static ArrayList<BasicBlock> getBlockOutBasicBlock(BasicBlock basicBlock) {
+        return ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                .get(basicBlock);
     }
 }
