@@ -5,6 +5,7 @@ import midend.generation.value.construction.User;
 import midend.simplify.controller.datastruct.Use;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Value {
     protected IrType type;
@@ -26,6 +27,10 @@ public class Value {
         return type;
     }
 
+    public ArrayList<Use> getUseDefChain() {
+        return useDefChain;
+    }
+
     public void generateAssembly() {
     }
 
@@ -40,5 +45,13 @@ public class Value {
     public void replaceUseDefChain(Value origin, Value present, User user) {
         origin.deleteUseDefChain(user);
         present.addUseDefChain(user);
+    }
+
+    public void replaceAllUse(Value value) {
+        ArrayList<User> users = useDefChain.stream().map(Use::getUser)
+                .collect(Collectors.toCollection(ArrayList::new));
+        for (User user : users) {
+            user.replaceOperand(this, value);
+        }
     }
 }

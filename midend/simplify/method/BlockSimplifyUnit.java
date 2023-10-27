@@ -47,6 +47,6 @@ public class BlockSimplifyUnit {
         HashSet<BasicBlock> vis = new HashSet<>();
         BasicBlock entry = function.getBasicBlocks().get(0);
         dfs(entry, vis);
-        function.getBasicBlocks().removeIf(bb -> !vis.contains(bb));
+        function.getBasicBlocks().removeIf(bb -> !vis.contains(bb) && bb.setDeleted(true));
     }
 }

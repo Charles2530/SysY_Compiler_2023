@@ -15,6 +15,9 @@ public class OutputController {
     private static boolean IsParserOutput;
     private static BufferedWriter generationOutputStream;
     private static boolean IsGenerationOutput;
+    private static BufferedWriter generationOptimizerOutputStream;
+    private static boolean IsGenerationOptimizerOutput;
+
     private static BufferedWriter assemblyOutputStream;
     private static boolean IsAssemblyOutput;
 
@@ -45,6 +48,11 @@ public class OutputController {
         OutputController.generationOutputStream = generationOutputStream;
     }
 
+    public static void setBufferedGenerationOptimizerWriter(
+            BufferedWriter generationOptimizerOutputStream) {
+        OutputController.generationOptimizerOutputStream = generationOptimizerOutputStream;
+    }
+
     public static void setBufferedAssemblyWriter(BufferedWriter assemblyOutputStream) {
         OutputController.assemblyOutputStream = assemblyOutputStream;
     }
@@ -59,6 +67,10 @@ public class OutputController {
 
     public static void setGenerationOutput(boolean isGenerationOutput) {
         OutputController.IsGenerationOutput = isGenerationOutput;
+    }
+
+    public static void setGenerationOptimizerOutput(boolean isGenerationOptimizerOutput) {
+        OutputController.IsGenerationOptimizerOutput = isGenerationOptimizerOutput;
     }
 
     public static void setAssemblyOutput(boolean isAssemblyOutput) {
@@ -99,6 +111,17 @@ public class OutputController {
         }
     }
 
+    public static void generationOptimizerPrint(String str) {
+        if (IsGenerationOptimizerOutput) {
+            try {
+                generationOptimizerOutputStream.write(str);
+                generationOptimizerOutputStream.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void assemblyPrint(AssemblyData assemblyData) {
         if (IsAssemblyOutput) {
             try {
@@ -109,4 +132,6 @@ public class OutputController {
             }
         }
     }
+
+
 }

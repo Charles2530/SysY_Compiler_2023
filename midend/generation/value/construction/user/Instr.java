@@ -21,6 +21,10 @@ public class Instr extends User {
         this.parent = currentBasicBlock;
     }
 
+    public BasicBlock getBelongingBlock() {
+        return parent;
+    }
+
     @Override
     public void generateAssembly() {
         new Comment(this.toString());
@@ -28,7 +32,7 @@ public class Instr extends User {
 
     public void insertPhiProcess() {
         Mem2RegUnit.reConfig(this);
-        Mem2RegUnit.insertPhi(this);
+        Mem2RegUnit.insertPhi();
     }
 
     /*TODO:judge need to change*/

@@ -17,11 +17,13 @@ import java.util.Iterator;
 public class BasicBlock extends Value {
     private ArrayList<Instr> instrArrayList;
     private Function belongingFunc;
+    private boolean exist;
 
     public BasicBlock(String name) {
         super(new StructType("basicblock"), name);
         this.instrArrayList = new ArrayList<>();
         IrNameController.addBasicBlock(this);
+        this.exist = true;
     }
 
     public void addInstr(Instr instr) {
@@ -82,7 +84,7 @@ public class BasicBlock extends Value {
             if (instr instanceof AllocaInstr &&
                     ((PointerType) instr.getType()).getTarget().isInt32()) {
                 instr.insertPhiProcess();
-                Mem2RegUnit.varRename();
+//                Mem2RegUnit.varRename();
             }
         }
     }
@@ -95,5 +97,18 @@ public class BasicBlock extends Value {
                 iter.remove();
             }
         }
+    }
+
+    public boolean setDeleted(boolean exist) {
+        this.exist = !exist;
+        return true;
+    }
+
+    public boolean isExist() {
+        return exist;
+    }
+
+    public void addInstrToFirst(Instr phiInstr) {
+        instrArrayList.add(0, phiInstr);
     }
 }
