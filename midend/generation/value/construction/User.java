@@ -20,7 +20,19 @@ public class User extends Value {
         }
         for (int i = 0; i < times; i++) {
             operands.add(value);
+            if (value != null) {
+                value.addUseDefChain(this);
+            }
         }
+    }
+
+    public boolean replaceOperand(Value origin, Value present) {
+        if (!operands.contains(origin)) {
+            return false;
+        }
+        operands.set(operands.indexOf(origin), present);
+        replaceUseDefChain(origin, present, this);
+        return true;
     }
 
     public ArrayList<Value> getOperands() {

@@ -52,7 +52,7 @@ public class DominatorTree {
         for (BasicBlock basicBlock : function.getBasicBlocks()) {
             for (BasicBlock dominateBlock : DominatorTree.dominateHashMap.get(basicBlock)) {
                 if (isImmediateDominator(basicBlock, dominateBlock)) {
-                    DominatorTree.parent.put(basicBlock, dominateBlock);
+                    DominatorTree.parent.put(dominateBlock, basicBlock);
                     DominatorTree.childList.get(basicBlock).add(dominateBlock);
                 }
             }
