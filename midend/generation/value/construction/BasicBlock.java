@@ -12,11 +12,17 @@ import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class BasicBlock extends Value {
     private ArrayList<Instr> instrArrayList;
-
     private Function belongingFunc;
+    private ArrayList<BasicBlock> indBasicBlocks;
+    private ArrayList<BasicBlock> outBasicBlocks;
+    private ArrayList<BasicBlock> dominateSet;
+    private ArrayList<BasicBlock> dominanceFrontier;
+    private ArrayList<BasicBlock> childList;
+    private BasicBlock parent;
 
     public BasicBlock(String name) {
         super(new StructType("basicblock"), name);
@@ -85,5 +91,52 @@ public class BasicBlock extends Value {
                 Mem2RegUnit.varRename();
             }
         }
+    }
+
+    public void deadCodeElimination() {
+        Iterator<Instr> iter = instrArrayList.iterator();
+        while (iter.hasNext()) {
+            Instr instr = iter.next();
+            if (instr.isDead()) {
+                iter.remove();
+            }
+        }
+    }
+
+    public void setIndBasicBlocks(ArrayList<BasicBlock> indBasicBlocks) {
+        this.indBasicBlocks = indBasicBlocks;
+    }
+
+    public void setOutBasicBlocks(ArrayList<BasicBlock> outBasicBlocks) {
+        this.outBasicBlocks = outBasicBlocks;
+    }
+
+    public ArrayList<BasicBlock> getIndBasicBlocks() {
+        return indBasicBlocks;
+    }
+
+    public ArrayList<BasicBlock> getOutBasicBlocks() {
+        return outBasicBlocks;
+    }
+
+    public void setDominateSet(ArrayList<BasicBlock> domList) {
+        this.dominateSet = domList;
+    }
+
+    public ArrayList<BasicBlock> getDominateSet() {
+        return dominateSet;
+    }
+
+    public void setDominanceFrontier(ArrayList<BasicBlock> dominanceFrontier) {
+        this.dominanceFrontier = dominanceFrontier;
+    }
+
+    public void updateDominateTree(BasicBlock parent, ArrayList<BasicBlock> childList) {
+        this.parent = parent;
+        this.childList = childList;
+    }
+
+    public BasicBlock getParent() {
+        return parent;
     }
 }

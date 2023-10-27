@@ -4,18 +4,18 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
-import midend.simplify.controller.ControlFlowGraph;
+import midend.simplify.controller.ControlFlowGraphController;
 
 import java.util.Iterator;
 
 public class Mem2RegUnit {
     private static Module module;
-    private static ControlFlowGraph cfGraph;
+    private static ControlFlowGraphController cfGraphController;
     private static BasicBlock initialBasicBlock;
 
     private static void init() {
-        Mem2RegUnit.cfGraph = new ControlFlowGraph(module);
-        Mem2RegUnit.cfGraph.build();
+        Mem2RegUnit.cfGraphController = new ControlFlowGraphController(module);
+        Mem2RegUnit.cfGraphController.build();
     }
 
     public static void run(Module module) {

@@ -30,4 +30,9 @@ public class Instr extends User {
         Mem2RegUnit.reConfig(this);
         Mem2RegUnit.insertPhi(this);
     }
+
+    /*TODO:judge need to change*/
+    public boolean isDead() {
+        return false;
+    }
 }

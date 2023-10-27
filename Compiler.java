@@ -7,6 +7,7 @@ import iostream.ErrorController;
 import iostream.OutputController;
 import midend.generation.GenerationMain;
 import midend.simplify.MidEndOptimizerUnit;
+import midend.simplify.method.DeadCodeEliminationUnit;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -62,6 +63,8 @@ public class Compiler {
                 BackEndOptimizerUnit backEndOptimizerUnit =
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();
+                // 死代码删除
+                DeadCodeEliminationUnit.run(GenerationMain.getModule());
             }
             // 生成汇编代码
             AssemblyGeneration assemblyGeneration =
