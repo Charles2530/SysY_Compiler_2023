@@ -8,12 +8,12 @@ import midend.generation.value.construction.user.Instr;
 import java.util.ArrayList;
 
 public class PhiInstr extends Instr {
-    private final ArrayList<BasicBlock> preBlockList;
+    private final ArrayList<BasicBlock> indBasicBlock;
 
-    public PhiInstr(String name, ArrayList<BasicBlock> preBlockList) {
+    public PhiInstr(String name, ArrayList<BasicBlock> indBasicBlock) {
         super(new VarType(32), name, "phi");
-        this.preBlockList = preBlockList;
-        addOperand(null, preBlockList.size());
+        this.indBasicBlock = indBasicBlock;
+        addOperand(null, indBasicBlock.size());
     }
 
     @Override
@@ -22,7 +22,7 @@ public class PhiInstr extends Instr {
         sb.append(name).append(" = ").append(instrType).append(" ").append(type).append(" ");
         for (int i = 0; i < operands.size(); i++) {
             sb.append("[ ").append(operands.get(i).getName()).append(", %")
-                    .append(preBlockList.get(i).getName()).append(" ]");
+                    .append(indBasicBlock.get(i).getName()).append(" ]");
             if (i != operands.size() - 1) {
                 sb.append(", ");
             }
@@ -31,7 +31,7 @@ public class PhiInstr extends Instr {
     }
 
     public void modifyValue(Value value, BasicBlock initialBasicBlock) {
-        operands.set(preBlockList.indexOf(initialBasicBlock), value);
+        operands.set(indBasicBlock.indexOf(initialBasicBlock), value);
         value.addUseDefChain(this);
     }
 }

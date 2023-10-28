@@ -12,7 +12,6 @@ import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class BasicBlock extends Value {
     private ArrayList<Instr> instrArrayList;
@@ -80,23 +79,18 @@ public class BasicBlock extends Value {
     }
 
     public void insertPhiProcess() {
-        for (Instr instr : instrArrayList) {
+        ArrayList<Instr> copy = new ArrayList<>(instrArrayList);
+        for (Instr instr : copy) {
             if (instr instanceof AllocaInstr &&
                     ((PointerType) instr.getType()).getTarget().isInt32()) {
                 instr.insertPhiProcess();
-//                Mem2RegUnit.varRename();
+                Mem2RegUnit.varRename();
             }
         }
     }
 
     public void deadCodeElimination() {
-        Iterator<Instr> iter = instrArrayList.iterator();
-        while (iter.hasNext()) {
-            Instr instr = iter.next();
-            if (instr.isDead()) {
-                iter.remove();
-            }
-        }
+        instrArrayList.removeIf(Instr::isDead);
     }
 
     public boolean setDeleted(boolean exist) {

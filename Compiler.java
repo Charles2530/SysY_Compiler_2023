@@ -24,7 +24,7 @@ public class Compiler {
     private static boolean IsDebugMode = false;
     private static boolean IsLexerOutput = false;
     private static boolean IsParserOutput = false;
-    private static boolean IsGenerationOutput = true;
+    private static boolean IsGenerationOutput = false;
     private static boolean IsOptimize = true;
     private static boolean IsGenerationOptimizerOutput = true;
     private static boolean IsAssemblyOutput = true;
@@ -92,7 +92,7 @@ public class Compiler {
         generationOutputStream = IsGenerationOutput ? new BufferedWriter(
                 new FileWriter("llvm_ir.txt", false)) : null;
         generationOptimizerOutputStream = IsGenerationOptimizerOutput ? new BufferedWriter(
-                new FileWriter("llvm_ir_optimizer.txt", false)) : null;
+                new FileWriter("llvm_ir.txt", false)) : null;
         assemblyOutputStream = IsAssemblyOutput ? new BufferedWriter(
                 new FileWriter("mips.txt", false)) : null;
         // 错误处理初始化
