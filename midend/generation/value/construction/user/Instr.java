@@ -59,6 +59,5 @@ public class Instr extends User {
         return valid || this instanceof PhiInstr ||
                 this instanceof GetEleInstr || this instanceof IcmpInstr ||
                 this instanceof LoadInstr || this instanceof ZextInstr;
-
     }
 }

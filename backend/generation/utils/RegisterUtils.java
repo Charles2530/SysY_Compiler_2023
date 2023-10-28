@@ -11,7 +11,6 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.Param;
 import midend.generation.value.construction.user.GlobalVar;
-import midend.simplify.value.Undefined;
 
 import java.util.ArrayList;
 
@@ -48,8 +47,8 @@ public class RegisterUtils {
 
     public static Register loadVariableValue(Value operand, Register reg, Register instead) {
         Register register = reg;
-        if (operand instanceof Constant || operand instanceof Undefined) {
-            new LiAsm(instead, Integer.parseInt(operand.getName()));
+        if (operand instanceof Constant) {
+            new LiAsm(instead, ((Constant) operand).getVal());
             return instead;
         }
         register = loadRegisterValue(operand, instead, register);
@@ -69,8 +68,8 @@ public class RegisterUtils {
     public static Register loadMemoryOffset(Value operand, Register instead, Register target,
                                             Register pointerReg, Register offsetReg) {
         Register register = offsetReg;
-        if (operand instanceof Constant || operand instanceof Undefined) {
-            new ItypeAsm("addi", target, pointerReg, Integer.parseInt(operand.getName()) * 4);
+        if (operand instanceof Constant) {
+            new ItypeAsm("addi", target, pointerReg, ((Constant) operand).getVal() * 4);
         } else {
             register = loadRegisterValue(operand, instead, register);
             new ItypeAsm("sll", instead, register, 2);
@@ -81,8 +80,8 @@ public class RegisterUtils {
 
     public static Register allocParamReg(Value para, Register paraReg,
                                          int currentOffset, ArrayList<Register> allocatedRegs) {
-        if (para instanceof Constant || para instanceof Undefined) {
-            new LiAsm(paraReg, Integer.parseInt(para.getName()));
+        if (para instanceof Constant) {
+            new LiAsm(paraReg, ((Constant) para).getVal());
             return paraReg;
         }
         if (AssemblyUnit.getRegisterController().getRegister(para) != null) {
@@ -102,8 +101,8 @@ public class RegisterUtils {
     public static Register allocParamMem(Value para, Register paraReg, int currentOffset,
                                          ArrayList<Register> allocatedRegs, int paraNum) {
         Register register = paraReg;
-        if (para instanceof Constant || para instanceof Undefined) {
-            new LiAsm(register, Integer.parseInt(para.getName()));
+        if (para instanceof Constant) {
+            new LiAsm(register, ((Constant) para).getVal());
             new MemTypeAsm("sw", null, register,
                     Register.SP, currentOffset - (allocatedRegs.size() + 2 + paraNum) * 4);
             return register;

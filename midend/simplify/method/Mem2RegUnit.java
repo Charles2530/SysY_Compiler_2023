@@ -1,8 +1,10 @@
 package midend.simplify.method;
 
 import midend.generation.utils.IrNameController;
+import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
+import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
@@ -13,7 +15,6 @@ import midend.simplify.controller.ControlFlowGraphController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.controller.datastruct.Use;
-import midend.simplify.value.Undefined;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -103,38 +104,44 @@ public class Mem2RegUnit {
         }
     }
 
-    public static void varRename(BasicBlock initialBasicBlock) {
-        int cnt = 0;
-        Iterator<Instr> iter = initialBasicBlock.getInstrArrayList().iterator();
-        while (iter.hasNext()) {
-            Instr instr = iter.next();
-            if (instr instanceof LoadInstr && useInstrArrayList.contains(instr)) {
-                instr.replaceAllUse(((stack.isEmpty()) ? new Undefined() : stack.peek()));
-                iter.remove();
-            } else if (instr instanceof StoreInstr storeInstr &&
-                    defInstrArrayList.contains(instr)) {
-                cnt++;
-                stack.push(storeInstr.getOperands().get(0));
-                iter.remove();
-            } else if (instr instanceof PhiInstr && defInstrArrayList.contains(instr)) {
-                cnt++;
-                stack.push(instr);
-            } else if (instr.equals(Mem2RegUnit.currentAllocaInstr)) {
-                iter.remove();
-            }
-        }
-        for (BasicBlock basicBlock : ControlFlowGraph.getBlockOutBasicBlock(initialBasicBlock)) {
+    public static void varRename(BasicBlock presentBlock) {
+        int cnt = removeUnnecessaryInstr(presentBlock);
+        for (BasicBlock basicBlock : ControlFlowGraph.getBlockOutBasicBlock(presentBlock)) {
             Instr instr = basicBlock.getInstrArrayList().get(0);
             if (instr instanceof PhiInstr phiInstr && useInstrArrayList.contains(instr)) {
                 phiInstr.modifyValue(((stack.isEmpty()) ?
-                        new Undefined() : stack.peek()), initialBasicBlock);
+                        new Constant("0", new VarType(32)) : stack.peek()), presentBlock);
             }
         }
-        for (BasicBlock child : DominatorTree.getBlockDominateChildList(initialBasicBlock)) {
+        for (BasicBlock child : DominatorTree.getBlockDominateChildList(presentBlock)) {
             Mem2RegUnit.varRename(child);
         }
         for (int i = 0; i < cnt; i++) {
             stack.pop();
         }
+    }
+
+    private static int removeUnnecessaryInstr(BasicBlock presentBlock) {
+        int instrNum = 0;
+        Iterator<Instr> iter = presentBlock.getInstrArrayList().iterator();
+        while (iter.hasNext()) {
+            Instr instr = iter.next();
+            if (instr instanceof LoadInstr && useInstrArrayList.contains(instr)) {
+                instr.replaceAllUse(((stack.isEmpty()) ?
+                        new Constant("0", new VarType(32)) : stack.peek()));
+                iter.remove();
+            } else if (instr instanceof StoreInstr storeInstr &&
+                    defInstrArrayList.contains(instr)) {
+                instrNum++;
+                stack.push(storeInstr.getOperands().get(0));
+                iter.remove();
+            } else if (instr instanceof PhiInstr && defInstrArrayList.contains(instr)) {
+                instrNum++;
+                stack.push(instr);
+            } else if (instr.equals(Mem2RegUnit.currentAllocaInstr)) {
+                iter.remove();
+            }
+        }
+        return instrNum;
     }
 }

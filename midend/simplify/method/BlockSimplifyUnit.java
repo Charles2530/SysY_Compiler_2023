@@ -6,6 +6,7 @@ import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.BrInstr;
 import midend.generation.value.instr.basis.JumpInstr;
+import midend.generation.value.instr.basis.RetInstr;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,7 +36,8 @@ public class BlockSimplifyUnit {
     public static void deleteDuplicateBranch(BasicBlock basicBlock) {
         for (int i = 0; i < basicBlock.getInstrArrayList().size() - 1; i++) {
             Instr instr = basicBlock.getInstrArrayList().get(i);
-            if (instr instanceof BrInstr || instr instanceof JumpInstr) {
+            if (instr instanceof BrInstr || instr instanceof JumpInstr
+                    || instr instanceof RetInstr) {
                 basicBlock.setInstrArrayList(new ArrayList<>(
                         basicBlock.getInstrArrayList().subList(0, i + 1)));
                 break;

@@ -66,7 +66,7 @@ public class Compiler {
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();
                 // 死代码删除
-                //DeadCodeEliminationUnit.run(GenerationMain.getModule());
+                DeadCodeEliminationUnit.run(GenerationMain.getModule());
                 // 重新生成中间代码
                 OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
             }
