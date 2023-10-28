@@ -4,8 +4,8 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.User;
 
 public class Use {
-    private User user;
-    private Value value;
+    private final User user;
+    private final Value value;
 
     public Use(User user, Value value) {
         this.user = user;

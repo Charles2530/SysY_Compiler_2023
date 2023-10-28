@@ -52,11 +52,15 @@ public class DominatorTree {
         for (BasicBlock basicBlock : function.getBasicBlocks()) {
             for (BasicBlock dominateBlock : DominatorTree.dominateHashMap.get(basicBlock)) {
                 if (isImmediateDominator(basicBlock, dominateBlock)) {
-                    DominatorTree.parent.put(dominateBlock, basicBlock);
-                    DominatorTree.childList.get(basicBlock).add(dominateBlock);
+                    addDoubleEdge(basicBlock, dominateBlock);
                 }
             }
         }
+    }
+
+    private static void addDoubleEdge(BasicBlock fromBlock, BasicBlock toBlock) {
+        DominatorTree.parent.put(toBlock, fromBlock);
+        DominatorTree.childList.get(fromBlock).add(toBlock);
     }
 
     private static boolean isImmediateDominator(BasicBlock basicBlock, BasicBlock dominateBlock) {

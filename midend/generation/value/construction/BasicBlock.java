@@ -87,7 +87,7 @@ public class BasicBlock extends Value {
             if (instr instanceof AllocaInstr &&
                     ((PointerType) instr.getType()).getTarget().isInt32()) {
                 instr.insertPhiProcess();
-                Mem2RegUnit.varRename(Mem2RegUnit.getInitialBasicBlock());
+                Mem2RegUnit.dfsVarRename(Mem2RegUnit.getInitialBasicBlock());
             }
         }
     }
@@ -107,5 +107,6 @@ public class BasicBlock extends Value {
 
     public void addInstrToFirst(Instr phiInstr) {
         instrArrayList.add(0, phiInstr);
+        phiInstr.setBelongingBlock(this);
     }
 }

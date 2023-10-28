@@ -40,18 +40,17 @@ public class ControlFlowGraph {
         for (BasicBlock basicBlock : function.getBasicBlocks()) {
             Instr lastInstr = basicBlock.getLastInstr();
             if (lastInstr instanceof JumpInstr jumpInstr) {
-                BasicBlock targetBasicBlock = jumpInstr.getTarget();
-                ControlFlowGraph.addBlockIndBasicBlock(targetBasicBlock, basicBlock);
-                ControlFlowGraph.addBlockOutBasicBlock(basicBlock, targetBasicBlock);
+                ControlFlowGraph.addDoubleEdge(basicBlock, jumpInstr.getTarget());
             } else if (lastInstr instanceof BrInstr brInstr) {
-                BasicBlock thenBasicBlock = brInstr.getThenBlock();
-                ControlFlowGraph.addBlockIndBasicBlock(thenBasicBlock, basicBlock);
-                ControlFlowGraph.addBlockOutBasicBlock(basicBlock, thenBasicBlock);
-                BasicBlock elseBasicBlock = brInstr.getElseBlock();
-                ControlFlowGraph.addBlockIndBasicBlock(elseBasicBlock, basicBlock);
-                ControlFlowGraph.addBlockOutBasicBlock(basicBlock, elseBasicBlock);
+                ControlFlowGraph.addDoubleEdge(basicBlock, brInstr.getThenBlock());
+                ControlFlowGraph.addDoubleEdge(basicBlock, brInstr.getElseBlock());
             }
         }
+    }
+
+    private static void addDoubleEdge(BasicBlock fromBlock, BasicBlock toBlock) {
+        ControlFlowGraph.addBlockIndBasicBlock(toBlock, fromBlock);
+        ControlFlowGraph.addBlockOutBasicBlock(fromBlock, toBlock);
     }
 
     public static HashMap<BasicBlock,

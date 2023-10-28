@@ -93,7 +93,6 @@ public class Mem2RegUnit {
                     Instr phiInstr = new PhiInstr(IrNameController.getLocalVarName(
                             y.getBelongingFunc()), ControlFlowGraph.getBlockIndBasicBlock(y));
                     y.addInstrToFirst(phiInstr);
-                    phiInstr.setBelongingBlock(y);
                     useInstrArrayList.add(phiInstr);
                     defInstrArrayList.add(phiInstr);
                     if (!defBasicBlockArrayList.contains(y)) {
@@ -104,17 +103,17 @@ public class Mem2RegUnit {
         }
     }
 
-    public static void varRename(BasicBlock presentBlock) {
+    public static void dfsVarRename(BasicBlock presentBlock) {
         int cnt = removeUnnecessaryInstr(presentBlock);
         for (BasicBlock basicBlock : ControlFlowGraph.getBlockOutBasicBlock(presentBlock)) {
             Instr instr = basicBlock.getInstrArrayList().get(0);
-            if (instr instanceof PhiInstr phiInstr && useInstrArrayList.contains(instr)) {
+            if (instr instanceof PhiInstr phiInstr && useInstrArrayList.contains(phiInstr)) {
                 phiInstr.modifyValue(((stack.isEmpty()) ?
                         new Constant("0", new VarType(32)) : stack.peek()), presentBlock);
             }
         }
         for (BasicBlock child : DominatorTree.getBlockDominateChildList(presentBlock)) {
-            Mem2RegUnit.varRename(child);
+            Mem2RegUnit.dfsVarRename(child);
         }
         for (int i = 0; i < cnt; i++) {
             stack.pop();
@@ -126,18 +125,19 @@ public class Mem2RegUnit {
         Iterator<Instr> iter = presentBlock.getInstrArrayList().iterator();
         while (iter.hasNext()) {
             Instr instr = iter.next();
-            if (instr instanceof LoadInstr && useInstrArrayList.contains(instr)) {
-                instr.replaceAllUse(((stack.isEmpty()) ?
-                        new Constant("0", new VarType(32)) : stack.peek()));
-                iter.remove();
-            } else if (instr instanceof StoreInstr storeInstr &&
-                    defInstrArrayList.contains(instr)) {
+            if (instr instanceof StoreInstr storeInstr &&
+                    defInstrArrayList.contains(storeInstr)) {
                 instrNum++;
                 stack.push(storeInstr.getOperands().get(0));
                 iter.remove();
-            } else if (instr instanceof PhiInstr && defInstrArrayList.contains(instr)) {
+            } else if (instr instanceof LoadInstr loadInstr &&
+                    useInstrArrayList.contains(loadInstr)) {
+                loadInstr.replaceAllUse(((stack.isEmpty()) ?
+                        new Constant("0", new VarType(32)) : stack.peek()));
+                iter.remove();
+            } else if (instr instanceof PhiInstr phiInstr && defInstrArrayList.contains(phiInstr)) {
                 instrNum++;
-                stack.push(instr);
+                stack.push(phiInstr);
             } else if (instr.equals(Mem2RegUnit.currentAllocaInstr)) {
                 iter.remove();
             }
