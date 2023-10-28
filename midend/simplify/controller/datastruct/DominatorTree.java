@@ -64,7 +64,7 @@ public class DominatorTree {
                 !dominateBlock.equals(basicBlock);
         for (BasicBlock midBlock : DominatorTree.getBlockDominateSet(basicBlock)) {
             if (!midBlock.equals(dominateBlock) && !midBlock.equals(basicBlock)
-                    && DominatorTree.getBlockDominateSet(basicBlock).contains(midBlock)) {
+                    && DominatorTree.getBlockDominateSet(midBlock).contains(dominateBlock)) {
                 flag = false;
                 break;
             }
@@ -77,10 +77,10 @@ public class DominatorTree {
         if (entry.equals(basicBlock)) {
             return;
         }
-        reachedSet.add(basicBlock);
-        for (BasicBlock child : DominatorTree.childList.get(basicBlock)) {
+        reachedSet.add(entry);
+        for (BasicBlock child : ControlFlowGraph.getBlockOutBasicBlock(entry)) {
             if (!reachedSet.contains(child)) {
-                DominatorTree.dfsDominate(entry, child, reachedSet);
+                DominatorTree.dfsDominate(child, basicBlock, reachedSet);
             }
         }
     }

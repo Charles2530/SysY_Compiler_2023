@@ -1,5 +1,6 @@
 package midend.generation.value.construction;
 
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;
@@ -10,7 +11,9 @@ public class Param extends Value {
 
     public Param(IrType type, String name) {
         super(type, name);
-        IrNameController.addParam(this);
+        if (!OptimizerUnit.isIsOptimizer()) {
+            IrNameController.addParam(this);
+        }
     }
 
     public void setBelongingFunc(Function belongingFunc) {

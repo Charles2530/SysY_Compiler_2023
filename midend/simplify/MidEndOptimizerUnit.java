@@ -1,10 +1,11 @@
 package midend.simplify;
 
+import iostream.OptimizerUnit;
 import midend.generation.value.construction.Module;
 import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
-public class MidEndOptimizerUnit {
+public class MidEndOptimizerUnit extends OptimizerUnit {
     private final Module module;
     private final boolean isBlockSimplify = true;
     private final boolean isMem2Reg = true;

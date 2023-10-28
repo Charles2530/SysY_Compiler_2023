@@ -1,6 +1,7 @@
 package midend.generation.value.construction;
 
 import backend.generation.mips.asm.textsegment.structure.Label;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.StructType;
@@ -21,7 +22,9 @@ public class BasicBlock extends Value {
     public BasicBlock(String name) {
         super(new StructType("basicblock"), name);
         this.instrArrayList = new ArrayList<>();
-        IrNameController.addBasicBlock(this);
+        if (!OptimizerUnit.isIsOptimizer()) {
+            IrNameController.addBasicBlock(this);
+        }
         this.exist = true;
     }
 
@@ -84,7 +87,7 @@ public class BasicBlock extends Value {
             if (instr instanceof AllocaInstr &&
                     ((PointerType) instr.getType()).getTarget().isInt32()) {
                 instr.insertPhiProcess();
-                Mem2RegUnit.varRename();
+                Mem2RegUnit.varRename(Mem2RegUnit.getInitialBasicBlock());
             }
         }
     }

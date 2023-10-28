@@ -1,5 +1,6 @@
 package midend.generation;
 
+import iostream.OptimizerUnit;
 import midend.generation.llvm.LLvmGenIR;
 import midend.generation.utils.IrNameController;
 import midend.generation.value.construction.Module;
@@ -24,9 +25,11 @@ public class GenerationMain {
     }
 
     public void generate() {
+        OptimizerUnit.setIsOptimizer(false);
         GenerationMain.llvmGenIR = new LLvmGenIR();
         GenerationMain.llvmGenIR.genIrAnalysis(rootAst);
         OutputController.generationPrint(module.toString());
+        OptimizerUnit.setIsOptimizer(true);
     }
 
     public static void preTraverse(AstNode rootAst) {

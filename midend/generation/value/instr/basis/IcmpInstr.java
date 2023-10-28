@@ -11,8 +11,8 @@ import midend.generation.value.construction.user.Instr;
 public class IcmpInstr extends Instr {
     public IcmpInstr(String name, String instrType, Value ans, Value res) {
         super(new VarType(1), name, instrType);
-        operands.add(ans);
-        operands.add(res);
+        addOperand(ans);
+        addOperand(res);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class IrNameController {
     }
 
     public static String getLocalVarName(Function... function) {
-        Function presentFunction = function.length == 0 ? currentFunction : function[0];
+        Function presentFunction = ((function.length == 0) ? currentFunction : function[0]);
         int localVarNameIndex = localVarNameIndexHashMap.get(presentFunction);
         localVarNameIndexHashMap.put(presentFunction, localVarNameIndex + 1);
         return IrPrefix.LOCAL_VAR_NAME.toString() + localVarNameIndex;

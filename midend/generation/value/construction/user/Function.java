@@ -4,6 +4,7 @@ import backend.generation.mips.Register;
 import backend.generation.mips.asm.textsegment.structure.Label;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.StructType;
@@ -31,7 +32,9 @@ public class Function extends User {
         this.basicBlocks = new ArrayList<>();
         this.params = new ArrayList<>();
         this.registerHashMap = null;
-        IrNameController.addFunction(this);
+        if (!OptimizerUnit.isIsOptimizer()) {
+            IrNameController.addFunction(this);
+        }
     }
 
     public IrType getReturnType() {

@@ -31,6 +31,10 @@ public class Mem2RegUnit {
     private static Stack<Value> stack;
     private static Instr currentAllocaInstr;
 
+    public static BasicBlock getInitialBasicBlock() {
+        return initialBasicBlock;
+    }
+
     private static void init() {
         Mem2RegUnit.cfGraphController = new ControlFlowGraphController(module);
         Mem2RegUnit.cfGraphController.build();
@@ -99,13 +103,13 @@ public class Mem2RegUnit {
         }
     }
 
-    public static void varRename() {
+    public static void varRename(BasicBlock initialBasicBlock) {
         int cnt = 0;
         Iterator<Instr> iter = initialBasicBlock.getInstrArrayList().iterator();
         while (iter.hasNext()) {
             Instr instr = iter.next();
             if (instr instanceof LoadInstr && useInstrArrayList.contains(instr)) {
-                instr.replaceAllUse((stack.isEmpty()) ? new Undefined() : stack.peek());
+                instr.replaceAllUse(((stack.isEmpty()) ? new Undefined() : stack.peek()));
                 iter.remove();
             } else if (instr instanceof StoreInstr storeInstr &&
                     defInstrArrayList.contains(instr)) {
@@ -122,13 +126,12 @@ public class Mem2RegUnit {
         for (BasicBlock basicBlock : ControlFlowGraph.getBlockOutBasicBlock(initialBasicBlock)) {
             Instr instr = basicBlock.getInstrArrayList().get(0);
             if (instr instanceof PhiInstr phiInstr && useInstrArrayList.contains(instr)) {
-                phiInstr.modifyValue((stack.isEmpty()) ?
-                        new Undefined() : stack.peek(), initialBasicBlock);
+                phiInstr.modifyValue(((stack.isEmpty()) ?
+                        new Undefined() : stack.peek()), initialBasicBlock);
             }
         }
         for (BasicBlock child : DominatorTree.getBlockDominateChildList(initialBasicBlock)) {
-            Mem2RegUnit.initialBasicBlock = child;
-            Mem2RegUnit.varRename();
+            Mem2RegUnit.varRename(child);
         }
         for (int i = 0; i < cnt; i++) {
             stack.pop();

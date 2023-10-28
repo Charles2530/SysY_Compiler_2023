@@ -20,7 +20,7 @@ public class PhiInstr extends Instr {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(name).append(" = ").append(instrType).append(" ").append(type).append(" ");
-        for (int i = 0; i < operands.size(); i++) {
+        for (int i = 0; i < indBasicBlock.size(); i++) {
             sb.append("[ ").append(operands.get(i).getName()).append(", %")
                     .append(indBasicBlock.get(i).getName()).append(" ]");
             if (i != operands.size() - 1) {

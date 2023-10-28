@@ -2,6 +2,7 @@ package midend.generation.value.construction.user;
 
 import backend.generation.mips.asm.textsegment.structure.Comment;
 import iostream.IoStreamGeneration;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.construction.BasicBlock;
@@ -23,7 +24,9 @@ public class Instr extends User {
     public Instr(IrType type, String name, String instrType) {
         super(type, name);
         this.instrType = instrType;
-        IrNameController.addInstr(this);
+        if (!OptimizerUnit.isIsOptimizer()) {
+            IrNameController.addInstr(this);
+        }
     }
 
     public void setBelongingBlock(BasicBlock currentBasicBlock) {

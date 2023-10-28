@@ -10,7 +10,7 @@ public class TruncInstr extends Instr {
     public TruncInstr(String name, String instrType, Value val, IrType target) {
         super(target, name, instrType);
         this.target = target;
-        this.operands.add(val);
+        addOperand(val);
     }
 
     @Override

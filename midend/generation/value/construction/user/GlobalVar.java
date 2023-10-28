@@ -1,6 +1,7 @@
 package midend.generation.value.construction.user;
 
 import backend.generation.mips.asm.datasegment.WordAsm;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;
@@ -14,7 +15,9 @@ public class GlobalVar extends User {
     public GlobalVar(IrType type, String name, Initial initial) {
         super(type, name);
         this.initial = initial;
-        IrNameController.addGlobalVar(this);
+        if (!OptimizerUnit.isIsOptimizer()) {
+            IrNameController.addGlobalVar(this);
+        }
     }
 
     @Override
