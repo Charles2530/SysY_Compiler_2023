@@ -1,8 +1,9 @@
 import backend.generation.AssemblyGeneration;
 import backend.simplify.BackEndOptimizerUnit;
-import frontend.lexer.LexicalAnalysis;
-import frontend.semantic.SemanticAnalysis;
-import frontend.syntax.SyntaxAnalysis;
+import frontend.generation.lexer.LexicalAnalysis;
+import frontend.generation.semantic.SemanticAnalysis;
+import frontend.generation.syntax.SyntaxAnalysis;
+import frontend.simplify.FrontEndOptimizerUnit;
 import iostream.ErrorController;
 import iostream.OutputController;
 import midend.generation.GenerationMain;
@@ -50,6 +51,12 @@ public class Compiler {
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(
                 lexicalAnalysis.getSymTokens());
         syntaxAnalysis.analysis();
+        if (IsOptimize) {
+            // 前端优化
+            FrontEndOptimizerUnit frontEndOptimizerUnit =
+                    new FrontEndOptimizerUnit(syntaxAnalysis.getAst());
+            frontEndOptimizerUnit.optimize();
+        }
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();

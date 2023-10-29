@@ -1,13 +1,13 @@
 package midend.generation.llvm;
 
-import frontend.semantic.SemanticAnalysisChecker;
-import frontend.semantic.symtable.Symbol;
-import frontend.semantic.symtable.SymbolTable;
-import frontend.semantic.symtable.symbol.varsymbol.ConstSymbol;
-import frontend.semantic.symtable.symbol.FuncSymbol;
-import frontend.semantic.symtable.symbol.varsymbol.IntSymbol;
-import frontend.semantic.utils.SymDefiner;
-import frontend.syntax.AstNode;
+import frontend.generation.semantic.SemanticAnalysisChecker;
+import frontend.generation.semantic.symtable.Symbol;
+import frontend.generation.semantic.symtable.SymbolTable;
+import frontend.generation.semantic.symtable.symbol.varsymbol.ConstSymbol;
+import frontend.generation.semantic.symtable.symbol.FuncSymbol;
+import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
+import frontend.generation.semantic.utils.SymDefiner;
+import frontend.generation.syntax.AstNode;
 import iostream.declare.PutIntDeclare;
 import iostream.declare.PutStrDeclare;
 import midend.generation.GenerationMain;

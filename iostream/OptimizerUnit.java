@@ -10,4 +10,7 @@ public class OptimizerUnit {
     public static void setIsOptimizer(boolean isOptimizer) {
         OptimizerUnit.isOptimizer = isOptimizer;
     }
+
+    public void optimize() {
+    }
 }

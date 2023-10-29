@@ -1,8 +1,8 @@
 package iostream;
 
 import backend.generation.utils.AssemblyData;
-import frontend.lexer.SymToken;
-import frontend.syntax.AstNode;
+import frontend.generation.lexer.SymToken;
+import frontend.generation.syntax.AstNode;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

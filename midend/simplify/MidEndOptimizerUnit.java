@@ -14,6 +14,7 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
         this.module = module;
     }
 
+    @Override
     public void optimize() {
         if (isBlockSimplify) {
             BlockSimplifyUnit.run(module);

@@ -5,8 +5,8 @@ import midend.generation.llvm.LLvmGenIR;
 import midend.generation.utils.IrNameController;
 import midend.generation.value.construction.Module;
 import iostream.OutputController;
-import frontend.semantic.symtable.SymbolTable;
-import frontend.syntax.AstNode;
+import frontend.generation.semantic.symtable.SymbolTable;
+import frontend.generation.syntax.AstNode;
 
 public class GenerationMain {
     private final AstNode rootAst;

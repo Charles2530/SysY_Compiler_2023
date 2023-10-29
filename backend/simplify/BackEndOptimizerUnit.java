@@ -12,6 +12,7 @@ public class BackEndOptimizerUnit extends OptimizerUnit {
         this.module = module;
     }
 
+    @Override
     public void optimize() {
         if (isRemovePhi) {
             PhiEliminationUnit.run(module);

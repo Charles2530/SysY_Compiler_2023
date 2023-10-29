@@ -1,6 +1,6 @@
 package midend.generation.value.construction.procedure;
 
-import frontend.syntax.AstNode;
+import frontend.generation.syntax.AstNode;
 import midend.generation.value.construction.BasicBlock;
 
 public class Loop {
