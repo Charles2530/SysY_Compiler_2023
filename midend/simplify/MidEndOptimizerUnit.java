@@ -2,7 +2,6 @@ package midend.simplify;
 
 import iostream.OptimizerUnit;
 import midend.generation.value.construction.Module;
-import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 

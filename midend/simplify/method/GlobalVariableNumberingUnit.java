@@ -19,6 +19,7 @@ public class GlobalVariableNumberingUnit {
     private static HashMap<Function, HashMap<String, Instr>> GlobalVariableNumberingHashMap;
 
     public static void run(Module module) {
+        GlobalVariableNumberingUnit.GlobalVariableNumberingHashMap = new HashMap<>();
         for (Function function : module.getFunctions()) {
             function.uniqueInstr();
         }
