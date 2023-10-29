@@ -1,6 +1,7 @@
 package midend.generation.utils;
 
 import midend.generation.utils.irtype.ArrayType;
+import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.VarType;
 
 public class IrType {
@@ -22,5 +23,9 @@ public class IrType {
 
     public boolean isArray() {
         return this instanceof ArrayType;
+    }
+
+    public boolean isPointer() {
+        return this instanceof PointerType;
     }
 }

@@ -1,5 +1,10 @@
 package midend.generation.llvm;
 
+import frontend.generation.semantic.symtable.Symbol;
+import frontend.generation.semantic.symtable.SymbolTable;
+import frontend.generation.semantic.symtable.symbol.varsymbol.ConstSymbol;
+import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
+import frontend.generation.syntax.AstNode;
 import iostream.declare.GetIntDeclare;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.VarType;
@@ -7,11 +12,6 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.user.Instr;
-import frontend.generation.semantic.symtable.Symbol;
-import frontend.generation.semantic.symtable.SymbolTable;
-import frontend.generation.semantic.symtable.symbol.varsymbol.ConstSymbol;
-import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
-import frontend.generation.syntax.AstNode;
 import midend.generation.value.instr.basis.BrInstr;
 import midend.generation.value.instr.basis.CalcInstr;
 import midend.generation.value.instr.basis.GetEleInstr;
@@ -34,15 +34,19 @@ public class LLvmGenUtils {
         }
     }
 
-    public void genOrIr(AstNode astNode, BasicBlock thenBlock, BasicBlock elseBlock) {
-        for (int i = 0; i < astNode.getChildList().size(); i++) {
-            AstNode child = astNode.getChildList().get(i);
-            if (child.getGrammarType().equals("<LAndExp>")) {
-                genAndIr(child, thenBlock, elseBlock);
-            } else if (child.getGrammarType().equals("<LOrExp>")) {
-                BasicBlock nextBlock = new BasicBlock(IrNameController.getBlockName());
-                genOrIr(child, thenBlock, nextBlock);
-                IrNameController.setCurrentBlock(nextBlock);
+    public void genOrIr(AstNode child, BasicBlock thenBlock, BasicBlock elseBlock) {
+        for (AstNode node : child.getChildList()) {
+            if (node.getGrammarType().equals("<LAndExp>")) {
+                if ((child.getParent().getChildList().size() > 1 || child.getChildList().size() > 1)
+                        && child.getParent().getGrammarType().equals("<LOrExp>")) {
+                    BasicBlock nextBlock = new BasicBlock(IrNameController.getBlockName());
+                    genAndIr(node, thenBlock, nextBlock);
+                    IrNameController.setCurrentBlock(nextBlock);
+                } else {
+                    genAndIr(node, thenBlock, elseBlock);
+                }
+            } else if (node.getGrammarType().equals("<LOrExp>")) {
+                genOrIr(node, thenBlock, elseBlock);
             }
         }
     }
@@ -50,19 +54,27 @@ public class LLvmGenUtils {
     public void genAndIr(AstNode child, BasicBlock thenBlock, BasicBlock elseBlock) {
         for (AstNode node : child.getChildList()) {
             if (node.getGrammarType().equals("<EqExp>")) {
-                Value cond = llvmGenIR.genIrAnalysis(node);
-                if (cond.getType().isInt32()) {
-                    cond = new IcmpInstr(IrNameController.getLocalVarName(),
-                            "ne", cond, new Constant("0", new VarType(32)));
+                if ((child.getParent().getChildList().size() > 1 || child.getChildList().size() > 1)
+                        && child.getParent().getGrammarType().equals("<LAndExp>")) {
+                    BasicBlock nextBlock = new BasicBlock(IrNameController.getBlockName());
+                    genEqIr(node, nextBlock, elseBlock);
+                    IrNameController.setCurrentBlock(nextBlock);
+                } else {
+                    genEqIr(node, thenBlock, elseBlock);
                 }
-                new BrInstr(cond, thenBlock, elseBlock);
             } else if (node.getGrammarType().equals("<LAndExp>")) {
-                BasicBlock nextBlock = new BasicBlock(IrNameController.getBlockName());
-                genAndIr(node, nextBlock, elseBlock);
-                IrNameController.setCurrentBlock(nextBlock);
+                genAndIr(node, thenBlock, elseBlock);
             }
         }
+    }
 
+    public void genEqIr(AstNode node, BasicBlock thenBlock, BasicBlock elseBlock) {
+        Value cond = llvmGenIR.genIrAnalysis(node);
+        if (cond.getType().isInt32()) {
+            cond = new IcmpInstr(IrNameController.getLocalVarName(),
+                    "ne", cond, new Constant("0", new VarType(32)));
+        }
+        new BrInstr(cond, thenBlock, elseBlock);
     }
 
     public Value genAssignIr(AstNode rootAst) {

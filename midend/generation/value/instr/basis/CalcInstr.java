@@ -68,4 +68,13 @@ public class CalcInstr extends Instr {
         }
         RegisterUtils.reAllocReg(this, target);
     }
+
+    @Override
+    public String getGlobalVariableNumberingHash() {
+        if (instrType.matches("add|mul") &&
+                operands.get(0).getName().compareTo(operands.get(1).getName()) > 0) {
+            return operands.get(1).getName() + " " + instrType + " " + operands.get(0).getName();
+        }
+        return operands.get(0).getName() + " " + instrType + " " + operands.get(1).getName();
+    }
 }

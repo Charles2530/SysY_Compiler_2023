@@ -61,7 +61,7 @@ public class LLvmGenIR {
             case "CONTINUETK" -> genIrContinueStmtChecker();
             case "RETURNTK" -> genIrReturnStmtChecker(rootAst);
             case "PRINTFTK" -> genIrPrintStmtChecker(rootAst);
-            case "<Exp>","<ConstExp>" -> genIrExpChecker(rootAst);
+            case "<Exp>", "<ConstExp>" -> genIrExpChecker(rootAst);
             case "<PrimaryExp>" -> genIrPrimaryExpChecker(rootAst);
             case "<Number>" -> genIrNumberCallChecker(rootAst);
             case "<UnaryExp>" -> genIrUnaryExpChecker(rootAst);

@@ -152,8 +152,19 @@ public class Function extends User {
         GlobalVariableNumberingUnit.addHashMap(this, hashMap);
     }
 
-    /*TODO:need change*/
     public boolean isImprovable() {
-        return false;
+        boolean flag = true;
+        for (Param param : params) {
+            if (param.getType().isPointer()) {
+                flag = false;
+                break;
+            }
+        }
+        for (BasicBlock basicBlock : basicBlocks) {
+            if (!(flag = basicBlock.isImprovable(flag))) {
+                break;
+            }
+        }
+        return flag;
     }
 }

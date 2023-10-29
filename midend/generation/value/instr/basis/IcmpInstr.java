@@ -41,4 +41,9 @@ public class IcmpInstr extends Instr {
         }
         RegisterUtils.reAllocReg(this, target);
     }
+
+    @Override
+    public String getGlobalVariableNumberingHash() {
+        return operands.get(0).getName() + " " + instrType + " " + operands.get(1).getName();
+    }
 }

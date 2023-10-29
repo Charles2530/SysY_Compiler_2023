@@ -77,4 +77,18 @@ public class CallInstr extends Instr {
             new MoveAsm(AssemblyUnit.getRegisterController().getRegister(this), Register.V0);
         }
     }
+
+    @Override
+    public String getGlobalVariableNumberingHash() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(operands.get(0).getName()).append("(");
+        for (int i = 1; i < operands.size(); i++) {
+            sb.append(operands.get(i).getName());
+            if (i != operands.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
+    }
 }

@@ -1,14 +1,17 @@
 package midend.generation.value.construction;
 
 import backend.generation.mips.asm.textsegment.structure.Label;
+import iostream.IoStreamGeneration;
 import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.StructType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;
+import midend.generation.value.construction.user.GlobalVar;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.AllocaInstr;
+import midend.generation.value.instr.basis.CallInstr;
 import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
@@ -108,5 +111,19 @@ public class BasicBlock extends Value {
     public void addInstrToFirst(Instr phiInstr) {
         instrArrayList.add(0, phiInstr);
         phiInstr.setBelongingBlock(this);
+    }
+
+    public boolean isImprovable(boolean flag) {
+        for (Instr instr : instrArrayList) {
+            if (instr instanceof CallInstr || instr instanceof IoStreamGeneration) {
+                return false;
+            }
+            for (Value value : instr.getOperands()) {
+                if (value instanceof GlobalVar) {
+                    return false;
+                }
+            }
+        }
+        return flag;
     }
 }

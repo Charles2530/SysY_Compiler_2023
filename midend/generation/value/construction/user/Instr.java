@@ -65,7 +65,6 @@ public class Instr extends User {
                 this instanceof LoadInstr || this instanceof ZextInstr;
     }
 
-    /*TODO:need override*/
     public String getGlobalVariableNumberingHash() {
         return null;
     }

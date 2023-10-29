@@ -54,4 +54,9 @@ public class GetEleInstr extends Instr {
         RegisterUtils.loadMemoryOffset(operands.get(1), Register.K1, target, pointerReg, offsetReg);
         RegisterUtils.reAllocReg(this, target);
     }
+
+    @Override
+    public String getGlobalVariableNumberingHash() {
+        return operands.get(0).getName() + " " + operands.get(1).getName();
+    }
 }
