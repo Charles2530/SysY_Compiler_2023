@@ -29,6 +29,10 @@ public class Instr extends User {
         }
     }
 
+    public String getInstrType() {
+        return instrType;
+    }
+
     public void setBelongingBlock(BasicBlock currentBasicBlock) {
         this.parent = currentBasicBlock;
     }
@@ -59,5 +63,10 @@ public class Instr extends User {
         return valid || this instanceof PhiInstr ||
                 this instanceof GetEleInstr || this instanceof IcmpInstr ||
                 this instanceof LoadInstr || this instanceof ZextInstr;
+    }
+
+    /*TODO:need override*/
+    public String getGlobalVariableNumberingHash() {
+        return null;
     }
 }

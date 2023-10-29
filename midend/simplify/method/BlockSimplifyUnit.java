@@ -1,7 +1,6 @@
 package midend.simplify.method;
 
 import midend.generation.value.construction.BasicBlock;
-import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.BrInstr;
@@ -12,10 +11,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class BlockSimplifyUnit {
-    public static void run(Module module) {
-        module.simplifyBlock();
-    }
-
     private static void dfs(BasicBlock basicBlock, HashSet<BasicBlock> vis) {
         vis.add(basicBlock);
         Instr lastInstr = basicBlock.getLastInstr();

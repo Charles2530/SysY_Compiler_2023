@@ -43,6 +43,7 @@ public class Mem2RegUnit {
 
     public static void run(Module module) {
         Mem2RegUnit.module = module;
+        module.simplifyBlock();
         Mem2RegUnit.init();
         Mem2RegUnit.insertPhiProcess();
     }

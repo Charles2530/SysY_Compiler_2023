@@ -7,6 +7,7 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.user.Instr;
 
 public class CalcInstr extends Instr {
@@ -14,6 +15,11 @@ public class CalcInstr extends Instr {
         super(new VarType(32), name, instrType);
         addOperand(op1);
         addOperand(op2);
+    }
+
+    public Integer getConstantNum() {
+        return ((operands.get(0) instanceof Constant) ? 1 : 0) +
+                ((operands.get(1) instanceof Constant) ? 1 : 0);
     }
 
     @Override
