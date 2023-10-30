@@ -27,7 +27,7 @@ public class Compiler {
     private static boolean IsParserOutput = false;
     private static boolean IsGenerationOutput = false;
     private static boolean IsOptimize = true;
-    private static boolean IsGenerationOptimizerOutput = true;
+    private static boolean IsGenerationOptimizerOutput = !IsGenerationOutput;
     private static boolean IsAssemblyOutput = true;
     private static BufferedReader fileInputStream = null;
     private static BufferedWriter errorOutputStream = null;

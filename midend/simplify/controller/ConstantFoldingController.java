@@ -15,18 +15,28 @@ public class ConstantFoldingController {
         while (iter.hasNext()) {
             Instr instr = iter.next();
             if (instr instanceof CalcInstr calcInstr) {
-                if (calcInstr.getConstantNum().equals(1)) {
-                    Value instead = ConstantFoldingController.simplifySingle(calcInstr);
-                    if (instead != null) {
-                        calcInstr.replaceAllUse(instead);
-                        iter.remove();
-                    }
-                } else if (calcInstr.getConstantNum().equals(2)) {
-                    calcInstr.replaceAllUse(ConstantFoldingController.simplifyDouble(calcInstr));
+                Value instead = (calcInstr.getConstantNum().equals(0)) ?
+                        ConstantFoldingController.simplifyNoConstant(calcInstr) :
+                        (calcInstr.getConstantNum().equals(1)) ?
+                                ConstantFoldingController.simplifySingle(calcInstr) :
+                                ConstantFoldingController.simplifyDouble(calcInstr);
+                if (instead != null) {
+                    calcInstr.replaceAllUse(instead);
                     iter.remove();
                 }
             }
         }
+    }
+
+    private static Value simplifyNoConstant(CalcInstr calcInstr) {
+        if (calcInstr.getOperands().get(0).equals(calcInstr.getOperands().get(1))) {
+            if (calcInstr.getInstrType().matches("sub|srem")) {
+                return new Constant("0", new VarType(32));
+            } else if (calcInstr.getInstrType().matches("sdiv")) {
+                return new Constant("1", new VarType(32));
+            }
+        }
+        return null;
     }
 
     private static Value simplifySingle(CalcInstr calcInstr) {
