@@ -164,5 +164,4 @@ public class LLvmGenUtils {
                 "call");
         return new StoreInstr(getIntDeclare, pointer);
     }
-
 }
