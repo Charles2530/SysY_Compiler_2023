@@ -7,8 +7,8 @@ import frontend.simplify.FrontEndOptimizerUnit;
 import iostream.ErrorController;
 import iostream.OutputController;
 import midend.generation.GenerationMain;
+import midend.generation.value.construction.user.Function;
 import midend.simplify.MidEndOptimizerUnit;
-import midend.simplify.method.DeadCodeEliminationUnit;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -73,7 +73,7 @@ public class Compiler {
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();
                 // 死代码删除
-                DeadCodeEliminationUnit.run(GenerationMain.getModule());
+                GenerationMain.getModule().getFunctions().forEach(Function::deadCodeElimination);
                 // 重新生成中间代码
                 OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
             }
