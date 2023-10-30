@@ -91,27 +91,19 @@ public class Function extends User {
             }
             RegisterUtils.moveValueOffset(params.get(i));
         }
-        for (BasicBlock basicBlock : basicBlocks) {
-            basicBlock.generateAssembly();
-        }
+        basicBlocks.forEach(BasicBlock::generateAssembly);
     }
 
     public void simplifyBlock() {
-        for (BasicBlock basicBlock : basicBlocks) {
-            basicBlock.simplifyBlock();
-        }
+        basicBlocks.forEach(BasicBlock::simplifyBlock);
     }
 
     public void insertPhiProcess() {
-        for (BasicBlock basicBlock : basicBlocks) {
-            basicBlock.insertPhiProcess();
-        }
+        basicBlocks.forEach(BasicBlock::insertPhiProcess);
     }
 
     public void deadCodeElimination() {
-        for (BasicBlock basicBlock : basicBlocks) {
-            basicBlock.deadCodeElimination();
-        }
+        basicBlocks.forEach(BasicBlock::deadCodeElimination);
     }
 
     public void searchBlockDominateSet() {

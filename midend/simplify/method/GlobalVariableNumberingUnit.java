@@ -20,9 +20,7 @@ public class GlobalVariableNumberingUnit {
 
     public static void run(Module module) {
         GlobalVariableNumberingUnit.GlobalVariableNumberingHashMap = new HashMap<>();
-        for (Function function : module.getFunctions()) {
-            function.uniqueInstr();
-        }
+        module.getFunctions().forEach(Function::uniqueInstr);
     }
 
     public static void addHashMap(Function function, HashMap<String, Instr> hashMap) {
@@ -53,9 +51,8 @@ public class GlobalVariableNumberingUnit {
                 }
             }
         }
-        for (BasicBlock child : DominatorTree.getBlockDominateChildList(entry)) {
-            GlobalVariableNumberingUnit.uniqueInstr(child, hashMap);
-        }
+        DominatorTree.getBlockDominateChildList(entry)
+                .forEach(child -> uniqueInstr(child, hashMap));
         for (Instr instr : vis) {
             hashMap.remove(instr.getGlobalVariableNumberingHash());
         }

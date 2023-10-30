@@ -50,8 +50,6 @@ public class Value {
     public void replaceAllUse(Value value) {
         ArrayList<User> users = useDefChain.stream().map(Use::getUser)
                 .collect(Collectors.toCollection(ArrayList::new));
-        for (User user : users) {
-            user.replaceOperand(this, value);
-        }
+        users.forEach(user -> user.replaceOperand(this, value));
     }
 }

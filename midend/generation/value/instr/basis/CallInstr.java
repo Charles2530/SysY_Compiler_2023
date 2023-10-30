@@ -17,9 +17,7 @@ public class CallInstr extends Instr {
     public CallInstr(String name, Function targetFunc, ArrayList<Value> paramList) {
         super(targetFunc.getReturnType(), name, "call");
         addOperand(targetFunc);
-        for (Value param : paramList) {
-            addOperand(param);
-        }
+        paramList.forEach(this::addOperand);
     }
 
     @Override

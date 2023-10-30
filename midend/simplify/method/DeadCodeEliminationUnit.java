@@ -5,8 +5,6 @@ import midend.generation.value.construction.user.Function;
 
 public class DeadCodeEliminationUnit {
     public static void run(Module module) {
-        for (Function function : module.getFunctions()) {
-            function.deadCodeElimination();
-        }
+        module.getFunctions().forEach(Function::deadCodeElimination);
     }
 }

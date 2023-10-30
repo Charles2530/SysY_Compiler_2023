@@ -49,12 +49,13 @@ public class DominatorTree {
     }
 
     private static void buildDominateTree(Function function) {
-        for (BasicBlock basicBlock : function.getBasicBlocks()) {
-            for (BasicBlock dominateBlock : DominatorTree.dominateHashMap.get(basicBlock)) {
-                if (isImmediateDominator(basicBlock, dominateBlock)) {
-                    addDoubleEdge(basicBlock, dominateBlock);
-                }
-            }
+        function.getBasicBlocks().forEach(basicBlock -> dominateHashMap.get(basicBlock)
+                .forEach(dominateBlock -> buildDoubleEdge(basicBlock, dominateBlock)));
+    }
+
+    private static void buildDoubleEdge(BasicBlock basicBlock, BasicBlock dominateBlock) {
+        if (isImmediateDominator(basicBlock, dominateBlock)) {
+            addDoubleEdge(basicBlock, dominateBlock);
         }
     }
 

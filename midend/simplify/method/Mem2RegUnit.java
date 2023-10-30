@@ -83,9 +83,7 @@ public class Mem2RegUnit {
     public static void insertPhi() {
         HashSet<BasicBlock> f = new HashSet<>();
         Stack<BasicBlock> w = new Stack<>();
-        for (BasicBlock basicBlock : Mem2RegUnit.defBasicBlockArrayList) {
-            w.push(basicBlock);
-        }
+        Mem2RegUnit.defBasicBlockArrayList.forEach(w::push);
         while (!w.isEmpty()) {
             BasicBlock x = w.pop();
             for (BasicBlock y : DominatorTree.getBlockDominanceFrontier(x)) {
@@ -113,9 +111,7 @@ public class Mem2RegUnit {
                         new Constant("0", new VarType(32)) : stack.peek()), presentBlock);
             }
         }
-        for (BasicBlock child : DominatorTree.getBlockDominateChildList(presentBlock)) {
-            Mem2RegUnit.dfsVarRename(child);
-        }
+        DominatorTree.getBlockDominateChildList(presentBlock).forEach(Mem2RegUnit::dfsVarRename);
         for (int i = 0; i < cnt; i++) {
             stack.pop();
         }

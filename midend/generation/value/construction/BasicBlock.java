@@ -75,9 +75,7 @@ public class BasicBlock extends Value {
     @Override
     public void generateAssembly() {
         new Label(name);
-        for (Instr instr : instrArrayList) {
-            instr.generateAssembly();
-        }
+        instrArrayList.forEach(Instr::generateAssembly);
     }
 
     public void simplifyBlock() {
