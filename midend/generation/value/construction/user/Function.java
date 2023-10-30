@@ -15,6 +15,7 @@ import midend.generation.value.construction.User;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.method.GlobalVariableNumberingUnit;
+import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,6 +100,7 @@ public class Function extends User {
     }
 
     public void insertPhiProcess() {
+        Mem2RegUnit.initialBasicBlock = basicBlocks.get(0);
         basicBlocks.forEach(BasicBlock::insertPhiProcess);
     }
 
@@ -138,9 +140,8 @@ public class Function extends User {
     }
 
     public void uniqueInstr() {
-        BasicBlock entry = basicBlocks.get(0);
         HashMap<String, Instr> hashMap = new HashMap<>();
-        GlobalVariableNumberingUnit.uniqueInstr(entry, hashMap);
+        GlobalVariableNumberingUnit.uniqueInstr(basicBlocks.get(0), hashMap);
         GlobalVariableNumberingUnit.addHashMap(this, hashMap);
     }
 

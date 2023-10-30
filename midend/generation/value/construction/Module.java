@@ -80,11 +80,7 @@ public class Module extends Value {
     }
 
     public void simplifyBlock() {
-        for (Function function : this.getFunctions()) {
-            function.simplifyBlock();
-        }
-        for (Function function : this.getFunctions()) {
-            BlockSimplifyUnit.deleteDeadBlock(function);
-        }
+        functions.forEach(Function::simplifyBlock);
+        functions.forEach(BlockSimplifyUnit::deleteDeadBlock);
     }
 }

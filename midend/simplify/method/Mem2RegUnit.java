@@ -24,7 +24,7 @@ import java.util.Stack;
 public class Mem2RegUnit {
     private static Module module;
     private static ControlFlowGraphController cfGraphController;
-    private static BasicBlock initialBasicBlock;
+    public static BasicBlock initialBasicBlock;
     private static ArrayList<Instr> useInstrArrayList;
     private static ArrayList<Instr> defInstrArrayList;
     private static ArrayList<BasicBlock> useBasicBlockArrayList;
@@ -45,14 +45,7 @@ public class Mem2RegUnit {
         Mem2RegUnit.module = module;
         module.simplifyBlock();
         Mem2RegUnit.init();
-        Mem2RegUnit.insertPhiProcess();
-    }
-
-    private static void insertPhiProcess() {
-        for (Function function : module.getFunctions()) {
-            Mem2RegUnit.initialBasicBlock = function.getBasicBlocks().get(0);
-            function.insertPhiProcess();
-        }
+        module.getFunctions().forEach(Function::insertPhiProcess);
     }
 
     public static void reConfig(Instr instr) {
