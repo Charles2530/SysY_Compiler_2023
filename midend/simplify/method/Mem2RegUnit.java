@@ -84,7 +84,7 @@ public class Mem2RegUnit {
                     f.add(y);
                     Instr phiInstr = new PhiInstr(IrNameController.getLocalVarName(
                             y.getBelongingFunc()), ControlFlowGraph.getBlockIndBasicBlock(y));
-                    y.addInstrToFirst(phiInstr);
+                    y.replaceInstr(0, phiInstr);
                     useInstrArrayList.add(phiInstr);
                     defInstrArrayList.add(phiInstr);
                     if (!defBasicBlockArrayList.contains(y)) {

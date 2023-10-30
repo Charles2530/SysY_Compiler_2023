@@ -160,4 +160,9 @@ public class Function extends User {
         }
         return flag;
     }
+
+    public void phiEliminate() {
+        basicBlocks.forEach(BasicBlock::transformPhiInstrToParallelCopy);
+        basicBlocks.forEach(BasicBlock::transformParallelCopyToMoveAsm);
+    }
 }

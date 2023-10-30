@@ -1,6 +1,8 @@
 package midend.generation.value.construction;
 
 import backend.generation.mips.asm.textsegment.structure.Label;
+import midend.generation.value.instr.optimizer.ParallelCopy;
+import backend.simplify.method.PhiEliminationUnit;
 import iostream.IoStreamGeneration;
 import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
@@ -12,6 +14,8 @@ import midend.generation.value.construction.user.GlobalVar;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.AllocaInstr;
 import midend.generation.value.instr.basis.CallInstr;
+import midend.generation.value.instr.optimizer.PhiInstr;
+import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
@@ -106,8 +110,8 @@ public class BasicBlock extends Value {
         return exist;
     }
 
-    public void addInstrToFirst(Instr phiInstr) {
-        instrArrayList.add(0, phiInstr);
+    public void replaceInstr(Integer index, Instr phiInstr) {
+        instrArrayList.add(index, phiInstr);
         phiInstr.setBelongingBlock(this);
     }
 
@@ -123,5 +127,33 @@ public class BasicBlock extends Value {
             }
         }
         return flag;
+    }
+
+    public void transformPhiInstrToParallelCopy() {
+        if (!(instrArrayList.get(0) instanceof PhiInstr)) {
+            return;
+        }
+        ArrayList<ParallelCopy> pcList = new ArrayList<>();
+        ArrayList<BasicBlock> indBasicBlock = ControlFlowGraph.getBlockIndBasicBlock(this);
+        for (int i = 0; i < indBasicBlock.size(); i++) {
+            pcList.add(new ParallelCopy(IrNameController.getLocalVarName(belongingFunc)));
+            ArrayList<BasicBlock> outBasicBlock = ControlFlowGraph
+                    .getBlockOutBasicBlock(indBasicBlock.get(i));
+            if (outBasicBlock.size() == 1) {
+                PhiEliminationUnit.putParallelCopy(pcList.get(i), indBasicBlock.get(i));
+            } else {
+                PhiEliminationUnit.insertParallelCopy(pcList.get(i), indBasicBlock.get(i), this);
+            }
+        }
+        PhiEliminationUnit.removePhiInstr(instrArrayList);
+    }
+
+    public void transformParallelCopyToMoveAsm() {
+        if (instrArrayList.size() >= 2 && instrArrayList
+                .get(instrArrayList.size() - 2) instanceof ParallelCopy pc) {
+            instrArrayList.remove(pc);
+            PhiEliminationUnit.getMoveAsm(pc).forEach(
+                    move -> replaceInstr(instrArrayList.size() - 1, move));
+        }
     }
 }
