@@ -5,7 +5,9 @@ import iostream.IoStreamGeneration;
 import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
+import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
+import midend.generation.value.construction.Param;
 import midend.generation.value.construction.User;
 import midend.generation.value.instr.basis.AllocaInstr;
 import midend.generation.value.instr.basis.CalcInstr;
@@ -15,6 +17,7 @@ import midend.generation.value.instr.basis.IcmpInstr;
 import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.ZextInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
+import midend.simplify.controller.ActivenessAnalysisController;
 import midend.simplify.method.Mem2RegUnit;
 
 public class Instr extends User {
@@ -67,5 +70,34 @@ public class Instr extends User {
 
     public String getGlobalVariableNumberingHash() {
         return null;
+    }
+
+    public void addPhiToUse() {
+        if (this instanceof PhiInstr phiInstr) {
+            for (Value operand : phiInstr.getOperands()) {
+                if (operand instanceof Instr || operand instanceof GlobalVar
+                        || operand instanceof Param) {
+                    ActivenessAnalysisController.getUseBasicBlockHashSet(
+                            this.getBelongingBlock()).add(operand);
+                }
+            }
+        }
+    }
+
+    public void genUseDefAnalysis() {
+        for (Value operand : this.getOperands()) {
+            if (!ActivenessAnalysisController.getDefBasicBlockHashSet(
+                    this.getBelongingBlock()).contains(operand) &&
+                    (operand instanceof Instr || operand instanceof GlobalVar
+                            || operand instanceof Param)) {
+                ActivenessAnalysisController.getUseBasicBlockHashSet(
+                        this.getBelongingBlock()).add(operand);
+            }
+            if (!ActivenessAnalysisController.getUseBasicBlockHashSet(
+                    this.getBelongingBlock()).contains(operand) && this.isValid()) {
+                ActivenessAnalysisController.getDefBasicBlockHashSet(
+                        this.getBelongingBlock()).add(operand);
+            }
+        }
     }
 }

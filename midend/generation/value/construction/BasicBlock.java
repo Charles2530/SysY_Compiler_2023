@@ -15,11 +15,13 @@ import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.AllocaInstr;
 import midend.generation.value.instr.basis.CallInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
+import midend.simplify.controller.ActivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class BasicBlock extends Value {
     private ArrayList<Instr> instrArrayList;
@@ -146,7 +148,7 @@ public class BasicBlock extends Value {
                 PhiEliminationUnit.insertParallelCopy(pcList.get(i), indBasicBlock.get(i), this);
             }
         }
-        PhiEliminationUnit.removePhiInstr(instrArrayList,pcList);
+        PhiEliminationUnit.removePhiInstr(instrArrayList, pcList);
     }
 
     public void transformParallelCopyToMoveAsm() {
@@ -157,4 +159,16 @@ public class BasicBlock extends Value {
                     move -> insertInstr(instrArrayList.size() - 1, move));
         }
     }
+
+    public void analysisActiveness() {
+        HashSet<Value> def = new HashSet<>();
+        HashSet<Value> use = new HashSet<>();
+        ActivenessAnalysisController.addDefBlockHashSet(this, def);
+        ActivenessAnalysisController.addUseBlockHashSet(this, use);
+        instrArrayList.forEach(Instr::addPhiToUse);
+        instrArrayList.forEach(Instr::genUseDefAnalysis);
+    }
 }
+
+
+

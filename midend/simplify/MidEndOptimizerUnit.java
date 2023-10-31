@@ -23,5 +23,4 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
             GlobalVariableNumberingUnit.run(module);
         }
     }
-
 }

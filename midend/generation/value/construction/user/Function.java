@@ -12,6 +12,7 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Param;
 import midend.generation.value.construction.User;
+import midend.simplify.controller.ActivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.method.GlobalVariableNumberingUnit;
@@ -170,5 +171,18 @@ public class Function extends User {
     public void phiEliminate() {
         basicBlocks.forEach(BasicBlock::transformPhiInstrToParallelCopy);
         basicBlocks.forEach(BasicBlock::transformParallelCopyToMoveAsm);
+    }
+
+    public void analysisActiveness() {
+        HashMap<BasicBlock, HashSet<Value>> inMap = new HashMap<>();
+        HashMap<BasicBlock, HashSet<Value>> outMap = new HashMap<>();
+        ActivenessAnalysisController.addInFunctionHashMap(this, inMap);
+        ActivenessAnalysisController.addOutFunctionHashMap(this, outMap);
+        for (BasicBlock basicBlock : basicBlocks) {
+            outMap.put(basicBlock, new HashSet<>());
+            inMap.put(basicBlock, new HashSet<>());
+        }
+        basicBlocks.forEach(BasicBlock::analysisActiveness);
+        ActivenessAnalysisController.calculateInOut(this);
     }
 }
