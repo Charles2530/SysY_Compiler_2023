@@ -69,13 +69,11 @@ public class Compiler {
                 MidEndOptimizerUnit midEndOptimizerUnit =
                         new MidEndOptimizerUnit(GenerationMain.getModule());
                 midEndOptimizerUnit.optimize();
+                // 重新生成中间代码
+                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
                 BackEndOptimizerUnit backEndOptimizerUnit =
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();
-                // 死代码删除
-                GenerationMain.getModule().getFunctions().forEach(Function::deadCodeElimination);
-                // 重新生成中间代码
-                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
             }
             // 生成汇编代码
             AssemblyGeneration assemblyGeneration =

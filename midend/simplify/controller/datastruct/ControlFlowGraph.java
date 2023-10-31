@@ -65,6 +65,8 @@ public class ControlFlowGraph {
 
     public static void addBlockIndBasicBlock(BasicBlock basicBlock,
                                              BasicBlock indBasicBlock, int... idx) {
+        ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                .computeIfAbsent(basicBlock, k -> new ArrayList<>());
         if (idx.length == 1) {
             ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
                     .get(basicBlock).add(idx[0], indBasicBlock);
@@ -76,6 +78,8 @@ public class ControlFlowGraph {
 
     public static void addBlockOutBasicBlock(BasicBlock basicBlock,
                                              BasicBlock outBasicBlock, int... idx) {
+        ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                .computeIfAbsent(basicBlock, k -> new ArrayList<>());
         if (idx.length == 1) {
             ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
                     .get(basicBlock).add(idx[0], outBasicBlock);

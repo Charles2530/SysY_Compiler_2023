@@ -1,7 +1,9 @@
 package midend.simplify;
 
 import iostream.OptimizerUnit;
+import midend.generation.GenerationMain;
 import midend.generation.value.construction.Module;
+import midend.generation.value.construction.user.Function;
 import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
@@ -9,6 +11,7 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
     private final Module module;
     private final boolean isMem2Reg = true;
     private final boolean isGlobalVariableNumbering = true;
+    private final boolean isDeadCodeElimination = true;
 
     public MidEndOptimizerUnit(Module module) {
         this.module = module;
@@ -21,6 +24,9 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
         }
         if (isGlobalVariableNumbering) {
             GlobalVariableNumberingUnit.run(module);
+        }
+        if (isDeadCodeElimination) {
+            GenerationMain.getModule().getFunctions().forEach(Function::deadCodeElimination);
         }
     }
 }

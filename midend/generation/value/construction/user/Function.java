@@ -193,7 +193,8 @@ public class Function extends User {
     }
 
     public void phiEliminate() {
-        basicBlocks.forEach(BasicBlock::transformPhiInstrToParallelCopy);
+        ArrayList<BasicBlock> copy = new ArrayList<>(basicBlocks);
+        copy.forEach(BasicBlock::transformPhiInstrToParallelCopy);
         basicBlocks.forEach(BasicBlock::transformParallelCopyToMoveAsm);
     }
 

@@ -40,7 +40,7 @@ public class PhiEliminationUnit {
         function.addBasicBlock(targetBlock, function.getBasicBlocks().indexOf(present));
         targetBlock.addInstr(parallelCopy);
         if (indbasicBlock.getLastInstr() instanceof BrInstr brInstr) {
-            indbasicBlock.addInstr(new JumpInstr(present));
+            targetBlock.addInstr(new JumpInstr(present));
             if (present.equals(brInstr.getThenBlock())) {
                 brInstr.setThenBlock(targetBlock);
             } else {
@@ -104,17 +104,19 @@ public class PhiEliminationUnit {
             if (!(value instanceof Constant || vis.contains(value))) {
                 vis.add(value);
                 boolean isLoop = false;
-                int idx = 0;
                 for (int j = i + 1; j < moveList.size(); j++) {
                     if (moveList.get(j).getFrom().equals(value)) {
-                        idx = j;
                         isLoop = true;
                         break;
                     }
                 }
                 if (isLoop) {
                     Value midValue = new Value(new VarType(32), value.getName() + "_tmp");
-                    moveList.get(idx).setFrom(midValue);
+                    for (MoveInstr moveInstr : moveList) {
+                        if (moveInstr.getFrom().equals(value)) {
+                            moveInstr.setFrom(midValue);
+                        }
+                    }
                     extra.add(0, new MoveInstr(
                             IrNameController.getLocalVarName(function), value, midValue));
                 }
@@ -128,22 +130,24 @@ public class PhiEliminationUnit {
         ArrayList<MoveInstr> extra = new ArrayList<>();
         HashSet<Value> vis = new HashSet<>();
         for (int i = moveList.size() - 1; i > 0; i--) {
-            Value value = moveList.get(i).getTo();
+            Value value = moveList.get(i).getFrom();
             if (!(value instanceof Constant || vis.contains(value))) {
                 vis.add(value);
                 boolean isSharedReg = false;
-                int idx = 0;
                 for (int j = 0; j < i; j++) {
                     if (valueRegisterHashMap.get(value) != null && valueRegisterHashMap.get(value)
                             .equals(valueRegisterHashMap.get(moveList.get(j).getTo()))) {
-                        idx = j;
                         isSharedReg = true;
                         break;
                     }
                 }
                 if (isSharedReg) {
                     Value midValue = new Value(new VarType(32), value.getName() + "_tmp");
-                    moveList.get(idx).setFrom(midValue);
+                    for (MoveInstr moveInstr : moveList) {
+                        if (moveInstr.getFrom().equals(value)) {
+                            moveInstr.setFrom(midValue);
+                        }
+                    }
                     extra.add(0, new MoveInstr(
                             IrNameController.getLocalVarName(function), value, midValue));
                 }

@@ -40,7 +40,7 @@ public class PhiInstr extends Instr {
         for (int i = 0; i < operands.size(); i++) {
             Value operand = operands.get(i);
             if (!(operand instanceof Constant constant && !constant.isDefined())) {
-                pcList.get(i).addParallelCopy(operand, this);
+                pcList.get(i).addParallelCopy(this, operand);
             }
         }
     }

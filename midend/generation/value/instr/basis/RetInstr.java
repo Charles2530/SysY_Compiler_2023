@@ -1,6 +1,7 @@
 package midend.generation.value.instr.basis;
 
 import backend.generation.mips.Register;
+import backend.generation.mips.asm.textsegment.complex.MoveAsm;
 import backend.generation.mips.asm.textsegment.mipsinstr.RtypeAsm;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
@@ -33,7 +34,7 @@ public class RetInstr extends Instr {
             Register retReg = AssemblyUnit.getRegisterController().getRegister(retValue);
             retReg = RegisterUtils.loadVariableValue(retValue, retReg, Register.V0);
             if (retReg != Register.V0) {
-                new RtypeAsm("move", Register.V0, retReg, null);
+                new MoveAsm(Register.V0, retReg);
             }
         }
         // jr $ra

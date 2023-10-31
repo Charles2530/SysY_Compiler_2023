@@ -140,6 +140,8 @@ public class BasicBlock extends Value {
         ArrayList<BasicBlock> indBasicBlock = ControlFlowGraph.getBlockIndBasicBlock(this);
         for (int i = 0; i < indBasicBlock.size(); i++) {
             pcList.add(new ParallelCopy(IrNameController.getLocalVarName(belongingFunc)));
+        }
+        for (int i = 0; i < indBasicBlock.size(); i++) {
             ArrayList<BasicBlock> outBasicBlock = ControlFlowGraph
                     .getBlockOutBasicBlock(indBasicBlock.get(i));
             if (outBasicBlock.size() == 1) {

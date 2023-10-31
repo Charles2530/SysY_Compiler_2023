@@ -61,7 +61,7 @@ public class RegisterAllocator {
         if (!(instr instanceof PhiInstr)) {
             for (Value operand : instr.getOperands()) {
                 if (lastUseMap.get(operand).equals(instr) && var2reg.containsKey(operand) &&
-                        !ControlFlowGraph.getBlockOutBasicBlock(entry).contains(operand)) {
+                        !ActivenessAnalysisController.getOutBasicBlockHashSet(entry).contains(operand)) {
                     reg2var.remove(var2reg.get(operand));
                     used.add(operand);
                 }
