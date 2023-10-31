@@ -59,7 +59,7 @@ public class Instr extends User {
                 !(this instanceof IoStreamGeneration) && this.getUseDefChain().isEmpty();
     }
 
-    private boolean isValid() {
+    public boolean isValid() {
         boolean valid = this instanceof AllocaInstr || this instanceof CalcInstr ||
                 (this instanceof CallInstr callInstr && !callInstr.getType().isVoid()) ||
                 this instanceof IoStreamGeneration;

@@ -20,7 +20,6 @@ import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -187,10 +186,10 @@ public class Function extends User {
     public void regAllocate() {
         BasicBlock entry = basicBlocks.get(0);
         registerHashMap = new HashMap<>();
-        HashMap<Value, Register> var2reg = new HashMap<>();
-        RegisterAllocator.blockAllocate(entry, registerHashMap, var2reg);
-        ArrayList<Value> paramList = new ArrayList<>(var2reg.keySet());
-        Collections.sort(paramList, Comparator.comparing(Value::getName));
+        HashMap<Register, Value> valueHashMap = new HashMap<>();
+        RegisterAllocator.blockAllocate(entry, registerHashMap, valueHashMap);
+        ArrayList<Value> paramList = new ArrayList<>(registerHashMap.keySet());
+        paramList.sort(Comparator.comparing(Value::getName));
     }
 
     public void phiEliminate() {

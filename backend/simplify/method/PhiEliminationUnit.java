@@ -1,6 +1,7 @@
 package backend.simplify.method;
 
 import backend.generation.mips.Register;
+import backend.generation.utils.RegisterAllocator;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
@@ -23,6 +24,7 @@ import java.util.Iterator;
 
 public class PhiEliminationUnit {
     public static void run(Module module) {
+        RegisterAllocator.init();
         module.getFunctions().forEach(Function::regAllocate);
         module.getFunctions().forEach(Function::phiEliminate);
     }
