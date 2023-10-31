@@ -3,6 +3,7 @@ package midend.generation.value.construction.user;
 import backend.generation.mips.Register;
 import backend.generation.mips.asm.textsegment.structure.Label;
 import backend.generation.utils.AssemblyUnit;
+import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
 import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
@@ -19,6 +20,8 @@ import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +30,7 @@ public class Function extends User {
     private final IrType returnType;
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
-    private final HashMap<Value, Register> registerHashMap;
+    private HashMap<Value, Register> registerHashMap;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
@@ -168,11 +171,6 @@ public class Function extends User {
         return flag;
     }
 
-    public void phiEliminate() {
-        basicBlocks.forEach(BasicBlock::transformPhiInstrToParallelCopy);
-        basicBlocks.forEach(BasicBlock::transformParallelCopyToMoveAsm);
-    }
-
     public void analysisActiveness() {
         HashMap<BasicBlock, HashSet<Value>> inMap = new HashMap<>();
         HashMap<BasicBlock, HashSet<Value>> outMap = new HashMap<>();
@@ -185,4 +183,19 @@ public class Function extends User {
         basicBlocks.forEach(BasicBlock::analysisActiveness);
         ActivenessAnalysisController.calculateInOut(this);
     }
+
+    public void regAllocate() {
+        BasicBlock entry = basicBlocks.get(0);
+        registerHashMap = new HashMap<>();
+        HashMap<Value, Register> var2reg = new HashMap<>();
+        RegisterAllocator.blockAllocate(entry, registerHashMap, var2reg);
+        ArrayList<Value> paramList = new ArrayList<>(var2reg.keySet());
+        Collections.sort(paramList, Comparator.comparing(Value::getName));
+    }
+
+    public void phiEliminate() {
+        basicBlocks.forEach(BasicBlock::transformPhiInstrToParallelCopy);
+        basicBlocks.forEach(BasicBlock::transformParallelCopyToMoveAsm);
+    }
+
 }

@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 public class PhiEliminationUnit {
     public static void run(Module module) {
+        module.getFunctions().forEach(Function::regAllocate);
         module.getFunctions().forEach(Function::phiEliminate);
     }
 
