@@ -3,6 +3,7 @@ package midend.generation.value.instr.optimizer;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
+import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.user.Instr;
 
 import java.util.ArrayList;
@@ -33,5 +34,14 @@ public class PhiInstr extends Instr {
     public void modifyValue(Value value, BasicBlock initialBasicBlock) {
         operands.set(indBasicBlock.indexOf(initialBasicBlock), value);
         value.addUseDefChain(this);
+    }
+
+    public void generateCopyList(ArrayList<ParallelCopy> pcList) {
+        for (int i = 0; i < operands.size(); i++) {
+            Value operand = operands.get(i);
+            if (!(operand instanceof Constant constant && !constant.isDefined())) {
+                pcList.get(i).addParallelCopy(operand, this);
+            }
+        }
     }
 }

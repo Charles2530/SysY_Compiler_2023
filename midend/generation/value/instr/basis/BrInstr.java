@@ -11,8 +11,8 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 
 public class BrInstr extends Instr {
-    private final BasicBlock thenBlock;
-    private final BasicBlock elseBlock;
+    private BasicBlock thenBlock;
+    private BasicBlock elseBlock;
 
     public BrInstr(Value con, BasicBlock thenBlock, BasicBlock elseBlock) {
         super(new VarType(0), "BrInstr", "br");
@@ -21,6 +21,14 @@ public class BrInstr extends Instr {
         addOperand(thenBlock);
         this.elseBlock = elseBlock;
         addOperand(elseBlock);
+    }
+
+    public void setThenBlock(BasicBlock thenBlock) {
+        this.thenBlock = thenBlock;
+    }
+
+    public void setElseBlock(BasicBlock elseBlock) {
+        this.elseBlock = elseBlock;
     }
 
     public BasicBlock getThenBlock() {

@@ -37,6 +37,7 @@ public class BasicBlock extends Value {
 
     public void addInstr(Instr instr) {
         instrArrayList.add(instr);
+        instr.setBelongingBlock(this);
     }
 
     public boolean isEmpty() {
@@ -110,7 +111,7 @@ public class BasicBlock extends Value {
         return exist;
     }
 
-    public void replaceInstr(Integer index, Instr phiInstr) {
+    public void insertInstr(Integer index, Instr phiInstr) {
         instrArrayList.add(index, phiInstr);
         phiInstr.setBelongingBlock(this);
     }
@@ -145,7 +146,7 @@ public class BasicBlock extends Value {
                 PhiEliminationUnit.insertParallelCopy(pcList.get(i), indBasicBlock.get(i), this);
             }
         }
-        PhiEliminationUnit.removePhiInstr(instrArrayList);
+        PhiEliminationUnit.removePhiInstr(instrArrayList,pcList);
     }
 
     public void transformParallelCopyToMoveAsm() {
@@ -153,7 +154,7 @@ public class BasicBlock extends Value {
                 .get(instrArrayList.size() - 2) instanceof ParallelCopy pc) {
             instrArrayList.remove(pc);
             PhiEliminationUnit.getMoveAsm(pc).forEach(
-                    move -> replaceInstr(instrArrayList.size() - 1, move));
+                    move -> insertInstr(instrArrayList.size() - 1, move));
         }
     }
 }

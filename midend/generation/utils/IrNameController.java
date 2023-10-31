@@ -108,17 +108,14 @@ public class IrNameController {
 
     public static void addBasicBlock(BasicBlock basicBlock) {
         currentFunction.addBasicBlock(basicBlock);
-        basicBlock.setBelongingFunc(currentFunction);
     }
 
     public static void addParam(Param param) {
         currentFunction.addParam(param);
-        param.setBelongingFunc(currentFunction);
     }
 
     public static void addInstr(Instr instr) {
         currentBasicBlock.addInstr(instr);
-        instr.setBelongingBlock(currentBasicBlock);
     }
 
     public static void addFormatString(FormatString formatString) {

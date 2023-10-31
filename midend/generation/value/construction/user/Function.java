@@ -43,8 +43,13 @@ public class Function extends User {
         return returnType;
     }
 
-    public void addBasicBlock(BasicBlock basicBlock) {
-        basicBlocks.add(basicBlock);
+    public void addBasicBlock(BasicBlock basicBlock, int... idx) {
+        if (idx.length == 1) {
+            basicBlocks.add(idx[0], basicBlock);
+        } else {
+            basicBlocks.add(basicBlock);
+        }
+        basicBlock.setBelongingFunc(this);
     }
 
     public ArrayList<BasicBlock> getBasicBlocks() {
@@ -53,6 +58,7 @@ public class Function extends User {
 
     public void addParam(Param param) {
         params.add(param);
+        param.setBelongingFunc(this);
     }
 
     public HashMap<Value, Register> getRegisterHashMap() {

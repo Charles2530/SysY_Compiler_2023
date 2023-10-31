@@ -34,6 +34,17 @@ public class RegisterUtils {
         }
     }
 
+    public static void memAllocReg(Value value, Register target) {
+        if (AssemblyUnit.getRegisterController().getRegister(value) == null) {
+            Integer offset = AssemblyUnit.getOffset(value);
+            if (offset == null) {
+                allocReg(value, target);
+            } else {
+                new MemTypeAsm("sw", null, target, Register.SP, offset);
+            }
+        }
+    }
+
     public static Register loadRegisterValue(Value operand, Register instead, Register reg) {
         Register register = reg;
         if (register == null) {

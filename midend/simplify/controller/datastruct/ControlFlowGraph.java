@@ -63,14 +63,26 @@ public class ControlFlowGraph {
         return ControlFlowGraph.outBasicBlockFunctionMap.get(function);
     }
 
-    public static void addBlockIndBasicBlock(BasicBlock basicBlock, BasicBlock indBasicBlock) {
-        ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
-                .get(basicBlock).add(indBasicBlock);
+    public static void addBlockIndBasicBlock(BasicBlock basicBlock,
+                                             BasicBlock indBasicBlock, int... idx) {
+        if (idx.length == 1) {
+            ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                    .get(basicBlock).add(idx[0], indBasicBlock);
+        } else {
+            ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                    .get(basicBlock).add(indBasicBlock);
+        }
     }
 
-    public static void addBlockOutBasicBlock(BasicBlock basicBlock, BasicBlock outBasicBlock) {
-        ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
-                .get(basicBlock).add(outBasicBlock);
+    public static void addBlockOutBasicBlock(BasicBlock basicBlock,
+                                             BasicBlock outBasicBlock, int... idx) {
+        if (idx.length == 1) {
+            ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                    .get(basicBlock).add(idx[0], outBasicBlock);
+        } else {
+            ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                    .get(basicBlock).add(outBasicBlock);
+        }
     }
 
     public static ArrayList<BasicBlock> getBlockIndBasicBlock(BasicBlock basicBlock) {
@@ -81,5 +93,21 @@ public class ControlFlowGraph {
     public static ArrayList<BasicBlock> getBlockOutBasicBlock(BasicBlock basicBlock) {
         return ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
                 .get(basicBlock);
+    }
+
+    public static void insertBlockIntoGraph(BasicBlock indbasicBlock,
+                                            BasicBlock outbasicblock, BasicBlock midbasicblock) {
+        ControlFlowGraph.addBlockIndBasicBlock(outbasicblock, midbasicblock,
+                ControlFlowGraph.getBlockIndBasicBlock(outbasicblock).indexOf(indbasicBlock));
+        ControlFlowGraph.addBlockOutBasicBlock(indbasicBlock, midbasicblock,
+                ControlFlowGraph.getBlockOutBasicBlock(indbasicBlock).indexOf(outbasicblock));
+        ControlFlowGraph.getBlockIndBasicBlock(outbasicblock).remove(indbasicBlock);
+        ControlFlowGraph.getBlockOutBasicBlock(indbasicBlock).remove(outbasicblock);
+        if (!ControlFlowGraph.indBasicBlockMap.containsKey(midbasicblock)) {
+            ControlFlowGraph.indBasicBlockMap.put(midbasicblock, new ArrayList<>());
+            ControlFlowGraph.addBlockIndBasicBlock(midbasicblock, indbasicBlock);
+            ControlFlowGraph.outBasicBlockMap.put(midbasicblock, new ArrayList<>());
+            ControlFlowGraph.addBlockOutBasicBlock(midbasicblock, outbasicblock);
+        }
     }
 }

@@ -84,7 +84,7 @@ public class Mem2RegUnit {
                     f.add(y);
                     Instr phiInstr = new PhiInstr(IrNameController.getLocalVarName(
                             y.getBelongingFunc()), ControlFlowGraph.getBlockIndBasicBlock(y));
-                    y.replaceInstr(0, phiInstr);
+                    y.insertInstr(0, phiInstr);
                     useInstrArrayList.add(phiInstr);
                     defInstrArrayList.add(phiInstr);
                     if (!defBasicBlockArrayList.contains(y)) {
@@ -101,7 +101,7 @@ public class Mem2RegUnit {
             Instr instr = basicBlock.getInstrArrayList().get(0);
             if (instr instanceof PhiInstr phiInstr && useInstrArrayList.contains(phiInstr)) {
                 phiInstr.modifyValue(((stack.isEmpty()) ?
-                        new Constant("0", new VarType(32)) : stack.peek()), presentBlock);
+                        new Constant("0", new VarType(32), false) : stack.peek()), presentBlock);
             }
         }
         DominatorTree.getBlockDominateChildList(presentBlock).forEach(Mem2RegUnit::dfsVarRename);
@@ -123,7 +123,7 @@ public class Mem2RegUnit {
             } else if (instr instanceof LoadInstr loadInstr &&
                     useInstrArrayList.contains(loadInstr)) {
                 loadInstr.replaceAllUse(((stack.isEmpty()) ?
-                        new Constant("0", new VarType(32)) : stack.peek()));
+                        new Constant("0", new VarType(32), false) : stack.peek()));
                 iter.remove();
             } else if (instr instanceof PhiInstr phiInstr && defInstrArrayList.contains(phiInstr)) {
                 instrNum++;
