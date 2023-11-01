@@ -17,7 +17,7 @@ import midend.generation.value.instr.basis.IcmpInstr;
 import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.ZextInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.ActivenessAnalysisController;
+import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.method.Mem2RegUnit;
 
 public class Instr extends User {
@@ -77,7 +77,7 @@ public class Instr extends User {
             for (Value operand : phiInstr.getOperands()) {
                 if (operand instanceof Instr || operand instanceof GlobalVar
                         || operand instanceof Param) {
-                    ActivenessAnalysisController.getUseBasicBlockHashSet(
+                    LivenessAnalysisController.getUseBasicBlockHashSet(
                             this.getBelongingBlock()).add(operand);
                 }
             }
@@ -86,18 +86,18 @@ public class Instr extends User {
 
     public void genUseDefAnalysis() {
         for (Value operand : this.getOperands()) {
-            if (!ActivenessAnalysisController.getDefBasicBlockHashSet(
+            if (!LivenessAnalysisController.getDefBasicBlockHashSet(
                     this.getBelongingBlock()).contains(operand) &&
                     (operand instanceof Instr || operand instanceof GlobalVar
                             || operand instanceof Param)) {
-                ActivenessAnalysisController.getUseBasicBlockHashSet(
+                LivenessAnalysisController.getUseBasicBlockHashSet(
                         this.getBelongingBlock()).add(operand);
             }
-            if (!ActivenessAnalysisController.getUseBasicBlockHashSet(
-                    this.getBelongingBlock()).contains(operand) && this.isValid()) {
-                ActivenessAnalysisController.getDefBasicBlockHashSet(
-                        this.getBelongingBlock()).add(operand);
-            }
+        }
+        if (!LivenessAnalysisController.getUseBasicBlockHashSet(
+                this.getBelongingBlock()).contains(this) && this.isValid()) {
+            LivenessAnalysisController.getDefBasicBlockHashSet(
+                    this.getBelongingBlock()).add(this);
         }
     }
 }

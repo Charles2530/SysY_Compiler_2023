@@ -7,7 +7,6 @@ import frontend.simplify.FrontEndOptimizerUnit;
 import iostream.ErrorController;
 import iostream.OutputController;
 import midend.generation.GenerationMain;
-import midend.generation.value.construction.user.Function;
 import midend.simplify.MidEndOptimizerUnit;
 
 import java.io.BufferedReader;
@@ -70,10 +69,11 @@ public class Compiler {
                         new MidEndOptimizerUnit(GenerationMain.getModule());
                 midEndOptimizerUnit.optimize();
                 // 重新生成中间代码
-                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
                 BackEndOptimizerUnit backEndOptimizerUnit =
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();
+                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
+
             }
             // 生成汇编代码
             AssemblyGeneration assemblyGeneration =

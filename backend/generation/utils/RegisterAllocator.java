@@ -6,8 +6,7 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.ZextInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.ActivenessAnalysisController;
-import midend.simplify.controller.datastruct.ControlFlowGraph;
+import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.DominatorTree;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class RegisterAllocator {
         if (!(instr instanceof PhiInstr)) {
             for (Value operand : instr.getOperands()) {
                 if (lastUseMap.get(operand).equals(instr) && var2reg.containsKey(operand) &&
-                        !ActivenessAnalysisController.getOutBasicBlockHashSet(entry).contains(operand)) {
+                        !LivenessAnalysisController.getOutBasicBlockHashSet(entry).contains(operand)) {
                     reg2var.remove(var2reg.get(operand));
                     used.add(operand);
                 }
@@ -95,7 +94,7 @@ public class RegisterAllocator {
         Iterator<Register> iterator = reg2var.keySet().iterator();
         while (iterator.hasNext()) {
             Register register = iterator.next();
-            if (!ActivenessAnalysisController.getInBasicBlockHashSet(child)
+            if (!LivenessAnalysisController.getInBasicBlockHashSet(child)
                     .contains(reg2var.get(register))) {
                 buffer.put(register, reg2var.get(register));
                 iterator.remove();

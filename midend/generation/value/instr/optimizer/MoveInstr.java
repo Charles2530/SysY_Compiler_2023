@@ -14,18 +14,20 @@ public class MoveInstr extends Instr {
 
     public MoveInstr(String name, Value from, Value to) {
         super(new VarType(0), name, "move");
-        this.from = from;
-        addOperand(from);
         this.to = to;
         addOperand(to);
+        this.from = from;
+        addOperand(from);
     }
 
     public void setFrom(Value from) {
         this.from = from;
+        operands.set(1, from);
     }
 
     public void setTo(Value to) {
         this.to = to;
+        operands.set(0, to);
     }
 
     public Value getFrom() {

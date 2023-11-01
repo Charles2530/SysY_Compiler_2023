@@ -10,19 +10,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class ActivenessAnalysisController {
+public class LivenessAnalysisController {
     private static Module module;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> inFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> outFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> useFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> defFunctionHashMap;
 
-    public ActivenessAnalysisController(Module module) {
-        ActivenessAnalysisController.module = module;
-        ActivenessAnalysisController.inFunctionHashMap = new HashMap<>();
-        ActivenessAnalysisController.outFunctionHashMap = new HashMap<>();
-        ActivenessAnalysisController.useFunctionHashMap = new HashMap<>();
-        ActivenessAnalysisController.defFunctionHashMap = new HashMap<>();
+    public LivenessAnalysisController(Module module) {
+        LivenessAnalysisController.module = module;
+        LivenessAnalysisController.inFunctionHashMap = new HashMap<>();
+        LivenessAnalysisController.outFunctionHashMap = new HashMap<>();
+        LivenessAnalysisController.useFunctionHashMap = new HashMap<>();
+        LivenessAnalysisController.defFunctionHashMap = new HashMap<>();
     }
 
     public static void calculateInOut(Function function) {
@@ -66,13 +66,13 @@ public class ActivenessAnalysisController {
 
     public static void addInBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         inFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
-        ActivenessAnalysisController.getInFunctionHashMap(
+        LivenessAnalysisController.getInFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
     public static void addOutBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         outFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
-        ActivenessAnalysisController.getOutFunctionHashMap(
+        LivenessAnalysisController.getOutFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
@@ -85,12 +85,12 @@ public class ActivenessAnalysisController {
     }
 
     public static HashSet<Value> getInBasicBlockHashSet(BasicBlock basicBlock) {
-        return ActivenessAnalysisController.getInFunctionHashMap(
+        return LivenessAnalysisController.getInFunctionHashMap(
                 basicBlock.getBelongingFunc()).get(basicBlock);
     }
 
     public static HashSet<Value> getOutBasicBlockHashSet(BasicBlock basicBlock) {
-        return ActivenessAnalysisController.getOutFunctionHashMap(
+        return LivenessAnalysisController.getOutFunctionHashMap(
                 basicBlock.getBelongingFunc()).get(basicBlock);
     }
 
@@ -106,13 +106,13 @@ public class ActivenessAnalysisController {
 
     public static void addUseBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         useFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
-        ActivenessAnalysisController.getUseFunctionHashMap(
+        LivenessAnalysisController.getUseFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
     public static void addDefBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         defFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
-        ActivenessAnalysisController.getDefFunctionHashMap(
+        LivenessAnalysisController.getDefFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
@@ -125,12 +125,12 @@ public class ActivenessAnalysisController {
     }
 
     public static HashSet<Value> getUseBasicBlockHashSet(BasicBlock basicBlock) {
-        return ActivenessAnalysisController.getUseFunctionHashMap(
+        return LivenessAnalysisController.getUseFunctionHashMap(
                 basicBlock.getBelongingFunc()).get(basicBlock);
     }
 
     public static HashSet<Value> getDefBasicBlockHashSet(BasicBlock basicBlock) {
-        return ActivenessAnalysisController.getDefFunctionHashMap(
+        return LivenessAnalysisController.getDefFunctionHashMap(
                 basicBlock.getBelongingFunc()).get(basicBlock);
     }
 }

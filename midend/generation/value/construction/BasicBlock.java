@@ -15,7 +15,7 @@ import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.AllocaInstr;
 import midend.generation.value.instr.basis.CallInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.ActivenessAnalysisController;
+import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
@@ -165,8 +165,8 @@ public class BasicBlock extends Value {
     public void analysisActiveness() {
         HashSet<Value> def = new HashSet<>();
         HashSet<Value> use = new HashSet<>();
-        ActivenessAnalysisController.addDefBlockHashSet(this, def);
-        ActivenessAnalysisController.addUseBlockHashSet(this, use);
+        LivenessAnalysisController.addDefBlockHashSet(this, def);
+        LivenessAnalysisController.addUseBlockHashSet(this, use);
         instrArrayList.forEach(Instr::addPhiToUse);
         instrArrayList.forEach(Instr::genUseDefAnalysis);
     }

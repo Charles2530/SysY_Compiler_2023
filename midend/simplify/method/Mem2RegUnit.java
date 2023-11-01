@@ -11,7 +11,7 @@ import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.ActivenessAnalysisController;
+import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.ControlFlowGraphController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
@@ -25,7 +25,7 @@ import java.util.Stack;
 public class Mem2RegUnit {
     private static Module module;
     private static ControlFlowGraphController cfGraphController;
-    private static ActivenessAnalysisController activenessAnalysisController;
+    private static LivenessAnalysisController livenessAnalysisController;
     public static BasicBlock initialBasicBlock;
     private static ArrayList<Instr> useInstrArrayList;
     private static ArrayList<Instr> defInstrArrayList;
@@ -41,8 +41,8 @@ public class Mem2RegUnit {
     private static void init() {
         Mem2RegUnit.cfGraphController = new ControlFlowGraphController(module);
         Mem2RegUnit.cfGraphController.build();
-        Mem2RegUnit.activenessAnalysisController = new ActivenessAnalysisController(module);
-        Mem2RegUnit.activenessAnalysisController.analysis();
+        Mem2RegUnit.livenessAnalysisController = new LivenessAnalysisController(module);
+        Mem2RegUnit.livenessAnalysisController.analysis();
     }
 
     public static void run(Module module) {
