@@ -366,7 +366,7 @@ public class LLvmGenIR {
                         "sub", new Constant("0", new VarType(32)), ans);
             } else {
                 ans = new IcmpInstr(IrNameController.getLocalVarName(),
-                        "eq", ans, new Constant("0", new VarType(32)));
+                        "eq", new Constant("0", new VarType(32)), ans);
                 return new ZextInstr(IrNameController.getLocalVarName(),
                         "zext", ans, new VarType(32));
             }

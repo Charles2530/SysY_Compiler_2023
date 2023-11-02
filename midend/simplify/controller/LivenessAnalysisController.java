@@ -25,6 +25,10 @@ public class LivenessAnalysisController {
         LivenessAnalysisController.defFunctionHashMap = new HashMap<>();
     }
 
+    public void analysis() {
+        module.getFunctions().forEach(Function::analysisActiveness);
+    }
+
     public static void calculateInOut(Function function) {
         ArrayList<BasicBlock> basicBlocks = function.getBasicBlocks();
         boolean change = true;
@@ -35,23 +39,20 @@ public class LivenessAnalysisController {
                 HashSet<Value> out = new HashSet<>();
                 addOutBlockHashSet(basicBlock, out);
                 for (BasicBlock successor : ControlFlowGraph.getBlockOutBasicBlock(basicBlock)) {
-                    out.addAll(getInBasicBlockHashSet(successor));
-                    getOutFunctionHashMap(function).put(basicBlock, out);
+                    out.addAll(getInFunctionHashMap(function).get(successor));
+                    //getOutFunctionHashMap(function).put(basicBlock, out);
                 }
-                HashSet<Value> originIn = getInBasicBlockHashSet(basicBlock);
                 HashSet<Value> in = new HashSet<>(out);
                 in.removeAll(getDefBasicBlockHashSet(basicBlock));
                 in.addAll(getUseBasicBlockHashSet(basicBlock));
+                HashSet<Value> originIn = getInFunctionHashMap(function).get(basicBlock);
+                addInBlockHashSet(basicBlock, in);
                 if (!in.equals(originIn)) {
                     change = true;
-                    getInFunctionHashMap(function).put(basicBlock, in);
+                    //getInFunctionHashMap(function).put(basicBlock, in);
                 }
             }
         }
-    }
-
-    public void analysis() {
-        module.getFunctions().forEach(Function::analysisActiveness);
     }
 
     public static void addInFunctionHashMap(
@@ -65,13 +66,13 @@ public class LivenessAnalysisController {
     }
 
     public static void addInBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
-        inFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
+        //inFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getInFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
     public static void addOutBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
-        outFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
+        //outFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getOutFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }

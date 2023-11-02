@@ -9,6 +9,7 @@ import midend.generation.value.instr.basis.CallInstr;
 import midend.generation.value.instr.basis.GetEleInstr;
 import midend.generation.value.instr.basis.IcmpInstr;
 import midend.simplify.controller.ConstantFoldingController;
+import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.DominatorTree;
 
 import java.util.HashMap;
@@ -17,10 +18,13 @@ import java.util.Iterator;
 
 public class GlobalVariableNumberingUnit {
     private static HashMap<Function, HashMap<String, Instr>> GlobalVariableNumberingHashMap;
+    private static LivenessAnalysisController livenessAnalysisController;
 
     public static void run(Module module) {
         GlobalVariableNumberingUnit.GlobalVariableNumberingHashMap = new HashMap<>();
         module.getFunctions().forEach(Function::uniqueInstr);
+        GlobalVariableNumberingUnit.livenessAnalysisController = new LivenessAnalysisController(module);
+        GlobalVariableNumberingUnit.livenessAnalysisController.analysis();
     }
 
     public static void addHashMap(Function function, HashMap<String, Instr> hashMap) {
@@ -39,8 +43,8 @@ public class GlobalVariableNumberingUnit {
         while (iterator.hasNext()) {
             Instr instr = iterator.next();
             if (instr instanceof CalcInstr || instr instanceof IcmpInstr ||
-                    instr instanceof GetEleInstr || instr instanceof CallInstr callInstr &&
-                    ((Function) callInstr.getOperands().get(0)).isImprovable()) {
+                    instr instanceof GetEleInstr || (instr instanceof CallInstr callInstr &&
+                    ((Function) callInstr.getOperands().get(0)).isImprovable())) {
                 String hash = instr.getGlobalVariableNumberingHash();
                 if (hashMap.containsKey(hash)) {
                     instr.replaceAllUse(hashMap.get(hash));

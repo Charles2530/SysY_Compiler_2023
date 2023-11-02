@@ -16,6 +16,6 @@ public class MoveAsm extends Assembly {
 
     @Override
     public String toString() {
-        return "move " + dst + ", " + src;
+        return "move " + dst + " " + src;
     }
 }

@@ -25,10 +25,12 @@ public class BrInstr extends Instr {
 
     public void setThenBlock(BasicBlock thenBlock) {
         this.thenBlock = thenBlock;
+        operands.set(1, thenBlock);
     }
 
     public void setElseBlock(BasicBlock elseBlock) {
         this.elseBlock = elseBlock;
+        operands.set(2, elseBlock);
     }
 
     public BasicBlock getThenBlock() {

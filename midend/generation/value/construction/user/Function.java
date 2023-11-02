@@ -30,6 +30,7 @@ public class Function extends User {
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
     private HashMap<Value, Register> registerHashMap;
+    private Boolean isImproved;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
@@ -37,6 +38,7 @@ public class Function extends User {
         this.basicBlocks = new ArrayList<>();
         this.params = new ArrayList<>();
         this.registerHashMap = null;
+        this.isImproved = null;
         if (!OptimizerUnit.isIsOptimizer()) {
             IrNameController.addFunction(this);
         }
@@ -156,6 +158,9 @@ public class Function extends User {
 
     public boolean isImprovable() {
         boolean flag = true;
+        if (isImproved != null) {
+            return isImproved;
+        }
         for (Param param : params) {
             if (param.getType().isPointer()) {
                 flag = false;
@@ -167,6 +172,7 @@ public class Function extends User {
                 break;
             }
         }
+        isImproved = flag;
         return flag;
     }
 
@@ -176,8 +182,8 @@ public class Function extends User {
         LivenessAnalysisController.addInFunctionHashMap(this, inMap);
         LivenessAnalysisController.addOutFunctionHashMap(this, outMap);
         for (BasicBlock basicBlock : basicBlocks) {
-            outMap.put(basicBlock, new HashSet<>());
             inMap.put(basicBlock, new HashSet<>());
+            outMap.put(basicBlock, new HashSet<>());
         }
         basicBlocks.forEach(BasicBlock::analysisActiveness);
         LivenessAnalysisController.calculateInOut(this);
@@ -186,8 +192,10 @@ public class Function extends User {
     public void regAllocate() {
         BasicBlock entry = basicBlocks.get(0);
         registerHashMap = new HashMap<>();
+//        HashMap<Value, Register> registerHashMap = new HashMap<>();
         HashMap<Register, Value> valueHashMap = new HashMap<>();
         RegisterAllocator.blockAllocate(entry, registerHashMap, valueHashMap);
+//        this.registerHashMap = registerHashMap;
         ArrayList<Value> paramList = new ArrayList<>(registerHashMap.keySet());
         paramList.sort(Comparator.comparing(Value::getName));
     }

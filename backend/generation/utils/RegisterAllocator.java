@@ -68,7 +68,7 @@ public class RegisterAllocator {
         }
         if (instr.isValid() && !(instr instanceof ZextInstr)) {
             defined.add(instr);
-            Register reg = allocRegFor();
+            Register reg = allocRegFor(instr);
             if (reg != null) {
                 if (reg2var.containsKey(reg)) {
                     var2reg.remove(reg2var.get(reg));
@@ -79,7 +79,7 @@ public class RegisterAllocator {
         }
     }
 
-    private static Register allocRegFor() {
+    private static Register allocRegFor(Instr instr) {
         Set<Register> allocated = reg2var.keySet();
         for (Register reg : registers) {
             if (!allocated.contains(reg)) {

@@ -25,7 +25,6 @@ import java.util.Stack;
 public class Mem2RegUnit {
     private static Module module;
     private static ControlFlowGraphController cfGraphController;
-    private static LivenessAnalysisController livenessAnalysisController;
     public static BasicBlock initialBasicBlock;
     private static ArrayList<Instr> useInstrArrayList;
     private static ArrayList<Instr> defInstrArrayList;
@@ -41,8 +40,6 @@ public class Mem2RegUnit {
     private static void init() {
         Mem2RegUnit.cfGraphController = new ControlFlowGraphController(module);
         Mem2RegUnit.cfGraphController.build();
-        Mem2RegUnit.livenessAnalysisController = new LivenessAnalysisController(module);
-        Mem2RegUnit.livenessAnalysisController.analysis();
     }
 
     public static void run(Module module) {
