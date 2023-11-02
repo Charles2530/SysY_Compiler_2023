@@ -1,6 +1,6 @@
 package midend.generation;
 
-import iostream.OptimizerUnit;
+import iostream.structure.OptimizerUnit;
 import midend.generation.llvm.LLvmGenIR;
 import midend.generation.utils.IrNameController;
 import midend.generation.value.construction.Module;

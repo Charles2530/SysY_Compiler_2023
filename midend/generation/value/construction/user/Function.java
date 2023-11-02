@@ -5,8 +5,8 @@ import backend.generation.mips.asm.textsegment.structure.Label;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
-import iostream.DebugDetailController;
-import iostream.OptimizerUnit;
+import iostream.structure.DebugDetailController;
+import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.StructType;
@@ -182,8 +182,8 @@ public class Function extends User {
         LivenessAnalysisController.addInFunctionHashMap(this, inMap);
         LivenessAnalysisController.addOutFunctionHashMap(this, outMap);
         for (BasicBlock basicBlock : basicBlocks) {
-            inMap.put(basicBlock, new HashSet<>());
-            outMap.put(basicBlock, new HashSet<>());
+            LivenessAnalysisController.addInBlockHashSet(basicBlock, new HashSet<>());
+            LivenessAnalysisController.addOutBlockHashSet(basicBlock, new HashSet<>());
         }
         basicBlocks.forEach(BasicBlock::analysisActiveness);
         LivenessAnalysisController.calculateInOut(this);
@@ -191,11 +191,11 @@ public class Function extends User {
 
     public void regAllocate() {
         BasicBlock entry = basicBlocks.get(0);
-        registerHashMap = new HashMap<>();
-//        HashMap<Value, Register> registerHashMap = new HashMap<>();
+//        registerHashMap = new HashMap<>();
+        HashMap<Value, Register> registerHashMap = new HashMap<>();
         HashMap<Register, Value> valueHashMap = new HashMap<>();
         RegisterAllocator.blockAllocate(entry, registerHashMap, valueHashMap);
-//        this.registerHashMap = registerHashMap;
+        this.registerHashMap = registerHashMap;
         DebugDetailController.printRegisterValueReflection(registerHashMap);
     }
 

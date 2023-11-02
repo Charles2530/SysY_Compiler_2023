@@ -1,6 +1,6 @@
 package midend.simplify;
 
-import iostream.OptimizerUnit;
+import iostream.structure.OptimizerUnit;
 import midend.generation.GenerationMain;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;

@@ -6,7 +6,7 @@ import backend.generation.mips.asm.textsegment.complex.LiAsm;
 import backend.generation.mips.asm.textsegment.mipsinstr.SyscallAsm;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.construction.FormatString;
-import iostream.IoStreamGeneration;
+import iostream.structure.IoStreamGeneration;
 
 public class PutStrDeclare extends IoStreamGeneration {
     private final FormatString str;

@@ -1,7 +1,7 @@
 package frontend.generation.syntax.utils;
 
 import iostream.ErrorController;
-import iostream.ErrorToken;
+import iostream.structure.ErrorToken;
 import frontend.generation.syntax.AstNode;
 import frontend.generation.syntax.AstRecursion;
 

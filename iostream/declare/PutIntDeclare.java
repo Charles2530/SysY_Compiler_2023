@@ -8,7 +8,7 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
-import iostream.IoStreamGeneration;
+import iostream.structure.IoStreamGeneration;
 
 public class PutIntDeclare extends IoStreamGeneration {
     public PutIntDeclare(Value target) {

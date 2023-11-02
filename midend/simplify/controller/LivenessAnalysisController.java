@@ -1,6 +1,6 @@
 package midend.simplify.controller;
 
-import iostream.DebugDetailController;
+import iostream.structure.DebugDetailController;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
@@ -40,15 +40,15 @@ public class LivenessAnalysisController {
             for (int i = basicBlocks.size() - 1; i >= 0; i--) {
                 BasicBlock basicBlock = basicBlocks.get(i);
                 HashSet<Value> out = new HashSet<>();
-                addOutBlockHashSet(basicBlock, out);
                 for (BasicBlock successor : ControlFlowGraph.getBlockOutBasicBlock(basicBlock)) {
                     out.addAll(getInFunctionHashMap(function).get(successor));
                     //getOutFunctionHashMap(function).put(basicBlock, out);
                 }
+                addOutBlockHashSet(basicBlock, out);
                 HashSet<Value> in = new HashSet<>(out);
                 in.removeAll(getDefBasicBlockHashSet(basicBlock));
                 in.addAll(getUseBasicBlockHashSet(basicBlock));
-                HashSet<Value> originIn = getInFunctionHashMap(function).get(basicBlock);
+                HashSet<Value> originIn = getInBasicBlockHashSet(basicBlock);
                 addInBlockHashSet(basicBlock, in);
                 if (!in.equals(originIn)) {
                     change = true;

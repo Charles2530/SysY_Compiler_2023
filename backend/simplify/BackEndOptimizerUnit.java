@@ -1,7 +1,7 @@
 package backend.simplify;
 
 import backend.simplify.method.PhiEliminationUnit;
-import iostream.OptimizerUnit;
+import iostream.structure.OptimizerUnit;
 import midend.generation.value.construction.Module;
 
 public class BackEndOptimizerUnit extends OptimizerUnit {

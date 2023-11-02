@@ -1,4 +1,4 @@
-package iostream;
+package iostream.structure;
 
 import midend.generation.utils.IrType;
 import midend.generation.value.construction.user.Instr;

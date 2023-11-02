@@ -4,7 +4,7 @@ import frontend.generation.lexer.LexicalAnalysis;
 import frontend.generation.semantic.SemanticAnalysis;
 import frontend.generation.syntax.SyntaxAnalysis;
 import frontend.simplify.FrontEndOptimizerUnit;
-import iostream.DebugDetailController;
+import iostream.structure.DebugDetailController;
 import iostream.ErrorController;
 import iostream.OutputController;
 import midend.generation.GenerationMain;
@@ -72,10 +72,11 @@ public class Compiler {
                         new MidEndOptimizerUnit(GenerationMain.getModule());
                 midEndOptimizerUnit.optimize();
                 // 重新生成中间代码
-                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
+                // OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
                 BackEndOptimizerUnit backEndOptimizerUnit =
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();
+                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
             }
             // 生成汇编代码
             AssemblyGeneration assemblyGeneration =

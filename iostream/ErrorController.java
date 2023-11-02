@@ -2,6 +2,7 @@ package iostream;
 
 import frontend.generation.semantic.symtable.SymbolTable;
 import frontend.generation.syntax.AstRecursion;
+import iostream.structure.ErrorToken;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

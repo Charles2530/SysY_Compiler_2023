@@ -7,7 +7,7 @@ import backend.generation.mips.asm.textsegment.mipsinstr.SyscallAsm;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
-import iostream.IoStreamGeneration;
+import iostream.structure.IoStreamGeneration;
 
 public class GetIntDeclare extends IoStreamGeneration {
     public GetIntDeclare(String name, String instrType) {

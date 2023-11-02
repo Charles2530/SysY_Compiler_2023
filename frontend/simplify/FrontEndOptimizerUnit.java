@@ -2,7 +2,7 @@ package frontend.simplify;
 
 import frontend.generation.syntax.AstNode;
 import frontend.simplify.method.FunctionInlineUnit;
-import iostream.OptimizerUnit;
+import iostream.structure.OptimizerUnit;
 
 public class FrontEndOptimizerUnit extends OptimizerUnit {
     private final AstNode rootAst;

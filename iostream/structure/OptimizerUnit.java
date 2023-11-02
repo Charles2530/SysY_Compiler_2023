@@ -1,4 +1,4 @@
-package iostream;
+package iostream.structure;
 
 public class OptimizerUnit {
     private static boolean isOptimizer;

@@ -1,6 +1,6 @@
 package midend.simplify.controller.datastruct;
 
-import iostream.DebugDetailController;
+import iostream.structure.DebugDetailController;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;

@@ -1,8 +1,8 @@
 package midend.generation.value.construction.user;
 
 import backend.generation.mips.asm.textsegment.structure.Comment;
-import iostream.IoStreamGeneration;
-import iostream.OptimizerUnit;
+import iostream.structure.IoStreamGeneration;
+import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;

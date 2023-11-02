@@ -1,7 +1,7 @@
 package frontend.generation.semantic.utils;
 
 import iostream.ErrorController;
-import iostream.ErrorToken;
+import iostream.structure.ErrorToken;
 import iostream.OutputController;
 import frontend.generation.semantic.SemanticAnalysis;
 import frontend.generation.semantic.SemanticAnalysisChecker;

@@ -12,16 +12,15 @@ import midend.simplify.controller.datastruct.DominatorTree;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class RegisterAllocator {
     private static ArrayList<Register> registers;
-    private static HashMap<Value, Value> lastUseMap;
+    //    private static HashMap<Value, Value> lastUseMap;
     private static HashMap<Value, Register> var2reg;
     private static HashMap<Register, Value> reg2var;
-    private static HashSet<Value> defined;
-    private static HashSet<Value> used;
+//    private static HashSet<Value> defined;
+//    private static HashSet<Value> used;
 
     public static void init() {
         RegisterAllocator.registers = new ArrayList<>();
@@ -35,14 +34,15 @@ public class RegisterAllocator {
 
     public static void blockAllocate(
             BasicBlock entry, HashMap<Value, Register> var2reg, HashMap<Register, Value> reg2var) {
-        RegisterAllocator.lastUseMap = new HashMap<>();
+        HashMap<Value, Value> lastUseMap = new HashMap<>();
         RegisterAllocator.var2reg = var2reg;
         RegisterAllocator.reg2var = reg2var;
-        RegisterAllocator.defined = new HashSet<>();
-        RegisterAllocator.used = new HashSet<>();
+        HashSet<Value> defined = new HashSet<>();
+        HashSet<Value> used = new HashSet<>();
         entry.getInstrArrayList().forEach(instr -> instr.getOperands().forEach(
                 operand -> lastUseMap.put(operand, instr)));
-        entry.getInstrArrayList().forEach(instr -> releaseReg(entry, instr));
+        entry.getInstrArrayList().forEach(instr -> releaseReg(entry, instr, lastUseMap,
+                var2reg, reg2var, defined, used));
         DominatorTree.getBlockDominateChildList(entry).forEach(RegisterAllocator::reflection);
         for (Value value : defined) {
             if (var2reg.containsKey(value)) {
@@ -56,7 +56,10 @@ public class RegisterAllocator {
         }
     }
 
-    private static void releaseReg(BasicBlock entry, Instr instr) {
+    private static void releaseReg(BasicBlock entry, Instr instr, HashMap<Value, Value> lastUseMap,
+                                   HashMap<Value, Register> var2reg,
+                                   HashMap<Register, Value> reg2var,
+                                   HashSet<Value> defined, HashSet<Value> used) {
         if (!(instr instanceof PhiInstr)) {
             for (Value operand : instr.getOperands()) {
                 if (lastUseMap.get(operand).equals(instr) && var2reg.containsKey(operand) &&
@@ -92,15 +95,13 @@ public class RegisterAllocator {
 
     private static void reflection(BasicBlock child) {
         HashMap<Register, Value> buffer = new HashMap<>();
-        Iterator<Register> iterator = reg2var.keySet().iterator();
-        while (iterator.hasNext()) {
-            Register register = iterator.next();
+        for (Register register : reg2var.keySet()) {
             if (!LivenessAnalysisController.getInBasicBlockHashSet(child)
                     .contains(reg2var.get(register))) {
                 buffer.put(register, reg2var.get(register));
-                iterator.remove();
             }
         }
+        buffer.keySet().forEach(register -> reg2var.remove(register));
         blockAllocate(child, var2reg, reg2var);
         buffer.keySet().forEach(register -> reg2var.put(register, buffer.get(register)));
     }

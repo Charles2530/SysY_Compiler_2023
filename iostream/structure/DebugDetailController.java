@@ -1,4 +1,4 @@
-package iostream;
+package iostream.structure;
 
 import backend.generation.mips.Register;
 import midend.generation.value.Value;
