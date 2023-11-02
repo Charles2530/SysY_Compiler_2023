@@ -4,6 +4,7 @@ import frontend.generation.lexer.LexicalAnalysis;
 import frontend.generation.semantic.SemanticAnalysis;
 import frontend.generation.syntax.SyntaxAnalysis;
 import frontend.simplify.FrontEndOptimizerUnit;
+import iostream.DebugDetailController;
 import iostream.ErrorController;
 import iostream.OutputController;
 import midend.generation.GenerationMain;
@@ -28,6 +29,7 @@ public class Compiler {
     private static boolean IsOptimize = true;
     private static boolean IsGenerationOptimizerOutput = !IsGenerationOutput;
     private static boolean IsAssemblyOutput = true;
+    private static boolean IsDebugDetailOutput = true;
     private static BufferedReader fileInputStream = null;
     private static BufferedWriter errorOutputStream = null;
     private static BufferedWriter lexerOutputStream = null;
@@ -35,6 +37,7 @@ public class Compiler {
     private static BufferedWriter generationOutputStream = null;
     private static BufferedWriter generationOptimizerOutputStream = null;
     private static BufferedWriter assemblyOutputStream = null;
+    private static BufferedWriter debugDetailOutputStream = null;
 
     public static void main(String[] args) throws IOException {
         compilerInit();
@@ -99,6 +102,8 @@ public class Compiler {
                 new FileWriter("llvm_ir.txt", false)) : null;
         assemblyOutputStream = IsAssemblyOutput ? new BufferedWriter(
                 new FileWriter("mips.txt", false)) : null;
+        debugDetailOutputStream = IsDebugDetailOutput ? new BufferedWriter(
+                new FileWriter("debug_detail.txt", false)) : null;
         // 错误处理初始化
         ErrorController.setBufferedWriter(errorOutputStream);
         ErrorController.setIsDebugMode(IsDebugMode);
@@ -115,6 +120,9 @@ public class Compiler {
         OutputController.setGenerationOutput(IsGenerationOutput);
         OutputController.setGenerationOptimizerOutput(IsGenerationOptimizerOutput);
         OutputController.setAssemblyOutput(IsAssemblyOutput);
+        // 具体信息输出初始化
+        DebugDetailController.setBufferedWriter(debugDetailOutputStream);
+        DebugDetailController.setIsDebugDetailOutput(IsDebugDetailOutput);
     }
 
     private static void compilerEnd() throws IOException {
@@ -137,6 +145,9 @@ public class Compiler {
         }
         if (IsAssemblyOutput) {
             assemblyOutputStream.close();
+        }
+        if (IsDebugDetailOutput) {
+            debugDetailOutputStream.close();
         }
     }
 }

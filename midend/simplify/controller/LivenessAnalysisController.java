@@ -1,5 +1,6 @@
 package midend.simplify.controller;
 
+import iostream.DebugDetailController;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
@@ -27,6 +28,8 @@ public class LivenessAnalysisController {
 
     public void analysis() {
         module.getFunctions().forEach(Function::analysisActiveness);
+        DebugDetailController.printLivenessAnalysis(
+                inFunctionHashMap, outFunctionHashMap, useFunctionHashMap, defFunctionHashMap);
     }
 
     public static void calculateInOut(Function function) {

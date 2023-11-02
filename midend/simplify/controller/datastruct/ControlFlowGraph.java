@@ -1,5 +1,6 @@
 package midend.simplify.controller.datastruct;
 
+import iostream.DebugDetailController;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
@@ -34,6 +35,8 @@ public class ControlFlowGraph {
             }
             ControlFlowGraph.buildControlFlowGraph(function);
         }
+        DebugDetailController.printControlFlowGraph(
+                indBasicBlockFunctionMap, outBasicBlockFunctionMap);
     }
 
     private static void buildControlFlowGraph(Function function) {

@@ -5,6 +5,7 @@ import backend.generation.mips.asm.textsegment.structure.Label;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
+import iostream.DebugDetailController;
 import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
@@ -20,7 +21,6 @@ import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -196,8 +196,7 @@ public class Function extends User {
         HashMap<Register, Value> valueHashMap = new HashMap<>();
         RegisterAllocator.blockAllocate(entry, registerHashMap, valueHashMap);
 //        this.registerHashMap = registerHashMap;
-        ArrayList<Value> paramList = new ArrayList<>(registerHashMap.keySet());
-        paramList.sort(Comparator.comparing(Value::getName));
+        DebugDetailController.printRegisterValueReflection(registerHashMap);
     }
 
     public void phiEliminate() {

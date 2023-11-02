@@ -119,7 +119,8 @@ public class PhiEliminationUnit {
                     }
 //                    extra.add(0, new MoveInstr(
 //                            IrNameController.getLocalVarName(function), value, midValue));
-                    extra.add(new MoveInstr(IrNameController.getLocalVarName(function), value, midValue));
+                    extra.add(new MoveInstr(
+                            IrNameController.getLocalVarName(function), value, midValue));
                 }
             }
         }

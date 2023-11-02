@@ -11,7 +11,6 @@ import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.ControlFlowGraphController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;

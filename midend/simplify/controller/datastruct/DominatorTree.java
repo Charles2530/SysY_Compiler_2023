@@ -1,5 +1,6 @@
 package midend.simplify.controller.datastruct;
 
+import iostream.DebugDetailController;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
@@ -46,6 +47,8 @@ public class DominatorTree {
             DominatorTree.buildDominateTree(function);
             function.searchBlockDominanceFrontier();
         }
+        DebugDetailController.printDominateTree(dominateFunctionHashMap,
+                dominanceFrontierFunctionHashMap, parentFunctionHashMap, childListFunctionHashMap);
     }
 
     private static void buildDominateTree(Function function) {

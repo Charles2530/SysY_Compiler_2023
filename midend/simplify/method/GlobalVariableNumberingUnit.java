@@ -23,7 +23,8 @@ public class GlobalVariableNumberingUnit {
     public static void run(Module module) {
         GlobalVariableNumberingUnit.GlobalVariableNumberingHashMap = new HashMap<>();
         module.getFunctions().forEach(Function::uniqueInstr);
-        GlobalVariableNumberingUnit.livenessAnalysisController = new LivenessAnalysisController(module);
+        GlobalVariableNumberingUnit.livenessAnalysisController =
+                new LivenessAnalysisController(module);
         GlobalVariableNumberingUnit.livenessAnalysisController.analysis();
     }
 
