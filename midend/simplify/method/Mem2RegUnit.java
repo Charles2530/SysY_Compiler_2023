@@ -24,13 +24,17 @@ import java.util.Stack;
 public class Mem2RegUnit {
     private static Module module;
     private static ControlFlowGraphController cfGraphController;
-    public static BasicBlock initialBasicBlock;
+    private static BasicBlock initialBasicBlock;
     private static ArrayList<Instr> useInstrArrayList;
     private static ArrayList<Instr> defInstrArrayList;
     private static ArrayList<BasicBlock> useBasicBlockArrayList;
     private static ArrayList<BasicBlock> defBasicBlockArrayList;
     private static Stack<Value> stack;
     private static Instr currentAllocaInstr;
+
+    public static void setInitialBasicBlock(BasicBlock initialBasicBlock) {
+        Mem2RegUnit.initialBasicBlock = initialBasicBlock;
+    }
 
     public static BasicBlock getInitialBasicBlock() {
         return initialBasicBlock;

@@ -111,7 +111,7 @@ public class Function extends User {
     }
 
     public void insertPhiProcess() {
-        Mem2RegUnit.initialBasicBlock = basicBlocks.get(0);
+        Mem2RegUnit.setInitialBasicBlock(basicBlocks.get(0));
         basicBlocks.forEach(BasicBlock::insertPhiProcess);
     }
 
@@ -191,11 +191,9 @@ public class Function extends User {
 
     public void regAllocate() {
         BasicBlock entry = basicBlocks.get(0);
-//        registerHashMap = new HashMap<>();
-        HashMap<Value, Register> registerHashMap = new HashMap<>();
+        registerHashMap = new HashMap<>();
         HashMap<Register, Value> valueHashMap = new HashMap<>();
         RegisterAllocator.blockAllocate(entry, registerHashMap, valueHashMap);
-        this.registerHashMap = registerHashMap;
         DebugDetailController.printRegisterValueReflection(registerHashMap);
     }
 

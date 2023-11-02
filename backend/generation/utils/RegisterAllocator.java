@@ -16,11 +16,8 @@ import java.util.Set;
 
 public class RegisterAllocator {
     private static ArrayList<Register> registers;
-    //    private static HashMap<Value, Value> lastUseMap;
     private static HashMap<Value, Register> var2reg;
     private static HashMap<Register, Value> reg2var;
-//    private static HashSet<Value> defined;
-//    private static HashSet<Value> used;
 
     public static void init() {
         RegisterAllocator.registers = new ArrayList<>();
@@ -72,7 +69,7 @@ public class RegisterAllocator {
         }
         if (instr.isValid() && !(instr instanceof ZextInstr)) {
             defined.add(instr);
-            Register reg = allocRegFor(instr);
+            Register reg = allocRegFor();
             if (reg != null) {
                 if (reg2var.containsKey(reg)) {
                     var2reg.remove(reg2var.get(reg));
@@ -83,7 +80,7 @@ public class RegisterAllocator {
         }
     }
 
-    private static Register allocRegFor(Instr instr) {
+    private static Register allocRegFor() {
         Set<Register> allocated = reg2var.keySet();
         for (Register reg : registers) {
             if (!allocated.contains(reg)) {

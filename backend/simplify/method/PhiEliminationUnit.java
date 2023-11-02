@@ -117,9 +117,7 @@ public class PhiEliminationUnit {
                             moveInstr.setFrom(midValue);
                         }
                     }
-//                    extra.add(0, new MoveInstr(
-//                            IrNameController.getLocalVarName(function), value, midValue));
-                    extra.add(new MoveInstr(
+                    extra.add(0, new MoveInstr(
                             IrNameController.getLocalVarName(function), value, midValue));
                 }
             }
@@ -150,9 +148,7 @@ public class PhiEliminationUnit {
                             moveInstr.setFrom(midValue);
                         }
                     }
-//                    extra.add(0, new MoveInstr(
-//                            IrNameController.getLocalVarName(function), value, midValue));
-                    extra.add(new MoveInstr(
+                    extra.add(0, new MoveInstr(
                             IrNameController.getLocalVarName(function), value, midValue));
                 }
             }

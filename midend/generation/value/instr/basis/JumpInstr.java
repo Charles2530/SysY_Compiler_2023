@@ -6,7 +6,7 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 
 public class JumpInstr extends Instr {
-    BasicBlock target;
+    private final BasicBlock target;
 
     public JumpInstr(BasicBlock target) {
         super(new VarType(0), "JumpInstr", "jump");
