@@ -143,7 +143,7 @@ public class Function extends User {
                 BasicBlock runner = from;
                 while (!DominatorTree.getBlockDominateSet(runner).contains(to)
                         || runner.equals(to)) {
-                    DominatorTree.addBlockDominanceFrontier(runner, to);
+                    DominatorTree.addBlockDominanceFrontierEdge(runner, to);
                     runner = DominatorTree.getBlockDominateParent(runner);
                 }
             }

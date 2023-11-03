@@ -40,10 +40,8 @@ public class LivenessAnalysisController {
             for (int i = basicBlocks.size() - 1; i >= 0; i--) {
                 BasicBlock basicBlock = basicBlocks.get(i);
                 HashSet<Value> out = new HashSet<>();
-                for (BasicBlock successor : ControlFlowGraph.getBlockOutBasicBlock(basicBlock)) {
-                    out.addAll(getInFunctionHashMap(function).get(successor));
-                    //getOutFunctionHashMap(function).put(basicBlock, out);
-                }
+                ControlFlowGraph.getBlockOutBasicBlock(basicBlock).forEach(
+                        successor -> out.addAll(getInBasicBlockHashSet(successor)));
                 addOutBlockHashSet(basicBlock, out);
                 HashSet<Value> in = new HashSet<>(out);
                 in.removeAll(getDefBasicBlockHashSet(basicBlock));
@@ -52,7 +50,6 @@ public class LivenessAnalysisController {
                 addInBlockHashSet(basicBlock, in);
                 if (!in.equals(originIn)) {
                     change = true;
-                    //getInFunctionHashMap(function).put(basicBlock, in);
                 }
             }
         }
@@ -69,13 +66,13 @@ public class LivenessAnalysisController {
     }
 
     public static void addInBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
-        //inFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
+        inFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getInFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
     public static void addOutBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
-        //outFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
+        outFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getOutFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }

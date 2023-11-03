@@ -63,14 +63,11 @@ public class PhiEliminationUnit {
     }
 
     public static ArrayList<MoveInstr> getMoveAsm(ParallelCopy pc) {
-        ArrayList<Value> fromValueList = pc.getFrom();
-        ArrayList<Value> toValueList = pc.getTo();
         Function function = pc.getBelongingBlock().getBelongingFunc();
-        HashMap<Value, Register> valueRegisterHashMap = function.getRegisterHashMap();
         ArrayList<MoveInstr> moveList = PhiEliminationUnit.
-                initialMoveInstrList(fromValueList, toValueList, function);
-        ArrayList<MoveInstr> extraMoveList =
-                PhiEliminationUnit.genTempMoveList(function, valueRegisterHashMap, moveList);
+                initialMoveInstrList(pc.getFrom(), pc.getTo(), function);
+        ArrayList<MoveInstr> extraMoveList = PhiEliminationUnit.genTempMoveList(
+                function, function.getRegisterHashMap(), moveList);
         extraMoveList.forEach((x) -> moveList.add(0, x));
         return moveList;
     }
@@ -79,10 +76,8 @@ public class PhiEliminationUnit {
             ArrayList<Value> fromValueList, ArrayList<Value> toValueList, Function function) {
         ArrayList<MoveInstr> moveList = new ArrayList<>();
         for (int i = 0; i < fromValueList.size(); i++) {
-            Value fromValue = fromValueList.get(i);
-            Value toValue = toValueList.get(i);
             moveList.add(new MoveInstr(IrNameController
-                    .getLocalVarName(function), fromValue, toValue));
+                    .getLocalVarName(function), fromValueList.get(i), toValueList.get(i)));
         }
         return moveList;
     }

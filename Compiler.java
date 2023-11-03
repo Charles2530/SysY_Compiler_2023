@@ -72,11 +72,10 @@ public class Compiler {
                         new MidEndOptimizerUnit(GenerationMain.getModule());
                 midEndOptimizerUnit.optimize();
                 // 重新生成中间代码
-                // OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
+                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
                 BackEndOptimizerUnit backEndOptimizerUnit =
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();
-                OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
             }
             // 生成汇编代码
             AssemblyGeneration assemblyGeneration =
