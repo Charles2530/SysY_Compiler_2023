@@ -27,6 +27,10 @@ public class Initial {
         return type;
     }
 
+    public Integer getOffset() {
+        return offset;
+    }
+
     @Override
     public String toString() {
         if (initValue == null || initValue.isEmpty()) {

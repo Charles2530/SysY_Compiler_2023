@@ -1,6 +1,11 @@
 package midend.generation.value.construction.user;
 
+import backend.generation.mips.Register;
+import backend.generation.mips.asm.datasegment.SpaceAsm;
 import backend.generation.mips.asm.datasegment.WordAsm;
+import backend.generation.mips.asm.textsegment.complex.LiAsm;
+import backend.generation.mips.asm.textsegment.mipsinstr.MemTypeAsm;
+import backend.simplify.BackEndOptimizerUnit;
 import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
@@ -34,8 +39,19 @@ public class GlobalVar extends User {
                     String.valueOf(initial.getInitValue().isEmpty() ? 0 :
                             initial.getInitValue().get(0)), null);
         } else {
-            new WordAsm(name.substring(1), String.valueOf(((ArrayType) target)
-                    .calcSpaceTot()), initial.getInitValue());
+            if (BackEndOptimizerUnit.isSpaceOptimizer()) {
+                new SpaceAsm(name.substring(1), String.valueOf(((ArrayType) target)
+                        .calcSpaceTot() * 4));
+                if (initial.getOffset() != 0) {
+                    for (int offset = 0; offset < initial.getOffset(); offset++) {
+                        new LiAsm(Register.T0, initial.getInitValue().get(offset));
+                        new MemTypeAsm("sw", name.substring(1), Register.T0, null, offset * 4);
+                    }
+                }
+            } else {
+                new WordAsm(name.substring(1), String.valueOf(((ArrayType) target)
+                        .calcSpaceTot()), initial.getInitValue());
+            }
         }
     }
 }

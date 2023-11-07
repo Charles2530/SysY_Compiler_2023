@@ -25,7 +25,7 @@ public class VarSymbol extends Symbol {
         this.initValue = (initValue == null) ? new ArrayList<>() : initValue;
         this.space = space;
         this.spaceTot = 1;
-        this.totalOffset = initValue.size();
+        this.totalOffset = (initValue == null) ? 0 : initValue.size();
         // array init
         if (dim > 0) {
             int size = 1;
@@ -33,7 +33,7 @@ public class VarSymbol extends Symbol {
                 size *= space.get(i);
             }
             this.spaceTot = size;
-            int res = size - initValue.size();
+            int res = size - totalOffset;
             for (int i = 0; i < res; i++) {
                 this.initValue.add(0);
             }

@@ -96,11 +96,12 @@ public class Function extends User {
     public void generateAssembly() {
         new Label(name.substring(1));
         AssemblyUnit.resetFunctionConfig(this);
-        for (int i = 0; i < params.size(); i++) {
-            if (i < 3) {
-                AssemblyUnit.getRegisterController().allocRegister(params.get(i),
-                        Register.regTransform(Register.A0.ordinal() + i + 1));
-            }
+        for (int i = 0; i < Math.min(3, params.size()); i++) {
+            AssemblyUnit.getRegisterController().allocRegister(params.get(i),
+                    Register.regTransform(Register.A0.ordinal() + i + 1));
+            RegisterUtils.moveValueOffset(params.get(i));
+        }
+        for (int i = 3; i < params.size(); i++) {
             RegisterUtils.moveValueOffset(params.get(i));
         }
         basicBlocks.forEach(BasicBlock::generateAssembly);
