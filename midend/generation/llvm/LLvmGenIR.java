@@ -274,8 +274,10 @@ public class LLvmGenIR {
     private Value genIrContinueStmtChecker() {
         if (IrNameController.getCurrentLoop().getForStmtVal2() != null) {
             genIrAnalysis(IrNameController.getCurrentLoop().getForStmtVal2());
+        } else if (IrNameController.getCurrentLoop().getCondBlock() != null) {
+            new JumpInstr(IrNameController.getCurrentLoop().getCondBlock());
         }
-        new JumpInstr(IrNameController.getCurrentLoop().getCondBlock());
+        new JumpInstr(IrNameController.getCurrentLoop().getCurrentLoopBlock());
         return null;
     }
 
