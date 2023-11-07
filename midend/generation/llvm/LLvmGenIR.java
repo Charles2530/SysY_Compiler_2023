@@ -93,29 +93,40 @@ public class LLvmGenIR {
 
     //Definer.java
     private Value genIrConstDefChecker(AstNode rootAst) {
-        ConstSymbol constSymbol = (ConstSymbol) semanticAnalysisChecker.createConstDefChecker(rootAst);
+        ConstSymbol constSymbol =
+                (ConstSymbol) semanticAnalysisChecker.createConstDefChecker(rootAst);
         SymbolTable.addSymbol(constSymbol);
         if (constSymbol.getSymbolLevel().equals(0)) {
-            GlobalVar globalVar = new GlobalVar(new PointerType(constSymbol.getInitial().getType()), IrNameController.getGlobalVarName(constSymbol.getSymbolName()), constSymbol.getInitial());
+            GlobalVar globalVar = new GlobalVar(
+                    new PointerType(constSymbol.getInitial().getType()),
+                    IrNameController.getGlobalVarName(
+                            constSymbol.getSymbolName()), constSymbol.getInitial());
             constSymbol.setValue(globalVar);
         } else {
             Instr instr;
             if (constSymbol.getDim().equals(0)) {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(), new VarType(32));
                 constSymbol.setValue(instr);
-                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1).getGrammarType().equals("<ConstInitVal>")) {
-                    Value value = SymDefiner.genIrConstValues(rootAst.getChildList().get(rootAst.getChildList().size() - 1), 0).get(0);
+                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
+                        .getGrammarType().equals("<ConstInitVal>")) {
+                    Value value = SymDefiner.genIrConstValues(rootAst.getChildList()
+                            .get(rootAst.getChildList().size() - 1), 0).get(0);
                     new StoreInstr(value, instr);
                 }
             } else {
-                instr = new AllocaInstr(IrNameController.getLocalVarName(), new ArrayType(constSymbol.getSpace(), new VarType(32)));
+                instr = new AllocaInstr(IrNameController.getLocalVarName()
+                        , new ArrayType(constSymbol.getSpace(), new VarType(32)));
                 constSymbol.setValue(instr);
-                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1).getGrammarType().equals("<ConstInitVal>")) {
+                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
+                        .getGrammarType().equals("<ConstInitVal>")) {
                     Value pointer = instr;
-                    ArrayList<Value> valuelist = SymDefiner.genIrConstValues(rootAst.getChildList().get(rootAst.getChildList().size() - 1), constSymbol.getDim());
+                    ArrayList<Value> valuelist = SymDefiner.genIrConstValues(
+                            rootAst.getChildList().get(rootAst.getChildList().size() - 1),
+                            constSymbol.getDim());
                     int off = 0;
                     for (Value value : valuelist) {
-                        instr = new GetEleInstr(IrNameController.getLocalVarName(), pointer, new Constant(String.valueOf(off), new VarType(32)));
+                        instr = new GetEleInstr(IrNameController.getLocalVarName(), pointer,
+                                new Constant(String.valueOf(off), new VarType(32)));
                         new StoreInstr(value, instr);
                         off++;
                     }
@@ -130,26 +141,34 @@ public class LLvmGenIR {
         SymbolTable.addSymbol(intSymbol);
         Initial initial = intSymbol.getInitial();
         if (intSymbol.getSymbolLevel().equals(0)) {
-            GlobalVar globalVar = new GlobalVar(new PointerType(initial.getType()), IrNameController.getGlobalVarName(intSymbol.getSymbolName()), initial);
+            GlobalVar globalVar = new GlobalVar(new PointerType(initial.getType()),
+                    IrNameController.getGlobalVarName(intSymbol.getSymbolName()), initial);
             intSymbol.setValue(globalVar);
         } else {
             Instr instr;
             if (intSymbol.getDim().equals(0)) {
                 instr = new AllocaInstr(IrNameController.getLocalVarName(), new VarType(32));
                 intSymbol.setValue(instr);
-                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1).getGrammarType().equals("<InitVal>")) {
-                    Value value = SymDefiner.genIrValues(rootAst.getChildList().get(rootAst.getChildList().size() - 1), 0).get(0);
+                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
+                        .getGrammarType().equals("<InitVal>")) {
+                    Value value = SymDefiner.genIrValues(rootAst.getChildList()
+                            .get(rootAst.getChildList().size() - 1), 0).get(0);
                     new StoreInstr(value, instr);
                 }
             } else {
-                instr = new AllocaInstr(IrNameController.getLocalVarName(), new ArrayType(intSymbol.getSpace(), new VarType(32)));
+                instr = new AllocaInstr(IrNameController.getLocalVarName(),
+                        new ArrayType(intSymbol.getSpace(), new VarType(32)));
                 intSymbol.setValue(instr);
-                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1).getGrammarType().equals("<InitVal>")) {
+                if (rootAst.getChildList().get(rootAst.getChildList().size() - 1)
+                        .getGrammarType().equals("<InitVal>")) {
                     Value pointer = instr;
-                    ArrayList<Value> valuelist = SymDefiner.genIrValues(rootAst.getChildList().get(rootAst.getChildList().size() - 1), intSymbol.getDim());
+                    ArrayList<Value> valuelist = SymDefiner.genIrValues(
+                            rootAst.getChildList().get(rootAst.getChildList().size() - 1),
+                            intSymbol.getDim());
                     int off = 0;
                     for (Value value : valuelist) {
-                        instr = new GetEleInstr(IrNameController.getLocalVarName(), pointer, new Constant(String.valueOf(off), new VarType(32)));
+                        instr = new GetEleInstr(IrNameController.getLocalVarName(), pointer,
+                                new Constant(String.valueOf(off), new VarType(32)));
                         new StoreInstr(value, instr);
                         off++;
                     }
@@ -218,7 +237,8 @@ public class LLvmGenIR {
         }
         BasicBlock currentLoopBlock = new BasicBlock(IrNameController.getBlockName());
         BasicBlock followBlock = new BasicBlock(IrNameController.getBlockName());
-        IrNameController.pushLoop(new Loop(forStmtVal1, condBlock, forStmtVal2, currentLoopBlock, followBlock));
+        IrNameController.pushLoop(new Loop(forStmtVal1, condBlock, forStmtVal2,
+                currentLoopBlock, followBlock));
         if (condAst != null) {
             new JumpInstr(condBlock);
             IrNameController.setCurrentBlock(condBlock);
@@ -273,15 +293,20 @@ public class LLvmGenIR {
     private Value genIrPrintStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
         StringBuilder sb = new StringBuilder();
-        List<Value> expValueList = rootAst.getChildList().stream().filter(child -> child.getGrammarType().equals("<Exp>")).map(this::genIrAnalysis).toList();
-        String subformatString = rootAst.getChildList().get(2).getSymToken().getWord().substring(1, rootAst.getChildList().get(2).getSymToken().getWord().length() - 1);
+        List<Value> expValueList = rootAst.getChildList().stream()
+                .filter(child -> child.getGrammarType().equals("<Exp>"))
+                .map(this::genIrAnalysis).toList();
+        String subformatString = rootAst.getChildList().get(2)
+                .getSymToken().getWord().substring(1, rootAst.getChildList().get(2)
+                        .getSymToken().getWord().length() - 1);
         int expCnt = 0;
         for (int i = 0; i < subformatString.length(); i++) {
             if (subformatString.charAt(i) == '%') {
                 if (!sb.isEmpty()) {
                     ArrayList<Integer> arrayList = new ArrayList<>();
                     arrayList.add(sb.length() + 1);
-                    FormatString str = new FormatString(IrNameController.getStringLiteralName(), sb.toString(), arrayList);
+                    FormatString str = new FormatString(IrNameController.getStringLiteralName(),
+                            sb.toString(), arrayList);
                     new PutStrDeclare(str);
                     sb.setLength(0);
                 }
@@ -298,7 +323,8 @@ public class LLvmGenIR {
         if (!sb.isEmpty()) {
             ArrayList<Integer> arrayList = new ArrayList<>();
             arrayList.add(sb.length() + 1);
-            FormatString str = new FormatString(IrNameController.getStringLiteralName(), sb.toString(), arrayList);
+            FormatString str = new FormatString(IrNameController.getStringLiteralName(),
+                    sb.toString(), arrayList);
             new PutStrDeclare(str);
         }
         return null;
@@ -331,16 +357,22 @@ public class LLvmGenIR {
             return ans;
         } else if (rootAst.getChildList().get(0).getGrammarType().equals("<UnaryOp>")) {
             ans = genIrAnalysis(rootAst.getChildList().get(1));
-            if (rootAst.getChildList().get(0).getChildList().get(0).getGrammarType().equals("PLUS")) {
+            if (rootAst.getChildList().get(0).getChildList().get(0)
+                    .getGrammarType().equals("PLUS")) {
                 return ans;
-            } else if (rootAst.getChildList().get(0).getChildList().get(0).getGrammarType().equals("MINU")) {
-                return new CalcInstr(IrNameController.getLocalVarName(), "sub", new Constant("0", new VarType(32)), ans);
+            } else if (rootAst.getChildList().get(0).getChildList().get(0)
+                    .getGrammarType().equals("MINU")) {
+                return new CalcInstr(IrNameController.getLocalVarName(),
+                        "sub", new Constant("0", new VarType(32)), ans);
             } else {
-                ans = new IcmpInstr(IrNameController.getLocalVarName(), "eq", new Constant("0", new VarType(32)), ans);
-                return new ZextInstr(IrNameController.getLocalVarName(), "zext", ans, new VarType(32));
+                ans = new IcmpInstr(IrNameController.getLocalVarName(),
+                        "eq", new Constant("0", new VarType(32)), ans);
+                return new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", ans, new VarType(32));
             }
         } else {
-            FuncSymbol funcSymbol = (FuncSymbol) SymbolTable.getSymByName(rootAst.getChildList().get(0).getSymToken().getWord());
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTable.getSymByName(
+                    rootAst.getChildList().get(0).getSymToken().getWord());
             Function function = funcSymbol.getfunction();
             ArrayList<Value> params = new ArrayList<>();
             if (rootAst.getChildList().get(2).getGrammarType().equals("<FuncRParams>")) {
@@ -390,11 +422,13 @@ public class LLvmGenIR {
         Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (!ans.getType().isInt32()) {
-                ans = new ZextInstr(IrNameController.getLocalVarName(), "zext", ans, new VarType(32));
+                ans = new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", ans, new VarType(32));
             }
             Value res = genIrAnalysis(rootAst.getChildList().get(i + 1));
             if (!res.getType().isInt32()) {
-                res = new ZextInstr(IrNameController.getLocalVarName(), "zext", res, new VarType(32));
+                res = new ZextInstr(IrNameController.getLocalVarName(),
+                        "zext", res, new VarType(32));
             }
             ans = switch (rootAst.getChildList().get(i).getGrammarType()) {
                 case "LSS" -> new IcmpInstr(IrNameController.getLocalVarName(), "slt", ans, res);
@@ -413,11 +447,13 @@ public class LLvmGenIR {
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
             if (rootAst.getChildList().get(i).getGrammarType().matches("EQL|NEQ")) {
                 if (!ans.getType().isInt32()) {
-                    ans = new ZextInstr(IrNameController.getLocalVarName(), "zext", ans, new VarType(32));
+                    ans = new ZextInstr(IrNameController.getLocalVarName(),
+                            "zext", ans, new VarType(32));
                 }
                 Value res = genIrAnalysis(rootAst.getChildList().get(i + 1));
                 if (!res.getType().isInt32()) {
-                    res = new ZextInstr(IrNameController.getLocalVarName(), "zext", res, new VarType(32));
+                    res = new ZextInstr(IrNameController.getLocalVarName(),
+                            "zext", res, new VarType(32));
                 }
                 if (rootAst.getChildList().get(i).getGrammarType().equals("EQL")) {
                     ans = new IcmpInstr(IrNameController.getLocalVarName(), "eq", ans, res);
@@ -442,7 +478,8 @@ public class LLvmGenIR {
         IrType type = symbol.getDim() == 0 ? new VarType(32) : new PointerType(new VarType(32));
         Param param = new Param(type, IrNameController.getParamName());
         if (param.getType().isInt32()) {
-            Instr allocaInstr = new AllocaInstr(IrNameController.getLocalVarName(), param.getType());
+            Instr allocaInstr = new AllocaInstr(
+                    IrNameController.getLocalVarName(), param.getType());
             symbol.setValue(allocaInstr);
             new StoreInstr(param, allocaInstr);
         } else {
@@ -455,7 +492,8 @@ public class LLvmGenIR {
     //MainFuncDef.java
     private Value genIrMainFuncDefChecker(AstNode rootAst) {
         SymbolTable.setGlobalArea(false);
-        FuncSymbol funcSymbol = (FuncSymbol) semanticAnalysisChecker.createMainFuncDefChecker(rootAst);
+        FuncSymbol funcSymbol =
+                (FuncSymbol) semanticAnalysisChecker.createMainFuncDefChecker(rootAst);
         return genFuncDefSubChecker(rootAst, funcSymbol);
     }
 
@@ -463,8 +501,10 @@ public class LLvmGenIR {
         SymbolTable.addSymbol(funcSymbol);
         SymbolTable.setCurrentFunc(funcSymbol);
         SymbolTable.createStackSymbolTable();
-        IrType returnType = funcSymbol.getReturnType().equals(Symbol.SymType.INT) ? new VarType(32) : new VarType(0);
-        Function function = new Function(IrNameController.getFuncName(funcSymbol.getSymbolName()), returnType);
+        IrType returnType = funcSymbol.getReturnType().equals(Symbol.SymType.INT) ?
+                new VarType(32) : new VarType(0);
+        Function function = new Function(IrNameController.getFuncName(
+                funcSymbol.getSymbolName()), returnType);
         funcSymbol.setFunction(function);
         IrNameController.setCurrentFunc(function);
         String blockName = IrNameController.getBlockName();
