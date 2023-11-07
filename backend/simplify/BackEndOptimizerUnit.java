@@ -7,7 +7,7 @@ import midend.generation.value.construction.Module;
 public class BackEndOptimizerUnit extends OptimizerUnit {
     private final Module module;
     private final boolean isRemovePhi = true;
-    private static boolean isSpaceOptimizer = true;
+    private static boolean isSpaceOptimizer = false;
 
     public BackEndOptimizerUnit(Module module) {
         this.module = module;

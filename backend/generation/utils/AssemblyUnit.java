@@ -7,6 +7,7 @@ import midend.generation.value.construction.user.Function;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class AssemblyUnit {
     private static Integer currentOffset;
@@ -49,6 +50,6 @@ public class AssemblyUnit {
 
     public static ArrayList<Register> getAllocatedRegister() {
         return (registerController.getRegisterHashMap() == null) ? new ArrayList<>() :
-                new ArrayList<>(registerController.getRegisterHashMap().values());
+                new ArrayList<>(new HashSet<>(registerController.getRegisterHashMap().values()));
     }
 }

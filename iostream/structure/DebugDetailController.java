@@ -132,8 +132,10 @@ public class DebugDetailController {
         printDebugDetail("\n");
     }
 
-    public static void printRegisterValueReflection(HashMap<Value, Register> registerHashMap) {
-        printDebugDetail("Register Value Reflection:");
+    public static void printRegisterValueReflection(
+            Function function, HashMap<Value, Register> registerHashMap) {
+        printDebugDetail("Function: " + function.getName());
+        printDebugDetail("  Register Value Reflection:");
         ArrayList<Value> paramList = new ArrayList<>(registerHashMap.keySet());
         paramList.sort(Comparator.comparing(Value::getName));
         for (Value value : paramList) {

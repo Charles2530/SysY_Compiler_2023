@@ -192,10 +192,11 @@ public class Function extends User {
 
     public void regAllocate() {
         BasicBlock entry = basicBlocks.get(0);
-        registerHashMap = new HashMap<>();
-        HashMap<Register, Value> valueHashMap = new HashMap<>();
-        RegisterAllocator.blockAllocate(entry, registerHashMap, valueHashMap);
-        DebugDetailController.printRegisterValueReflection(registerHashMap);
+        RegisterAllocator.setRegisterHashMap(new HashMap<>());
+        RegisterAllocator.setValueHashMap(new HashMap<>());
+        RegisterAllocator.blockAllocate(entry);
+        this.registerHashMap = RegisterAllocator.getRegisterHashMap();
+        DebugDetailController.printRegisterValueReflection(this,registerHashMap);
     }
 
     public void phiEliminate() {

@@ -29,11 +29,20 @@ public class RegisterAllocator {
         }
     }
 
-    public static void blockAllocate(
-            BasicBlock entry, HashMap<Value, Register> var2reg, HashMap<Register, Value> reg2var) {
-        HashMap<Value, Value> lastUseMap = new HashMap<>();
+    public static void setRegisterHashMap(HashMap<Value, Register> var2reg) {
         RegisterAllocator.var2reg = var2reg;
+    }
+
+    public static void setValueHashMap(HashMap<Register, Value> reg2var) {
         RegisterAllocator.reg2var = reg2var;
+    }
+
+    public static HashMap<Value, Register> getRegisterHashMap() {
+        return var2reg;
+    }
+
+    public static void blockAllocate(BasicBlock entry) {
+        HashMap<Value, Value> lastUseMap = new HashMap<>();
         HashSet<Value> defined = new HashSet<>();
         HashSet<Value> used = new HashSet<>();
         entry.getInstrArrayList().forEach(instr -> instr.getOperands().forEach(
@@ -99,8 +108,7 @@ public class RegisterAllocator {
             }
         }
         buffer.keySet().forEach(register -> reg2var.remove(register));
-        blockAllocate(child, var2reg, reg2var);
+        blockAllocate(child);
         buffer.keySet().forEach(register -> reg2var.put(register, buffer.get(register)));
     }
-
 }

@@ -1,6 +1,7 @@
 package midend.generation.value.construction.user;
 
 import backend.generation.mips.asm.textsegment.structure.Comment;
+import iostream.declare.GetIntDeclare;
 import iostream.structure.IoStreamGeneration;
 import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
@@ -62,7 +63,7 @@ public class Instr extends User {
     public boolean isValid() {
         boolean valid = this instanceof AllocaInstr || this instanceof CalcInstr ||
                 (this instanceof CallInstr callInstr && !callInstr.getType().isVoid()) ||
-                this instanceof IoStreamGeneration;
+                this instanceof GetIntDeclare;
         return valid || this instanceof PhiInstr ||
                 this instanceof GetEleInstr || this instanceof IcmpInstr ||
                 this instanceof LoadInstr || this instanceof ZextInstr;
