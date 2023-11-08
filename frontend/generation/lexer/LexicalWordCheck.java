@@ -49,7 +49,7 @@ public class LexicalWordCheck {
                 }
             } else if (Character.isLetterOrDigit(c) || c == '_') {
                 word += c;
-            } else if (Character.isSpaceChar(c)) {
+            } else if (Character.isSpaceChar(c) || c == '\t') {
                 if (!word.isEmpty()) {
                     words.add(word);
                     word = "";
@@ -88,7 +88,7 @@ public class LexicalWordCheck {
                 } else if (i + 1 < line.length() && line.charAt(i + 1) == '*') {
                     i += 2;
                     isComment = true;
-                    while (i < line.length() && !(line.charAt(i) == '*'
+                    while (i + 1 < line.length() && !(line.charAt(i) == '*'
                             && line.charAt(i + 1) == '/')) {
                         i++;
                     }

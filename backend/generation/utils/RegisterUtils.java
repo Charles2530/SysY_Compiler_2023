@@ -84,7 +84,7 @@ public class RegisterUtils {
         } else {
             register = loadRegisterValue(operand, instead, register);
             new ItypeAsm("sll", instead, register, 2);
-            new RtypeAsm("add", target, instead, pointerReg);
+            new RtypeAsm("addu", target, instead, pointerReg);
         }
         return register;
     }

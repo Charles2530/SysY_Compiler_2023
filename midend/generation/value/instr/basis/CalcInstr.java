@@ -40,10 +40,10 @@ public class CalcInstr extends Instr {
         rt = RegisterUtils.loadVariableValue(operands.get(1), rt, Register.K1);
         switch (instrType) {
             case "add":
-                new RtypeAsm("add", target, rs, rt);
+                new RtypeAsm("addu", target, rs, rt);
                 break;
             case "sub":
-                new RtypeAsm("sub", target, rs, rt);
+                new RtypeAsm("subu", target, rs, rt);
                 break;
             case "and":
                 new RtypeAsm("and", target, rs, rt);
