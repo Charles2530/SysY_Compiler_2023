@@ -17,6 +17,7 @@ import midend.generation.value.instr.basis.CallInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
+import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
@@ -137,11 +138,10 @@ public class BasicBlock extends Value {
             return;
         }
         ArrayList<ParallelCopy> pcList = new ArrayList<>();
-        ArrayList<BasicBlock> indBasicBlock = ControlFlowGraph.getBlockIndBasicBlock(this);
+        ArrayList<BasicBlock> indBasicBlock = this.getBlockIndBasicBlock();
         for (int i = 0; i < indBasicBlock.size(); i++) {
             pcList.add(new ParallelCopy(IrNameController.getLocalVarName(belongingFunc)));
-            ArrayList<BasicBlock> outBasicBlock = ControlFlowGraph
-                    .getBlockOutBasicBlock(indBasicBlock.get(i));
+            ArrayList<BasicBlock> outBasicBlock = indBasicBlock.get(i).getBlockOutBasicBlock();
             if (outBasicBlock.size() == 1) {
                 PhiEliminationUnit.putParallelCopy(pcList.get(i), indBasicBlock.get(i));
             } else {
@@ -167,6 +167,46 @@ public class BasicBlock extends Value {
         LivenessAnalysisController.addUseBlockHashSet(this, use);
         instrArrayList.forEach(Instr::addPhiToUse);
         instrArrayList.forEach(Instr::genUseDefAnalysis);
+    }
+
+    public ArrayList<BasicBlock> getBlockIndBasicBlock() {
+        return ControlFlowGraph.getBlockIndBasicBlock(this);
+    }
+
+    public ArrayList<BasicBlock> getBlockOutBasicBlock() {
+        return ControlFlowGraph.getBlockOutBasicBlock(this);
+    }
+
+    public ArrayList<BasicBlock> getBlockDominateSet() {
+        return DominatorTree.getBlockDominateSet(this);
+    }
+
+    public ArrayList<BasicBlock> getBlockDominanceFrontier() {
+        return DominatorTree.getBlockDominanceFrontier(this);
+    }
+
+    public BasicBlock getBlockDominateParent() {
+        return DominatorTree.getBlockDominateParent(this);
+    }
+
+    public ArrayList<BasicBlock> getBlockDominateChildList() {
+        return DominatorTree.getBlockDominateChildList(this);
+    }
+
+    public HashSet<Value> getInBasicBlockHashSet() {
+        return LivenessAnalysisController.getInBasicBlockHashSet(this);
+    }
+
+    public HashSet<Value> getOutBasicBlockHashSet() {
+        return LivenessAnalysisController.getOutBasicBlockHashSet(this);
+    }
+
+    public HashSet<Value> getUseBasicBlockHashSet() {
+        return LivenessAnalysisController.getUseBasicBlockHashSet(this);
+    }
+
+    public HashSet<Value> getDefBasicBlockHashSet() {
+        return LivenessAnalysisController.getDefBasicBlockHashSet(this);
     }
 }
 

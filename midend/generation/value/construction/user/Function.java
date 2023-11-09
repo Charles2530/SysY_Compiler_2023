@@ -142,10 +142,10 @@ public class Function extends User {
             ArrayList<BasicBlock> outBasicBlocks = entry.getValue();
             for (BasicBlock to : outBasicBlocks) {
                 BasicBlock runner = from;
-                while (!DominatorTree.getBlockDominateSet(runner).contains(to)
+                while (!runner.getBlockDominateSet().contains(to)
                         || runner.equals(to)) {
                     DominatorTree.addBlockDominanceFrontierEdge(runner, to);
-                    runner = DominatorTree.getBlockDominateParent(runner);
+                    runner = runner.getBlockDominateParent();
                 }
             }
         }
@@ -196,7 +196,7 @@ public class Function extends User {
         RegisterAllocator.setValueHashMap(new HashMap<>());
         RegisterAllocator.blockAllocate(entry);
         this.registerHashMap = RegisterAllocator.getRegisterHashMap();
-        DebugDetailController.printRegisterValueReflection(this,registerHashMap);
+        DebugDetailController.printRegisterValueReflection(this, registerHashMap);
     }
 
     public void phiEliminate() {

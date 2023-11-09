@@ -10,7 +10,6 @@ import midend.generation.value.instr.basis.GetEleInstr;
 import midend.generation.value.instr.basis.IcmpInstr;
 import midend.simplify.controller.ConstantFoldingController;
 import midend.simplify.controller.LivenessAnalysisController;
-import midend.simplify.controller.datastruct.DominatorTree;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +55,7 @@ public class GlobalVariableNumberingUnit {
                 }
             }
         }
-        DominatorTree.getBlockDominateChildList(entry)
+        entry.getBlockDominateChildList()
                 .forEach(child -> uniqueInstr(child, hashMap));
         for (Instr instr : vis) {
             hashMap.remove(instr.getGlobalVariableNumberingHash());

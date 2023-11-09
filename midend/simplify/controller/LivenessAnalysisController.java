@@ -5,7 +5,6 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
-import midend.simplify.controller.datastruct.ControlFlowGraph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,13 +39,13 @@ public class LivenessAnalysisController {
             for (int i = basicBlocks.size() - 1; i >= 0; i--) {
                 BasicBlock basicBlock = basicBlocks.get(i);
                 HashSet<Value> out = new HashSet<>();
-                ControlFlowGraph.getBlockOutBasicBlock(basicBlock).forEach(
-                        successor -> out.addAll(getInBasicBlockHashSet(successor)));
+                basicBlock.getBlockOutBasicBlock().forEach(
+                        successor -> out.addAll(successor.getInBasicBlockHashSet()));
                 addOutBlockHashSet(basicBlock, out);
                 HashSet<Value> in = new HashSet<>(out);
-                in.removeAll(getDefBasicBlockHashSet(basicBlock));
-                in.addAll(getUseBasicBlockHashSet(basicBlock));
-                HashSet<Value> originIn = getInBasicBlockHashSet(basicBlock);
+                in.removeAll(basicBlock.getDefBasicBlockHashSet());
+                in.addAll(basicBlock.getUseBasicBlockHashSet());
+                HashSet<Value> originIn = basicBlock.getInBasicBlockHashSet();
                 addInBlockHashSet(basicBlock, in);
                 if (!in.equals(originIn)) {
                     change = true;

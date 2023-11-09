@@ -6,8 +6,6 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.ZextInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.LivenessAnalysisController;
-import midend.simplify.controller.datastruct.DominatorTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +47,7 @@ public class RegisterAllocator {
                 operand -> lastUseMap.put(operand, instr)));
         entry.getInstrArrayList().forEach(instr -> releaseReg(entry, instr, lastUseMap,
                 var2reg, reg2var, defined, used));
-        DominatorTree.getBlockDominateChildList(entry).forEach(RegisterAllocator::reflection);
+        entry.getBlockDominateChildList().forEach(RegisterAllocator::reflection);
         for (Value value : defined) {
             if (var2reg.containsKey(value)) {
                 reg2var.remove(var2reg.get(value));
@@ -69,8 +67,7 @@ public class RegisterAllocator {
         if (!(instr instanceof PhiInstr)) {
             for (Value operand : instr.getOperands()) {
                 if (lastUseMap.get(operand).equals(instr) && var2reg.containsKey(operand) &&
-                        !LivenessAnalysisController.
-                                getOutBasicBlockHashSet(entry).contains(operand)) {
+                        !entry.getOutBasicBlockHashSet().contains(operand)) {
                     reg2var.remove(var2reg.get(operand));
                     used.add(operand);
                 }
@@ -102,8 +99,7 @@ public class RegisterAllocator {
     private static void reflection(BasicBlock child) {
         HashMap<Register, Value> buffer = new HashMap<>();
         for (Register register : reg2var.keySet()) {
-            if (!LivenessAnalysisController.getInBasicBlockHashSet(child)
-                    .contains(reg2var.get(register))) {
+            if (!child.getInBasicBlockHashSet().contains(reg2var.get(register))) {
                 buffer.put(register, reg2var.get(register));
             }
         }

@@ -12,8 +12,6 @@ import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.ControlFlowGraphController;
-import midend.simplify.controller.datastruct.ControlFlowGraph;
-import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.controller.datastruct.Use;
 
 import java.util.ArrayList;
@@ -83,11 +81,11 @@ public class Mem2RegUnit {
         Mem2RegUnit.defBasicBlockArrayList.forEach(w::push);
         while (!w.isEmpty()) {
             BasicBlock x = w.pop();
-            for (BasicBlock y : DominatorTree.getBlockDominanceFrontier(x)) {
+            for (BasicBlock y : x.getBlockDominanceFrontier()) {
                 if (!f.contains(y)) {
                     f.add(y);
                     Instr phiInstr = new PhiInstr(IrNameController.getLocalVarName(
-                            y.getBelongingFunc()), ControlFlowGraph.getBlockIndBasicBlock(y));
+                            y.getBelongingFunc()), y.getBlockIndBasicBlock());
                     y.insertInstr(0, phiInstr);
                     useInstrArrayList.add(phiInstr);
                     defInstrArrayList.add(phiInstr);
@@ -101,14 +99,14 @@ public class Mem2RegUnit {
 
     public static void dfsVarRename(BasicBlock presentBlock) {
         int cnt = removeUnnecessaryInstr(presentBlock);
-        for (BasicBlock basicBlock : ControlFlowGraph.getBlockOutBasicBlock(presentBlock)) {
+        for (BasicBlock basicBlock : presentBlock.getBlockOutBasicBlock()) {
             Instr instr = basicBlock.getInstrArrayList().get(0);
             if (instr instanceof PhiInstr phiInstr && useInstrArrayList.contains(phiInstr)) {
                 phiInstr.modifyValue(((stack.isEmpty()) ?
                         new Constant("0", new VarType(32), false) : stack.peek()), presentBlock);
             }
         }
-        DominatorTree.getBlockDominateChildList(presentBlock).forEach(Mem2RegUnit::dfsVarRename);
+        presentBlock.getBlockDominateChildList().forEach(Mem2RegUnit::dfsVarRename);
         for (int i = 0; i < cnt; i++) {
             stack.pop();
         }

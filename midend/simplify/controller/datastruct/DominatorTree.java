@@ -44,7 +44,7 @@ public class DominatorTree {
 
     private static void buildDominateTree(Function function) {
         function.getBasicBlocks().forEach(basicBlock ->
-                DominatorTree.getBlockDominateSet(basicBlock).forEach(
+                basicBlock.getBlockDominateSet().forEach(
                         dominateBlock -> buildDoubleEdge(basicBlock, dominateBlock)));
     }
 
@@ -60,11 +60,11 @@ public class DominatorTree {
     }
 
     private static boolean isImmediateDominator(BasicBlock basicBlock, BasicBlock dominateBlock) {
-        boolean flag = DominatorTree.getBlockDominateSet(basicBlock).contains(dominateBlock) &&
+        boolean flag = basicBlock.getBlockDominateSet().contains(dominateBlock) &&
                 !dominateBlock.equals(basicBlock);
-        for (BasicBlock midBlock : DominatorTree.getBlockDominateSet(basicBlock)) {
+        for (BasicBlock midBlock : basicBlock.getBlockDominateSet()) {
             if (!midBlock.equals(dominateBlock) && !midBlock.equals(basicBlock)
-                    && DominatorTree.getBlockDominateSet(midBlock).contains(dominateBlock)) {
+                    && midBlock.getBlockDominateSet().contains(dominateBlock)) {
                 flag = false;
                 break;
             }
@@ -78,7 +78,7 @@ public class DominatorTree {
             return;
         }
         reachedSet.add(entry);
-        for (BasicBlock child : ControlFlowGraph.getBlockOutBasicBlock(entry)) {
+        for (BasicBlock child : entry.getBlockOutBasicBlock()) {
             if (!reachedSet.contains(child)) {
                 DominatorTree.dfsDominate(child, basicBlock, reachedSet);
             }
