@@ -107,5 +107,4 @@ public class RegisterAllocator {
         blockAllocate(child);
         buffer.keySet().forEach(register -> reg2var.put(register, buffer.get(register)));
     }
-
 }
