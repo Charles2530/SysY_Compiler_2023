@@ -281,7 +281,8 @@ public class SymChecker {
                         Symbol.SymType argType = SymTypeJudge.getExpType(childList.get(i));
                         Integer paramdim = funcSymbol.getFparamDims().get(i);
                         Integer argdim = SymDefiner.getExpDim(childList.get(i));
-                        if (!paramType.equals(argType) || !paramdim.equals(argdim)) {
+                        if (paramType.equals(Symbol.SymType.VOID) ||
+                                argType.equals(Symbol.SymType.VOID) || !paramdim.equals(argdim)) {
                             ErrorController.addError(new ErrorToken("e",
                                     rootAst.getSpan().getStartLine()));
                         }

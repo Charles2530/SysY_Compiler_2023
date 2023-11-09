@@ -22,7 +22,7 @@ public class Compiler {
     private static boolean detailMode = false;
     private static boolean generationMode = true;
     private static boolean IsCalcMode = false;
-    private static boolean IsDebugMode = false;
+    private static boolean IsDebugMode = true;
     private static boolean IsLexerOutput = false;
     private static boolean IsParserOutput = false;
     private static boolean IsGenerationOutput = false;
