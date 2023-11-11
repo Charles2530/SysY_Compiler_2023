@@ -31,16 +31,10 @@ public class LexicalWordCheck {
             }
             char c = line.charAt(i);
             if (charSet.contains(String.valueOf(c))) {
-                if (!word.isEmpty()) {
-                    words.add(word);
-                    word = "";
-                }
+                addWordToWords(words);
                 words.add(String.valueOf(c));
             } else if (cmpSet.contains(String.valueOf(c))) {
-                if (!word.isEmpty()) {
-                    words.add(word);
-                    word = "";
-                }
+                addWordToWords(words);
                 if (i + 1 < line.length() && line.charAt(i + 1) == '=') {
                     words.add(c + "=");
                     i++;
@@ -50,15 +44,9 @@ public class LexicalWordCheck {
             } else if (Character.isLetterOrDigit(c) || c == '_') {
                 word += c;
             } else if (Character.isSpaceChar(c) || c == '\t') {
-                if (!word.isEmpty()) {
-                    words.add(word);
-                    word = "";
-                }
+                addWordToWords(words);
             } else if (c == '\"') {
-                if (!word.isEmpty()) {
-                    words.add(word);
-                    word = "";
-                }
+                addWordToWords(words);
                 word += line.charAt(i++);
                 while (i < line.length() && line.charAt(i) != '\"') {
                     word += line.charAt(i);
@@ -68,35 +56,19 @@ public class LexicalWordCheck {
                 if (this.checkIllegalSym(word)) {
                     ErrorController.addError(new ErrorToken("a", lineNum));
                 }
-                words.add(word);
-                word = "";
+                addWordToWords(words);
             } else if (i + 1 < line.length() && (c == '&' && line.charAt(i + 1) == '&'
                     || c == '|' && line.charAt(i + 1) == '|')) {
-                if (!word.isEmpty()) {
-                    words.add(word);
-                    word = "";
-                }
+                addWordToWords(words);
                 words.add(c + String.valueOf(line.charAt(i + 1)));
                 i++;
             } else if (c == '/') {
-                if (!word.isEmpty()) {
-                    words.add(word);
-                    word = "";
-                }
+                addWordToWords(words);
                 if (i + 1 < line.length() && line.charAt(i + 1) == '/') {
                     break;
                 } else if (i + 1 < line.length() && line.charAt(i + 1) == '*') {
-                    i += 2;
+                    i++;
                     isComment = true;
-                    while (i + 1 < line.length() && !(line.charAt(i) == '*'
-                            && line.charAt(i + 1) == '/')) {
-                        i++;
-                    }
-                    if (i + 1 < line.length() && line.charAt(i) == '*'
-                            && line.charAt(i + 1) == '/') {
-                        isComment = false;
-                        i++;
-                    }
                 } else {
                     words.add(String.valueOf(c));
                 }
@@ -104,11 +76,15 @@ public class LexicalWordCheck {
                 ErrorController.printLexicalWordCheckPrintError(lineNum, String.valueOf(c));
             }
         }
+        addWordToWords(words);
+        return words;
+    }
+
+    private void addWordToWords(ArrayList<String> words) {
         if (!word.isEmpty()) {
             words.add(word);
             word = "";
         }
-        return words;
     }
 
     private boolean checkIllegalSym(String word) {

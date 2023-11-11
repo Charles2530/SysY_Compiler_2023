@@ -258,40 +258,7 @@ public class Definer {
                     AstRecursion.nextSym();
                     break;
                 case "ASSIGN":
-                    extractedExp(stmtNode);
-                    AstNode assignNode = new AstNode("ASSIGN");
-                    stmtNode.addChild(assignNode);
-                    AstRecursion.nextSym();
-                    if (Judge.isExp()) {
-                        genExp(stmtNode);
-                    } else if (getPreSym().equals("GETINTTK")) {
-                        AstNode getinttkNode = new AstNode("GETINTTK");
-                        stmtNode.addChild(getinttkNode);
-                        AstRecursion.nextSym();
-                        if (getPreSym().equals("LPARENT")) {
-                            AstNode lparentNode = new AstNode("LPARENT");
-                            stmtNode.addChild(lparentNode);
-                            AstRecursion.nextSym();
-                            if (getPreSym().equals("RPARENT")) {
-                                AstNode rparentNode = new AstNode("RPARENT");
-                                stmtNode.addChild(rparentNode);
-                                AstRecursion.nextSym();
-                            } else {
-                                ErrorController.addError(new ErrorToken("j",
-                                        AstRecursion.getPreviousNoTerminalAst()
-                                                .getSpan().getEndLine()));
-                            }
-                        }
-                    }
-                    if (getPreSym().equals("SEMICN")) {
-                        AstNode semicnAst = new AstNode("SEMICN");
-                        stmtNode.addChild(semicnAst);
-                        AstRecursion.nextSym();
-                    } else {
-                        ErrorController.addError(new ErrorToken("i",
-                                AstRecursion.getPreviousNoTerminalAst()
-                                        .getSpan().getEndLine()));
-                    }
+                    extractedAssign(stmtNode);
                     break;
                 default:
                     ErrorController.addError(new ErrorToken("i",
@@ -314,6 +281,43 @@ public class Definer {
             genPrintfStmt(stmtNode);
         }
 
+    }
+
+    private static void extractedAssign(AstNode stmtNode) throws IOException {
+        extractedExp(stmtNode);
+        AstNode assignNode = new AstNode("ASSIGN");
+        stmtNode.addChild(assignNode);
+        AstRecursion.nextSym();
+        if (Judge.isExp()) {
+            genExp(stmtNode);
+        } else if (getPreSym().equals("GETINTTK")) {
+            AstNode getinttkNode = new AstNode("GETINTTK");
+            stmtNode.addChild(getinttkNode);
+            AstRecursion.nextSym();
+            if (getPreSym().equals("LPARENT")) {
+                AstNode lparentNode = new AstNode("LPARENT");
+                stmtNode.addChild(lparentNode);
+                AstRecursion.nextSym();
+                if (getPreSym().equals("RPARENT")) {
+                    AstNode rparentNode = new AstNode("RPARENT");
+                    stmtNode.addChild(rparentNode);
+                    AstRecursion.nextSym();
+                } else {
+                    ErrorController.addError(new ErrorToken("j",
+                            AstRecursion.getPreviousNoTerminalAst()
+                                    .getSpan().getEndLine()));
+                }
+            }
+        }
+        if (getPreSym().equals("SEMICN")) {
+            AstNode semicnAst = new AstNode("SEMICN");
+            stmtNode.addChild(semicnAst);
+            AstRecursion.nextSym();
+        } else {
+            ErrorController.addError(new ErrorToken("i",
+                    AstRecursion.getPreviousNoTerminalAst()
+                            .getSpan().getEndLine()));
+        }
     }
 
     private static void extractedExp(AstNode stmtNode) {
