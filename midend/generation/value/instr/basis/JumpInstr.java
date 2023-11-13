@@ -6,11 +6,17 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 
 public class JumpInstr extends Instr {
-    private final BasicBlock target;
+    private BasicBlock target;
+    private boolean isAssemblerReduce = false;
 
     public JumpInstr(BasicBlock target) {
         super(new VarType(0), "JumpInstr", "jump");
         addOperand(target);
+        this.target = target;
+    }
+
+    public void setTarget(BasicBlock target) {
+        operands.set(0, target);
         this.target = target;
     }
 
@@ -26,6 +32,13 @@ public class JumpInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        if (isAssemblerReduce) {
+            return;
+        }
         new JtypeAsm("j", operands.get(0).getName());
+    }
+
+    public void setAssemblerReduce() {
+        isAssemblerReduce = true;
     }
 }

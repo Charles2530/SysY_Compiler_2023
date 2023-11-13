@@ -10,11 +10,25 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
 public class RetInstr extends Instr {
+    private Value retValue;
+
     public RetInstr(Value retValue) {
         super(new VarType(0), "RetInstr", "ret");
+        this.retValue = retValue;
         if (retValue != null) {
             addOperand(retValue);
         }
+    }
+
+    public void setRetValue(Value retValue) {
+        this.retValue = retValue;
+        if (retValue != null) {
+            operands.set(0, retValue);
+        }
+    }
+
+    public Value getRetValue() {
+        return retValue;
     }
 
     @Override

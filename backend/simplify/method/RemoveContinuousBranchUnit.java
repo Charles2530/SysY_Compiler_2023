@@ -3,6 +3,7 @@ package backend.simplify.method;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
+import midend.generation.value.instr.basis.JumpInstr;
 import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
@@ -24,9 +25,15 @@ public class RemoveContinuousBranchUnit {
             while (iterator.hasNext()) {
                 BasicBlock basicBlock = iterator.next();
                 if (RemoveContinuousBranchUnit.isMergeAble(preBasicBlock, basicBlock)) {
-                    RemoveContinuousBranchUnit.mergeBlock(preBasicBlock, basicBlock);
-                    iterator.remove();
-                    continue;
+                    if (basicBlock.getBlockIndBasicBlock().size() == 1) {
+                        RemoveContinuousBranchUnit.mergeBlock(preBasicBlock, basicBlock);
+                        iterator.remove();
+                        continue;
+                    } else {
+                        if (preBasicBlock.getLastInstr() instanceof JumpInstr jumpInstr) {
+                            jumpInstr.setAssemblerReduce();
+                        }
+                    }
                 }
                 preBasicBlock = basicBlock;
             }
@@ -35,8 +42,7 @@ public class RemoveContinuousBranchUnit {
 
     private static boolean isMergeAble(BasicBlock preBasicBlock, BasicBlock basicBlock) {
         return preBasicBlock != null && preBasicBlock.getBlockOutBasicBlock().size() == 1
-                && basicBlock.getBlockIndBasicBlock().size() == 1 &&
-                preBasicBlock.equals(basicBlock.getBlockIndBasicBlock().get(0));
+                && preBasicBlock.getBlockOutBasicBlock().get(0).equals(basicBlock);
     }
 
     private static void mergeBlock(BasicBlock preBasicBlock, BasicBlock basicBlock) {
