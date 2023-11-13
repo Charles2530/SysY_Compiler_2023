@@ -47,9 +47,15 @@ public class Value {
         present.addUseDefChain(user);
     }
 
+    public ArrayList<User> getUsers() {
+        return getUseDefChain().stream().map(Use::getUser)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public void replaceAllUse(Value value) {
         ArrayList<User> users = useDefChain.stream().map(Use::getUser)
                 .collect(Collectors.toCollection(ArrayList::new));
         users.forEach(user -> user.replaceOperand(this, value));
     }
+
 }

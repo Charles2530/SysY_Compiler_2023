@@ -44,11 +44,12 @@ public class IrNameController {
         return IrPrefix.LOCAL_VAR_NAME.toString() + localVarNameIndex;
     }
 
-    public static String getBlockName() {
-        int blockNameIndex = blockNameIndexHashMap.get(currentFunction);
-        blockNameIndexHashMap.put(currentFunction, blockNameIndex + 1);
-        String funcName = currentFunction.getName().equals("@main") ? "main" :
-                currentFunction.getName().substring(3);
+    public static String getBlockName(Function... function) {
+        Function presentFunction = ((function.length == 0) ? currentFunction : function[0]);
+        int blockNameIndex = blockNameIndexHashMap.get(presentFunction);
+        blockNameIndexHashMap.put(presentFunction, blockNameIndex + 1);
+        String funcName = presentFunction.getName().equals("@main") ? "main" :
+                presentFunction.getName().substring(3);
         return funcName + "_" + IrPrefix.BB_NAME + blockNameIndex;
     }
 

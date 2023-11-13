@@ -7,7 +7,7 @@ import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
 import backend.simplify.BackEndOptimizerUnit;
 import backend.simplify.method.BasicBlockSortedUnit;
-import frontend.simplify.method.FunctionInlineUnit;
+import midend.simplify.method.FunctionInlineUnit;
 import iostream.structure.DebugDetailController;
 import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
@@ -69,6 +69,10 @@ public class Function extends User {
             basicBlocks.add(basicBlock);
         }
         basicBlock.setBelongingFunc(this);
+    }
+
+    public ArrayList<Param> getParams() {
+        return params;
     }
 
     public ArrayList<BasicBlock> getBasicBlocks() {

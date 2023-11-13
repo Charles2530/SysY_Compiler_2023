@@ -11,10 +11,11 @@ import java.util.ArrayList;
 public class PhiInstr extends Instr {
     private final ArrayList<BasicBlock> indBasicBlock;
 
-    public PhiInstr(String name, ArrayList<BasicBlock> indBasicBlock) {
+    public PhiInstr(String name, ArrayList<BasicBlock> indBasicBlock, int... cnt) {
         super(new VarType(32), name, "phi");
         this.indBasicBlock = indBasicBlock;
-        addOperand(null, indBasicBlock.size());
+        int size = (cnt.length == 0) ? indBasicBlock.size() : cnt[0];
+        addOperand(null, size);
     }
 
     @Override

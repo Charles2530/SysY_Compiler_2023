@@ -14,10 +14,17 @@ import midend.generation.value.construction.user.Instr;
 import java.util.ArrayList;
 
 public class CallInstr extends Instr {
+    private final Function target;
+
     public CallInstr(String name, Function targetFunc, ArrayList<Value> paramList) {
         super(targetFunc.getReturnType(), name, "call");
         addOperand(targetFunc);
+        this.target = targetFunc;
         paramList.forEach(this::addOperand);
+    }
+
+    public Function getTarget() {
+        return target;
     }
 
     @Override

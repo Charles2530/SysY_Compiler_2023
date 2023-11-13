@@ -1,7 +1,7 @@
 package midend.generation.value.construction.user;
 
 import backend.generation.mips.asm.textsegment.structure.Comment;
-import frontend.simplify.method.FunctionInlineUnit;
+import midend.simplify.method.FunctionInlineUnit;
 import iostream.declare.GetIntDeclare;
 import iostream.structure.IoStreamGeneration;
 import iostream.structure.OptimizerUnit;

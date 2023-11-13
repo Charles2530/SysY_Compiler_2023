@@ -34,6 +34,12 @@ public class User extends Value {
         replaceUseDefChain(origin, present, this);
     }
 
+    public void dropOperands() {
+        for (Value operand : operands) {
+            operand.getUsers().remove(this);
+        }
+    }
+
     public ArrayList<Value> getOperands() {
         return operands;
     }
