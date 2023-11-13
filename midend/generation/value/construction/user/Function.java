@@ -5,6 +5,8 @@ import backend.generation.mips.asm.textsegment.structure.Label;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
+import backend.simplify.BackEndOptimizerUnit;
+import backend.simplify.method.BasicBlockSortedUnit;
 import iostream.structure.DebugDetailController;
 import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
@@ -103,6 +105,9 @@ public class Function extends User {
         }
         for (int i = 3; i < params.size(); i++) {
             RegisterUtils.moveValueOffset(params.get(i));
+        }
+        if (BackEndOptimizerUnit.isBasicBlockSorted()) {
+            BasicBlockSortedUnit.sort(basicBlocks);
         }
         basicBlocks.forEach(BasicBlock::generateAssembly);
     }

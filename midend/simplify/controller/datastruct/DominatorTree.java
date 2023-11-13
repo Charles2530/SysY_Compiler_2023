@@ -187,4 +187,61 @@ public class DominatorTree {
         DominatorTree.getFunctionDominateChildList(runner.getBelongingFunc())
                 .get(runner).add(to);
     }
+
+    public static void modifyMerged(BasicBlock preBasicBlock, BasicBlock basicBlock) {
+        DominatorTree.modifyMergedDominateSet(preBasicBlock, basicBlock);
+        DominatorTree.modifyMergedDominanceFrontier(preBasicBlock, basicBlock);
+        DominatorTree.modifyMergedDominateParent(preBasicBlock, basicBlock);
+        DominatorTree.modifyMergedDominateChildList(preBasicBlock, basicBlock);
+
+    }
+
+    private static void modifyMergedDominateSet(BasicBlock preBasicBlock, BasicBlock basicBlock) {
+        ArrayList<BasicBlock> preDominateSet = preBasicBlock.getBlockDominateSet();
+        ArrayList<BasicBlock> basicDominateSet = basicBlock.getBlockDominateSet();
+        for (BasicBlock block : basicDominateSet) {
+            if (!preDominateSet.contains(block)) {
+                preDominateSet.add(block);
+            }
+        }
+        DominatorTree.addBlockDominateSet(preBasicBlock, preDominateSet);
+    }
+
+    private static void modifyMergedDominanceFrontier(
+            BasicBlock preBasicBlock, BasicBlock basicBlock) {
+        ArrayList<BasicBlock> preDominanceFrontier = preBasicBlock.getBlockDominanceFrontier();
+        ArrayList<BasicBlock> basicDominanceFrontier = basicBlock.getBlockDominanceFrontier();
+        for (BasicBlock block : basicDominanceFrontier) {
+            if (!preDominanceFrontier.contains(block)) {
+                preDominanceFrontier.add(block);
+            }
+        }
+        DominatorTree.addBlockDominanceFrontier(preBasicBlock, preDominanceFrontier);
+    }
+
+    private static void modifyMergedDominateParent(
+            BasicBlock preBasicBlock, BasicBlock basicBlock) {
+        BasicBlock preDominateParent = preBasicBlock.getBlockDominateParent();
+        BasicBlock basicDominateParent = basicBlock.getBlockDominateParent();
+        if (preDominateParent != null && basicDominateParent != null) {
+            if (!preDominateParent.equals(basicDominateParent)) {
+                DominatorTree.addBlockDominateParent(preBasicBlock, basicDominateParent);
+            }
+        } else if (preDominateParent == null && basicDominateParent != null) {
+            DominatorTree.addBlockDominateParent(preBasicBlock, basicDominateParent);
+        }
+    }
+
+    private static void modifyMergedDominateChildList(
+            BasicBlock preBasicBlock, BasicBlock basicBlock) {
+        ArrayList<BasicBlock> preDominateChildList = preBasicBlock.getBlockDominateChildList();
+        ArrayList<BasicBlock> basicDominateChildList = basicBlock.getBlockDominateChildList();
+        for (BasicBlock block : basicDominateChildList) {
+            if (!preDominateChildList.contains(block)) {
+                preDominateChildList.add(block);
+            }
+        }
+        DominatorTree.addBlockDominateChildList(preBasicBlock, preDominateChildList);
+    }
+
 }

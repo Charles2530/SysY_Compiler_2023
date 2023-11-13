@@ -133,4 +133,11 @@ public class LivenessAnalysisController {
         return LivenessAnalysisController.getDefFunctionHashMap(
                 basicBlock.getBelongingFunc()).get(basicBlock);
     }
+
+    /*TODO: BUG maybe*/
+    public static void modifyMerged(BasicBlock preBasicBlock, BasicBlock basicBlock) {
+        preBasicBlock.getOutBasicBlockHashSet().addAll(basicBlock.getOutBasicBlockHashSet());
+        preBasicBlock.getDefBasicBlockHashSet().addAll(basicBlock.getDefBasicBlockHashSet());
+        preBasicBlock.getUseBasicBlockHashSet().addAll(basicBlock.getUseBasicBlockHashSet());
+    }
 }
