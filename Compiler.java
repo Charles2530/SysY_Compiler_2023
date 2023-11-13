@@ -53,12 +53,6 @@ public class Compiler {
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis(
                 lexicalAnalysis.getSymTokens());
         syntaxAnalysis.analysis();
-        if (IsOptimize) {
-            // 前端优化
-            FrontEndOptimizerUnit frontEndOptimizerUnit =
-                    new FrontEndOptimizerUnit(syntaxAnalysis.getAst());
-            frontEndOptimizerUnit.optimize();
-        }
         // 语义分析
         SemanticAnalysis semanticAnalysis = new SemanticAnalysis(syntaxAnalysis.getAst());
         semanticAnalysis.analysis();
@@ -68,11 +62,17 @@ public class Compiler {
             generationMain.generate();
             // 优化中间代码
             if (IsOptimize) {
+                // 前端优化
+                FrontEndOptimizerUnit frontEndOptimizerUnit =
+                        new FrontEndOptimizerUnit(GenerationMain.getModule());
+                frontEndOptimizerUnit.optimize();
+                // 中端优化
                 MidEndOptimizerUnit midEndOptimizerUnit =
                         new MidEndOptimizerUnit(GenerationMain.getModule());
                 midEndOptimizerUnit.optimize();
                 // 重新生成中间代码
                 OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
+                // 后端优化
                 BackEndOptimizerUnit backEndOptimizerUnit =
                         new BackEndOptimizerUnit(GenerationMain.getModule());
                 backEndOptimizerUnit.optimize();

@@ -7,6 +7,7 @@ import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
 import backend.simplify.BackEndOptimizerUnit;
 import backend.simplify.method.BasicBlockSortedUnit;
+import frontend.simplify.method.FunctionInlineUnit;
 import iostream.structure.DebugDetailController;
 import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
@@ -16,6 +17,7 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Param;
 import midend.generation.value.construction.User;
+import midend.generation.value.instr.basis.CallInstr;
 import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
@@ -33,6 +35,7 @@ public class Function extends User {
     private final ArrayList<Param> params;
     private HashMap<Value, Register> registerHashMap;
     private Boolean isImproved;
+    private boolean isBuildin;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
@@ -41,9 +44,18 @@ public class Function extends User {
         this.params = new ArrayList<>();
         this.registerHashMap = null;
         this.isImproved = null;
+        this.isBuildin = false;
         if (!OptimizerUnit.isIsOptimizer()) {
             IrNameController.addFunction(this);
         }
+    }
+
+    public boolean isBuildin() {
+        return isBuildin;
+    }
+
+    public void setBuildin(boolean buildin) {
+        isBuildin = buildin;
     }
 
     public IrType getReturnType() {
@@ -210,4 +222,64 @@ public class Function extends User {
         basicBlocks.forEach(BasicBlock::transformParallelCopyToMoveAsm);
     }
 
+    public void buildFuncCallGraph() {
+        if (!this.isBuildin()) {
+            basicBlocks.forEach(BasicBlock::buildFuncCallGraph);
+        }
+    }
+
+    public void dfsCaller() {
+        FunctionInlineUnit.setInlineAble(true);
+        if (!this.isBuildin() && !this.getName().equals("@main")) {
+            for (Function response : FunctionInlineUnit.getCaller(this)) {
+                if (!response.isBuildin()) {
+                    FunctionInlineUnit.setInlineAble(false);
+                    break;
+                }
+            }
+            if (FunctionInlineUnit.hasRecursion(this)) {
+                FunctionInlineUnit.setInlineAble(false);
+            }
+            if (FunctionInlineUnit.isInlineAble()) {
+                FunctionInlineUnit.addInlineFunction(this);
+            }
+
+        }
+    }
+
+    public void inlineFunction() {
+        ArrayList<CallInstr> callList = new ArrayList<>();
+        if (!FunctionInlineUnit.getResponse(this).isEmpty()) {
+            FunctionInlineUnit.setFixedPoint(true);
+            for (Function target : FunctionInlineUnit.getResponse(this)) {
+                for (BasicBlock basicBlock : target.getBasicBlocks()) {
+                    for (Instr instr : basicBlock.getInstrArrayList()) {
+                        if (instr instanceof CallInstr callInstr) {
+                            if (callInstr.getBelongingBlock().getBelongingFunc().equals(target)) {
+                                callList.add(callInstr);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        callList.forEach(FunctionInlineUnit::replaceFunctions);
+        for (Function target : FunctionInlineUnit.getResponse(this)) {
+            FunctionInlineUnit.getCaller(target).remove(this);
+            FunctionInlineUnit.getCaller(target).addAll(FunctionInlineUnit.getCaller(this));
+        }
+        FunctionInlineUnit.getResponse(this).clear();
+    }
+
+    public void removeUselessFunction() {
+        if (!this.isBuildin()) {
+            if (FunctionInlineUnit.getResponse(this).isEmpty() &&
+                    !this.getName().equals("@main")) {
+                this.eraseFromParent();
+            }
+        }
+    }
+
+    private void eraseFromParent() {
+    }
 }

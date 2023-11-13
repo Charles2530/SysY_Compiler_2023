@@ -1,7 +1,6 @@
 package midend.generation.value.construction;
 
 import backend.generation.mips.asm.textsegment.structure.Label;
-import midend.generation.value.instr.optimizer.ParallelCopy;
 import backend.simplify.method.PhiEliminationUnit;
 import iostream.structure.IoStreamGeneration;
 import iostream.structure.OptimizerUnit;
@@ -14,6 +13,7 @@ import midend.generation.value.construction.user.GlobalVar;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.AllocaInstr;
 import midend.generation.value.instr.basis.CallInstr;
+import midend.generation.value.instr.optimizer.ParallelCopy;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
@@ -169,6 +169,10 @@ public class BasicBlock extends Value {
         instrArrayList.forEach(Instr::genUseDefAnalysis);
     }
 
+    public void buildFuncCallGraph() {
+        instrArrayList.forEach(Instr::buildFuncCallGraph);
+    }
+
     public ArrayList<BasicBlock> getBlockIndBasicBlock() {
         return ControlFlowGraph.getBlockIndBasicBlock(this);
     }
@@ -208,6 +212,7 @@ public class BasicBlock extends Value {
     public HashSet<Value> getDefBasicBlockHashSet() {
         return LivenessAnalysisController.getDefBasicBlockHashSet(this);
     }
+
 }
 
 

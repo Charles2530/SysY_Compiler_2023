@@ -1,21 +1,21 @@
 package frontend.simplify;
 
-import frontend.generation.syntax.AstNode;
 import frontend.simplify.method.FunctionInlineUnit;
 import iostream.structure.OptimizerUnit;
+import midend.generation.value.construction.Module;
 
 public class FrontEndOptimizerUnit extends OptimizerUnit {
-    private final AstNode rootAst;
+    private final Module module;
     private final boolean isFunctionInline = true;
 
-    public FrontEndOptimizerUnit(AstNode rootAst) {
-        this.rootAst = rootAst;
+    public FrontEndOptimizerUnit(Module module) {
+        this.module = module;
     }
 
     @Override
     public void optimize() {
         if (isFunctionInline) {
-            FunctionInlineUnit.run(rootAst);
+            FunctionInlineUnit.run(module);
         }
     }
 }

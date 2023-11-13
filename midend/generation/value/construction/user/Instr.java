@@ -1,6 +1,7 @@
 package midend.generation.value.construction.user;
 
 import backend.generation.mips.asm.textsegment.structure.Comment;
+import frontend.simplify.method.FunctionInlineUnit;
 import iostream.declare.GetIntDeclare;
 import iostream.structure.IoStreamGeneration;
 import iostream.structure.OptimizerUnit;
@@ -93,6 +94,21 @@ public class Instr extends User {
         }
         if (!this.getBelongingBlock().getUseBasicBlockHashSet().contains(this) && this.isValid()) {
             this.getBelongingBlock().getDefBasicBlockHashSet().add(this);
+        }
+    }
+
+    public void buildFuncCallGraph() {
+        if (this instanceof CallInstr callInstr) {
+            Function response = callInstr.getBelongingBlock().getBelongingFunc();
+            Function curFunc = this.getBelongingBlock().getBelongingFunc();
+            if (!curFunc.isBuildin()) {
+                if (!FunctionInlineUnit.getCaller(curFunc).contains(response)) {
+                    FunctionInlineUnit.addCaller(curFunc, response);
+                }
+                if (!FunctionInlineUnit.getResponse(response).contains(curFunc)) {
+                    FunctionInlineUnit.addResponse(response, curFunc);
+                }
+            }
         }
     }
 }
