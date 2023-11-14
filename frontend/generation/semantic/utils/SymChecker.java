@@ -288,9 +288,9 @@ public class SymChecker {
                     ErrorController.addError(new ErrorToken("d", rootAst.getSpan().getStartLine()));
                 } else {
                     for (int i = 0; i < paramNum; i++) {
-                        Symbol.SymType paramType = funcSymbol.getFparamTypes().get(i);
+                        Symbol.SymType paramType = funcSymbol.getFuncParamTypes().get(i);
                         Symbol.SymType argType = SymTypeJudge.getExpType(childList.get(i));
-                        Integer paramdim = funcSymbol.getFparamDims().get(i);
+                        Integer paramdim = funcSymbol.getFuncParamDims().get(i);
                         Integer argdim = SymDefiner.getExpDim(childList.get(i));
                         if (paramType.equals(Symbol.SymType.VOID) ||
                                 argType.equals(Symbol.SymType.VOID) || !paramdim.equals(argdim)) {

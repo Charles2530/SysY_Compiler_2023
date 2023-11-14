@@ -12,7 +12,7 @@ public class OptimizerUnit {
      */
     private static boolean isOptimizer;
 
-    public static boolean isIsOptimizer() {
+    public static boolean isOptimizer() {
         return isOptimizer;
     }
 

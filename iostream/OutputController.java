@@ -5,7 +5,6 @@ import frontend.generation.lexer.SymToken;
 import frontend.generation.syntax.AstNode;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 
 /**
  * OutputController 是一个用于输出的控制类
@@ -89,10 +88,14 @@ public class OutputController {
     /**
      * lexicalAnalysisPrint 是一个用于输出词法分析结果的函数
      */
-    public static void lexicalAnalysisPrint(SymToken symToken) throws IOException {
+    public static void lexicalAnalysisPrint(SymToken symToken) {
         if (IsLexerOutput) {
-            lexerOutputStream.write(symToken.getReservedWord() + " " + symToken.getWord());
-            lexerOutputStream.newLine();
+            try {
+                lexerOutputStream.write(symToken.getReservedWord() + " " + symToken.getWord());
+                lexerOutputStream.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

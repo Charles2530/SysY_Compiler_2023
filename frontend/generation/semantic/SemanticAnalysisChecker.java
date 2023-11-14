@@ -11,7 +11,7 @@ import frontend.generation.syntax.AstNode;
 import java.util.ArrayList;
 
 /**
- * SematicAnalysisChecker 是语义分析用于创建符号表表项的检查器
+ * SemanticAnalysisChecker 是语义分析用于创建符号表表项的检查器
  */
 public class SemanticAnalysisChecker {
     public Symbol createConstDefChecker(AstNode rootAst) {

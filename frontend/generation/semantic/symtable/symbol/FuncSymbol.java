@@ -42,11 +42,11 @@ public class FuncSymbol extends Symbol {
         return funcParamTypes.size();
     }
 
-    public ArrayList<SymType> getFparamTypes() {
+    public ArrayList<SymType> getFuncParamTypes() {
         return funcParamTypes;
     }
 
-    public ArrayList<Integer> getFparamDims() {
+    public ArrayList<Integer> getFuncParamDims() {
         return funcParamDims;
     }
 

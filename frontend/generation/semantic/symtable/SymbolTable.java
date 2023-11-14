@@ -136,6 +136,10 @@ public class SymbolTable {
         SymbolTable.currentFunc = currentFunc;
     }
 
+    public static int getCurLevel() {
+        return curLevel;
+    }
+
     public static void printSymbolTable() {
         System.out.println("Symbol Table:");
         for (int i = 0; i <= symbolTables.size(); i++) {
@@ -172,7 +176,4 @@ public class SymbolTable {
         }
     }
 
-    public static int getCurlevel() {
-        return curLevel;
-    }
 }

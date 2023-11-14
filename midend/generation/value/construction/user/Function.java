@@ -58,7 +58,7 @@ public class Function extends User {
         this.registerHashMap = null;
         this.isImproved = null;
         this.isBuildin = false;
-        if (!OptimizerUnit.isIsOptimizer()) {
+        if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addFunction(this);
         }
     }

@@ -5,7 +5,6 @@ import frontend.generation.syntax.AstRecursion;
 import iostream.structure.ErrorToken;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -48,7 +47,7 @@ public class ErrorController {
      * printErrors 是用于输出错误的函数
      * 对于每行仅输出第一个错误
      */
-    public static void printErrors() throws IOException {
+    public static void printErrors() {
         if (isDebugMode) {
             errorlist.sort(Comparator.comparingInt(ErrorToken::getLineNum));
             int lineNum = -1;
@@ -78,7 +77,7 @@ public class ErrorController {
      *
      * @param error 错误标识符
      */
-    private static void printError(ErrorToken error) throws IOException {
+    private static void printError(ErrorToken error) {
         switch (error.getErrorCategoryCode()) {
             case "a":
                 printIllegalTokenError(error.getLineNum());
@@ -114,7 +113,7 @@ public class ErrorController {
                 printMissRbrackError(error.getLineNum());
                 break;
             case "l":
-                printUnmatchTokenNumError(error.getLineNum());
+                printUnMatchTokenNumError(error.getLineNum());
                 break;
             case "m":
                 printUnmatchLoopError(error.getLineNum());
@@ -127,261 +126,341 @@ public class ErrorController {
     /**
      * printIllegalTokenError 是用于输出非法符号的错误(a)
      */
-    private static void printIllegalTokenError(int lineNum) throws IOException {
+    private static void printIllegalTokenError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: IllegalTokenError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " a");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: IllegalTokenError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " a");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printRedefinitionError 是用于输出名字重定义的错误(b)
      */
-    private static void printRedefinitionError(int lineNum) throws IOException {
+    private static void printRedefinitionError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: RedefinitionError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " b");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: RedefinitionError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " b");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printUndefinedNameError 是用于输出未定义名字的错误(c)
      */
-    private static void printUndefinedNameError(int lineNum) throws IOException {
+    private static void printUndefinedNameError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: UndefinedNameError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " c");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: UndefinedNameError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " c");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printFuncNumUnmatchError 是用于输出函数参数个数不匹配的错误(d)
      */
-    private static void printFuncNumUnmatchError(int lineNum) throws IOException {
+    private static void printFuncNumUnmatchError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: FuncNumUnmatchError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " d");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: FuncNumUnmatchError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " d");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printFuncTypeUnmatchError 是用于输出函数参数类型不匹配的错误(e)
      */
-    private static void printFuncTypeUnmatchError(int lineNum) throws IOException {
+    private static void printFuncTypeUnmatchError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: FuncTypeUnmatchError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " e");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: FuncTypeUnmatchError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " e");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printUnmatchReturnError 是用于输出无返回值的函数存在不匹配的return语句的错误(f)
      */
-    private static void printUnmatchReturnError(int lineNum) throws IOException {
+    private static void printUnmatchReturnError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: UnmatchReturnError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " f");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: UnmatchReturnError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " f");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printMissingReturnError 是用于输出有返回值的函数缺少return语句或存在不匹配的return语句的错误(g)
      */
-    private static void printMissingReturnError(int lineNum) throws IOException {
+    private static void printMissingReturnError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: MissingReturnError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " g");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: MissingReturnError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " g");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printAssignTypeConsError 是用于输出不能改变常量的值的错误(h)
      */
-    private static void printAssignTypeConsError(int lineNum) throws IOException {
+    private static void printAssignTypeConsError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: AssignTypeConsError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " h");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: AssignTypeConsError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " h");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printMissRbrackError 是用于输出语句缺少右中括号的错误(k)
      */
-    private static void printMissRbrackError(int lineNum) throws IOException {
+    private static void printMissRbrackError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: MissRbrackError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " k");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: MissRbrackError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " k");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printMissRparentError 是用于输出语句缺少右小括号的错误(j)
      */
-    private static void printMissRparentError(int lineNum) throws IOException {
+    private static void printMissRparentError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: MissRparentError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " j");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: MissRparentError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " j");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printMissSemicnError 是用于输出语句缺少分号的错误(i)
      */
-    private static void printMissSemicnError(int lineNum) throws IOException {
+    private static void printMissSemicnError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: MissSemicnError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " i");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: MissSemicnError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " i");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
-     * printUnmatchTokenNumError 是用于输出语句缺少右大括号的错误(l)
+     * printUnMatchTokenNumError 是用于输出语句缺少右大括号的错误(l)
      */
-    private static void printUnmatchTokenNumError(int lineNum) throws IOException {
+    private static void printUnMatchTokenNumError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: UnmatchTokenNumError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " l");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: UnmatchTokenNumError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " l");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printUnmatchLoopError 是用于输出非循环语句中出现break或continue语句的错误(m)
      */
-    private static void printUnmatchLoopError(int lineNum) throws IOException {
+    private static void printUnmatchLoopError(int lineNum) {
         if (isDebugMode) {
-            if (detailMode) {
-                errorBufferedWriter.write("Error: UnmatchLoopError: " + lineNum);
-            } else {
-                errorBufferedWriter.write(lineNum + " m");
+            try {
+                if (detailMode) {
+                    errorBufferedWriter.write("Error: UnmatchLoopError: " + lineNum);
+                } else {
+                    errorBufferedWriter.write(lineNum + " m");
+                }
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            errorBufferedWriter.newLine();
         }
     }
 
     /**
      * printLexicalWordCheckPrintError 是用于输出词法分析检查word错误的函数
      */
-    public static void printLexicalWordCheckPrintError(int lineNum, String c) throws IOException {
+    public static void printLexicalWordCheckPrintError(int lineNum, String c) {
         if (isDebugMode && detailMode) {
-            errorBufferedWriter.write("error in " + lineNum +
-                    " line,word:" + c + " can not be recognized");
-            errorBufferedWriter.newLine();
+            try {
+                errorBufferedWriter.write("error in " + lineNum +
+                        " line,word:" + c + " can not be recognized");
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * printSyntaxAnalysisError 是用于输出语法分析错误的函数
      */
-    public static void printSyntaxAnalysisError(String grammarType) throws IOException {
+    public static void printSyntaxAnalysisError(String grammarType) {
         if (isDebugMode && detailMode) {
-            errorBufferedWriter.write("grammarType:" + grammarType);
-            errorBufferedWriter.newLine();
+            try {
+                errorBufferedWriter.write("grammarType:" + grammarType);
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * printDeclPrintError 是用于输出声明语句错误的函数
      */
-    public static void printDeclPrintError() throws IOException {
+    public static void printDeclPrintError() {
         if (isDebugMode && detailMode) {
-            errorBufferedWriter.write("Error: Decl: "
-                    + AstRecursion.getPreSymToken().getLineNum() +
-                    ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
-            errorBufferedWriter.newLine();
+            try {
+                errorBufferedWriter.write("Error: Decl: "
+                        + AstRecursion.getPreSymToken().getLineNum() +
+                        ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * printFuncDefPrintError 是用于输出函数定义错误的函数
      */
-    public static void printFuncDefPrintError() throws IOException {
+    public static void printFuncDefPrintError() {
         if (isDebugMode && detailMode) {
-            errorBufferedWriter.write("Error: FuncDef: "
-                    + AstRecursion.getPreSymToken().getLineNum() +
-                    ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
-            errorBufferedWriter.newLine();
+            try {
+                errorBufferedWriter.write("Error: FuncDef: "
+                        + AstRecursion.getPreSymToken().getLineNum() +
+                        ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * printMainFuncDefPrintError 是用于输出主函数定义错误的函数
      */
-    public static void printMainFuncDefPrintError() throws IOException {
+    public static void printMainFuncDefPrintError() {
         if (isDebugMode && detailMode) {
-            errorBufferedWriter.write("Error: MainFuncDef: "
-                    + AstRecursion.getPreSymToken().getLineNum() +
-                    ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
-            errorBufferedWriter.newLine();
+            try {
+                errorBufferedWriter.write("Error: MainFuncDef: "
+                        + AstRecursion.getPreSymToken().getLineNum() +
+                        ": preSymToken is " + AstRecursion.getPreSymToken().getWord());
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * printDefinerPrintError 是用于输出Definer定义类错误的函数
      */
-    public static void printDefinerPrintError() throws IOException {
+    public static void printDefinerPrintError() {
         if (isDebugMode && detailMode) {
-            errorBufferedWriter.write("Error: Definer: BlockItem: "
-                    + AstRecursion.getPreSymToken().getLineNum());
-            errorBufferedWriter.newLine();
+            try {
+                errorBufferedWriter.write("Error: Definer: BlockItem: "
+                        + AstRecursion.getPreSymToken().getLineNum());
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * printLexicalAnalysisPrintError 是用于输出词法分析错误的函数
      */
-    public static void printLexicalAnalysisPrintError(int lineNum, String word) throws IOException {
+    public static void printLexicalAnalysisPrintError(int lineNum, String word) {
         if (isDebugMode && detailMode) {
-            errorBufferedWriter.write("error in " + lineNum + " line,word:"
-                    + word + " is not a reserved word");
-            errorBufferedWriter.newLine();
+            try {
+                errorBufferedWriter.write("error in " + lineNum + " line,word:"
+                        + word + " is not a reserved word");
+                errorBufferedWriter.newLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

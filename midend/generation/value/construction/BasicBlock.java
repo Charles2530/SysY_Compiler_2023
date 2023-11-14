@@ -42,7 +42,7 @@ public class BasicBlock extends Value {
     public BasicBlock(String name) {
         super(new StructType("basicblock"), name);
         this.instrArrayList = new ArrayList<>();
-        if (!OptimizerUnit.isIsOptimizer()) {
+        if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addBasicBlock(this);
         }
         this.exist = true;

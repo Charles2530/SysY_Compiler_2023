@@ -28,7 +28,7 @@ public class GlobalVar extends User {
     public GlobalVar(IrType type, String name, Initial initial) {
         super(type, name);
         this.initial = initial;
-        if (!OptimizerUnit.isIsOptimizer()) {
+        if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addGlobalVar(this);
         }
     }

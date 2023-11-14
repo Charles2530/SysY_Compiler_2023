@@ -1,13 +1,12 @@
 package frontend.generation.semantic.utils;
 
-import midend.generation.llvm.LLvmGenIR;
-import midend.generation.value.Value;
 import frontend.generation.semantic.symtable.Symbol;
 import frontend.generation.semantic.symtable.SymbolTable;
-import frontend.generation.semantic.symtable.symbol.varsymbol.ConstSymbol;
 import frontend.generation.semantic.symtable.symbol.FuncSymbol;
-import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
+import frontend.generation.semantic.symtable.symbol.VarSymbol;
 import frontend.generation.syntax.AstNode;
+import midend.generation.llvm.LLvmGenIR;
+import midend.generation.value.Value;
 
 import java.util.ArrayList;
 
@@ -20,7 +19,7 @@ public class SymDefiner {
      * 是由于在生成中间代码时需要重建符号表，引入方便快速获得符号
      * 表的对应表项
      */
-    private static LLvmGenIR lLvmGenIR = new LLvmGenIR();
+    private static LLvmGenIR llvmGenIR = new LLvmGenIR();
 
     /**
      * setParamInfo 是用于设置函数表项的参数信息的函数,即获取函数的参数类型和参数维度
@@ -76,13 +75,10 @@ public class SymDefiner {
                 reduceDim++;
             }
         }
-        if (symbol instanceof IntSymbol) {
-            return ((IntSymbol) symbol).getDim() - reduceDim;
-        } else if (symbol instanceof ConstSymbol) {
-            return ((ConstSymbol) symbol).getDim() - reduceDim;
-        } else {
-            return 0;
+        if (symbol instanceof VarSymbol varSymbol) {
+            return varSymbol.getDim() - reduceDim;
         }
+        return 0;
     }
 
     private static Integer getExpDimUnaryExp(AstNode astNode) {
@@ -104,7 +100,7 @@ public class SymDefiner {
     public static ArrayList<Value> genIrValues(AstNode rootAst, int dim) {
         ArrayList<Value> ans = new ArrayList<>();
         if (dim == 0) {
-            Value value = lLvmGenIR.genIrAnalysis(rootAst.getChildList().get(0));
+            Value value = llvmGenIR.genIrAnalysis(rootAst.getChildList().get(0));
             ans.add(value);
         } else {
             for (AstNode child : rootAst.getChildList()) {
@@ -120,7 +116,7 @@ public class SymDefiner {
     public static ArrayList<Value> genIrConstValues(AstNode rootAst, int dim) {
         ArrayList<Value> ans = new ArrayList<>();
         if (dim == 0) {
-            Value value = lLvmGenIR.genIrAnalysis(rootAst.getChildList().get(0));
+            Value value = llvmGenIR.genIrAnalysis(rootAst.getChildList().get(0));
             ans.add(value);
         } else {
             for (AstNode child : rootAst.getChildList()) {

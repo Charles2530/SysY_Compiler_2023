@@ -2,8 +2,7 @@ package frontend.generation.semantic.utils;
 
 import frontend.generation.semantic.symtable.Symbol;
 import frontend.generation.semantic.symtable.SymbolTable;
-import frontend.generation.semantic.symtable.symbol.varsymbol.ConstSymbol;
-import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
+import frontend.generation.semantic.symtable.symbol.VarSymbol;
 import frontend.generation.syntax.AstNode;
 
 import java.util.ArrayList;
@@ -103,7 +102,7 @@ public class SymCalc {
                 default -> ans;
             };
         } else if (child.getGrammarType().equals("<PrimaryExp>")) {
-            ans = calc(child);
+            ans = calcPrimaryExp(child);
         }
         return ans;
     }
@@ -133,21 +132,14 @@ public class SymCalc {
                 bracketVal.add(calc(astNode.getChildList().get(i)));
             }
         }
-        if (symbol instanceof ConstSymbol constSymbol) {
-            if (constSymbol.getDim() == 0) {
-                return constSymbol.getConstValue();
-            } else if (constSymbol.getDim() == 1) {
-                return constSymbol.getConstValue(bracketVal.get(0));
+        if (symbol instanceof VarSymbol varSymbol) {
+            if (varSymbol.getDim() == 0) {
+                return varSymbol.getConstValue();
+            } else if (varSymbol.getDim() == 1) {
+                return varSymbol.getConstValue(bracketVal.get(0));
             }
-            return constSymbol.getConstValue(bracketVal.get(0), bracketVal.get(1));
-        } else {
-            IntSymbol intSymbol = (IntSymbol) symbol;
-            if (intSymbol.getDim() == 0) {
-                return intSymbol.getConstValue();
-            } else if (intSymbol.getDim() == 1) {
-                return intSymbol.getConstValue(bracketVal.get(0));
-            }
-            return intSymbol.getConstValue(bracketVal.get(0), bracketVal.get(1));
+            return varSymbol.getConstValue(bracketVal.get(0), bracketVal.get(1));
         }
+        return 0;
     }
 }

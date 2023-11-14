@@ -37,7 +37,7 @@ public class Instr extends User {
     public Instr(IrType type, String name, String instrType) {
         super(type, name);
         this.instrType = instrType;
-        if (!OptimizerUnit.isIsOptimizer()) {
+        if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addInstr(this);
         }
     }

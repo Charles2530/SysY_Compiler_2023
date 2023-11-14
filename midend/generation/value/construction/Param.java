@@ -18,7 +18,7 @@ public class Param extends Value {
 
     public Param(IrType type, String name) {
         super(type, name);
-        if (!OptimizerUnit.isIsOptimizer()) {
+        if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addParam(this);
         }
     }

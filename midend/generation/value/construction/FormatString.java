@@ -23,7 +23,7 @@ public class FormatString extends Value {
     public FormatString(String name, String string, ArrayList<Integer> arrayList) {
         super(new PointerType(new ArrayType(arrayList, new VarType(8))), name);
         this.string = string;
-        if (!OptimizerUnit.isIsOptimizer()) {
+        if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addFormatString(this);
         }
     }

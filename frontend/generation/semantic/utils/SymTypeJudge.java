@@ -40,8 +40,8 @@ public class SymTypeJudge {
             if (astNode.getChildList().get(0).getGrammarType().equals("IDENFR")) {
                 Symbol symbol = SymbolTable.getSymByName(
                         astNode.getChildList().get(0).getSymToken().getWord());
-                if (symbol instanceof FuncSymbol) {
-                    return ((FuncSymbol) symbol).getReturnType();
+                if (symbol instanceof FuncSymbol funcSymbol) {
+                    return funcSymbol.getReturnType();
                 } else {
                     return symbol.getSymbolType();
                 }
