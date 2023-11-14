@@ -8,6 +8,11 @@ import midend.generation.utils.irtype.VarType;
 import midend.generation.value.construction.FormatString;
 import iostream.structure.IoStreamGeneration;
 
+/**
+ * PutStrDeclare 是向控制台输出一个字符串的声明
+ * 是生成LLVM IR的函数声明
+ * 继承自 IoStreamGeneration
+ */
 public class PutStrDeclare extends IoStreamGeneration {
     private final FormatString str;
 

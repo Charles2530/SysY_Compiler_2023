@@ -11,6 +11,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * DebugDetailController 是一个用于输出调试信息的类
+ * 主要用于输出中间代码优化时的各种信息
+ * 例如控制流图，支配树，活跃变量分析等
+ */
 public class DebugDetailController {
     private static BufferedWriter debugDetailOutputStream;
     private static boolean isDebugDetailOutput;
@@ -23,6 +28,9 @@ public class DebugDetailController {
         DebugDetailController.isDebugDetailOutput = isDebugDetailOutput;
     }
 
+    /**
+     * printDebugDetail 是一个用于输出调试信息的函数
+     */
     private static void printDebugDetail(String string) {
         if (isDebugDetailOutput) {
             try {
@@ -33,6 +41,9 @@ public class DebugDetailController {
         }
     }
 
+    /**
+     * printControlFlowGraph 是一个用于输出控制流图的函数
+     */
     public static void printControlFlowGraph(HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> indBasicBlockFunctionMap, HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> outBasicBlockFunctionMap) {
@@ -58,6 +69,9 @@ public class DebugDetailController {
         printDebugDetail("\n");
     }
 
+    /**
+     * printDominateTree 是一个用于输出支配树的函数
+     */
     public static void printDominateTree(
             HashMap<Function, HashMap<BasicBlock, ArrayList<BasicBlock>>> dominateFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock,
@@ -97,6 +111,9 @@ public class DebugDetailController {
         printDebugDetail("\n");
     }
 
+    /**
+     * printLivenessAnalysis 是一个用于输出活跃变量分析的函数
+     */
     public static void printLivenessAnalysis(
             HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> inFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> outFunctionHashMap,
@@ -132,6 +149,9 @@ public class DebugDetailController {
         printDebugDetail("\n");
     }
 
+    /**
+     * printRegisterValueReflection 是一个用于输出寄存器与值的映射关系的函数
+     */
     public static void printRegisterValueReflection(
             Function function, HashMap<Value, Register> registerHashMap) {
         printDebugDetail("Function: " + function.getName());

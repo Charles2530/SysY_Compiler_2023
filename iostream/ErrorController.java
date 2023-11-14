@@ -9,7 +9,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * ErrorController 是错误处理的控制类
+ * 用于输出错误信息
+ */
 public class ErrorController {
+    /**
+     * errorlist 是错误列表
+     * errorBufferedWriter 是错误输出流
+     * isDebugMode 是用于判断是否开启错误处理
+     * detailMode 是用于判断是否开启详细错误处理
+     */
     private static ArrayList<ErrorToken> errorlist = new ArrayList<>();
     private static BufferedWriter errorBufferedWriter;
     private static boolean isDebugMode;
@@ -27,10 +37,17 @@ public class ErrorController {
         ErrorController.detailMode = detailMode;
     }
 
+    /**
+     * addError 是用于添加错误的函数
+     */
     public static void addError(ErrorToken error) {
         errorlist.add(error);
     }
 
+    /**
+     * printErrors 是用于输出错误的函数
+     * 对于每行仅输出第一个错误
+     */
     public static void printErrors() throws IOException {
         if (isDebugMode) {
             errorlist.sort(Comparator.comparingInt(ErrorToken::getLineNum));
@@ -46,10 +63,21 @@ public class ErrorController {
         }
     }
 
+    /**
+     * hasError 是用于判断是否有错误的函数
+     * 这里可以用于判断此次语法分析是否存在错误，如果出错则
+     * 不会进入中间代码生成程序
+     */
     public static boolean hasError() {
         return isDebugMode && !errorlist.isEmpty();
     }
 
+    /**
+     * printError 是用于输出错误的函数
+     * 根据错误类型输出不同的错误
+     *
+     * @param error 错误标识符
+     */
     private static void printError(ErrorToken error) throws IOException {
         switch (error.getErrorCategoryCode()) {
             case "a":
@@ -96,7 +124,9 @@ public class ErrorController {
         }
     }
 
-    // a. 非法符号
+    /**
+     * printIllegalTokenError 是用于输出非法符号的错误(a)
+     */
     private static void printIllegalTokenError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -108,7 +138,9 @@ public class ErrorController {
         }
     }
 
-    // b. 名字重定义
+    /**
+     * printRedefinitionError 是用于输出名字重定义的错误(b)
+     */
     private static void printRedefinitionError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -120,7 +152,9 @@ public class ErrorController {
         }
     }
 
-    // c. 未定义的名字
+    /**
+     * printUndefinedNameError 是用于输出未定义名字的错误(c)
+     */
     private static void printUndefinedNameError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -132,7 +166,9 @@ public class ErrorController {
         }
     }
 
-    // d. 函数参数个数不匹配
+    /**
+     * printFuncNumUnmatchError 是用于输出函数参数个数不匹配的错误(d)
+     */
     private static void printFuncNumUnmatchError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -144,7 +180,9 @@ public class ErrorController {
         }
     }
 
-    // e. 函数参数类型不匹配
+    /**
+     * printFuncTypeUnmatchError 是用于输出函数参数类型不匹配的错误(e)
+     */
     private static void printFuncTypeUnmatchError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -156,7 +194,9 @@ public class ErrorController {
         }
     }
 
-    // f. 无返回值的函数存在不匹配的return语句
+    /**
+     * printUnmatchReturnError 是用于输出无返回值的函数存在不匹配的return语句的错误(f)
+     */
     private static void printUnmatchReturnError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -168,7 +208,9 @@ public class ErrorController {
         }
     }
 
-    // g. 有返回值的函数缺少return语句或存在不匹配的return语句
+    /**
+     * printMissingReturnError 是用于输出有返回值的函数缺少return语句或存在不匹配的return语句的错误(g)
+     */
     private static void printMissingReturnError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -180,7 +222,9 @@ public class ErrorController {
         }
     }
 
-    // h. 不能改变常量的值
+    /**
+     * printAssignTypeConsError 是用于输出不能改变常量的值的错误(h)
+     */
     private static void printAssignTypeConsError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -192,7 +236,9 @@ public class ErrorController {
         }
     }
 
-    //  i. 语句缺少分号
+    /**
+     * printMissRbrackError 是用于输出语句缺少右中括号的错误(k)
+     */
     private static void printMissRbrackError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -204,7 +250,9 @@ public class ErrorController {
         }
     }
 
-    // j. 语句缺少右小括号
+    /**
+     * printMissRparentError 是用于输出语句缺少右小括号的错误(j)
+     */
     private static void printMissRparentError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -216,7 +264,9 @@ public class ErrorController {
         }
     }
 
-    // k. 语句缺少右中括号
+    /**
+     * printMissSemicnError 是用于输出语句缺少分号的错误(i)
+     */
     private static void printMissSemicnError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -228,7 +278,9 @@ public class ErrorController {
         }
     }
 
-    // l. 语句缺少右大括号
+    /**
+     * printUnmatchTokenNumError 是用于输出语句缺少右大括号的错误(l)
+     */
     private static void printUnmatchTokenNumError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -240,7 +292,9 @@ public class ErrorController {
         }
     }
 
-    // m. 非循环语句中出现break或continue语句
+    /**
+     * printUnmatchLoopError 是用于输出非循环语句中出现break或continue语句的错误(m)
+     */
     private static void printUnmatchLoopError(int lineNum) throws IOException {
         if (isDebugMode) {
             if (detailMode) {
@@ -252,6 +306,9 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printLexicalWordCheckPrintError 是用于输出词法分析检查word错误的函数
+     */
     public static void printLexicalWordCheckPrintError(int lineNum, String c) throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("error in " + lineNum +
@@ -260,6 +317,9 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printSyntaxAnalysisError 是用于输出语法分析错误的函数
+     */
     public static void printSyntaxAnalysisError(String grammarType) throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("grammarType:" + grammarType);
@@ -267,6 +327,9 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printDeclPrintError 是用于输出声明语句错误的函数
+     */
     public static void printDeclPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: Decl: "
@@ -276,6 +339,9 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printFuncDefPrintError 是用于输出函数定义错误的函数
+     */
     public static void printFuncDefPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: FuncDef: "
@@ -285,6 +351,9 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printMainFuncDefPrintError 是用于输出主函数定义错误的函数
+     */
     public static void printMainFuncDefPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: MainFuncDef: "
@@ -294,6 +363,9 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printDefinerPrintError 是用于输出Definer定义类错误的函数
+     */
     public static void printDefinerPrintError() throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("Error: Definer: BlockItem: "
@@ -302,6 +374,9 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printLexicalAnalysisPrintError 是用于输出词法分析错误的函数
+     */
     public static void printLexicalAnalysisPrintError(int lineNum, String word) throws IOException {
         if (isDebugMode && detailMode) {
             errorBufferedWriter.write("error in " + lineNum + " line,word:"
@@ -310,12 +385,18 @@ public class ErrorController {
         }
     }
 
+    /**
+     * printSymbolTable 是用于输出符号表的函数
+     */
     public static void printSymbolTable() {
         if (isDebugMode && detailMode) {
             SymbolTable.printSymbolTable();
         }
     }
 
+    /**
+     * printStackOverflowError 是用于输出栈溢出错误的函数
+     */
     public static void printStackOverflowError() {
         if (isDebugMode && detailMode) {
             try {

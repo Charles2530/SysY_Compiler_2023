@@ -7,7 +7,23 @@ import frontend.generation.syntax.AstNode;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+/**
+ * OutputController 是一个用于输出的控制类
+ */
 public class OutputController {
+    /**
+     * IsCalcMode 用于控制是否为计算模式(打开后会计算全局区变量的值)
+     * IsLexerOutput 用于控制是否输出词法分析的结果
+     * IsParserOutput 用于控制是否输出语法分析的结果
+     * IsGenerationOutput 用于控制是否输出生成的LLVM IR
+     * IsGenerationOptimizerOutput 用于控制是否输出优化后的LLVM IR
+     * IsAssemblyOutput 用于控制是否输出生成的MIPS汇编
+     * lexerOutputStream 用于输出词法分析的结果的输出流
+     * parserOutputStream 用于输出语法分析的结果的输出流
+     * generationOutputStream 用于输出生成的LLVM IR的输出流
+     * generationOptimizerOutputStream 用于输出优化后的LLVM IR的输出流
+     * assemblyOutputStream 用于输出生成的MIPS汇编的输出流
+     */
     private static boolean IsCalcMode;
     private static BufferedWriter lexerOutputStream;
     private static boolean IsLexerOutput;
@@ -20,13 +36,6 @@ public class OutputController {
 
     private static BufferedWriter assemblyOutputStream;
     private static boolean IsAssemblyOutput;
-
-    public static void lexicalAnalysisPrint(SymToken symToken) throws IOException {
-        if (IsLexerOutput) {
-            lexerOutputStream.write(symToken.getReservedWord() + " " + symToken.getWord());
-            lexerOutputStream.newLine();
-        }
-    }
 
     public static void setIsCalcMode(boolean isCalcMode) {
         IsCalcMode = isCalcMode;
@@ -77,6 +86,19 @@ public class OutputController {
         OutputController.IsAssemblyOutput = isAssemblyOutput;
     }
 
+    /**
+     * lexicalAnalysisPrint 是一个用于输出词法分析结果的函数
+     */
+    public static void lexicalAnalysisPrint(SymToken symToken) throws IOException {
+        if (IsLexerOutput) {
+            lexerOutputStream.write(symToken.getReservedWord() + " " + symToken.getWord());
+            lexerOutputStream.newLine();
+        }
+    }
+
+    /**
+     * syntaxAnalysisPrintTerminal 是一个用于输出语法分析终结符的函数
+     */
     public static void syntaxAnalysisPrintTerminal(AstNode rootAst) {
         if (IsParserOutput) {
             try {
@@ -89,6 +111,9 @@ public class OutputController {
         }
     }
 
+    /**
+     * syntaxAnalysisPrintNoTerminal 是一个用于输出语法分析非终结符的函数
+     */
     public static void syntaxAnalysisPrintNoTerminal(AstNode rootAst) {
         if (IsParserOutput) {
             try {
@@ -100,6 +125,9 @@ public class OutputController {
         }
     }
 
+    /**
+     * generationPrint 是一个用于输出生成的LLVM IR的函数
+     */
     public static void generationPrint(String str) {
         if (IsGenerationOutput) {
             try {
@@ -111,6 +139,9 @@ public class OutputController {
         }
     }
 
+    /**
+     * generationOptimizerPrint 是一个用于输出优化后的LLVM IR的函数
+     */
     public static void generationOptimizerPrint(String str) {
         if (IsGenerationOptimizerOutput) {
             try {
@@ -122,6 +153,9 @@ public class OutputController {
         }
     }
 
+    /**
+     * assemblyPrint 是一个用于输出生成的MIPS汇编的函数
+     */
     public static void assemblyPrint(AssemblyData assemblyData) {
         if (IsAssemblyOutput) {
             try {

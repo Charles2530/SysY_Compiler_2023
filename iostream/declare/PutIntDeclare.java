@@ -10,6 +10,11 @@ import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import iostream.structure.IoStreamGeneration;
 
+/**
+ * PutIntDeclare 是向控制台输出一个整数的声明
+ * 是生成LLVM IR的函数声明
+ * 继承自 IoStreamGeneration
+ */
 public class PutIntDeclare extends IoStreamGeneration {
     public PutIntDeclare(Value target) {
         super("PutIntDeclare", "io", new VarType(0));
