@@ -39,7 +39,14 @@ import midend.generation.value.instr.basis.ZextInstr;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * LLvmGenIR 用于生成LLVM IR中间代码的解释器
+ */
 public class LLvmGenIR {
+    /**
+     * semanticAnalysisChecker 用于语义分析的检查器
+     * llvmGenUtils 用于生成LLVM IR中间代码的工具类
+     */
     private final SemanticAnalysisChecker semanticAnalysisChecker;
     private final LLvmGenUtils llvmGenUtils;
 
@@ -48,6 +55,11 @@ public class LLvmGenIR {
         this.llvmGenUtils = new LLvmGenUtils(this);
     }
 
+    /**
+     * genIrAnalysis 用于生成LLVM IR中间代码的解释程序，利用递归下降
+     * 的方式依次解析各种语法单元，生成对应的LLVM IR中间代码，下方定义的
+     * 是其子函数
+     */
     public Value genIrAnalysis(AstNode rootAst) {
         return switch (rootAst.getGrammarType()) {
             case "<CompUnit>" -> genIrCompUnitChecker(rootAst);
@@ -340,7 +352,7 @@ public class LLvmGenIR {
         if (child.getGrammarType().equals("LPARENT")) {
             ans = genIrAnalysis(rootAst.getChildList().get(1));
         } else if (child.getGrammarType().equals("<LVal>")) {
-            ans = llvmGenUtils.genValueIr(child);
+            ans = llvmGenUtils.genLValIr(child);
         } else {
             ans = genIrAnalysis(child);
         }

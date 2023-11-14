@@ -9,7 +9,14 @@ import midend.simplify.controller.datastruct.FunctionClone;
 
 import java.util.ArrayList;
 
+/**
+ * PhiInstr 用于生成 LLVM IR 中的 phi 指令,
+ * 继承于 Instr,主要用于Mem2Reg环节代码优化使用
+ */
 public class PhiInstr extends Instr {
+    /**
+     * indBasicBlock 是 phi 指令在数据流分析中的前序基本块集合
+     */
     private final ArrayList<BasicBlock> indBasicBlock;
 
     public PhiInstr(String name, ArrayList<BasicBlock> indBasicBlock, int... cnt) {
@@ -49,11 +56,17 @@ public class PhiInstr extends Instr {
         return instr;
     }
 
+    /**
+     * modifyValue() 用于修改 PhiInstr 中的操作数并添加使用定义链
+     */
     public void modifyValue(Value value, BasicBlock initialBasicBlock) {
         operands.set(indBasicBlock.indexOf(initialBasicBlock), value);
         value.addUseDefChain(this);
     }
 
+    /**
+     * generateCopyList() 用于将PhiInstr转化为ParallelCopy的集合，便于转为MIPS汇编
+     */
     public void generateCopyList(ArrayList<ParallelCopy> pcList) {
         for (int i = 0; i < operands.size(); i++) {
             Value operand = operands.get(i);
@@ -63,6 +76,11 @@ public class PhiInstr extends Instr {
         }
     }
 
+    /**
+     * reducePhi() 用于消除冗余的PhiInstr，比如说所有的 input 都相等的情况
+     *
+     * @param flag 用于判断是否需要消除非指令的PhiInstr
+     */
     public void reducePhi(boolean flag) {
         if (!getUseDefChain().isEmpty()) {
             Value val = operands.get(0);

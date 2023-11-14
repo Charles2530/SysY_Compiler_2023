@@ -8,7 +8,19 @@ import midend.generation.value.construction.user.Function;
 import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
+/**
+ * MidEndOptimizerUnit 是中间优化单元，
+ * 主要用于中间代码的优化
+ * 继承自OptimizerUnit
+ */
 public class MidEndOptimizerUnit extends OptimizerUnit {
+    /**
+     * module 是LLVM IR生成的顶级模块
+     * isMem2Reg 是该 MidEndOptimizerUnit 的Mem2Reg优化开关
+     * isFunctionInline 是该 MidEndOptimizerUnit 的函数内联优化开关
+     * isGlobalVariableNumbering 是该 MidEndOptimizerUnit 的全局变量编号优化开关
+     * isDeadCodeElimination 是该 MidEndOptimizerUnit 的死代码消除优化开关
+     */
     private final Module module;
     private final boolean isMem2Reg = true;
     private final boolean isFunctionInline = false;

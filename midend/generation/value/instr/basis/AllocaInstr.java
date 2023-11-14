@@ -12,7 +12,16 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * AllocaInstr 用于生成 LLVM IR 中的 alloca 指令,
+ * 继承于 Instr,主要用于申请内存空间
+ * <result> = alloca <type>
+ */
 public class AllocaInstr extends Instr {
+    /**
+     * type 是 alloca 指令所申请的内存空间对应的变量的类型，
+     * 而alloca指令本身自己的类型为该变量的指针类型
+     */
     private final IrType type;
 
     public AllocaInstr(String name, IrType type) {

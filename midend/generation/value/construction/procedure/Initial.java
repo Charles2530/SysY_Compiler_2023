@@ -5,7 +5,17 @@ import midend.generation.utils.IrType;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+/**
+ * Initial 是 LLVM IR 中的初始化器成分，
+ * 主要用于生成初始化器
+ */
 public class Initial {
+    /**
+     * type 是该 Initial 的类型
+     * initValue 是该 Initial 的初始值
+     * space 是该 Initial 的空间维度信息
+     * offset 是该 Initial 的偏移量，对应存在的初始值的数量
+     */
     private final IrType type;
     private final ArrayList<Integer> initValue;
     private final ArrayList<Integer> space;
@@ -49,6 +59,10 @@ public class Initial {
         }
     }
 
+    /**
+     * getDoubleDimArrayInitial 方法用于生成二维数组的字符串形式
+     * 是从toString中分离出来的专门处理二维数组的方法
+     */
     private String getDoubleDimArrayInitial() {
         StringBuilder sb = new StringBuilder();
         if (offset == 0) {

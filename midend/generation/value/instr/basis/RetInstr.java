@@ -11,6 +11,12 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * RetInstr 用于生成 LLVM IR 中的 ret 指令,
+ * 继承于 Instr,主要用于生成函数返回指令
+ * ret <type> <value>
+ * ret void
+ */
 public class RetInstr extends Instr {
     private Value retValue;
 
@@ -19,13 +25,6 @@ public class RetInstr extends Instr {
         this.retValue = retValue;
         if (retValue != null) {
             addOperand(retValue);
-        }
-    }
-
-    public void setRetValue(Value retValue) {
-        this.retValue = retValue;
-        if (retValue != null) {
-            operands.set(0, retValue);
         }
     }
 

@@ -14,7 +14,16 @@ import midend.simplify.method.BlockSimplifyUnit;
 
 import java.util.ArrayList;
 
+/**
+ * Module 是 LLVM IR 中的顶级模块成分，
+ * 继承于Value，主要用于生成LLVM IR解析模块
+ */
 public class Module extends Value {
+    /**
+     * globalVars 是该 Module 中的全局变量集合
+     * functions 是该 Module 中的函数集合
+     * stringLiterals 是该 Module 中的字符串常量集合
+     */
     private final ArrayList<GlobalVar> globalVars;
     private final ArrayList<Function> functions;
     private final ArrayList<FormatString> stringLiterals;
@@ -26,10 +35,16 @@ public class Module extends Value {
         this.stringLiterals = new ArrayList<>();
     }
 
+    /**
+     * addGlobalVar 方法用于向该 Module 中添加全局变量
+     */
     public void addGlobalVar(GlobalVar globalVar) {
         globalVars.add(globalVar);
     }
 
+    /**
+     * addFunction 方法用于向该 Module 中添加函数
+     */
     public void addFunction(Function function) {
         functions.add(function);
     }
@@ -38,6 +53,9 @@ public class Module extends Value {
         return functions;
     }
 
+    /**
+     * addStringLiteral 方法用于向该 Module 中添加字符串常量
+     */
     public void addStringLiteral(FormatString stringLiteral) {
         stringLiterals.add(stringLiteral);
     }
@@ -79,6 +97,10 @@ public class Module extends Value {
         new Label("end");
     }
 
+    /**
+     * simplifyBlock 方法用于简化该 Module 中的所有函数中的基本块，
+     * 主要用于删除无用的基本块和死代码删除两部分
+     */
     public void simplifyBlock() {
         functions.forEach(Function::simplifyBlock);
         functions.forEach(BlockSimplifyUnit::deleteDeadBlock);

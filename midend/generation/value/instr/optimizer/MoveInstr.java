@@ -8,7 +8,15 @@ import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Instr;
 
+/**
+ * MoveInstr 用于生成 LLVM IR 中的 move 指令,
+ * 继承于 Instr,主要用于消除PhiInstr中使用
+ */
 public class MoveInstr extends Instr {
+    /**
+     * from 是 move 指令的源操作数
+     * to 是 move 指令的目的操作数
+     */
     private Value from;
     private Value to;
 

@@ -11,7 +11,17 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * BrInstr 用于生成 LLVM IR 中的 br 指令,
+ * 继承于 Instr,主要用于生成条件跳转指令
+ */
 public class BrInstr extends Instr {
+    /**
+     * con 是 br 指令的条件基本块
+     * thenBlock 是 br 指令的真分支基本块
+     * elseBlock 是 br 指令的假分支基本块
+     * br i1 <cond>, label <iftrue>, label <iffalse>
+     */
     private BasicBlock thenBlock;
     private BasicBlock elseBlock;
 

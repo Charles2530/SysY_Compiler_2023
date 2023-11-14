@@ -15,7 +15,15 @@ import midend.simplify.controller.datastruct.FunctionClone;
 
 import java.util.ArrayList;
 
+/**
+ * CallInstr 用于生成 LLVM IR 中的 call 指令,
+ * 继承于 Instr,主要用于生成函数调用指令
+ * <result> = call [ret attrs] <ty> <fnptrval>(<function args>)
+ */
 public class CallInstr extends Instr {
+    /**
+     * target 是 call 指令的目标函数
+     */
     private final Function target;
 
     public CallInstr(String name, Function targetFunc, ArrayList<Value> paramList) {

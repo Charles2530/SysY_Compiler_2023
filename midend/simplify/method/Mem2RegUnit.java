@@ -19,7 +19,23 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Stack;
 
+/**
+ * Mem2RegUnit 是执行mem2reg的单元
+ * 主要用于mem2reg
+ */
 public class Mem2RegUnit {
+    /**
+     * module 是LLVM IR生成的顶级模块
+     * cfGraphController 是该 Mem2RegUnit 的控制流图
+     * initialBasicBlock 存储了每个函数的第一个基本块，
+     * 便于在不同函数中传递该参数
+     * useInstrArrayList 存储了所有使用该alloca指令的load指令，以及phi指令
+     * defInstrArrayList 存储了所有使用该alloca指令的store指令，以及phi指令
+     * useBasicBlockArrayList 存储了所有使用alloca指令的基本块
+     * defBasicBlockArrayList 存储了所有定义alloca指令的基本块
+     * stack 是一个栈，用于存储phi指令的值
+     * currentAllocaInstr 是当前的alloca指令
+     */
     private static Module module;
     private static ControlFlowGraphController cfGraphController;
     private static BasicBlock initialBasicBlock;
@@ -30,6 +46,9 @@ public class Mem2RegUnit {
     private static Stack<Value> stack;
     private static Instr currentAllocaInstr;
 
+    /**
+     * setInitialBasicBlock 方法用于设置InitialBasicBlock的值
+     */
     public static void setInitialBasicBlock(BasicBlock initialBasicBlock) {
         Mem2RegUnit.initialBasicBlock = initialBasicBlock;
     }
@@ -38,11 +57,10 @@ public class Mem2RegUnit {
         return initialBasicBlock;
     }
 
-    private static void init() {
-        Mem2RegUnit.cfGraphController = new ControlFlowGraphController(module);
-        Mem2RegUnit.cfGraphController.build();
-    }
-
+    /**
+     * run 方法用于执行mem2reg
+     * 是执行Mem2Reg的主函数
+     */
     public static void run(Module module) {
         Mem2RegUnit.module = module;
         module.simplifyBlock();
@@ -50,6 +68,21 @@ public class Mem2RegUnit {
         module.getFunctions().forEach(Function::insertPhiProcess);
     }
 
+    /**
+     * init 方法用于初始化Mem2RegUnit
+     * 主要需要构建控制流图CFG
+     */
+    private static void init() {
+        Mem2RegUnit.cfGraphController = new ControlFlowGraphController(module);
+        Mem2RegUnit.cfGraphController.build();
+    }
+
+    /**
+     * reConfig 方法用于重新配置某个Instr对应的
+     * useInstrArrayList，defInstrArrayList，
+     * useBasicBlockArrayList，defBasicBlockArrayList
+     * 并获得对应当前Instr的相应集合
+     */
     public static void reConfig(Instr instr) {
         Mem2RegUnit.useInstrArrayList = new ArrayList<>();
         Mem2RegUnit.defInstrArrayList = new ArrayList<>();
@@ -75,6 +108,10 @@ public class Mem2RegUnit {
         }
     }
 
+    /**
+     * insertPhi 方法用于插入Phi指令
+     * 主要用于在CFG中插入Phi指令
+     */
     public static void insertPhi() {
         HashSet<BasicBlock> f = new HashSet<>();
         Stack<BasicBlock> w = new Stack<>();
@@ -97,6 +134,10 @@ public class Mem2RegUnit {
         }
     }
 
+    /**
+     * dfsVarRename 方法用于深度优先搜索基本块
+     * 并对基本块中的变量进行重命名
+     */
     public static void dfsVarRename(BasicBlock presentBlock) {
         int cnt = removeUnnecessaryInstr(presentBlock);
         for (BasicBlock basicBlock : presentBlock.getBlockOutBasicBlock()) {
@@ -112,6 +153,10 @@ public class Mem2RegUnit {
         }
     }
 
+    /**
+     * removeUnnecessaryInstr 方法用于删除不必要的指令
+     * 主要用于删除不必要的相关的alloca, store,load指令
+     */
     private static int removeUnnecessaryInstr(BasicBlock presentBlock) {
         int instrNum = 0;
         Iterator<Instr> iter = presentBlock.getInstrArrayList().iterator();

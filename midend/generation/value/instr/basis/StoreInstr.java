@@ -9,6 +9,11 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
+/**
+ * StoreInstr 用于生成 LLVM IR 中的 store 指令,
+ * 继承于 Instr,主要用于写内存
+ * store <ty> <value>, <ty>* <pointer>
+ * */
 
 public class StoreInstr extends Instr {
     public StoreInstr(Value ans, Value res) {

@@ -12,7 +12,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * FunctionClone 是函数克隆的数据结构，
+ * 主要用于函数克隆，是函数内联的辅助数据结构
+ */
 public class FunctionClone {
+    /**
+     * copyMap 是克隆的映射表，
+     * visited 是克隆的基本块的集合，表示已经访问过的基本块
+     * phiList 是克隆的phi指令的集合
+     */
     private final HashMap<Value, Value> copyMap;
     private final HashSet<BasicBlock> visited;
     private final ArrayList<PhiInstr> phiList;
@@ -23,6 +32,9 @@ public class FunctionClone {
         this.phiList = new ArrayList<>();
     }
 
+    /**
+     * copyFunc 方法用于克隆函数
+     */
     public Function copyFunc(Function response) {
         this.clear();
         Function copyFunction = new Function(
@@ -47,6 +59,9 @@ public class FunctionClone {
         return copyFunction;
     }
 
+    /**
+     * copyBlocks 方法用于克隆基本块集合
+     */
     private void copyBlocks(BasicBlock basicBlock) {
         for (Instr instr : basicBlock.getInstrArrayList()) {
             putValue(instr, instr.copy(this));
@@ -59,12 +74,20 @@ public class FunctionClone {
         }
     }
 
+    /**
+     * clear 方法用于清空数据结构，
+     * 每次在进入一个新的函数时，都需要清空数据结构
+     */
     private void clear() {
         this.copyMap.clear();
         this.visited.clear();
         this.phiList.clear();
     }
 
+    /**
+     * getValue 方法用于获取克隆的值
+     * 这里当源值为全局变量、常量或函数时，直接返回源值
+     */
     public Value getValue(Value source) {
         return (source instanceof GlobalVar || source instanceof Constant
                 || source instanceof Function) ? source : copyMap.get(source);

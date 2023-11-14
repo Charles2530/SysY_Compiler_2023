@@ -9,7 +9,15 @@ import midend.generation.value.instr.basis.CalcInstr;
 
 import java.util.Iterator;
 
+/**
+ * ConstantFoldingController 是常量折叠的控制器
+ * 主要用于常量折叠，这是GVN的步骤之一
+ */
 public class ConstantFoldingController {
+    /**
+     * foldingCalcInstr 方法用于对所有的计算指令进行常量折叠
+     * 该方法是常量折叠的主函数
+     */
     public static void foldingCalcInstr(BasicBlock entry) {
         Iterator<Instr> iter = entry.getInstrArrayList().iterator();
         while (iter.hasNext()) {
@@ -28,6 +36,12 @@ public class ConstantFoldingController {
         }
     }
 
+    /**
+     * simplifyNoConstant 方法用于对没有常量的计算指令进行常量折叠
+     *
+     * @return 返回折叠后的常量
+     * 如果为null，则表示没有折叠
+     */
     private static Value simplifyNoConstant(CalcInstr calcInstr) {
         if (calcInstr.getOperands().get(0).equals(calcInstr.getOperands().get(1))) {
             if (calcInstr.getInstrType().matches("sub|srem")) {
@@ -39,6 +53,12 @@ public class ConstantFoldingController {
         return null;
     }
 
+    /**
+     * simplifySingle 方法用于对只有一个常量的计算指令进行常量折叠
+     *
+     * @return 返回折叠后的常量
+     * 如果为null，则表示没有折叠
+     */
     private static Value simplifySingle(CalcInstr calcInstr) {
         if (calcInstr.getOperands().get(0) instanceof Constant constant) {
             int val = constant.getVal();
@@ -72,6 +92,11 @@ public class ConstantFoldingController {
         return null;
     }
 
+    /**
+     * simplifyDouble 方法用于对有两个常量的计算指令进行常量折叠
+     *
+     * @return 返回折叠后的常量
+     */
     private static Value simplifyDouble(CalcInstr calcInstr) {
         int op1 = ((Constant) calcInstr.getOperands().get(0)).getVal();
         int op2 = ((Constant) calcInstr.getOperands().get(1)).getVal();

@@ -20,7 +20,19 @@ import midend.simplify.controller.datastruct.Use;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * FunctionInlineUnit 是函数内联单元，
+ * 主要用于函数内联
+ */
 public class FunctionInlineUnit {
+    /**
+     * module 是LLVM IR生成的顶级模块
+     * fixedPoint 是函数内联的迭代标志，因为函数内联是迭代进行的，所以有一个不动点设计
+     * callers 是该 FunctionInlineUnit 的调用者哈希表
+     * responses 是该 FunctionInlineUnit 的响应者哈希表
+     * inlineFunctionsList 是该 FunctionInlineUnit 的内联函数列表
+     * isInlineAble 是判断当前函数是否可以内联的标志
+     */
     private static Module module;
     private static boolean fixedPoint;
     private static HashMap<Function, ArrayList<Function>> callers;
@@ -28,12 +40,18 @@ public class FunctionInlineUnit {
     private static ArrayList<Function> inlineFunctionsList;
     private static boolean isInlineAble;
 
+    /**
+     * run 方法用于运行函数内联单元，是函数内联的主函数
+     */
     public static void run(Module module) {
         FunctionInlineUnit.module = module;
         FunctionInlineUnit.init();
         FunctionInlineUnit.inlineAnalysis();
     }
 
+    /**
+     * init 方法用于初始化函数内联单元
+     */
     private static void init() {
         FunctionInlineUnit.fixedPoint = false;
         FunctionInlineUnit.isInlineAble = true;
@@ -46,6 +64,16 @@ public class FunctionInlineUnit {
         FunctionInlineUnit.inlineFunctionsList = new ArrayList<>();
     }
 
+    /**
+     * inlineAnalysis 方法用于进行函数内联分析
+     * 当前函数是否可以被内联，评价标准是内联函数不能递归，不能调用其他函数
+     * 函数内联分析主要分为以下几个步骤：
+     * 1.建立函数调用图
+     * 2.深度优先搜索函数调用图，判断是否有递归
+     * 3.内联函数并更新函数调用图
+     * 4.删除无用函数
+     * 5.重复1-4步骤，直到不动点稳定
+     */
     private static void inlineAnalysis() {
         FunctionInlineUnit.fixedPoint = true;
         while (FunctionInlineUnit.fixedPoint) {
@@ -59,16 +87,25 @@ public class FunctionInlineUnit {
         }
     }
 
+    /**
+     * buildFuncCallGraph 方法用于建立函数调用图
+     */
     private static void buildFuncCallGraph() {
         FunctionInlineUnit.callers.clear();
         FunctionInlineUnit.responses.clear();
         module.getFunctions().forEach(Function::buildFuncCallGraph);
     }
 
+    /**
+     * addInlineFunction 方法用于添加内联函数
+     */
     public static void addInlineFunction(Function function) {
         FunctionInlineUnit.inlineFunctionsList.add(function);
     }
 
+    /**
+     * addCaller 方法用于添加调用者
+     */
     public static void addCaller(Function caller, Function response) {
         FunctionInlineUnit.callers.get(caller).add(response);
     }
@@ -77,6 +114,9 @@ public class FunctionInlineUnit {
         return FunctionInlineUnit.callers.get(caller);
     }
 
+    /**
+     * addResponse 方法用于添加响应者
+     */
     public static void addResponse(Function response, Function caller) {
         FunctionInlineUnit.responses.get(response).add(caller);
     }
@@ -97,14 +137,23 @@ public class FunctionInlineUnit {
         FunctionInlineUnit.fixedPoint = fixedPoint;
     }
 
+    /**
+     * hasRecursion 方法用于判断函数是否递归
+     */
     public static boolean hasRecursion(Function function) {
         return FunctionInlineUnit.callers.get(function).contains(function);
     }
 
+    /**
+     * removeUselessFunction 方法用于删除无用函数
+     */
     private static void removeUselessFunction() {
         module.getFunctions().forEach(Function::removeUselessFunction);
     }
 
+    /**
+     * replaceFunctions 方法用于替换函数
+     */
     public static void replaceFunctions(CallInstr callInstr) {
         Function response = callInstr.getTarget();
         BasicBlock basicBlock = callInstr.getBelongingBlock();
@@ -115,6 +164,9 @@ public class FunctionInlineUnit {
         FunctionInlineUnit.cloneBlock(callInstr, basicBlock, inlineBlock, response);
     }
 
+    /**
+     * cloneBlock 方法用于克隆基本块
+     */
     private static void cloneBlock(
             CallInstr callInstr, BasicBlock basicBlock, BasicBlock inlineBlock, Function response) {
         FunctionClone functionCloner = new FunctionClone();
@@ -169,6 +221,9 @@ public class FunctionInlineUnit {
 
     }
 
+    /**
+     * dealWithRetValue 方法对内联的函数的返回值进行处理
+     */
     private static void dealWithRetValue(
             ArrayList<RetInstr> retList, BasicBlock inlineBlock, IrType returnType) {
         if (returnType.isInt32()) {
@@ -201,6 +256,10 @@ public class FunctionInlineUnit {
         }
     }
 
+    /**
+     * splitBlock 方法用于分割基本块，这里是为了将 call 指令所在的块分割成两半
+     * 在当前块（也就是 call 在的那个块）之后再建一个块，用于存放 call 之后的指令
+     */
     private static void splitBlock(
             CallInstr callInstr, BasicBlock basicBlock, BasicBlock inlineBlock) {
         boolean backInst = false;

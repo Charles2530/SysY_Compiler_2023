@@ -10,7 +10,16 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * IcmpInstr 用于生成 LLVM IR 中的 icmp 指令,
+ * 继承于 Instr,主要用于生成比较指令
+ * <result> = icmp <cond> <ty> <op1>, <op2>
+ */
 public class IcmpInstr extends Instr {
+    /**
+     * IcmpInstr 主要处理了 LLVM IR 中的比较指令
+     * 包含了 eq, ne, sgt, sge, slt, sle
+     */
     public IcmpInstr(String name, String instrType, Value ans, Value res) {
         super(new VarType(1), name, instrType);
         addOperand(ans);

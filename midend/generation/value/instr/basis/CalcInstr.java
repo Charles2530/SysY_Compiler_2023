@@ -12,13 +12,32 @@ import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * CalcInstr 用于生成 LLVM IR 中的算术指令,
+ * 继承于 Instr,主要用于生成算术指令
+ * <result> = add <ty> <op1>, <op2>
+ * <result> = sub <ty> <op1>, <op2>
+ * <result> = mul <ty> <op1>, <op2>
+ * <result> = sdiv <ty> <op1>, <op2>
+ * <result> = srem <ty> <op1>, <op2>
+ * <result> = and <ty> <op1>, <op2>
+ * <result> = or <ty> <op1>, <op2>
+ */
 public class CalcInstr extends Instr {
+    /**
+     * CalcInstr 主要处理了 LLVM IR 中的算术指令
+     * 包含了 add, sub, mul, sdiv, srem, and, or
+     */
     public CalcInstr(String name, String instrType, Value op1, Value op2) {
         super(new VarType(32), name, instrType);
         addOperand(op1);
         addOperand(op2);
     }
 
+    /**
+     * getConstantNum() 用于获取 CalcInstr 中的常数操作数的个数,
+     * 主要用于中间代码优化的常数折叠部分使用
+     */
     public Integer getConstantNum() {
         return ((operands.get(0) instanceof Constant) ? 1 : 0) +
                 ((operands.get(1) instanceof Constant) ? 1 : 0);

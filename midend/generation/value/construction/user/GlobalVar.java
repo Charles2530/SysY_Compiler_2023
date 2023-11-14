@@ -14,7 +14,15 @@ import midend.generation.utils.irtype.PointerType;
 import midend.generation.value.construction.User;
 import midend.generation.value.construction.procedure.Initial;
 
+/**
+ * GlobalVar 是 LLVM IR 中的全局变量成分，
+ * 继承于User，主要用于生成全局变量
+ */
 public class GlobalVar extends User {
+    /**
+     * initial 是该 GlobalVar 的初始化器
+     * 定义了该全局变量的初始值
+     */
     private final Initial initial;
 
     public GlobalVar(IrType type, String name, Initial initial) {

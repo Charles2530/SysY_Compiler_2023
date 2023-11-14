@@ -10,7 +10,14 @@ import midend.generation.value.Value;
 
 import java.util.ArrayList;
 
+/**
+ * FormatString 是 LLVM IR 中的字符串常量成分，
+ * 继承于Value，主要用于生成字符串常量
+ */
 public class FormatString extends Value {
+    /**
+     * string 是该 FormatString 的源字符串
+     */
     private final String string;
 
     public FormatString(String name, String string, ArrayList<Integer> arrayList) {
@@ -21,6 +28,9 @@ public class FormatString extends Value {
         }
     }
 
+    /**
+     * getPointer 方法用于获取指向该 FormatString 的指针
+     */
     public PointerType getPointer() {
         return (PointerType) type;
     }

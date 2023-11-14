@@ -10,7 +10,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * LiveAnalysisController 是活跃变量分析控制器，
+ * 主要用于活跃变量分析
+ */
 public class LivenessAnalysisController {
+    /**
+     * module 是LLVM IR生成的顶级模块
+     * inFunctionHashMap 存储了每个函数的每个基本块的in集合
+     * outFunctionHashMap 存储了每个函数的每个基本块的out集合
+     * useFunctionHashMap 存储了每个函数的每个基本块的use集合
+     * defFunctionHashMap 存储了每个函数的每个基本块的def集合
+     */
     private static Module module;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> inFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> outFunctionHashMap;
@@ -25,12 +36,18 @@ public class LivenessAnalysisController {
         LivenessAnalysisController.defFunctionHashMap = new HashMap<>();
     }
 
+    /**
+     * analysis() 是活跃变量分析的主函数
+     */
     public void analysis() {
         module.getFunctions().forEach(Function::analysisActiveness);
         DebugDetailController.printLivenessAnalysis(
                 inFunctionHashMap, outFunctionHashMap, useFunctionHashMap, defFunctionHashMap);
     }
 
+    /**
+     * calculateInOut 方法用于计算每个基本块的in集合和out集合
+     */
     public static void calculateInOut(Function function) {
         ArrayList<BasicBlock> basicBlocks = function.getBasicBlocks();
         boolean change = true;
@@ -54,22 +71,34 @@ public class LivenessAnalysisController {
         }
     }
 
+    /**
+     * addInFunctionHashMap 方法用于向inFunctionHashMap中添加函数和哈希表
+     */
     public static void addInFunctionHashMap(
             Function function, HashMap<BasicBlock, HashSet<Value>> hashMap) {
         inFunctionHashMap.put(function, hashMap);
     }
 
+    /**
+     * addOutFunctionHashMap 方法用于向outFunctionHashMap中添加函数和哈希表
+     */
     public static void addOutFunctionHashMap(
             Function function, HashMap<BasicBlock, HashSet<Value>> hashMap) {
         outFunctionHashMap.put(function, hashMap);
     }
 
+    /**
+     * addInBlockHashSet 方法用于向inFunctionHashMap中添加基本块和哈希表
+     */
     public static void addInBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         inFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getInFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
+    /**
+     * addOutBlockHashSet 方法用于向outFunctionHashMap中添加基本块和哈希表
+     */
     public static void addOutBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         outFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getOutFunctionHashMap(
@@ -94,22 +123,34 @@ public class LivenessAnalysisController {
                 basicBlock.getBelongingFunc()).get(basicBlock);
     }
 
+    /**
+     * addUseFunctionHashMap 方法用于向useFunctionHashMap中添加函数和哈希表
+     */
     public static void addUseFunctionHashMap(
             Function function, HashMap<BasicBlock, HashSet<Value>> hashMap) {
         useFunctionHashMap.put(function, hashMap);
     }
 
+    /**
+     * addDefFunctionHashMap 方法用于向defFunctionHashMap中添加函数和哈希表
+     */
     public static void addDefFunctionHashMap(
             Function function, HashMap<BasicBlock, HashSet<Value>> hashMap) {
         defFunctionHashMap.put(function, hashMap);
     }
 
+    /**
+     * addUseBlockHashSet 方法用于向useFunctionHashMap中添加基本块和哈希表
+     */
     public static void addUseBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         useFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getUseFunctionHashMap(
                 basicBlock.getBelongingFunc()).put(basicBlock, hashSet);
     }
 
+    /**
+     * addDefBlockHashSet 方法用于向defFunctionHashMap中添加基本块和哈希表
+     */
     public static void addDefBlockHashSet(BasicBlock basicBlock, HashSet<Value> hashSet) {
         defFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(), k -> new HashMap<>());
         LivenessAnalysisController.getDefFunctionHashMap(
@@ -134,6 +175,10 @@ public class LivenessAnalysisController {
                 basicBlock.getBelongingFunc()).get(basicBlock);
     }
 
+    /**
+     * modifyMerged 方法用于修改合并后的基本块的in集合和out集合
+     * 主要用于在后端优化中跳转基本块优化后修改对应的in集合和out集合
+     */
     /*TODO: BUG maybe*/
     public static void modifyMerged(BasicBlock preBasicBlock, BasicBlock basicBlock) {
         preBasicBlock.getOutBasicBlockHashSet().addAll(basicBlock.getOutBasicBlockHashSet());

@@ -24,7 +24,17 @@ import midend.simplify.method.Mem2RegUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * BasicBlock 是 LLVM IR 中的基本块成分，
+ * 继承于Value，主要用于生成基本块
+ */
 public class BasicBlock extends Value {
+    /**
+     * instrArrayList 是该 BasicBlock 中的指令集合
+     * belongingFunc 是该 BasicBlock 所属的函数
+     * exist 是该 BasicBlock 是否存在，主要是用于后
+     * 续中间代码优化时删除基本块所使用的标记。
+     */
     private ArrayList<Instr> instrArrayList;
     private Function belongingFunc;
     private boolean exist;
@@ -38,15 +48,24 @@ public class BasicBlock extends Value {
         this.exist = true;
     }
 
+    /**
+     * addInstr 方法用于向该 BasicBlock 中添加指令，并且设置该指令所属的基本块
+     */
     public void addInstr(Instr instr) {
         instrArrayList.add(instr);
         instr.setBelongingBlock(this);
     }
 
+    /**
+     * isEmpty 方法用于判断该 BasicBlock 是否为空
+     */
     public boolean isEmpty() {
         return instrArrayList.isEmpty();
     }
 
+    /**
+     * getLastInstr 方法用于获取该 BasicBlock 中的最后一条指令
+     */
     public Instr getLastInstr() {
         return instrArrayList.get(instrArrayList.size() - 1);
     }
@@ -86,10 +105,18 @@ public class BasicBlock extends Value {
         instrArrayList.forEach(Instr::generateAssembly);
     }
 
+    /**
+     * simplifyBlock 方法用于简化该 Module 中的所有函数中的基本块，
+     * 是中间代码优化基本块优化的处理函数
+     */
     public void simplifyBlock() {
         BlockSimplifyUnit.deleteDuplicateBranch(this);
     }
 
+    /**
+     * insertPhiProcess 方法用于在 Mem2Reg 优化中插入 Phi 指令
+     * 并且进行变量重命名
+     */
     public void insertPhiProcess() {
         ArrayList<Instr> copy = new ArrayList<>(instrArrayList);
         for (Instr instr : copy) {
@@ -101,10 +128,18 @@ public class BasicBlock extends Value {
         }
     }
 
+    /**
+     * deadCodeElimination 方法用于进行死代码删除
+     */
     public void deadCodeElimination() {
         instrArrayList.removeIf(Instr::isDead);
     }
 
+    /**
+     * setDeleted 方法用于设置该 BasicBlock 是否存在
+     *
+     * @return 设置删除标记是否成功
+     */
     public boolean setDeleted(boolean exist) {
         this.exist = !exist;
         return true;
@@ -114,11 +149,19 @@ public class BasicBlock extends Value {
         return exist;
     }
 
+    /**
+     * insertInstr 方法用于在该 BasicBlock 中的指定位置插入指令，
+     * 并且设置该指令所属的基本块
+     */
     public void insertInstr(Integer index, Instr phiInstr) {
         instrArrayList.add(index, phiInstr);
         phiInstr.setBelongingBlock(this);
     }
 
+    /**
+     * isImprovable 方法用于判断该 BasicBlock 是否可以进行 GVN 优化
+     * BasicBlock必须满足：每个指令没有读写全局变量，不能调用其他函数
+     */
     public boolean isImprovable(boolean flag) {
         for (Instr instr : instrArrayList) {
             if (instr instanceof CallInstr || instr instanceof IoStreamGeneration) {
@@ -133,6 +176,10 @@ public class BasicBlock extends Value {
         return flag;
     }
 
+    /**
+     * transformPhiInstrToParallelCopy 方法用于将该 BasicBlock 中的 Phi 指令
+     * 转化为ParallelCopy指令，便于后续转MIPS汇编
+     */
     public void transformPhiInstrToParallelCopy() {
         if (!(instrArrayList.get(0) instanceof PhiInstr)) {
             return;
@@ -151,6 +198,10 @@ public class BasicBlock extends Value {
         PhiEliminationUnit.removePhiInstr(instrArrayList, pcList);
     }
 
+    /**
+     * transformParallelCopyToMoveAsm 方法用于将该 BasicBlock 中的 ParallelCopy 指令
+     * 转化为 move 指令，便于后续转MIPS汇编
+     */
     public void transformParallelCopyToMoveAsm() {
         if (instrArrayList.size() >= 2 && instrArrayList
                 .get(instrArrayList.size() - 2) instanceof ParallelCopy pc) {
@@ -160,6 +211,10 @@ public class BasicBlock extends Value {
         }
     }
 
+    /**
+     * analysisActiveness 方法用于进行活跃变量分析
+     * 因为所有的phi指令是并行赋值的，所以其所有的右值都是先使用的
+     */
     public void analysisActiveness() {
         HashSet<Value> def = new HashSet<>();
         HashSet<Value> use = new HashSet<>();
@@ -169,50 +224,98 @@ public class BasicBlock extends Value {
         instrArrayList.forEach(Instr::genUseDefAnalysis);
     }
 
+    /**
+     * buildFuncCallGraph 方法用于建立函数调用图
+     * 该函数调用图用于后续的内联优化
+     */
     public void buildFuncCallGraph() {
         instrArrayList.forEach(Instr::buildFuncCallGraph);
     }
 
+    /**
+     * getBlockIndBasicBlock 方法用于获取该 BasicBlock 的前序基本块，
+     * 主要来自创建ControlFlowGraph的获得的前序基本块分析结果
+     */
     public ArrayList<BasicBlock> getBlockIndBasicBlock() {
         return ControlFlowGraph.getBlockIndBasicBlock(this);
     }
 
+    /**
+     * getBlockOutBasicBlock 方法用于获取该 BasicBlock 的后序基本块，
+     * 主要来自创建ControlFlowGraph的获得的后序基本块分析结果
+     */
     public ArrayList<BasicBlock> getBlockOutBasicBlock() {
         return ControlFlowGraph.getBlockOutBasicBlock(this);
     }
 
+    /**
+     * getBlockDominateSet 方法用于获取该 BasicBlock 的支配集合，
+     * 主要来自创建DominatorTree的获得的支配集合分析结果
+     */
     public ArrayList<BasicBlock> getBlockDominateSet() {
         return DominatorTree.getBlockDominateSet(this);
     }
 
+    /**
+     * getBlockDominanceFrontier 方法用于获取该 BasicBlock 的支配前沿，
+     * 主要来自创建DominatorTree的获得的支配前沿分析结果
+     */
     public ArrayList<BasicBlock> getBlockDominanceFrontier() {
         return DominatorTree.getBlockDominanceFrontier(this);
     }
 
+    /**
+     * getBlockDominateParent 方法用于获取该 BasicBlock 的支配父节点，
+     * 主要来自创建DominatorTree的获得的支配父节点分析结果
+     */
     public BasicBlock getBlockDominateParent() {
         return DominatorTree.getBlockDominateParent(this);
     }
 
+    /**
+     * getBlockDominateChildList 方法用于获取该 BasicBlock 的支配子节点，
+     * 主要来自创建DominatorTree的获得的支配子节点分析结果
+     */
     public ArrayList<BasicBlock> getBlockDominateChildList() {
         return DominatorTree.getBlockDominateChildList(this);
     }
 
+    /**
+     * getInBasicBlockHashSet 方法用于获取该 BasicBlock 的入口活跃变量集合，
+     * 主要来自创建LivenessAnalysisController的获得的入口活跃变量集合分析结果
+     */
     public HashSet<Value> getInBasicBlockHashSet() {
         return LivenessAnalysisController.getInBasicBlockHashSet(this);
     }
 
+    /**
+     * getOutBasicBlockHashSet 方法用于获取该 BasicBlock 的出口活跃变量集合，
+     * 主要来自创建LivenessAnalysisController的获得的出口活跃变量集合分析结果
+     */
     public HashSet<Value> getOutBasicBlockHashSet() {
         return LivenessAnalysisController.getOutBasicBlockHashSet(this);
     }
 
+    /**
+     * getUseBasicBlockHashSet 方法用于获取该 BasicBlock 的使用活跃变量集合，
+     * 主要来自创建LivenessAnalysisController的获得的使用活跃变量集合分析结果
+     */
     public HashSet<Value> getUseBasicBlockHashSet() {
         return LivenessAnalysisController.getUseBasicBlockHashSet(this);
     }
 
+    /**
+     * getDefBasicBlockHashSet 方法用于获取该 BasicBlock 的定义活跃变量集合，
+     * 主要来自创建LivenessAnalysisController的获得的定义活跃变量集合分析结果
+     */
     public HashSet<Value> getDefBasicBlockHashSet() {
         return LivenessAnalysisController.getDefBasicBlockHashSet(this);
     }
 
+    /**
+     * reducePhi 方法用于将该 BasicBlock 中的 Phi 指令进行简化，
+     * 主要是在 Mem2Reg 优化中使用，去除冗余的Phi指令
+     */
     public void reducePhi(boolean flag) {
         instrArrayList.forEach(instr -> {
             if (instr instanceof PhiInstr phiInstr) {

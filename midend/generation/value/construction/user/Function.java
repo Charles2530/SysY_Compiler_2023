@@ -7,6 +7,7 @@ import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
 import backend.simplify.BackEndOptimizerUnit;
 import backend.simplify.method.BasicBlockSortedUnit;
+import midend.generation.GenerationMain;
 import midend.simplify.method.FunctionInlineUnit;
 import iostream.structure.DebugDetailController;
 import iostream.structure.OptimizerUnit;
@@ -29,7 +30,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * Function 是 LLVM IR 中的函数成分，
+ * 继承于User，主要用于生成函数
+ */
 public class Function extends User {
+    /**
+     * returnType 是该 Function 的返回类型
+     * basicBlocks 是该 Function 的基本块集合
+     * params 是该 Function 的参数集合
+     * registerHashMap 是该 Function 的寄存器映射表
+     * isImproved 是该 Function 是否可以进行 GVN 优化
+     * isBuildin 是该 Function 是否是内建函数
+     */
     private final IrType returnType;
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
@@ -62,6 +75,12 @@ public class Function extends User {
         return returnType;
     }
 
+    /**
+     * addBasicBlock 方法用于向该 Function 中添加基本块
+     *
+     * @param basicBlock 是要添加的基本块
+     * @param idx        是要添加的位置
+     */
     public void addBasicBlock(BasicBlock basicBlock, int... idx) {
         if (idx.length == 1) {
             basicBlocks.add(idx[0], basicBlock);
@@ -79,6 +98,9 @@ public class Function extends User {
         return basicBlocks;
     }
 
+    /**
+     * addParam 方法用于向该 Function 中添加参数
+     */
     public void addParam(Param param) {
         params.add(param);
         param.setBelongingFunc(this);
@@ -128,19 +150,35 @@ public class Function extends User {
         basicBlocks.forEach(BasicBlock::generateAssembly);
     }
 
+    /**
+     * simplifyBlock 方法用于简化该 Function 中的所有基本块，
+     * 主要用于基本块优化
+     */
     public void simplifyBlock() {
         basicBlocks.forEach(BasicBlock::simplifyBlock);
     }
 
+    /**
+     * insertPhiProcess 方法用于在该 Function 中的所有基本块中插入 Phi 指令，
+     * 主要用于 Mem2Reg 优化
+     */
     public void insertPhiProcess() {
         Mem2RegUnit.setInitialBasicBlock(basicBlocks.get(0));
         basicBlocks.forEach(BasicBlock::insertPhiProcess);
     }
 
+    /**
+     * deadCodeElimination 方法用于在该 Function 中的所有基本块中进行死代码删除，
+     * 主要用于死代码删除优化
+     */
     public void deadCodeElimination() {
         basicBlocks.forEach(BasicBlock::deadCodeElimination);
     }
 
+    /**
+     * searchBlockDominateSet 方法用于在该 Function 中的所有基本块中进行支配集搜索，
+     * 主要用于支配树的构建
+     */
     public void searchBlockDominateSet() {
         BasicBlock entry = basicBlocks.get(0);
         for (BasicBlock basicBlock : basicBlocks) {
@@ -156,6 +194,10 @@ public class Function extends User {
         }
     }
 
+    /**
+     * searchBlockDominanceFrontier 方法用于在该 Function 中的所有基本块中进行支配边搜索，
+     * 主要用于支配树的构建
+     */
     public void searchBlockDominanceFrontier() {
         for (Map.Entry<BasicBlock, ArrayList<BasicBlock>> entry :
                 ControlFlowGraph.getFunctionOutBasicBlock(this).entrySet()) {
@@ -172,12 +214,20 @@ public class Function extends User {
         }
     }
 
+    /**
+     * uniqueInstr 方法用于在该 Function 中的所有基本块中进行指令唯一化，
+     * 主要用于 GVN 优化
+     */
     public void uniqueInstr() {
         HashMap<String, Instr> hashMap = new HashMap<>();
         GlobalVariableNumberingUnit.uniqueInstr(basicBlocks.get(0), hashMap);
         GlobalVariableNumberingUnit.addHashMap(this, hashMap);
     }
 
+    /**
+     * isImprovable 方法用于判断该 Function 是否可以进行 GVN 优化
+     * Function必须满足：参数没有指针类型, 每个指令没有读写全局变量，不能调用其他函数
+     */
     public boolean isImprovable() {
         boolean flag = true;
         if (isImproved != null) {
@@ -198,6 +248,10 @@ public class Function extends User {
         return flag;
     }
 
+    /**
+     * analysisActiveness 方法用于在该 Function 中的所有基本块中进行活跃变量分析，
+     * 主要用于活跃变量分析
+     */
     public void analysisActiveness() {
         HashMap<BasicBlock, HashSet<Value>> inMap = new HashMap<>();
         HashMap<BasicBlock, HashSet<Value>> outMap = new HashMap<>();
@@ -211,6 +265,10 @@ public class Function extends User {
         LivenessAnalysisController.calculateInOut(this);
     }
 
+    /**
+     * regAllocate 方法用于在该 Function 中的所有基本块中进行寄存器分配，
+     * 主要用于寄存器分配
+     */
     public void regAllocate() {
         BasicBlock entry = basicBlocks.get(0);
         RegisterAllocator.setRegisterHashMap(new HashMap<>());
@@ -220,18 +278,30 @@ public class Function extends User {
         DebugDetailController.printRegisterValueReflection(this, registerHashMap);
     }
 
+    /**
+     * phiEliminate 方法用于在该 Function 中的所有基本块中进行 Phi 指令消除，
+     * 主要用于 Phi 指令消除，便于后续转MIPS汇编
+     */
     public void phiEliminate() {
         ArrayList<BasicBlock> copy = new ArrayList<>(basicBlocks);
         copy.forEach(BasicBlock::transformPhiInstrToParallelCopy);
         basicBlocks.forEach(BasicBlock::transformParallelCopyToMoveAsm);
     }
 
+    /**
+     * buildFuncCallGraph 方法用于在该 Function 中的所有基本块中进行函数调用图构建，
+     * 主要用于函数内联
+     */
     public void buildFuncCallGraph() {
         if (!this.isBuildin()) {
             basicBlocks.forEach(BasicBlock::buildFuncCallGraph);
         }
     }
 
+    /**
+     * dfsCaller 方法用于在该 Function 中的所有基本块中进行函数调用图构建，
+     * 是一个深度优先搜索的过程，主要用于函数内联
+     */
     public void dfsCaller() {
         FunctionInlineUnit.setInlineAble(true);
         if (!this.isBuildin() && !this.getName().equals("@main")) {
@@ -251,6 +321,10 @@ public class Function extends User {
         }
     }
 
+    /**
+     * inlineFunction 方法用于在该 Function 中的所有基本块中进行函数内联，
+     * 主要用于函数内联
+     */
     public void inlineFunction() {
         ArrayList<CallInstr> callList = new ArrayList<>();
         if (!FunctionInlineUnit.getResponse(this).isEmpty()) {
@@ -275,15 +349,16 @@ public class Function extends User {
         FunctionInlineUnit.getResponse(this).clear();
     }
 
+    /**
+     * removeUselessFunction 方法用于在该 Function 中的所有基本块中进行无用函数删除，
+     * 主要用于无用函数删除
+     */
     public void removeUselessFunction() {
         if (!this.isBuildin()) {
             if (FunctionInlineUnit.getResponse(this).isEmpty() &&
                     !this.getName().equals("@main")) {
-                this.eraseFromParent();
+                GenerationMain.getModule().getFunctions().remove(this);
             }
         }
-    }
-
-    private void eraseFromParent() {
     }
 }

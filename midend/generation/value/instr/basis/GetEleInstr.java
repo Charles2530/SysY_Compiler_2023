@@ -14,6 +14,12 @@ import midend.simplify.controller.datastruct.FunctionClone;
 
 import java.util.ArrayList;
 
+/**
+ * GetEleInstr 用于生成 LLVM IR 中的 getelementptr 指令,
+ * 继承于 Instr,主要用于生成数组元素访问指令
+ * <result> = getelementptr <ty>, * {, [inrange] <ty> <idx>}*
+ * <result> = getelementptr inbounds <ty>, <ty>* <ptrval>{, [inrange] <ty> <idx>}*
+ */
 public class GetEleInstr extends Instr {
     public GetEleInstr(String name, Value ptr, Value off) {
         super(new PointerType(new VarType(32)), name, "getEle");

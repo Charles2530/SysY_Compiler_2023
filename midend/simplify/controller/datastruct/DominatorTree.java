@@ -9,7 +9,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * DominatorTree 是支配树，
+ * 主要用于支配树的构建，
+ * 属于一种数据结构
+ * 是Mem2Reg的基础
+ */
 public class DominatorTree {
+    /**
+     * dominateFunctionHashMap 存储了每个函数的每个基本块的支配集合
+     * dominanceFrontierFunctionHashMap 存储了每个函数的每个基本块的支配边界集合
+     * parentFunctionHashMap 存储了每个函数的每个基本块的支配父节点
+     * childListFunctionHashMap 存储了每个函数的每个基本块的支配子节点集合
+     */
     private static HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> dominateFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock,
@@ -18,6 +30,10 @@ public class DominatorTree {
     private static HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> childListFunctionHashMap;
 
+    /**
+     * build() 是支配树的构建函数，
+     * 是构建支配树的主函数
+     */
     public static void build(Module module) {
         DominatorTree.dominateFunctionHashMap = new HashMap<>();
         DominatorTree.dominanceFrontierFunctionHashMap = new HashMap<>();
@@ -42,23 +58,36 @@ public class DominatorTree {
                 dominanceFrontierFunctionHashMap, parentFunctionHashMap, childListFunctionHashMap);
     }
 
+    /**
+     * buildDominateTree 方法用于构建支配树
+     */
     private static void buildDominateTree(Function function) {
         function.getBasicBlocks().forEach(basicBlock ->
                 basicBlock.getBlockDominateSet().forEach(
                         dominateBlock -> buildDoubleEdge(basicBlock, dominateBlock)));
     }
 
+    /**
+     * buildDoubleEdge 方法用于判断并构建双向边
+     */
     private static void buildDoubleEdge(BasicBlock basicBlock, BasicBlock dominateBlock) {
         if (isImmediateDominator(basicBlock, dominateBlock)) {
             addDoubleEdge(basicBlock, dominateBlock);
         }
     }
 
+    /**
+     * addDoubleEdge 方法用于添加双向边
+     */
     private static void addDoubleEdge(BasicBlock fromBlock, BasicBlock toBlock) {
         DominatorTree.addBlockDominateParent(toBlock, fromBlock);
         DominatorTree.addBlockDominateChild(fromBlock, toBlock);
     }
 
+    /**
+     * isImmediateDominator 方法用于判断是否是直接支配，
+     * 便于决定是否可以添加双向边
+     */
     private static boolean isImmediateDominator(BasicBlock basicBlock, BasicBlock dominateBlock) {
         boolean flag = basicBlock.getBlockDominateSet().contains(dominateBlock) &&
                 !dominateBlock.equals(basicBlock);
@@ -72,6 +101,10 @@ public class DominatorTree {
         return flag;
     }
 
+    /**
+     * dfsDominate 方法用于深度优先搜索支配树，
+     * 从而形成DominateSet
+     */
     public static void dfsDominate(BasicBlock entry, BasicBlock basicBlock,
                                    HashSet<BasicBlock> reachedSet) {
         if (entry.equals(basicBlock)) {
@@ -85,6 +118,9 @@ public class DominatorTree {
         }
     }
 
+    /**
+     * addInBlockHashSet 方法用于向控制流图中添加in集合
+     */
     public static void addFunctionDominate(Function function,
                                            HashMap<BasicBlock, ArrayList<BasicBlock>> hashMap) {
         DominatorTree.dominateFunctionHashMap.put(function, hashMap);
@@ -95,6 +131,9 @@ public class DominatorTree {
         return DominatorTree.dominateFunctionHashMap.get(function);
     }
 
+    /**
+     * addFunctionDominate 方法用于向控制流图中添加dominate集合
+     */
     public static void addFunctionDominanceFrontier(
             Function function, HashMap<BasicBlock, ArrayList<BasicBlock>> hashMap) {
         DominatorTree.dominanceFrontierFunctionHashMap.put(function, hashMap);
@@ -105,6 +144,9 @@ public class DominatorTree {
         return DominatorTree.dominanceFrontierFunctionHashMap.get(function);
     }
 
+    /**
+     * addFunctionDominateParent 方法用于向控制流图中添加dominate父节点
+     */
     public static void addFunctionDominateParent(Function function,
                                                  HashMap<BasicBlock, BasicBlock> hashMap) {
         DominatorTree.parentFunctionHashMap.put(function, hashMap);
@@ -114,6 +156,9 @@ public class DominatorTree {
         return DominatorTree.parentFunctionHashMap.get(function);
     }
 
+    /**
+     * addFunctionDominateChildList 方法用于向控制流图中添加dominate子节点集合
+     */
     public static void addFunctionDominateChildList(
             Function function, HashMap<BasicBlock, ArrayList<BasicBlock>> hashMap) {
         DominatorTree.childListFunctionHashMap.put(function, hashMap);
@@ -124,6 +169,9 @@ public class DominatorTree {
         return DominatorTree.childListFunctionHashMap.get(function);
     }
 
+    /**
+     * addBlockDominateSet 方法用于向控制流图中添加基本块的支配集合
+     */
     public static void addBlockDominateSet(BasicBlock basicBlock, ArrayList<BasicBlock> domList) {
         dominateFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(),
                 k -> new HashMap<>());
@@ -136,6 +184,9 @@ public class DominatorTree {
                 .get(basicBlock);
     }
 
+    /**
+     * addBlockDominanceFrontier 方法用于向控制流图中添加基本块的支配边界集合
+     */
     public static void addBlockDominanceFrontier(
             BasicBlock basicBlock, ArrayList<BasicBlock> domList) {
         dominanceFrontierFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(),
@@ -149,6 +200,9 @@ public class DominatorTree {
                 .get(basicBlock);
     }
 
+    /**
+     * addBlockDominateParent 方法用于向控制流图中添加基本块的支配父节点
+     */
     public static void addBlockDominateParent(BasicBlock basicBlock, BasicBlock domParent) {
         parentFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(),
                 k -> new HashMap<>());
@@ -161,6 +215,9 @@ public class DominatorTree {
                 .get(basicBlock);
     }
 
+    /**
+     * addBlockDominateChildList 方法用于向控制流图中添加基本块的支配子节点集合
+     */
     public static void addBlockDominateChildList(
             BasicBlock basicBlock, ArrayList<BasicBlock> domList) {
         childListFunctionHashMap.computeIfAbsent(basicBlock.getBelongingFunc(),
@@ -174,6 +231,9 @@ public class DominatorTree {
                 .get(basicBlock);
     }
 
+    /**
+     * addBlockDominateFrontierEdge 方法用于向控制流图中添加基本块的支配边界集合
+     */
     public static void addBlockDominanceFrontierEdge(BasicBlock runner, BasicBlock to) {
         dominanceFrontierFunctionHashMap.computeIfAbsent(runner.getBelongingFunc(),
                 k -> new HashMap<>());
@@ -181,6 +241,9 @@ public class DominatorTree {
                 .get(runner).add(to);
     }
 
+    /**
+     * addBlockDominateChild 方法用于向控制流图中添加基本块的支配子节点
+     */
     public static void addBlockDominateChild(BasicBlock runner, BasicBlock to) {
         childListFunctionHashMap.computeIfAbsent(runner.getBelongingFunc(),
                 k -> new HashMap<>());
@@ -188,14 +251,21 @@ public class DominatorTree {
                 .get(runner).add(to);
     }
 
+    /**
+     * modifyMerged 方法用于修改合并后的支配树，
+     * 主要用于在后端优化中跳转基本块优化后修改对应的支配树
+     */
     public static void modifyMerged(BasicBlock preBasicBlock, BasicBlock basicBlock) {
         DominatorTree.modifyMergedDominateSet(preBasicBlock, basicBlock);
         DominatorTree.modifyMergedDominanceFrontier(preBasicBlock, basicBlock);
         DominatorTree.modifyMergedDominateParent(preBasicBlock, basicBlock);
         DominatorTree.modifyMergedDominateChildList(preBasicBlock, basicBlock);
-
     }
 
+    /**
+     * modifyMerged 方法用于修改合并后的支配树，
+     * 主要用于在后端优化中跳转基本块优化后修改对应的支配树
+     */
     private static void modifyMergedDominateSet(BasicBlock preBasicBlock, BasicBlock basicBlock) {
         ArrayList<BasicBlock> preDominateSet = preBasicBlock.getBlockDominateSet();
         ArrayList<BasicBlock> basicDominateSet = basicBlock.getBlockDominateSet();
@@ -207,6 +277,10 @@ public class DominatorTree {
         DominatorTree.addBlockDominateSet(preBasicBlock, preDominateSet);
     }
 
+    /**
+     * modifyMerged 方法用于修改合并后的支配树，
+     * 主要用于在后端优化中跳转基本块优化后修改对应的支配树边缘
+     */
     private static void modifyMergedDominanceFrontier(
             BasicBlock preBasicBlock, BasicBlock basicBlock) {
         ArrayList<BasicBlock> preDominanceFrontier = preBasicBlock.getBlockDominanceFrontier();
@@ -219,6 +293,10 @@ public class DominatorTree {
         DominatorTree.addBlockDominanceFrontier(preBasicBlock, preDominanceFrontier);
     }
 
+    /**
+     * modifyMerged 方法用于修改合并后的支配树，
+     * 主要用于在后端优化中跳转基本块优化后修改对应的支配树父类
+     */
     private static void modifyMergedDominateParent(
             BasicBlock preBasicBlock, BasicBlock basicBlock) {
         BasicBlock preDominateParent = preBasicBlock.getBlockDominateParent();
@@ -232,6 +310,10 @@ public class DominatorTree {
         }
     }
 
+    /**
+     * modifyMerged 方法用于修改合并后的支配树，
+     * 主要用于在后端优化中跳转基本块优化后修改对应的支配树子类
+     */
     private static void modifyMergedDominateChildList(
             BasicBlock preBasicBlock, BasicBlock basicBlock) {
         ArrayList<BasicBlock> preDominateChildList = preBasicBlock.getBlockDominateChildList();

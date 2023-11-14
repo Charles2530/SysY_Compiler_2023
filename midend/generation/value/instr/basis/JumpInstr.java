@@ -7,7 +7,17 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * JumpInstr 用于生成 LLVM IR 中的 br 指令,
+ * 继承于 Instr,主要用于生成无条件跳转指令
+ * br label <dest>
+ */
 public class JumpInstr extends Instr {
+    /**
+     * target 是 br 指令的目标基本块
+     * isAssemblerReduce 用于判断是否需要生成汇编代码,
+     * 主要用于后端代码优化时去除连接块的不必要跳转语句
+     */
     private BasicBlock target;
     private boolean isAssemblerReduce = false;
 

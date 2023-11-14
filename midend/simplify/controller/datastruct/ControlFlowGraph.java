@@ -11,7 +11,18 @@ import midend.generation.value.instr.basis.JumpInstr;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * ControlFlowGraph 是控制流图，
+ * 主要用于控制流图的构建，
+ * 属于一种数据结构
+ */
 public class ControlFlowGraph {
+    /**
+     * indBasicBlockFunctionMap 存储了每个函数的每个基本块的前序基本块
+     * outBasicBlockFunctionMap 存储了每个函数的每个基本块的后序基本块
+     * indBasicBlockMap 存储了每个基本块的前序基本块
+     * outBasicBlockMap 存储了每个基本块的后序基本块
+     */
     private static HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> indBasicBlockFunctionMap;
     private static HashMap<BasicBlock, ArrayList<BasicBlock>> indBasicBlockMap;
@@ -19,6 +30,10 @@ public class ControlFlowGraph {
             ArrayList<BasicBlock>>> outBasicBlockFunctionMap;
     private static HashMap<BasicBlock, ArrayList<BasicBlock>> outBasicBlockMap;
 
+    /**
+     * build() 是控制流图的构建函数，
+     * 是构建控制流图的主函数
+     */
     public static void build(Module module) {
         ControlFlowGraph.indBasicBlockFunctionMap = new HashMap<>();
         ControlFlowGraph.outBasicBlockFunctionMap = new HashMap<>();
@@ -39,6 +54,9 @@ public class ControlFlowGraph {
                 indBasicBlockFunctionMap, outBasicBlockFunctionMap);
     }
 
+    /**
+     * buildControlFlowGraph 方法用于构建控制流图
+     */
     private static void buildControlFlowGraph(Function function) {
         for (BasicBlock basicBlock : function.getBasicBlocks()) {
             Instr lastInstr = basicBlock.getLastInstr();
@@ -51,6 +69,10 @@ public class ControlFlowGraph {
         }
     }
 
+    /**
+     * addDoubleEdge 方法用于向控制流图中添加双向边，
+     * 表示两个基本块之间的前序和后序关系
+     */
     private static void addDoubleEdge(BasicBlock fromBlock, BasicBlock toBlock) {
         ControlFlowGraph.addBlockIndBasicBlock(toBlock, fromBlock);
         ControlFlowGraph.addBlockOutBasicBlock(fromBlock, toBlock);
@@ -66,6 +88,14 @@ public class ControlFlowGraph {
         return ControlFlowGraph.outBasicBlockFunctionMap.get(function);
     }
 
+    /**
+     * addBlockIndBasicBlock 方法用于向控制流图中添加前序基本块
+     *
+     * @param basicBlock    基本块
+     * @param indBasicBlock 前序基本块
+     * @param idx           前序基本块的插入基本块集合的位置
+     *                      若缺省，则直接插入到基本块集合的末尾
+     */
     public static void addBlockIndBasicBlock(BasicBlock basicBlock,
                                              BasicBlock indBasicBlock, int... idx) {
         ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
@@ -79,6 +109,14 @@ public class ControlFlowGraph {
         }
     }
 
+    /**
+     * addBlockOutBasicBlock 方法用于向控制流图中添加后序基本块
+     *
+     * @param basicBlock    基本块
+     * @param outBasicBlock 后序基本块
+     * @param idx           后序基本块的插入基本块集合的位置
+     *                      若缺省，则直接插入到基本块集合的末尾
+     */
     public static void addBlockOutBasicBlock(BasicBlock basicBlock,
                                              BasicBlock outBasicBlock, int... idx) {
         ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
@@ -102,6 +140,16 @@ public class ControlFlowGraph {
                 .get(basicBlock);
     }
 
+    /**
+     * insertBlockIntoGraph 方法用于向控制流图中插入基本块
+     * 即在indBasicBlock和outBasicBlock之间插入midBasicBlock
+     * 主要用于在控制流图中插入基本块,这里用于消除PhiInstr，
+     * 便于后续形成MIPS汇编
+     *
+     * @param indbasicBlock 前序基本块
+     * @param outbasicblock 后序基本块
+     * @param midbasicblock 中间基本块
+     */
     public static void insertBlockIntoGraph(BasicBlock indbasicBlock,
                                             BasicBlock outbasicblock, BasicBlock midbasicblock) {
         ControlFlowGraph.addBlockIndBasicBlock(outbasicblock, midbasicblock,
@@ -118,6 +166,11 @@ public class ControlFlowGraph {
         }
     }
 
+    /**
+     * modifyMerged 方法用于修改合并后的基本块
+     * 即在两个块合并后修改对应的indBasicBlock和outBasicBlock
+     * 这里主要用于在后端优化时跳转基本块的合并
+     */
     public static void modifyMerged(BasicBlock preBasicBlock, BasicBlock basicBlock) {
         preBasicBlock.getBlockOutBasicBlock().remove(basicBlock);
         basicBlock.getBlockOutBasicBlock().forEach(outBasicBlock -> {

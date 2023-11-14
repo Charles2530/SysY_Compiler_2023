@@ -10,6 +10,11 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * LoadInstr 用于生成 LLVM IR 中的 load 指令,
+ * 继承于 Instr,主要用于读取内存
+ * <result> = load <ty>, <ty>* <pointer>
+ */
 public class LoadInstr extends Instr {
     public LoadInstr(String name, Value ptr) {
         super(((PointerType) ptr.getType()).getTarget(), name, "load");

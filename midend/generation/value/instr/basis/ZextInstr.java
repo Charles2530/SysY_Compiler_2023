@@ -9,6 +9,11 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.FunctionClone;
 
+/**
+ * ZextInstr 用于生成 LLVM IR 中的 zext 指令,
+ * 继承于 Instr,主要用于生成零扩展指令
+ * <result> = zext <ty> <value> to <ty2>
+ */
 public class ZextInstr extends Instr {
     private final IrType target;
 

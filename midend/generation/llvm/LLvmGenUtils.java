@@ -21,6 +21,11 @@ import midend.generation.value.instr.basis.StoreInstr;
 
 import java.util.ArrayList;
 
+/**
+ * LLvmGenUtils 用于生成 LLVM IR 的工具类，主要解析了
+ * Exp下的各种不需要加入AST递归过程分析的子节点，生成对
+ * 应的 LLVM IR
+ */
 public class LLvmGenUtils {
     private final LLvmGenIR llvmGenIR;
 
@@ -102,7 +107,7 @@ public class LLvmGenUtils {
         }
     }
 
-    public Value genValueIr(AstNode rootAst) {
+    public Value genLValIr(AstNode rootAst) {
         int expNum = 0;
         ArrayList<Value> values = new ArrayList<>();
         for (AstNode child : rootAst.getChildList()) {
@@ -127,6 +132,9 @@ public class LLvmGenUtils {
                 intSymbol.getSpace(), intSymbol.getValue());
     }
 
+    /**
+     * genSubValueIr 用于数值对应的LLVM IR代码，提取了genVarValueIr和genConstValueIr的公共部分
+     */
     private Value getSubValueIr(ArrayList<Value> values, int expNum,
                                 Integer dim, ArrayList<Integer> space, Value value) {
         if (dim.equals(0)) {
