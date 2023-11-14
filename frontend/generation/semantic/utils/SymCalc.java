@@ -8,7 +8,16 @@ import frontend.generation.syntax.AstNode;
 
 import java.util.ArrayList;
 
+/**
+ * SymCalc 是语义分析用于计算表达式的工具类,主要可以将位于全局区
+ * 的全局变量的值在编译时期进行计算,并将其值存入符号表中，同时也
+ * 担任了部分常数表达式的化简工作
+ */
 public class SymCalc {
+    /**
+     * calcInitVal 用于存储分析得出的ValDef的初始化值，由维数分为
+     * 处理变量和数组两种情况,故返回值为一个数组
+     */
     public static ArrayList<Integer> calcInitVal(int dim, AstNode astNode) {
         ArrayList<Integer> ans = new ArrayList<>();
         if (dim == 0) {
@@ -23,6 +32,10 @@ public class SymCalc {
         return ans;
     }
 
+    /**
+     * calcConstInitVal 用于存储分析得出的ConstDef的初始化值，由维数分为
+     * 处理常量和常量数组两种情况,故返回值为一个数组
+     */
     public static ArrayList<Integer> calcConstInitVal(int dim, AstNode astNode) {
         ArrayList<Integer> ans = new ArrayList<>();
         if (dim == 0) {
@@ -37,6 +50,9 @@ public class SymCalc {
         return ans;
     }
 
+    /**
+     * calc 是计算表达式的主函数,下面定义了不同类型分别的处理函数
+     */
     public static int calc(AstNode astNode) {
         return switch (astNode.getGrammarType()) {
             case "<Exp>", "<ConstExp>" -> calc(astNode.getChildList().get(0));

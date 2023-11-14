@@ -7,13 +7,28 @@ import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * SymbolTable 是符号表数据结构，使用的是树状符号表
+ */
 public class SymbolTable {
+    /**
+     * symbolTables 是符号表的树状结构，使用HashMap实现,每个
+     * 符号表项是一个StackSymbolTable数组,每个StackSymbolTable
+     * 是一个栈结构，每个栈结构中存储的是同一层次的符号表项(类似栈式符号表)
+     * isGlobalArea 是用于标记当前符号表是否处于全局区
+     * loopLevel 是用于标记当前符号表处于第几层循环中
+     * currentFunc 是用于标记当前符号表所处的函数
+     * curLevel 是用于标记当前符号表所处的层次
+     */
     private static HashMap<Integer, ArrayList<StackSymbolTable>> symbolTables;
     private static boolean isGlobalArea;
     private static int loopLevel;
     private static FuncSymbol currentFunc;
     private static int curLevel;
 
+    /**
+     * 初始化符号表
+     */
     public static void init() {
         SymbolTable.symbolTables = new HashMap<>();
         SymbolTable.isGlobalArea = true;
@@ -21,6 +36,9 @@ public class SymbolTable {
         SymbolTable.curLevel = -1;
     }
 
+    /**
+     * 清空符号表，主要用于重建符号表前
+     */
     public static void clear() {
         SymbolTable.symbolTables.clear();
         SymbolTable.isGlobalArea = true;
@@ -28,6 +46,9 @@ public class SymbolTable {
         SymbolTable.curLevel = -1;
     }
 
+    /**
+     * setGlobalArea 是用于设置当前符号表是否处于全局区的函数
+     */
     public static void setGlobalArea(boolean isGlobalArea) {
         SymbolTable.isGlobalArea = isGlobalArea;
     }
@@ -36,6 +57,9 @@ public class SymbolTable {
         return isGlobalArea;
     }
 
+    /**
+     * createStackSymbolTable() 用于在当前所处层次中新建一个栈式符号表
+     */
     public static void createStackSymbolTable() {
         StackSymbolTable stackSymbolTable = new StackSymbolTable();
         curLevel++;
@@ -43,10 +67,16 @@ public class SymbolTable {
         symbolTables.get(curLevel).add(stackSymbolTable);
     }
 
+    /**
+     * destroyStackSymbolTable() 用于销毁当前所处层次中的栈式符号表
+     */
     public static void destroyStackSymbolTable() {
         curLevel--;
     }
 
+    /**
+     * enterLoop() 用于进入循环
+     */
     public static void enterLoop() {
         loopLevel++;
     }
@@ -55,6 +85,11 @@ public class SymbolTable {
         loopLevel--;
     }
 
+    /**
+     * addSymbol() 用于向当前所处层次的栈式符号表中添加符号
+     *
+     * @return 添加成功返回true，否则返回false,表示符号已存在
+     */
     public static boolean addSymbol(Symbol symbol) {
         StackSymbolTable topTable = symbolTables.get(curLevel)
                 .get(symbolTables.get(curLevel).size() - 1);
@@ -65,6 +100,9 @@ public class SymbolTable {
         return true;
     }
 
+    /**
+     * getSymByName() 用于根据符号名获取符号
+     */
     public static Symbol getSymByName(String name) {
         int level = curLevel;
         while (level >= 0) {
@@ -91,6 +129,9 @@ public class SymbolTable {
         return currentFunc;
     }
 
+    /**
+     * setCurrentFunc() 用于设置当前符号表所处的函数
+     */
     public static void setCurrentFunc(FuncSymbol currentFunc) {
         SymbolTable.currentFunc = currentFunc;
     }

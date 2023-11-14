@@ -2,6 +2,9 @@ package frontend.generation.syntax.utils;
 
 import frontend.generation.syntax.AstRecursion;
 
+/**
+ * Judge 用于判断当前词法所属的语法类型
+ */
 public class Judge {
     public static boolean isDecl() {
         return isConstDecl() || isVarDecl();
@@ -120,6 +123,11 @@ public class Judge {
         return getPreSym().equals("INTCON");
     }
 
+    /**
+     * getPreSym() 和 getNextSym() 用于获取当前词法的类型和pos个位置的词法的类型
+     *
+     * @return 词法的类型
+     */
     public static String getPreSym() {
         return AstRecursion.getPreSymToken().getReservedWord();
     }

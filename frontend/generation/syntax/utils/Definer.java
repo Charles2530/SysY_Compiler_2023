@@ -7,7 +7,13 @@ import frontend.generation.syntax.AstRecursion;
 
 import java.io.IOException;
 
+/**
+ * Definer 用于定义语法分析中的各个终结符和非终结符，推动递归下降进行
+ */
 public class Definer {
+    /**
+     * constDecl : 'const' bType constDef (',' constDef)* ';'; //i
+     */
     public static void genConstDecl(AstNode blockNode) throws IOException {
         AstNode constDeclNode = new AstNode("<ConstDecl>");
         blockNode.addChild(constDeclNode);
@@ -47,6 +53,9 @@ public class Definer {
         }
     }
 
+    /**
+     * constDef: ident ('[' constExp ']')* '=' constInitVal;// b k
+     */
     private static void genConstDef(AstNode constDeclNode) throws IOException {
         AstNode constDefNode = new AstNode("<ConstDef>");
         genSubVarDef(constDeclNode, constDefNode);
@@ -64,6 +73,9 @@ public class Definer {
         }
     }
 
+    /**
+     * constInitVal : constExp | '{' (constInitVal (',' constInitVal)*)? '}';
+     */
     private static void genConstInitVal(AstNode constDeclNode) throws IOException {
         AstNode constInitValNode = new AstNode("<ConstInitVal>");
         constDeclNode.addChild(constInitValNode);
@@ -98,6 +110,9 @@ public class Definer {
         }
     }
 
+    /**
+     * varDecl : bType varDef (',' varDef)* ';';//i
+     */
     public static void genVarDecl(AstNode blockNode) throws IOException {
         AstNode varDeclNode = new AstNode("<VarDecl>");
         blockNode.addChild(varDeclNode);
@@ -130,6 +145,9 @@ public class Definer {
         }
     }
 
+    /**
+     * varDef : ident ('[' constExp ']')* | ident ('[' constExp ']')* '=' initVal;//b k
+     */
     private static void genVarDef(AstNode varDeclNode) throws IOException {
         AstNode vardefNode = new AstNode("<VarDef>");
         genSubVarDef(varDeclNode, vardefNode);
@@ -145,6 +163,9 @@ public class Definer {
         }
     }
 
+    /**
+     * genSubVarDef 是从genVarDef和genConstDef抽象出来的公共部分
+     */
     private static void genSubVarDef(AstNode varDeclNode, AstNode vardefNode) throws IOException {
         varDeclNode.addChild(vardefNode);
         if (Judge.isIdent()) {
@@ -172,6 +193,9 @@ public class Definer {
         }
     }
 
+    /**
+     * initVal : exp | '{' (initVal (',' initVal)*)? '}';
+     */
     private static void genInitVal(AstNode vardefNode) throws IOException {
         AstNode initValNode = new AstNode("<InitVal>");
         vardefNode.addChild(initValNode);
@@ -204,6 +228,9 @@ public class Definer {
         }
     }
 
+    /**
+     * block : '{'  blockItem*  '}';
+     */
     public static void genBlock(AstNode parent) throws IOException {
         AstNode blockNode = new AstNode("<Block>");
         parent.addChild(blockNode);
@@ -226,6 +253,9 @@ public class Definer {
         }
     }
 
+    /**
+     * blockItem : decl | stmt;
+     */
     public static void genBlockItem(AstNode blockNode) throws IOException {
         AstNode blockItemNode = new AstNode("<BlockItem>");
         blockNode.addChild(blockItemNode);
@@ -244,6 +274,17 @@ public class Definer {
         }
     }
 
+    /**
+     * stmt : lVal '=' exp ';'//h i
+     * | exp? ';'//j
+     * | block//j
+     * | 'if' '(' cond ')' stmt ('else' stmt)?//i m
+     * | 'for' '(' forStmt? ';' cond? ';' forStmt? ')' stmt//f i
+     * | 'break' ';' | 'continue' ';'//i m
+     * | 'return' exp? ';'//f i
+     * | lVal '=' 'getint''('')'';'//h i j
+     * | 'printf''('formatString (',' exp)*')'';';// i j l
+     */
     public static void genStmt(AstNode blockNode) throws IOException {
         AstNode stmtNode = new AstNode("<Stmt>");
         blockNode.addChild(stmtNode);
@@ -283,6 +324,9 @@ public class Definer {
 
     }
 
+    /**
+     * extractAssign 是从genStmt抽象出来的AssignStmt部分
+     */
     private static void extractedAssign(AstNode stmtNode) throws IOException {
         extractedExp(stmtNode);
         AstNode assignNode = new AstNode("ASSIGN");
@@ -320,6 +364,9 @@ public class Definer {
         }
     }
 
+    /**
+     * extractExp 是从AssignStmt抽象出来的Exp部分
+     */
     private static void extractedExp(AstNode stmtNode) {
         AstNode expNode = null;
         for (AstNode child : stmtNode.getChildList()) {
@@ -340,6 +387,9 @@ public class Definer {
         stmtNode.addChild(lvalNode);
     }
 
+    /**
+     * 'if' '(' cond ')' stmt ('else' stmt)?//i m
+     */
     private static void genIfStmt(AstNode blockNode) throws IOException {
         AstNode ifStmtNode = new AstNode("IFTK");
         blockNode.addChild(ifStmtNode);
@@ -381,6 +431,9 @@ public class Definer {
         }
     }
 
+    /**
+     * 'for' '(' forStmt? ';' cond? ';' forStmt? ')' stmt//f i
+     */
     private static void genForStmt(AstNode blockNode) throws IOException {
         AstNode forStmtNode = new AstNode("FORTK");
         blockNode.addChild(forStmtNode);
@@ -432,6 +485,9 @@ public class Definer {
         }
     }
 
+    /**
+     * 'break' ';'//i m
+     */
     private static void genBreakStmt(AstNode blockNode) {
         AstNode breakStmtNode = new AstNode("BREAKTK");
         blockNode.addChild(breakStmtNode);
@@ -446,6 +502,9 @@ public class Definer {
         }
     }
 
+    /**
+     * 'continue' ';'//i m
+     */
     private static void genContinueStmt(AstNode blockNode) {
         AstNode continueStmtNode = new AstNode("CONTINUETK");
         blockNode.addChild(continueStmtNode);
@@ -460,6 +519,9 @@ public class Definer {
         }
     }
 
+    /**
+     * 'return' exp? ';'//f i
+     */
     private static void genReturnStmt(AstNode blockNode) throws IOException {
         AstNode returnStmtNode = new AstNode("RETURNTK");
         blockNode.addChild(returnStmtNode);
@@ -477,6 +539,9 @@ public class Definer {
         }
     }
 
+    /**
+     * 'printf''('formatString (',' exp)*')'';';// i j l
+     */
     private static void genPrintfStmt(AstNode blockNode) throws IOException {
         AstNode printfStmtNode = new AstNode("PRINTFTK");
         blockNode.addChild(printfStmtNode);
@@ -521,6 +586,9 @@ public class Definer {
         }
     }
 
+    /**
+     * forStmt : lVal '=' exp;//h
+     */
     private static void genForStmtVal(AstNode forStmtNode) throws IOException {
         AstNode forStmtValNode = new AstNode("<ForStmt>");
         forStmtNode.addChild(forStmtValNode);
@@ -543,6 +611,9 @@ public class Definer {
         }
     }
 
+    /**
+     * exp : addExp;
+     */
     private static void genExp(AstNode funcRParamsNode) throws IOException {
         AstNode expNode = new AstNode("<Exp>");
         funcRParamsNode.addChild(expNode);
@@ -553,12 +624,18 @@ public class Definer {
         }
     }
 
+    /**
+     * cond : lOrExp;
+     */
     private static void genCond(AstNode forStmtNode) throws IOException {
         AstNode condNode = new AstNode("<Cond>");
         forStmtNode.addChild(condNode);
         genLOrExp(condNode);
     }
 
+    /**
+     * lVal : ident ('[' exp ']')*;
+     */
     private static void genLVal(AstNode primaryExpNode) throws IOException {
         AstNode lvalNode = new AstNode("<LVal>");
         primaryExpNode.addChild(lvalNode);
@@ -587,6 +664,9 @@ public class Definer {
         }
     }
 
+    /**
+     * primaryExp : '(' exp ')' | lVal | number;
+     */
     private static void genPrimaryExp(AstNode constExpNode) throws IOException {
         AstNode primaryExpNode = new AstNode("<PrimaryExp>");
         constExpNode.addChild(primaryExpNode);
@@ -616,6 +696,9 @@ public class Definer {
         }
     }
 
+    /**
+     * number : intConst;
+     */
     private static void genNumberCall(AstNode primaryExpNode) throws IOException {
         AstNode numberNode = new AstNode("<Number>");
         primaryExpNode.addChild(numberNode);
@@ -628,6 +711,9 @@ public class Definer {
         }
     }
 
+    /**
+     * unaryExp : primaryExp | ident '(' funcRParams? ')' | unaryOp unaryExp;//c d e j
+     */
     private static void genUnaryExp(AstNode constExpNode) throws IOException {
         AstNode unaryExpNode = new AstNode("<UnaryExp>");
         constExpNode.addChild(unaryExpNode);
@@ -663,6 +749,9 @@ public class Definer {
         }
     }
 
+    /**
+     * unaryOp : '+' | '-' | '!';
+     */
     private static void genUnaryOp(AstNode constExpNode) throws IOException {
         AstNode unaryOpNode = new AstNode("<UnaryOp>");
         constExpNode.addChild(unaryOpNode);
@@ -683,6 +772,9 @@ public class Definer {
         }
     }
 
+    /**
+     * funcRParams : exp  (',' exp)* ;
+     */
     private static void genFuncRParams(AstNode constExpNode) throws IOException {
         AstNode funcRParamsNode = new AstNode("<FuncRParams>");
         constExpNode.addChild(funcRParamsNode);
@@ -698,6 +790,9 @@ public class Definer {
         }
     }
 
+    /**
+     * mulExp :  unaryExp|mulExp ('*' | '/' | '%') unaryExp ;
+     */
     private static void genMulExp(AstNode constExpNode) throws IOException {
         AstNode mulExpNode = new AstNode("<MulExp>");
         genUnaryExp(mulExpNode);
@@ -727,6 +822,9 @@ public class Definer {
         constExpNode.addChild(father);
     }
 
+    /**
+     * addExp : mulExp | addExp ('+' | '-') mulExp;
+     */
     private static void genAddExp(AstNode constExpNode) throws IOException {
         AstNode addExpNode = new AstNode("<AddExp>");
         genMulExp(addExpNode);
@@ -750,6 +848,9 @@ public class Definer {
         constExpNode.addChild(father);
     }
 
+    /**
+     * relExp : addExp | relExp ('<' | '>' | '<=' | '>=') addExp;
+     */
     private static void genRelExp(AstNode equExpNode) throws IOException {
         AstNode relExpNode = new AstNode("<RelExp>");
         genAddExp(relExpNode);
@@ -784,6 +885,9 @@ public class Definer {
         equExpNode.addChild(father);
     }
 
+    /**
+     * eqExp : relExp | eqExp ('==' | '!=') relExp;
+     */
     private static void genEqExp(AstNode astNode) throws IOException {
         AstNode equExpNode = new AstNode("<EqExp>");
         genRelExp(equExpNode);
@@ -807,6 +911,9 @@ public class Definer {
         astNode.addChild(father);
     }
 
+    /**
+     * lAndExp : eqExp | lAndExp '&&' eqExp;
+     */
     private static void genLAndExp(AstNode astNode) throws IOException {
         AstNode landExpNode = new AstNode("<LAndExp>");
         genEqExp(landExpNode);
@@ -823,6 +930,9 @@ public class Definer {
         astNode.addChild(father);
     }
 
+    /**
+     * lOrExp : lAndExp | lOrExp '||' lAndExp;
+     */
     private static void genLOrExp(AstNode condNode) throws IOException {
         AstNode lorExpNode = new AstNode("<LOrExp>");
         genLAndExp(lorExpNode);
@@ -839,6 +949,9 @@ public class Definer {
         condNode.addChild(father);
     }
 
+    /**
+     * constExp : addExp;
+     */
     public static void genConstExp(AstNode constDeclNode) throws IOException {
         AstNode constExpNode = new AstNode("<ConstExp>");
         constDeclNode.addChild(constExpNode);
@@ -849,12 +962,19 @@ public class Definer {
         }
     }
 
+    /**
+     * ident : IDENFR;
+     */
     public static void genIdent(AstNode constExpNode) {
         AstNode idenfrNode = new AstNode("IDENFR");
         constExpNode.addChild(idenfrNode);
         AstRecursion.nextSym();
     }
 
+    /**
+     * getPreSym() 用于获取当前符号
+     * getNextSym() 用于获取pos个字符后的符号
+     */
     private static String getPreSym() {
         return AstRecursion.getPreSymToken().getReservedWord();
     }

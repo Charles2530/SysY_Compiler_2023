@@ -5,7 +5,13 @@ import frontend.generation.semantic.symtable.SymbolTable;
 import frontend.generation.semantic.symtable.symbol.FuncSymbol;
 import frontend.generation.syntax.AstNode;
 
+/**
+ * SymTypeJudge 是语义分析用于判断表达式类型的工具类,主要通过递归寻找Exp的类型
+ */
 public class SymTypeJudge {
+    /**
+     * getExpType() 用于获取表达式的类型的主函数,下面定义了不同类型分别的处理函数
+     */
     public static Symbol.SymType getExpType(AstNode astNode) {
         return switch (astNode.getGrammarType()) {
             case "<Number>" -> getExpTypeNumber(astNode);

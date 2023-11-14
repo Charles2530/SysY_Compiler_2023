@@ -10,8 +10,10 @@ import frontend.generation.syntax.AstNode;
 
 import java.util.ArrayList;
 
+/**
+ * SematicAnalysisChecker 是语义分析用于创建符号表表项的检查器
+ */
 public class SemanticAnalysisChecker {
-
     public Symbol createConstDefChecker(AstNode rootAst) {
         String symbolName = rootAst.getChildList().get(0).getSymToken().getWord();
         int dim = 0;

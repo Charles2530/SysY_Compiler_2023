@@ -15,13 +15,24 @@ import frontend.generation.syntax.AstNode;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * SymChecker 是语义分析用于检查符号表表项是否存在语义错误或语法错误的检查器
+ */
 public class SymChecker {
+    /**
+     * semanticAnalysisChecker 是语义分析用于创建符号表表项的检查器,
+     * 这里将其引入方便在每次创建表项后进行检查
+     */
     private final SemanticAnalysisChecker semanticAnalysisChecker;
 
     public SymChecker() {
         this.semanticAnalysisChecker = new SemanticAnalysisChecker();
     }
 
+    /**
+     * check 是错误处理检查的核心主函数，会在检查到语法或语义错误后将其
+     * 填入ErrorController中，下方定义了其对应的各类子函数
+     */
     public void check(AstNode rootAst) throws IOException {
         switch (rootAst.getGrammarType()) {
             case "<CompUnit>":

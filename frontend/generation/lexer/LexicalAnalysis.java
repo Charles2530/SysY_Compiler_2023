@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LexicalAnalysis {
+    /**
+     * reservedWords 用于存储保留字
+     * symTokens 用于存储词法分析的结果
+     * lexicalWordCheck 用于进行词法分析
+     */
     private final HashMap<String, String> reservedWords = new HashMap<>();
     private final ArrayList<SymToken> symTokens = new ArrayList<>();
     private final LexicalWordCheck lexicalWordCheck = new LexicalWordCheck();
@@ -21,6 +26,9 @@ public class LexicalAnalysis {
         lexicalWordCheck.initial();
     }
 
+    /**
+     * reservedWords 初始化
+     */
     public void initial() {
         reservedWords.put("main", "MAINTK");
         reservedWords.put("const", "CONSTTK");
@@ -59,6 +67,9 @@ public class LexicalAnalysis {
         reservedWords.put("/", "DIV");
     }
 
+    /**
+     * 词法分析主程序
+     */
     public void analysis(String line, int lineNum) throws IOException {
         // 将每一个字符串进行拆分成可分析的词法词
         ArrayList<String> words = lexicalWordCheck.split(line, lineNum);
@@ -66,6 +77,9 @@ public class LexicalAnalysis {
         this.output(words, lineNum);
     }
 
+    /**
+     * 将分析的结果添加到 symTokens 中，并输出词法分析结果
+     */
     private void output(ArrayList<String> words, int lineNum) {
         for (String word : words) {
             try {
@@ -83,6 +97,9 @@ public class LexicalAnalysis {
         }
     }
 
+    /**
+     * 根据词法词获取保留字
+     */
     private String getReservedWord(String word) {
         if (reservedWords.containsKey(word)) {
             return reservedWords.get(word);

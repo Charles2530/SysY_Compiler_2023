@@ -7,6 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class LexicalWordCheck {
+    /**
+     * charSet 用于存储可以通过单个字符判断的为所属词法的符号
+     * cmpSet 用于存储判断为比较符号的符号，需要与后续连接=区分，故属于通过两个字符判断的符号
+     * legalSym 用于存储合法的字符串,用于正则表达式匹配
+     * word 用于存储当前正在读取的单词
+     * isComment 用于判断是否处于多行注释中
+     */
     private final String charSet = "+-*%;,()[]{}";
     private final String cmpSet = "<>=!";
     private final String legalSym = "\"([ !()*+,\\-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
@@ -19,6 +26,9 @@ public class LexicalWordCheck {
         this.word = "";
     }
 
+    /**
+     * 拆分读入的一行字符串，将其分解为单词集合
+     */
     public ArrayList<String> split(String line, int lineNum) throws IOException {
         ArrayList<String> words = new ArrayList<>();
         for (int i = 0; i < line.length(); i++) {
@@ -80,6 +90,9 @@ public class LexicalWordCheck {
         return words;
     }
 
+    /**
+     * 将当前读到的单词添加到单词集合中
+     */
     private void addWordToWords(ArrayList<String> words) {
         if (!word.isEmpty()) {
             words.add(word);
@@ -87,6 +100,9 @@ public class LexicalWordCheck {
         }
     }
 
+    /**
+     * 检查当前的单词是否为非法字符
+     */
     private boolean checkIllegalSym(String word) {
         return !word.matches(legalSym);
     }

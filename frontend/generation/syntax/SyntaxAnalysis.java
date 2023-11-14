@@ -8,6 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class SyntaxAnalysis {
+    /**
+     * symTokens 为之前词法分析获得的结果
+     * rootAst 为语法分析AST树的根节点
+     * */
     private final ArrayList<SymToken> symTokens;
 
     private AstNode rootAst;
@@ -16,6 +20,9 @@ public class SyntaxAnalysis {
         this.symTokens = symTokens;
     }
 
+    /**
+     * 语法分析主程序
+     * */
     public void analysis() throws IOException {
         AstRecursion astRecursion = new AstRecursion(symTokens);
         this.rootAst = new AstNode("<CompUnit>");
@@ -23,6 +30,9 @@ public class SyntaxAnalysis {
         preTraverse(rootAst);
     }
 
+    /**
+     * 通过后续遍历AST树，输出语法分析结果
+     * */
     private void preTraverse(AstNode rootAst) throws IOException {
         for (AstNode astNode : rootAst.getChildList()) {
             preTraverse(astNode);

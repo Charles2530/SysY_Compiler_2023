@@ -17,6 +17,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * 编译器主程序
+ */
 public class Compiler {
     private static boolean fileInputMode = true;
     private static boolean detailMode = false;
@@ -85,6 +88,9 @@ public class Compiler {
         compilerEnd();
     }
 
+    /**
+     * 编译器初始化程序，定义文件输出路径
+     */
     private static void compilerInit() throws IOException {
         // 将文件进行重定向
         fileInputStream = fileInputMode ? new BufferedReader(
@@ -125,6 +131,9 @@ public class Compiler {
         DebugDetailController.setIsDebugDetailOutput(IsDebugDetailOutput);
     }
 
+    /**
+     * 编译器结束程序，关闭文件流
+     */
     private static void compilerEnd() throws IOException {
         // 关闭文件流
         fileInputStream.close();

@@ -15,6 +15,9 @@ public class Decl {
         this.analysis();
     }
 
+    /**
+     * decl : constDecl | varDecl;
+     */
     public void analysis() throws IOException {
         AstNode declNode = new AstNode("<Decl>");
         rootAst.addChild(declNode);

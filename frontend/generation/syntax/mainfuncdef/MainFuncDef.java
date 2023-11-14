@@ -17,6 +17,9 @@ public class MainFuncDef {
         this.analysis();
     }
 
+    /**
+     * mainFuncDef : 'int' 'main' '(' ')' block;//g j
+     */
     private void analysis() throws IOException {
         AstNode mainFuncDefNode = new AstNode("<MainFuncDef>");
         rootAst.addChild(mainFuncDefNode);

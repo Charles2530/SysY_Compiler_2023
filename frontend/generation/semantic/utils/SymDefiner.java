@@ -11,12 +11,23 @@ import frontend.generation.syntax.AstNode;
 
 import java.util.ArrayList;
 
+/**
+ * SymDefiner 是语义分析用于定义符号表表项的工具类
+ */
 public class SymDefiner {
+    /**
+     * llvmGenIR 是用于生成LLVM IR类型中间代码的生成器,这里引入
+     * 是由于在生成中间代码时需要重建符号表，引入方便快速获得符号
+     * 表的对应表项
+     */
     private static LLvmGenIR lLvmGenIR = new LLvmGenIR();
 
+    /**
+     * setParamInfo 是用于设置函数表项的参数信息的函数,即获取函数的参数类型和参数维度
+     */
     public static void setParamInfo(AstNode astNode, FuncSymbol symbol) {
-        ArrayList<Symbol.SymType> fparamTypes = new ArrayList<>();
-        ArrayList<Integer> fparamDims = new ArrayList<>();
+        ArrayList<Symbol.SymType> funcParamTypes = new ArrayList<>();
+        ArrayList<Integer> funcParamDims = new ArrayList<>();
         if (astNode.getChildList().get(3).getGrammarType().equals("<FuncFParams>")) {
             AstNode funcFormalParams = astNode.getChildList().get(3);
             for (AstNode child : funcFormalParams.getChildList()) {
@@ -30,14 +41,18 @@ public class SymDefiner {
                     Symbol.SymType type = child.getChildList().get(0)
                             .getChildList().get(0).getGrammarType().equals("INTTK") ?
                             Symbol.SymType.INT : Symbol.SymType.CONST;
-                    fparamTypes.add(type);
-                    fparamDims.add(dim);
+                    funcParamTypes.add(type);
+                    funcParamDims.add(dim);
                 }
             }
         }
-        symbol.setParamInfo(fparamTypes, fparamDims);
+        symbol.setParamInfo(funcParamTypes, funcParamDims);
     }
 
+    /**
+     * getExpDim 采用模拟递归下降的方式获得对应Exp的维数信息
+     * ，下方定义其子函数用于递归下降的进行
+     */
     public static Integer getExpDim(AstNode astNode) {
         return switch (astNode.getGrammarType()) {
             case "<Number>" -> getExpDimNumber();

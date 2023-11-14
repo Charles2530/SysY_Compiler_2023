@@ -17,6 +17,9 @@ public class FuncDef {
         this.analysis();
     }
 
+    /**
+     * funcDef : funcType ident '(' funcFParams? ')' block;// b g j
+     */
     private void analysis() throws IOException {
         AstNode funcDefNode = new AstNode("<FuncDef>");
         rootAst.addChild(funcDefNode);
@@ -55,6 +58,9 @@ public class FuncDef {
         }
     }
 
+    /**
+     * funcType : 'void' | 'int';
+     */
     private void genFuncType(AstNode funcDefNode) throws IOException {
         AstNode funcTypeNode = new AstNode("<FuncType>");
         funcDefNode.addChild(funcTypeNode);
@@ -71,6 +77,9 @@ public class FuncDef {
         }
     }
 
+    /**
+     * funcFParams : funcFParam (',' funcFParam)*;
+     */
     private void genFuncFParams(AstNode funcDefNode) throws IOException {
         AstNode funcFParamsNode = new AstNode("<FuncFParams>");
         funcDefNode.addChild(funcFParamsNode);
@@ -86,6 +95,9 @@ public class FuncDef {
         }
     }
 
+    /**
+     * funcFParam : bType ident ('[' ']' ('[' constExp ']')*)?;// b k
+     */
     private void genFuncFParam(AstNode funcFParamsNode) throws IOException {
         AstNode funcFParamNode = new AstNode("<FuncFParam>");
         funcFParamsNode.addChild(funcFParamNode);

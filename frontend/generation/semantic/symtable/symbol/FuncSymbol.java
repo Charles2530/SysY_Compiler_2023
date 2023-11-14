@@ -5,11 +5,19 @@ import frontend.generation.semantic.symtable.Symbol;
 
 import java.util.ArrayList;
 
+/**
+ * FuncSymbol 是符号表中的函数表项,继承于Symbol
+ */
 public class FuncSymbol extends Symbol {
-    private ArrayList<SymType> fparamTypes;
-    private ArrayList<Integer> fparamDims;
+    /**
+     * funcParamTypes 是函数的参数类型列表
+     * funcParamDims 是函数的参数维度列表
+     * returnType 是函数的返回值类型
+     * function 是函数的LLVM IR表示,用于生成中间代码时使用
+     */
+    private ArrayList<SymType> funcParamTypes;
+    private ArrayList<Integer> funcParamDims;
     private final SymType returnType;
-
     private Function function;
 
     public FuncSymbol(String symbolName, SymType symbolType) {
@@ -17,10 +25,13 @@ public class FuncSymbol extends Symbol {
         this.returnType = symbolType;
     }
 
-    public void setParamInfo(ArrayList<SymType> fparamTypes,
-                             ArrayList<Integer> fparamDims) {
-        this.fparamTypes = fparamTypes;
-        this.fparamDims = fparamDims;
+    /**
+     * setParamInfo 是用于设置函数表项的参数信息
+     */
+    public void setParamInfo(ArrayList<SymType> funcParamTypes,
+                             ArrayList<Integer> funcParamDims) {
+        this.funcParamTypes = funcParamTypes;
+        this.funcParamDims = funcParamDims;
     }
 
     public SymType getReturnType() {
@@ -28,15 +39,15 @@ public class FuncSymbol extends Symbol {
     }
 
     public int getParamNum() {
-        return fparamTypes.size();
+        return funcParamTypes.size();
     }
 
     public ArrayList<SymType> getFparamTypes() {
-        return fparamTypes;
+        return funcParamTypes;
     }
 
     public ArrayList<Integer> getFparamDims() {
-        return fparamDims;
+        return funcParamDims;
     }
 
     public Function getfunction() {
