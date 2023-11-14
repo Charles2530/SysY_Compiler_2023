@@ -4,6 +4,10 @@ import backend.generation.mips.asm.DataAssembly;
 
 import java.util.ArrayList;
 
+/**
+ * WordAsm 是.data段中的.word汇编代码
+ * 继承自 DataAssembly
+ */
 public class WordAsm extends DataAssembly {
     private final ArrayList<Integer> initValue;
 

@@ -12,11 +12,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * RegisterAllocator 是一个寄存器分配器
+ * 主要是用于代码优化后的寄存器分配
+ */
 public class RegisterAllocator {
+    /**
+     * registers 是寄存器的列表,存储了MIPS中可以使用的寄存器
+     * var2reg 是一个value和寄存器的映射
+     * reg2var 是一个寄存器和value的映射
+     */
     private static ArrayList<Register> registers;
     private static HashMap<Value, Register> var2reg;
     private static HashMap<Register, Value> reg2var;
 
+    /**
+     * init 方法用于初始化寄存器分配器
+     */
     public static void init() {
         RegisterAllocator.registers = new ArrayList<>();
         for (Register value : Register.values()) {
@@ -39,6 +51,9 @@ public class RegisterAllocator {
         return var2reg;
     }
 
+    /**
+     * blockAllocate 方法用于分配寄存器给基本块
+     */
     public static void blockAllocate(BasicBlock entry) {
         HashMap<Value, Value> lastUseMap = new HashMap<>();
         HashSet<Value> defined = new HashSet<>();
@@ -60,6 +75,9 @@ public class RegisterAllocator {
         }
     }
 
+    /**
+     * releaseReg 方法用于释放寄存器
+     */
     private static void releaseReg(BasicBlock entry, Instr instr, HashMap<Value, Value> lastUseMap,
                                    HashMap<Value, Register> var2reg,
                                    HashMap<Register, Value> reg2var,
@@ -86,6 +104,9 @@ public class RegisterAllocator {
         }
     }
 
+    /**
+     * allocRegFor 方法用于分配寄存器，通过遍历寄存器列表，找到一个未被分配的寄存器
+     */
     private static Register allocRegFor() {
         Set<Register> allocated = reg2var.keySet();
         for (Register reg : registers) {
@@ -96,6 +117,9 @@ public class RegisterAllocator {
         return registers.iterator().next();
     }
 
+    /**
+     * reflection 方法用于反射
+     */
     private static void reflection(BasicBlock child) {
         HashMap<Register, Value> buffer = new HashMap<>();
         for (Register register : reg2var.keySet()) {

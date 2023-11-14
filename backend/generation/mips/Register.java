@@ -1,5 +1,9 @@
 package backend.generation.mips;
 
+/**
+ * Register 定义了MIPS中的寄存器
+ * 是一个枚举类
+ */
 public enum Register {
     // MIPS registers
     ZERO("$zero"),
@@ -9,13 +13,19 @@ public enum Register {
     S0("$s0"), S1("$s1"), S2("$s2"), S3("$s3"), S4("$s4"), S5("$s5"), S6("$s6"), S7("$s7"),
     T8("$t8"), T9("$t9"),
     K0("$k0"), K1("$k1"), GP("$gp"), SP("$sp"), FP("$fp"), RA("$ra");
-
+    /**
+     * regName 是寄存器的名称，便于使用enum的值
+     */
     private final String regName;
 
     Register(String regName) {
         this.regName = regName;
     }
 
+    /**
+     * regTransform 方法用于将int类型的index转换为Register类型，
+     * 类似于enum的valueOf方法
+     */
     public static Register regTransform(int index) {
         return values()[index];
     }

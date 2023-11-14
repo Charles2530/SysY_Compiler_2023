@@ -4,13 +4,23 @@ import backend.generation.mips.Register;
 import backend.generation.mips.asm.Assembly;
 import backend.generation.utils.AssemblyData;
 
+/**
+ * BtypeAsm 是.text段中的b系列汇编代码
+ * 继承自 Assembly
+ */
 public class BtypeAsm extends Assembly {
+    /**
+     * operation 是汇编代码的操作
+     * 包括 beq,bne,bgtz,blez,bgez,bltz
+     * rs 是源寄存器rs
+     * rt 是源寄存器rt
+     * label 是标签
+     */
     private final String operation;
     private final Register rs;
     private final Register rt;
     private final String label;
 
-    // beq,bne,bgtz,blez,bgez,bltz
     public BtypeAsm(String operation, String label, Register... registers) {
         this.operation = operation;
         this.label = label;

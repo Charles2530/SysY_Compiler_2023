@@ -22,17 +22,32 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * PhiEliminationUnit 是执行PhiElimination的单元
+ * 主要用于PhiElimination
+ * 便于形成MIPS汇编
+ */
+
 public class PhiEliminationUnit {
+    /**
+     * run 方法用于执行PhiElimination
+     */
     public static void run(Module module) {
         RegisterAllocator.init();
         module.getFunctions().forEach(Function::regAllocate);
         module.getFunctions().forEach(Function::phiEliminate);
     }
 
+    /**
+     * putParallelCopy 方法用于在基本块的最后插入ParallelCopy指令
+     */
     public static void putParallelCopy(ParallelCopy parallelCopy, BasicBlock indbasicBlock) {
         indbasicBlock.insertInstr(indbasicBlock.getInstrArrayList().size() - 1, parallelCopy);
     }
 
+    /**
+     * insertParallelCopy 方法用于在indbasicBlock和present之间插入ParallelCopy指令
+     */
     public static void insertParallelCopy(ParallelCopy parallelCopy,
                                           BasicBlock indbasicBlock, BasicBlock present) {
         BasicBlock targetBlock = new BasicBlock(IrNameController.getBlockName());
@@ -50,6 +65,9 @@ public class PhiEliminationUnit {
         ControlFlowGraph.insertBlockIntoGraph(indbasicBlock, present, targetBlock);
     }
 
+    /**
+     * removePhiInstr 方法用于移除Phi指令
+     */
     public static void removePhiInstr(ArrayList<Instr> instrArrayList,
                                       ArrayList<ParallelCopy> pcList) {
         Iterator<Instr> iterator = instrArrayList.iterator();
@@ -62,6 +80,9 @@ public class PhiEliminationUnit {
         }
     }
 
+    /**
+     * getMoveAsm 方法用于获取Move指令
+     */
     public static ArrayList<MoveInstr> getMoveAsm(ParallelCopy pc) {
         Function function = pc.getBelongingBlock().getBelongingFunc();
         ArrayList<MoveInstr> moveList = PhiEliminationUnit.
@@ -72,6 +93,9 @@ public class PhiEliminationUnit {
         return moveList;
     }
 
+    /**
+     * initialMoveInstrList 方法用于获得Move指令集合
+     */
     private static ArrayList<MoveInstr> initialMoveInstrList(
             ArrayList<Value> fromValueList, ArrayList<Value> toValueList, Function function) {
         ArrayList<MoveInstr> moveList = new ArrayList<>();
@@ -82,6 +106,10 @@ public class PhiEliminationUnit {
         return moveList;
     }
 
+    /**
+     * genTempMoveList 方法用于生成临时的Move指令集合
+     * 主要是解决循环和共享寄存器的问题
+     */
     private static ArrayList<MoveInstr> genTempMoveList(
             Function function, HashMap<Value, Register> valueRegisterHashMap,
             ArrayList<MoveInstr> moveList) {
@@ -90,6 +118,10 @@ public class PhiEliminationUnit {
         return extra;
     }
 
+    /**
+     * genLoopMoveList 方法用于生成循环的Move指令集合
+     * 主要是解决循环的问题
+     */
     private static ArrayList<MoveInstr> genLoopMoveList(
             Function function, ArrayList<MoveInstr> moveList) {
         ArrayList<MoveInstr> extra = new ArrayList<>();
@@ -120,6 +152,10 @@ public class PhiEliminationUnit {
         return extra;
     }
 
+    /**
+     * genSharedRegMoveList 方法用于生成共享寄存器的Move指令集合
+     * 主要是解决共享寄存器的问题
+     */
     private static ArrayList<MoveInstr> genSharedRegMoveList(Function function, HashMap<Value,
             Register> valueRegisterHashMap, ArrayList<MoveInstr> moveList) {
         ArrayList<MoveInstr> extra = new ArrayList<>();

@@ -9,16 +9,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * AssemblyUnit 是一个汇编单元
+ * 主要用于汇编代码的生成，控制了整个转汇编的过程
+ */
 public class AssemblyUnit {
+    /**
+     * currentOffset 是当前的栈指针偏移量
+     * registerController 是寄存器控制器
+     * stackOffsetHashMap 是一个value和偏移量的映射
+     */
     private static Integer currentOffset;
     private static RegisterController registerController;
     private static HashMap<Value, Integer> stackOffsetHashMap;
 
+    /**
+     * init 方法用于初始化汇编单元
+     */
     public void init() {
         AssemblyUnit.currentOffset = 0;
         AssemblyUnit.registerController = new RegisterController();
     }
 
+    /**
+     * moveCurrentOffset 方法用于移动当前的栈指针偏移量
+     */
     public static void moveCurrentOffset(int offset) {
         AssemblyUnit.currentOffset += offset;
         if (AssemblyUnit.currentOffset > 0) {
@@ -26,6 +41,9 @@ public class AssemblyUnit {
         }
     }
 
+    /**
+     * resetFunctionConfig 方法用于重置函数的配置
+     */
     public static void resetFunctionConfig(Function function) {
         AssemblyUnit.currentOffset = 0;
         AssemblyUnit.stackOffsetHashMap = new HashMap<>();

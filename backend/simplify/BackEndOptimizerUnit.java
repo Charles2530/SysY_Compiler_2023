@@ -7,7 +7,20 @@ import midend.generation.GenerationMain;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
 
+/**
+ * BackEndOptimizerUnit 是后端优化器单元，
+ * 主要用于MIPS后端优化
+ * 继承自OptimizerUnit
+ */
 public class BackEndOptimizerUnit extends OptimizerUnit {
+    /**
+     * module 是LLVM IR生成的顶级模块
+     * isRemovePhi 是是否移除phi指令
+     * isSpaceOptimizer 是是否进行Space宏优化(写完后发现似乎不开效率更高)
+     * isRemoveContinuousBranch 是是否移除连续分支
+     * isRemoveDeadCode 是是否移除死代码
+     * isBasicBlockSorted 是是否对基本块进行排序优化
+     */
     private final Module module;
     private final boolean isRemovePhi = true;
     private static boolean isSpaceOptimizer = false;

@@ -4,16 +4,24 @@ import backend.generation.mips.Register;
 import backend.generation.mips.asm.Assembly;
 import backend.generation.utils.AssemblyData;
 
+/**
+ * RtypeAsm 是.text段中的R型汇编代码
+ * 继承自 Assembly
+ */
 public class RtypeAsm extends Assembly {
+    /**
+     * operation 是操作符
+     * 包括 add,sub,addu,subu,and,or,xor,nor,slt,sltu
+     * sllv,srlv,srav
+     * slt,sle,sgt,sge,seq,sne
+     * jr
+     * rs,rt,rd 是寄存器
+     */
     private final String operation;
     private final Register rs;
     private final Register rt;
     private final Register rd;
 
-    // add,sub,addu,subu,and,or,xor,nor,slt,sltu
-    // sllv,srlv,srav
-    // slt,sle,sgt,sge,seq,sne
-    // jr
     public RtypeAsm(String operation, Register... registers) {
         this.operation = operation;
         if (registers.length == 3) {
