@@ -6,7 +6,9 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.PointerType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class LoadInstr extends Instr {
     public LoadInstr(String name, Value ptr) {
@@ -29,5 +31,14 @@ public class LoadInstr extends Instr {
         target = (target == null) ? Register.K0 : target;
         new MemTypeAsm("lw", null, target, pointerReg, 0);
         RegisterUtils.reAllocReg(this, target);
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyPtr = functionClone.getValue(this.getOperands().get(0));
+        Instr instr = new LoadInstr(this.getName() + "_copy", copyPtr);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

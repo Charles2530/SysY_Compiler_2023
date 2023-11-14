@@ -8,8 +8,10 @@ import backend.generation.mips.asm.textsegment.mipsinstr.MemTypeAsm;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 import java.util.ArrayList;
 
@@ -95,5 +97,18 @@ public class CallInstr extends Instr {
         }
         sb.append(")");
         return sb.toString();
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        ArrayList<Value> copyParamList = new ArrayList<>();
+        for (int i = 1; i < this.getOperands().size(); i++) {
+            copyParamList.add(functionClone.getValue(this.getOperands().get(i)));
+        }
+        Function copyTarget = (Function) functionClone.getValue(this.getOperands().get(0));
+        Instr instr = new CallInstr(this.getName() + "_copy", copyTarget, copyParamList);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

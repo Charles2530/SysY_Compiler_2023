@@ -6,7 +6,9 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class IcmpInstr extends Instr {
     public IcmpInstr(String name, String instrType, Value ans, Value res) {
@@ -45,5 +47,16 @@ public class IcmpInstr extends Instr {
     @Override
     public String getGlobalVariableNumberingHash() {
         return operands.get(0).getName() + " " + instrType + " " + operands.get(1).getName();
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyAns = functionClone.getValue(this.getOperands().get(0));
+        Value copyRes = functionClone.getValue(this.getOperands().get(1));
+        Instr instr = new IcmpInstr(
+                this.getName() + "_copy", this.getInstrType(), copyAns, copyRes);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

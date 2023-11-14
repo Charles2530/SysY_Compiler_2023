@@ -1,6 +1,7 @@
 package midend.generation.value.construction.user;
 
 import backend.generation.mips.asm.textsegment.structure.Comment;
+import midend.simplify.controller.datastruct.FunctionClone;
 import midend.simplify.method.FunctionInlineUnit;
 import iostream.declare.GetIntDeclare;
 import iostream.structure.IoStreamGeneration;
@@ -110,5 +111,9 @@ public class Instr extends User {
                 }
             }
         }
+    }
+
+    public Value copy(FunctionClone functionClone) {
+        return null;
     }
 }

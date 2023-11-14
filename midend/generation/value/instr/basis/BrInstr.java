@@ -9,6 +9,7 @@ import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class BrInstr extends Instr {
     private BasicBlock thenBlock;
@@ -54,5 +55,16 @@ public class BrInstr extends Instr {
         reg = RegisterUtils.loadRegisterValue(operands.get(0), Register.K0, reg);
         new BtypeAsm("bne", operands.get(1).getName(), reg, Register.ZERO);
         new JtypeAsm("j", operands.get(2).getName());
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyCon = functionClone.getValue(this.getOperands().get(0));
+        BasicBlock copyThen = (BasicBlock) functionClone.getValue(this.getOperands().get(1));
+        BasicBlock copyElse = (BasicBlock) functionClone.getValue(this.getOperands().get(2));
+        Instr instr = new BrInstr(copyCon, copyThen, copyElse);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

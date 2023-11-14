@@ -5,7 +5,9 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class ZextInstr extends Instr {
     private final IrType target;
@@ -33,5 +35,15 @@ public class ZextInstr extends Instr {
                 AssemblyUnit.addOffset(this, AssemblyUnit.getOffset(operands.get(0)));
             }
         }
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyVal = functionClone.getValue(this.getOperands().get(0));
+        Instr instr = new ZextInstr(this.getName() + "_copy",
+                this.getInstrType(), copyVal, this.target);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

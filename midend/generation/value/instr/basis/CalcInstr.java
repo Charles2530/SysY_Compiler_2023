@@ -7,8 +7,10 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Constant;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class CalcInstr extends Instr {
     public CalcInstr(String name, String instrType, Value op1, Value op2) {
@@ -76,5 +78,15 @@ public class CalcInstr extends Instr {
             return operands.get(1).getName() + " " + instrType + " " + operands.get(0).getName();
         }
         return operands.get(0).getName() + " " + instrType + " " + operands.get(1).getName();
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyOperand1 = functionClone.getValue(operands.get(0));
+        Value copyOperand2 = functionClone.getValue(operands.get(1));
+        Instr instr = new CalcInstr(name + "_copy", instrType, copyOperand1, copyOperand2);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

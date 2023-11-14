@@ -7,7 +7,9 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class RetInstr extends Instr {
     private Value retValue;
@@ -53,5 +55,14 @@ public class RetInstr extends Instr {
         }
         // jr $ra
         new RtypeAsm("jr", Register.RA);
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyRetValue = functionClone.getValue(this.getOperands().get(0));
+        Instr instr = new RetInstr(copyRetValue);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

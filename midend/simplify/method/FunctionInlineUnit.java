@@ -149,17 +149,15 @@ public class FunctionInlineUnit {
         JumpInstr toFunc = new JumpInstr(copyFunc.getBasicBlocks().get(0));
         toFunc.getBelongingBlock().getInstrArrayList().remove(toFunc);
         basicBlock.addInstr(toFunc);
-        ArrayList<RetInstr> retInstrs = new ArrayList<>();
-        int cnt = 0;
+        ArrayList<RetInstr> retList = new ArrayList<>();
         for (BasicBlock block : copyFunc.getBasicBlocks()) {
             for (Instr instr : block.getInstrArrayList()) {
                 if (instr instanceof RetInstr retInstr) {
-                    retInstrs.add(retInstr);
-                    cnt++;
+                    retList.add(retInstr);
                 }
             }
         }
-        FunctionInlineUnit.dealWithRetValue(retInstrs, cnt, inlineBlock, response.getReturnType());
+        FunctionInlineUnit.dealWithRetValue(retList, inlineBlock, response.getReturnType());
         for (BasicBlock block : copyFunc.getBasicBlocks()) {
             block.getBelongingFunc().getBasicBlocks().remove(block);
             function.addBasicBlock(inlineBlock,
@@ -167,17 +165,39 @@ public class FunctionInlineUnit {
         }
         callInstr.dropOperands();
         callInstr.getBelongingBlock().getInstrArrayList().remove(callInstr);
-        /*TODO:need change*/
+        inlineBlock.reducePhi(true);
 
     }
-    /*TODO:partly finish*/
 
     private static void dealWithRetValue(
-            ArrayList<RetInstr> retInstrs, int cnt, BasicBlock inlineBlock, IrType returnType) {
+            ArrayList<RetInstr> retList, BasicBlock inlineBlock, IrType returnType) {
         if (returnType.isInt32()) {
-            return;
+            PhiInstr phiInstr = new PhiInstr(
+                    IrNameController.getLocalVarName(inlineBlock.getBelongingFunc()),
+                    inlineBlock.getBlockIndBasicBlock());
+            for (RetInstr retInstr : retList) {
+                phiInstr.getOperands().add(retInstr.getRetValue());
+                phiInstr.getIndBasicBlock().add(retInstr.getBelongingBlock());
+                retInstr.getBelongingBlock().getBlockOutBasicBlock().remove(inlineBlock);
+                inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
+                JumpInstr jumpInstr = new JumpInstr(inlineBlock);
+                retInstr.getBelongingBlock().insertInstr(
+                        retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr) - 1,
+                        jumpInstr);
+                retInstr.dropOperands();
+                retInstr.getBelongingBlock().getInstrArrayList().remove(retInstr);
+            }
         } else if (returnType.isVoid()) {
-            return;
+            for (RetInstr retInstr : retList) {
+                retInstr.getBelongingBlock().getBlockOutBasicBlock().remove(inlineBlock);
+                inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
+                JumpInstr jumpInstr = new JumpInstr(inlineBlock);
+                retInstr.getBelongingBlock().insertInstr(
+                        retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr) - 1,
+                        jumpInstr);
+                retInstr.dropOperands();
+                retInstr.getBelongingBlock().getInstrArrayList().remove(retInstr);
+            }
         }
     }
 

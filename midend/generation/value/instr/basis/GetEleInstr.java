@@ -8,7 +8,9 @@ import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 import java.util.ArrayList;
 
@@ -58,5 +60,16 @@ public class GetEleInstr extends Instr {
     @Override
     public String getGlobalVariableNumberingHash() {
         return operands.get(0).getName() + " " + operands.get(1).getName();
+    }
+
+    /*TODO:bug maybe*/
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyPtr = functionClone.getValue(this.getOperands().get(0));
+        Value copyOff = functionClone.getValue(this.getOperands().get(1));
+        Instr instr = new GetEleInstr(this.getName() + "_copy", copyPtr, copyOff);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

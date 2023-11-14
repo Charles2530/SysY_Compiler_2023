@@ -213,6 +213,13 @@ public class BasicBlock extends Value {
         return LivenessAnalysisController.getDefBasicBlockHashSet(this);
     }
 
+    public void reducePhi(boolean flag) {
+        instrArrayList.forEach(instr -> {
+            if (instr instanceof PhiInstr phiInstr) {
+                phiInstr.reducePhi(flag);
+            }
+        });
+    }
 }
 
 

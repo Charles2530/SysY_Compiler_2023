@@ -7,7 +7,10 @@ import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
+import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class AllocaInstr extends Instr {
     private final IrType type;
@@ -34,5 +37,13 @@ public class AllocaInstr extends Instr {
             new ItypeAsm("addi", Register.K0, Register.SP, AssemblyUnit.getCurrentOffset());
             RegisterUtils.allocReg(this, Register.K0);
         }
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Instr instr = new AllocaInstr(this.getName() + "_copy", this.type);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }

@@ -6,7 +6,9 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 public class StoreInstr extends Instr {
     public StoreInstr(Value ans, Value res) {
@@ -30,5 +32,15 @@ public class StoreInstr extends Instr {
         Register fromReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         fromReg = RegisterUtils.loadVariableValue(operands.get(0), fromReg, Register.K0);
         new MemTypeAsm("sw", null, fromReg, toReg, 0);
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        Value copyAns = functionClone.getValue(this.getOperands().get(0));
+        Value copyRes = functionClone.getValue(this.getOperands().get(1));
+        Instr instr = new StoreInstr(copyAns, copyRes);
+        copyBlock.addInstr(instr);
+        return instr;
     }
 }
