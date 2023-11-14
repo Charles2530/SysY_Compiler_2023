@@ -47,7 +47,12 @@ public class LivenessAnalysisController {
 
     /**
      * calculateInOut 方法用于计算每个基本块的in集合和out集合
+     * 该函数执行逻辑如下:
+     * 1.根据后继的in，求出当前block的out
+     * 2.根据公式in = (out - def) + use，求出当前基本块的in
+     * 3.如果in集合发生变化，则继续执行while循环，否则结束
      */
+    /*TODO:bug maybe because of phiInstr*/
     public static void calculateInOut(Function function) {
         ArrayList<BasicBlock> basicBlocks = function.getBasicBlocks();
         boolean change = true;

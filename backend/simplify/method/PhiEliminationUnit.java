@@ -39,14 +39,16 @@ public class PhiEliminationUnit {
     }
 
     /**
-     * putParallelCopy 方法用于在基本块的最后插入ParallelCopy指令
+     * putParallelCopy 方法用于在基本块中插入ParallelCopy指令
+     * 具体插入在跳转语句之前
      */
     public static void putParallelCopy(ParallelCopy parallelCopy, BasicBlock indbasicBlock) {
         indbasicBlock.insertInstr(indbasicBlock.getInstrArrayList().size() - 1, parallelCopy);
     }
 
     /**
-     * insertParallelCopy 方法用于在indbasicBlock和present之间插入ParallelCopy指令
+     * insertParallelCopy 方法用于在indBasicBlock和present之间插入ParallelCopy指令
+     * 具体而言即将ParallelCopy插入targetBlock,之后修改跳转关系即可
      */
     public static void insertParallelCopy(ParallelCopy parallelCopy,
                                           BasicBlock indbasicBlock, BasicBlock present) {
@@ -67,6 +69,11 @@ public class PhiEliminationUnit {
 
     /**
      * removePhiInstr 方法用于移除Phi指令
+     * 该函数执行逻辑如下：
+     * 1. 遍历block所有Phi，每个phi中option放到对应的各个ParallelCopy中
+     * （options本身就是按照前驱的顺序排列的）
+     * 2.如果option是未定义的，那么我们不把他加入对应copy中
+     * 3.最后删除phi指令
      */
     public static void removePhiInstr(ArrayList<Instr> instrArrayList,
                                       ArrayList<ParallelCopy> pcList) {
@@ -82,6 +89,9 @@ public class PhiEliminationUnit {
 
     /**
      * getMoveAsm 方法用于获取Move指令
+     * 这里首先创建初始move序列
+     * 之后解决循环赋值的问题和共享寄存器问题后
+     * 将临时的move序列加入到初始move序列中
      */
     public static ArrayList<MoveInstr> getMoveAsm(ParallelCopy pc) {
         Function function = pc.getBelongingBlock().getBelongingFunc();
@@ -121,6 +131,10 @@ public class PhiEliminationUnit {
     /**
      * genLoopMoveList 方法用于生成循环的Move指令集合
      * 主要是解决循环的问题
+     * 函数执行逻辑如下：
+     * 1.检查该指令之后的所有指令，如果value同时是某一个move的src，那么存在循环赋值的问题
+     * 2.如果出现了循环赋值的情况，我们需要增加中间变量，即将所有使用value作为src的move指令，
+     * 将改为使用midValue作为src，最后在moveList的开头插入新的move
      */
     private static ArrayList<MoveInstr> genLoopMoveList(
             Function function, ArrayList<MoveInstr> moveList) {
@@ -155,6 +169,11 @@ public class PhiEliminationUnit {
     /**
      * genSharedRegMoveList 方法用于生成共享寄存器的Move指令集合
      * 主要是解决共享寄存器的问题
+     * 函数执行逻辑如下：
+     * 1.检查该指令之前的所有指令，
+     * 如果value对应的reg同时是某一个move的dst的reg，那么存在寄存器冲突的问题
+     * 2.如果出现了寄存器冲突的情况，我们需要增加中间变量，将所有使用value作为src的move指令，
+     * 将改为使用midValue作为src，在moveList的开头插入新的move
      */
     private static ArrayList<MoveInstr> genSharedRegMoveList(Function function, HashMap<Value,
             Register> valueRegisterHashMap, ArrayList<MoveInstr> moveList) {

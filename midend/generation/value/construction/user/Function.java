@@ -161,6 +161,7 @@ public class Function extends User {
     /**
      * insertPhiProcess 方法用于在该 Function 中的所有基本块中插入 Phi 指令，
      * 主要用于 Mem2Reg 优化
+     * 遍历所有基本块，插入phi指令,同时注意设置InitialBasicBlock
      */
     public void insertPhiProcess() {
         Mem2RegUnit.setInitialBasicBlock(basicBlocks.get(0));
@@ -178,6 +179,9 @@ public class Function extends User {
     /**
      * searchBlockDominateSet 方法用于在该 Function 中的所有基本块中进行支配集搜索，
      * 主要用于支配树的构建
+     * 对于这个函数而言，函数的逻辑是在for循环中找到所有不被 basicBlock支配的block，
+     * 放入reachSet中，这样所有不在reachedSet中的Block就都是被basicBlock
+     * 支配的Block，然后将所有不在reachSet中的block放入domList中(包括basicBlock本身)
      */
     public void searchBlockDominateSet() {
         BasicBlock entry = basicBlocks.get(0);
@@ -197,6 +201,7 @@ public class Function extends User {
     /**
      * searchBlockDominanceFrontier 方法用于在该 Function 中的所有基本块中进行支配边搜索，
      * 主要用于支配树的构建
+     * 求解DominanceFrontier是一个固定的算法,对所有的边进行遍历即可
      */
     public void searchBlockDominanceFrontier() {
         for (Map.Entry<BasicBlock, ArrayList<BasicBlock>> entry :
@@ -281,6 +286,9 @@ public class Function extends User {
     /**
      * phiEliminate 方法用于在该 Function 中的所有基本块中进行 Phi 指令消除，
      * 主要用于 Phi 指令消除，便于后续转MIPS汇编
+     * 这里消除Phi指令有两个步骤
+     * 1.将所有的phi指令删除，增加pcopy指令
+     * 2.将所有的pcopy指令删除，增加move指令
      */
     public void phiEliminate() {
         ArrayList<BasicBlock> copy = new ArrayList<>(basicBlocks);

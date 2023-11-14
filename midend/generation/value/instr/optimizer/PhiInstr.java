@@ -66,6 +66,9 @@ public class PhiInstr extends Instr {
 
     /**
      * generateCopyList() 用于将PhiInstr转化为ParallelCopy的集合，便于转为MIPS汇编
+     * 该函数执行逻辑如下：
+     * 1.获得phi所有的options
+     * 2.将每个option都插入到对应的ParallelCopy中
      */
     public void generateCopyList(ArrayList<ParallelCopy> pcList) {
         for (int i = 0; i < operands.size(); i++) {

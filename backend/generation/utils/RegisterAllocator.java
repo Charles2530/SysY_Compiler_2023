@@ -53,6 +53,14 @@ public class RegisterAllocator {
 
     /**
      * blockAllocate 方法用于分配寄存器给基本块
+     * 因为key的最后一次使用是在value中,所以我们需要定义lastUseMap
+     * 该函数执行逻辑如下：
+     * 1.遍历一边所有指令，记录每个变量在该基本块里最后一次被使用的位置
+     * 2.再遍历一遍所有指令,执行releaseReg方法
+     * 3.遍历其直接支配的节点,调用映射函数reflection
+     * 4.将该基本块定义的变量对应的寄存器释放
+     * 5.将“后继不再使用但是是从indBasicBlock传过来”的变量对应的寄存器映射恢复回来
+     * 也就是在used中，但是不是在当前基本块定义的变量
      */
     public static void blockAllocate(BasicBlock entry) {
         HashMap<Value, Value> lastUseMap = new HashMap<>();
@@ -77,6 +85,11 @@ public class RegisterAllocator {
 
     /**
      * releaseReg 方法用于释放寄存器
+     * 1.如果该指令的某个operand是该基本块内的最后一次使用，
+     * 并且该基本块的out中没有这个operand,那么我们可以暂时
+     * 释放这个变量所占用的寄存器（释放reg2var，但不改变var2reg）
+     * 2.如果该指令属于定义语句，并且不是创建数组的alloc指令，
+     * 我们需要为该变量分配寄存器
      */
     private static void releaseReg(BasicBlock entry, Instr instr, HashMap<Value, Value> lastUseMap,
                                    HashMap<Value, Register> var2reg,
@@ -118,7 +131,12 @@ public class RegisterAllocator {
     }
 
     /**
-     * reflection 方法用于反射
+     * reflection 映射方法执行逻辑如下：
+     * 1.如果当前个寄存器所对应的变量在其child中不会被使用到(即in中不包含该变量)
+     * 可以记录这个映射关系到buffer中，并释放该寄存器，当为child（包括child的child）
+     * 分配完寄存器后，再将buffer中的映射关系恢复，以免影响其兄弟节点的寄存器分配
+     * 2.之后为其child调用该函数实现递归调用
+     * 3.最后在回溯过程中将buffer中存储的被删除的映射关系恢复
      */
     private static void reflection(BasicBlock child) {
         HashMap<Register, Value> buffer = new HashMap<>();

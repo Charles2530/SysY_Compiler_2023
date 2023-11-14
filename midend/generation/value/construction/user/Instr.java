@@ -61,6 +61,8 @@ public class Instr extends User {
 
     /**
      * insertPhiProcess 方法用于在 Mem2Reg 优化中插入 Phi 指令
+     * 该函数首先初始化和该alloca指令相关的数据结构
+     * 之后找出需要添加phi指令的基本块，并添加phiInstr
      */
     public void insertPhiProcess() {
         Mem2RegUnit.reConfig(this);

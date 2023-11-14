@@ -60,6 +60,8 @@ public class DominatorTree {
 
     /**
      * buildDominateTree 方法用于构建支配树
+     * 支配树换言之就是求解直接支配关系
+     * A直接支配B——A严格支配B，且不严格支配任何严格支配B的节点
      */
     private static void buildDominateTree(Function function) {
         function.getBasicBlocks().forEach(basicBlock ->
@@ -86,6 +88,7 @@ public class DominatorTree {
 
     /**
      * isImmediateDominator 方法用于判断是否是直接支配，
+     * 在判断二者为直接支配之前用flag判断二者是否为严格支配
      * 便于决定是否可以添加双向边
      */
     private static boolean isImmediateDominator(BasicBlock basicBlock, BasicBlock dominateBlock) {
@@ -103,7 +106,8 @@ public class DominatorTree {
 
     /**
      * dfsDominate 方法用于深度优先搜索支配树，
-     * 从而形成DominateSet
+     * 找到所有不被 basicBlock支配的BB，放入reachedSet中，
+     * 为后续形成DominateSet打下基础
      */
     public static void dfsDominate(BasicBlock entry, BasicBlock basicBlock,
                                    HashSet<BasicBlock> reachedSet) {

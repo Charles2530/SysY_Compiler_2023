@@ -56,6 +56,7 @@ public class ControlFlowGraph {
 
     /**
      * buildControlFlowGraph 方法用于构建控制流图
+     * 这里求解出了IndBasicBlock和OutBasicBlock
      */
     private static void buildControlFlowGraph(Function function) {
         for (BasicBlock basicBlock : function.getBasicBlocks()) {

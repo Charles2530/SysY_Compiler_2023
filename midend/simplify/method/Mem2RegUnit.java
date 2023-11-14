@@ -111,6 +111,11 @@ public class Mem2RegUnit {
     /**
      * insertPhi 方法用于插入Phi指令
      * 主要用于在CFG中插入Phi指令
+     * f 为需要添加phi的基本块的集合
+     * w 为定义变量的基本块的集合
+     * 本算法首先将defBasicBlockArrayList中的基本块推入栈中，
+     * 然后在while循环执行固定算法即可
+     * 注：phi既是useInstr,又是defInstr
      */
     public static void insertPhi() {
         HashSet<BasicBlock> f = new HashSet<>();
@@ -137,6 +142,15 @@ public class Mem2RegUnit {
     /**
      * dfsVarRename 方法用于深度优先搜索基本块
      * 并对基本块中的变量进行重命名
+     * cnt 记录遍历presentBlock的过程中，stack的push次数
+     * 该函数执行逻辑如下:
+     * 1.在移除了非必要的Instr后，遍历presentBlock的后继集合，
+     * 将最新的define（stack.peek）填充进每个后继
+     * 块的第一个phi指令中(有可能某个后继块没有和当
+     * 前alloc指令相关的phi，需要进行特判(符合条件
+     * 的Phi应该在useInstrList中))
+     * 2.对presentBlock支配的基本块使用dfsVarRename方法，实现DFS
+     * 3.将该次dfs时压入stack的数据全部弹出
      */
     public static void dfsVarRename(BasicBlock presentBlock) {
         int cnt = removeUnnecessaryInstr(presentBlock);
@@ -156,6 +170,16 @@ public class Mem2RegUnit {
     /**
      * removeUnnecessaryInstr 方法用于删除不必要的指令
      * 主要用于删除不必要的相关的alloca, store,load指令
+     * 该函数逻辑如下：
+     * 1.遍历基本块entry的各个指令，修改其reaching-define
+     * 2.将所有使用该load指令的指令，改为使用stack.peek()
+     * 如果当前的stack.peek()为空，则说明该变量没有被def，
+     * 值是未定义的(即Constant的isDefined为false),最后
+     * 移除这条load指令
+     * 3.将所有使用该store指令的指令，直接推入stack,之后
+     * 移除这条store指令
+     * 4.将所有使用该phi指令的指令，直接推入stack
+     * 5.如果当前的指令是alloca指令，那么直接移除该指令
      */
     private static int removeUnnecessaryInstr(BasicBlock presentBlock) {
         int instrNum = 0;

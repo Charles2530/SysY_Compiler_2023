@@ -115,7 +115,9 @@ public class BasicBlock extends Value {
 
     /**
      * insertPhiProcess 方法用于在 Mem2Reg 优化中插入 Phi 指令
-     * 并且进行变量重命名
+     * 遍历基本块中所有指令并且进行变量重命名
+     * 该函数首先需要找出需要添加phiInstr的基本块，
+     * 之后通过深度优先搜索进行重命名操作
      */
     public void insertPhiProcess() {
         ArrayList<Instr> copy = new ArrayList<>(instrArrayList);
@@ -179,6 +181,12 @@ public class BasicBlock extends Value {
     /**
      * transformPhiInstrToParallelCopy 方法用于将该 BasicBlock 中的 Phi 指令
      * 转化为ParallelCopy指令，便于后续转MIPS汇编
+     * 该函数执行逻辑如下：
+     * 1.先保证block中含有phi指令,否则直接返回
+     * 2，遍历block的前驱基本块集合，有多少前驱就增加多少个ParallelCopy指令
+     * 3.之后通过for循环寻找合适的位置插入ParallelCopy指令，即
+     * 如果indBasicBlock只有block一个后继，那么我们直接将ParallelCopy放在indBasicBlock中即可
+     * 如果indBasicBlock有多个后继，那么需要在新建一个中间基本块后插入
      */
     public void transformPhiInstrToParallelCopy() {
         if (!(instrArrayList.get(0) instanceof PhiInstr)) {
@@ -201,6 +209,8 @@ public class BasicBlock extends Value {
     /**
      * transformParallelCopyToMoveAsm 方法用于将该 BasicBlock 中的 ParallelCopy 指令
      * 转化为 move 指令，便于后续转MIPS汇编
+     * 具体而言即找到基本块中的ParallelCopy指令，删掉ParallelCopy，
+     * 之后将ParallelCopy转化为一系列move，最后将move加入到instrList
      */
     public void transformParallelCopyToMoveAsm() {
         if (instrArrayList.size() >= 2 && instrArrayList
