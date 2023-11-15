@@ -70,7 +70,8 @@ public class FunctionClone {
      */
     private void copyBlocks(BasicBlock basicBlock) {
         for (Instr instr : basicBlock.getInstrArrayList()) {
-            putValue(instr, instr.copy(this));
+            Value copyInstr = instr.copy(this);
+            putValue(instr, copyInstr);
         }
         for (BasicBlock outBasicBlock : basicBlock.getBlockOutBasicBlock()) {
             if (!visited.contains(outBasicBlock)) {

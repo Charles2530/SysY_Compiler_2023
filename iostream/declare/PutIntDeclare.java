@@ -9,6 +9,8 @@ import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import iostream.structure.IoStreamGeneration;
+import midend.generation.value.construction.BasicBlock;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 /**
  * PutIntDeclare 是向控制台输出一个整数的声明
@@ -40,5 +42,14 @@ public class PutIntDeclare extends IoStreamGeneration {
         }
         new LiAsm(Register.V0, 1);
         new SyscallAsm();
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        PutIntDeclare putIntDeclare =
+                new PutIntDeclare(functionClone.getValue(this.getOperands().get(0)));
+        copyBlock.addInstr(putIntDeclare);
+        return putIntDeclare;
     }
 }

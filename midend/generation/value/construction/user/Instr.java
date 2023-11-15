@@ -143,13 +143,11 @@ public class Instr extends User {
         if (this instanceof CallInstr callInstr) {
             Function response = callInstr.getTarget();
             Function curFunc = this.getBelongingBlock().getBelongingFunc();
-            if (!curFunc.isBuildIn()) {
-                if (!FunctionInlineUnit.getCaller(curFunc).contains(response)) {
-                    FunctionInlineUnit.addCaller(curFunc, response);
-                }
-                if (!FunctionInlineUnit.getResponse(response).contains(curFunc)) {
-                    FunctionInlineUnit.addResponse(response, curFunc);
-                }
+            if (!FunctionInlineUnit.getCaller(curFunc).contains(response)) {
+                FunctionInlineUnit.addCaller(curFunc, response);
+            }
+            if (!FunctionInlineUnit.getResponse(response).contains(curFunc)) {
+                FunctionInlineUnit.addResponse(response, curFunc);
             }
         }
     }

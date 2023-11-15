@@ -60,11 +60,12 @@ public class IcmpInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyAns = functionClone.getValue(this.getOperands().get(0));
         Value copyRes = functionClone.getValue(this.getOperands().get(1));
         Instr instr = new IcmpInstr(
-                this.getName(), this.getInstrType(), copyAns, copyRes);
+                this.getName() + suffix, this.getInstrType(), copyAns, copyRes);
         copyBlock.addInstr(instr);
         return instr;
     }

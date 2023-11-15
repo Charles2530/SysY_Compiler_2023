@@ -51,7 +51,8 @@ public class AllocaInstr extends Instr {
     @Override
     public Value copy(FunctionClone functionClone) {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
-        Instr instr = new AllocaInstr(this.getName(), this.type);
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
+        Instr instr = new AllocaInstr(this.getName() + suffix, this.type);
         copyBlock.addInstr(instr);
         return instr;
     }

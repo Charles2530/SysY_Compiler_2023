@@ -71,10 +71,11 @@ public class GetEleInstr extends Instr {
     /*TODO:bug maybe*/
     @Override
     public Value copy(FunctionClone functionClone) {
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyPtr = functionClone.getValue(this.getOperands().get(0));
         Value copyOff = functionClone.getValue(this.getOperands().get(1));
-        Instr instr = new GetEleInstr(this.getName(), copyPtr, copyOff);
+        Instr instr = new GetEleInstr(this.getName() + suffix, copyPtr, copyOff);
         copyBlock.addInstr(instr);
         return instr;
     }

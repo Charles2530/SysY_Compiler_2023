@@ -109,13 +109,14 @@ public class CallInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         ArrayList<Value> copyParamList = new ArrayList<>();
         for (int i = 1; i < this.getOperands().size(); i++) {
             copyParamList.add(functionClone.getValue(this.getOperands().get(i)));
         }
         Function copyTarget = (Function) functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new CallInstr(this.getName(), copyTarget, copyParamList);
+        Instr instr = new CallInstr(this.getName() + suffix, copyTarget, copyParamList);
         copyBlock.addInstr(instr);
         return instr;
     }

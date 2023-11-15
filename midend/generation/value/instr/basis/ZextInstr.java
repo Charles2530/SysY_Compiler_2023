@@ -44,9 +44,10 @@ public class ZextInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyVal = functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new ZextInstr(this.getName(),
+        Instr instr = new ZextInstr(this.getName() + suffix,
                 this.getInstrType(), copyVal, this.target);
         copyBlock.addInstr(instr);
         return instr;

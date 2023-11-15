@@ -101,10 +101,11 @@ public class CalcInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyOperand1 = functionClone.getValue(operands.get(0));
         Value copyOperand2 = functionClone.getValue(operands.get(1));
-        Instr instr = new CalcInstr(name, instrType, copyOperand1, copyOperand2);
+        Instr instr = new CalcInstr(name + suffix, instrType, copyOperand1, copyOperand2);
         copyBlock.addInstr(instr);
         return instr;
     }

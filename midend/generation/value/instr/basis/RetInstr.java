@@ -18,18 +18,16 @@ import midend.simplify.controller.datastruct.FunctionClone;
  * ret void
  */
 public class RetInstr extends Instr {
-    private final Value retValue;
 
     public RetInstr(Value retValue) {
         super(new VarType(0), "RetInstr", "ret");
-        this.retValue = retValue;
         if (retValue != null) {
             addOperand(retValue);
         }
     }
 
     public Value getRetValue() {
-        return retValue;
+        return operands.get(0);
     }
 
     @Override

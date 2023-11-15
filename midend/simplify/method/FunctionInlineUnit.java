@@ -1,5 +1,6 @@
 package midend.simplify.method;
 
+import iostream.structure.DebugDetailController;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;
@@ -57,13 +58,20 @@ public class FunctionInlineUnit {
     private static void init() {
         FunctionInlineUnit.fixedPoint = false;
         FunctionInlineUnit.isInlineAble = true;
+        FunctionInlineUnit.reset();
+        FunctionInlineUnit.inlineFunctionsList = new ArrayList<>();
+    }
+
+    /**
+     * reset 方法用于重置函数调用图,便于重新构建
+     */
+    private static void reset() {
         FunctionInlineUnit.callers = new HashMap<>();
         FunctionInlineUnit.responses = new HashMap<>();
         for (Function function : module.getFunctions()) {
             FunctionInlineUnit.callers.put(function, new ArrayList<>());
             FunctionInlineUnit.responses.put(function, new ArrayList<>());
         }
-        FunctionInlineUnit.inlineFunctionsList = new ArrayList<>();
     }
 
     /**
@@ -78,7 +86,9 @@ public class FunctionInlineUnit {
      */
     private static void inlineAnalysis() {
         FunctionInlineUnit.fixedPoint = true;
+        int iterations = 0;
         while (FunctionInlineUnit.fixedPoint) {
+            iterations++;
             FunctionInlineUnit.fixedPoint = false;
             FunctionInlineUnit.buildFuncCallGraph();
             module.getFunctions().forEach(Function::dfsCaller);
@@ -86,6 +96,7 @@ public class FunctionInlineUnit {
             FunctionInlineUnit.inlineFunctionsList.clear();
             FunctionInlineUnit.buildFuncCallGraph();
             FunctionInlineUnit.removeUselessFunction();
+            DebugDetailController.printInlineFunctionResult(iterations);
         }
     }
 
@@ -93,20 +104,8 @@ public class FunctionInlineUnit {
      * buildFuncCallGraph 方法用于建立函数调用图
      */
     private static void buildFuncCallGraph() {
-        FunctionInlineUnit.clear();
+        FunctionInlineUnit.reset();
         module.getFunctions().forEach(Function::buildFuncCallGraph);
-    }
-
-    /**
-     * clear 方法用于清空函数调用图,便于重新构建
-     */
-    private static void clear() {
-        FunctionInlineUnit.callers = new HashMap<>();
-        FunctionInlineUnit.responses = new HashMap<>();
-        for (Function function : module.getFunctions()) {
-            FunctionInlineUnit.callers.put(function, new ArrayList<>());
-            FunctionInlineUnit.responses.put(function, new ArrayList<>());
-        }
     }
 
     /**
@@ -229,14 +228,17 @@ public class FunctionInlineUnit {
         basicBlock.addInstr(toFunc);
         //toFunc.getBelongingBlock().getInstrArrayList().removeIf(instr -> instr.equals(toFunc));
         ArrayList<RetInstr> retList = new ArrayList<>();
+        int cnt = 0;
         for (BasicBlock block : copyFunc.getBasicBlocks()) {
             for (Instr instr : block.getInstrArrayList()) {
                 if (instr instanceof RetInstr retInstr) {
                     retList.add(retInstr);
+                    cnt++;
                 }
             }
         }
-        FunctionInlineUnit.dealWithRetValue(retList, inlineBlock, response.getReturnType());
+        FunctionInlineUnit.dealWithRetValue(
+                callInstr, retList, inlineBlock, response.getReturnType(),cnt);
         Iterator<BasicBlock> iterator = copyFunc.getBasicBlocks().iterator();
         while (iterator.hasNext()) {
             BasicBlock block = iterator.next();
@@ -255,17 +257,19 @@ public class FunctionInlineUnit {
      * 如果返回值是int32，则将所有的RetInstr的返回值替换成phi指令
      * 如果返回值是void，则直接删除所有的RetInstr
      */
+    /*TODO: phi have bug*/
     private static void dealWithRetValue(
-            ArrayList<RetInstr> retList, BasicBlock inlineBlock, IrType returnType) {
+            CallInstr callInstr, ArrayList<RetInstr> retList,
+            BasicBlock inlineBlock, IrType returnType, int cnt) {
         if (returnType.isInt32()) {
             PhiInstr phiInstr = new PhiInstr(
                     IrNameController.getLocalVarName(inlineBlock.getBelongingFunc()),
-                    inlineBlock.getBlockIndBasicBlock());
+                    inlineBlock.getBlockIndBasicBlock(),cnt);
+            inlineBlock.addInstr(phiInstr, 0);
             for (RetInstr retInstr : retList) {
-                phiInstr.getOperands().add(retInstr.getRetValue());
-                phiInstr.getIndBasicBlock().add(retInstr.getBelongingBlock());
+                phiInstr.inlineReturnValue(retInstr.getRetValue(), retInstr.getBelongingBlock());
                 retInstr.getBelongingBlock().getBlockOutBasicBlock().remove(inlineBlock);
-                inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
+                //inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
                 JumpInstr jumpInstr = new JumpInstr(inlineBlock);
                 retInstr.getBelongingBlock().insertInstr(
                         retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr),
@@ -273,6 +277,7 @@ public class FunctionInlineUnit {
                 retInstr.dropOperands();
                 retInstr.getBelongingBlock().getInstrArrayList().remove(retInstr);
             }
+            callInstr.replaceAllUse(phiInstr);
         } else if (returnType.isVoid()) {
             for (RetInstr retInstr : retList) {
                 retInstr.getBelongingBlock().getBlockOutBasicBlock().remove(inlineBlock);

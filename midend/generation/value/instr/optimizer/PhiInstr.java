@@ -24,6 +24,9 @@ public class PhiInstr extends Instr {
         this.indBasicBlock = indBasicBlock;
         int size = (cnt.length == 0) ? indBasicBlock.size() : cnt[0];
         addOperand(null, size);
+        while (indBasicBlock.size() < size) {
+            indBasicBlock.add(null);
+        }
     }
 
     public ArrayList<BasicBlock> getIndBasicBlock() {
@@ -84,20 +87,42 @@ public class PhiInstr extends Instr {
      *
      * @param flag 用于判断是否需要消除非指令的PhiInstr
      */
-    public void reducePhi(boolean flag) {
+    public boolean reducePhi(boolean flag) {
         if (!getUseDefChain().isEmpty()) {
             Value val = operands.get(0);
             for (int i = 1; i < operands.size(); i++) {
                 if (operands.get(i) != val) {
-                    return;
+                    return false;
                 }
             }
             if (!flag && val instanceof Instr) {
-                return;
+                return false;
             }
             replaceAllUse(val);
         }
         dropOperands();
-        this.getBelongingBlock().getInstrArrayList().remove(this);
+        return true;
+    }
+
+    /**
+     * inlineReturnValue() 用于将返回值内联到PhiInstr中
+     * 主要用于函数内联
+     */
+    public void inlineReturnValue(Value retValue, BasicBlock belongingBlock) {
+        int mark;
+        for (mark = 0; mark < operands.size(); mark++) {
+            if (operands.get(mark) == null) {
+                break;
+            }
+        }
+        if (mark < operands.size()) {
+            operands.set(mark, retValue);
+            indBasicBlock.set(mark, belongingBlock);
+        } else {
+            operands.add(retValue);
+            indBasicBlock.add(belongingBlock);
+        }
+        retValue.addUseDefChain(this);
+        belongingBlock.addUseDefChain(this);
     }
 }

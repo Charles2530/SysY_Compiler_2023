@@ -8,6 +8,9 @@ import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
 import midend.generation.utils.irtype.VarType;
 import iostream.structure.IoStreamGeneration;
+import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 /**
  * GetIntDeclare 是从控制台读取一个整数的声明
@@ -39,5 +42,15 @@ public class GetIntDeclare extends IoStreamGeneration {
         } else {
             RegisterUtils.reAllocReg(this, Register.V0);
         }
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        GetIntDeclare getIntDeclare =
+                new GetIntDeclare(this.getName() + suffix, this.getInstrType());
+        copyBlock.addInstr(getIntDeclare);
+        return getIntDeclare;
     }
 }

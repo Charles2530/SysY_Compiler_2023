@@ -40,9 +40,10 @@ public class LoadInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
+        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyPtr = functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new LoadInstr(this.getName(), copyPtr);
+        Instr instr = new LoadInstr(this.getName() + suffix, copyPtr);
         copyBlock.addInstr(instr);
         return instr;
     }

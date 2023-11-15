@@ -40,14 +40,12 @@ public class Function extends User {
      * params 是该 Function 的参数集合
      * registerHashMap 是该 Function 的寄存器映射表
      * isImproved 是该 Function 是否可以进行 GVN 优化
-     * isBuildIn 是该 Function 是否是内建函数
      */
     private final IrType returnType;
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
     private HashMap<Value, Register> registerHashMap;
     private Boolean isImproved;
-    private boolean isBuildIn;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
@@ -56,18 +54,9 @@ public class Function extends User {
         this.params = new ArrayList<>();
         this.registerHashMap = null;
         this.isImproved = null;
-        this.isBuildIn = false;
         if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addFunction(this);
         }
-    }
-
-    public boolean isBuildIn() {
-        return isBuildIn;
-    }
-
-    public void setBuildIn(boolean buildIn) {
-        isBuildIn = buildIn;
     }
 
     public IrType getReturnType() {
@@ -300,9 +289,7 @@ public class Function extends User {
      * 主要用于函数内联
      */
     public void buildFuncCallGraph() {
-        if (!this.isBuildIn()) {
-            basicBlocks.forEach(BasicBlock::buildFuncCallGraph);
-        }
+        basicBlocks.forEach(BasicBlock::buildFuncCallGraph);
     }
 
     /**
@@ -311,14 +298,9 @@ public class Function extends User {
      */
     public void dfsCaller() {
         FunctionInlineUnit.setInlineAble(true);
-        if (!this.isBuildIn() && !this.getName().equals("@main")) {
-            for (Function response : FunctionInlineUnit.getCaller(this)) {
-                if (!response.isBuildIn()) {
-                    FunctionInlineUnit.setInlineAble(false);
-                    break;
-                }
-            }
-            if (FunctionInlineUnit.hasRecursion(this)) {
+        if (!this.getName().equals("@main")) {
+            if (!FunctionInlineUnit.getCaller(this).isEmpty() ||
+                    FunctionInlineUnit.hasRecursion(this)) {
                 FunctionInlineUnit.setInlineAble(false);
             }
             if (FunctionInlineUnit.isInlineAble()) {
@@ -364,10 +346,7 @@ public class Function extends User {
      * 主要用于无用函数删除
      */
     public boolean removeUselessFunction() {
-        if (!this.isBuildIn()) {
-            return FunctionInlineUnit.getResponse(this).isEmpty() &&
-                    !this.getName().equals("@main");
-        }
-        return false;
+        return FunctionInlineUnit.getResponse(this).isEmpty() &&
+                !this.getName().equals("@main");
     }
 }

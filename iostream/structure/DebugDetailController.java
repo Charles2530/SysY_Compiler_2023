@@ -1,6 +1,7 @@
 package iostream.structure;
 
 import backend.generation.mips.Register;
+import midend.generation.GenerationMain;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Function;
@@ -161,5 +162,17 @@ public class DebugDetailController {
         for (Value value : paramList) {
             printDebugDetail("      " + value.getName() + " ==> " + registerHashMap.get(value));
         }
+    }
+
+    /**
+     * printInlineFunctionResult 是一个用于输出内联函数的结果的函数
+     *
+     * @param iterations 表示内联的迭代次数
+     */
+    public static void printInlineFunctionResult(int iterations) {
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        printDebugDetail("Inline Function Result:");
+        printDebugDetail("  Iterations: " + iterations);
+        printDebugDetail(GenerationMain.getModule().toString());
     }
 }

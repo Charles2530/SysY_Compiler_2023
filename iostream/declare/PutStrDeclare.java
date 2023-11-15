@@ -5,8 +5,11 @@ import backend.generation.mips.asm.textsegment.complex.LaAsm;
 import backend.generation.mips.asm.textsegment.complex.LiAsm;
 import backend.generation.mips.asm.textsegment.mipsinstr.SyscallAsm;
 import midend.generation.utils.irtype.VarType;
+import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.FormatString;
 import iostream.structure.IoStreamGeneration;
+import midend.simplify.controller.datastruct.FunctionClone;
 
 /**
  * PutStrDeclare 是向控制台输出一个字符串的声明
@@ -39,5 +42,13 @@ public class PutStrDeclare extends IoStreamGeneration {
         new LaAsm(Register.A0, str.getName().substring(1));
         new LiAsm(Register.V0, 4);
         new SyscallAsm();
+    }
+
+    @Override
+    public Value copy(FunctionClone functionClone) {
+        BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
+        PutStrDeclare putStrDeclare = new PutStrDeclare(this.str);
+        copyBlock.addInstr(putStrDeclare);
+        return putStrDeclare;
     }
 }

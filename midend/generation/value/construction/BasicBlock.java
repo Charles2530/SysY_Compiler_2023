@@ -23,6 +23,7 @@ import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * BasicBlock 是 LLVM IR 中的基本块成分，
@@ -51,8 +52,12 @@ public class BasicBlock extends Value {
     /**
      * addInstr 方法用于向该 BasicBlock 中添加指令，并且设置该指令所属的基本块
      */
-    public void addInstr(Instr instr) {
-        instrArrayList.add(instr);
+    public void addInstr(Instr instr, Integer... idx) {
+        if (idx.length == 1) {
+            instrArrayList.add(idx[0], instr);
+        } else {
+            instrArrayList.add(instr);
+        }
         instr.setBelongingBlock(this);
     }
 
@@ -327,11 +332,15 @@ public class BasicBlock extends Value {
      * 主要是在 Mem2Reg 优化中使用，去除冗余的Phi指令
      */
     public void reducePhi(boolean flag) {
-        instrArrayList.forEach(instr -> {
+        Iterator<Instr> iterator = instrArrayList.iterator();
+        while (iterator.hasNext()) {
+            Instr instr = iterator.next();
             if (instr instanceof PhiInstr phiInstr) {
-                phiInstr.reducePhi(flag);
+                if (phiInstr.reducePhi(flag)) {
+                    iterator.remove();
+                }
             }
-        });
+        }
     }
 }
 
