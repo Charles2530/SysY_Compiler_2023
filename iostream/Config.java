@@ -68,6 +68,7 @@ public class Config {
 
     /**
      * 编译器初始化程序设置，定义文件输出路径
+     * 及优化器初始化设置
      */
     public static void compilerInit() throws IOException {
         Config.initSettings();
@@ -83,10 +84,11 @@ public class Config {
                 new FileWriter("output.txt", false)) : null);
         Config.setParserOutputStream(Config.isIsParserOutput() ? new BufferedWriter(
                 new FileWriter("output.txt", false)) : null);
-        Config.setGenerationOutputStream(Config.isGenerationMode() ? new BufferedWriter(
+        Config.setGenerationOutputStream(Config.isIsGenerationOutput() ? new BufferedWriter(
                 new FileWriter("llvm_ir.txt", false)) : null);
-        Config.setGenerationOptimizerOutputStream(Config.isGenerationMode() ? new BufferedWriter(
-                new FileWriter("llvm_ir.txt", false)) : null);
+        Config.setGenerationOptimizerOutputStream(
+                Config.isIsGenerationOptimizerOutput() ? new BufferedWriter(
+                        new FileWriter("llvm_ir.txt", false)) : null);
         Config.setAssemblyOutputStream(Config.isIsAssemblyOutput() ? new BufferedWriter(
                 new FileWriter("mips.txt", false)) : null);
         Config.setDebugDetailOutputStream(Config.isIsDebugDetailOutput() ? new BufferedWriter(
@@ -105,8 +107,8 @@ public class Config {
         OutputController.setBufferedAssemblyWriter(Config.getAssemblyOutputStream());
         OutputController.setLexerOutput(Config.isIsLexerOutput());
         OutputController.setParserOutput(Config.isIsParserOutput());
-        OutputController.setGenerationOutput(Config.isGenerationMode());
-        OutputController.setGenerationOptimizerOutput(Config.isGenerationMode());
+        OutputController.setGenerationOutput(Config.isIsGenerationOutput());
+        OutputController.setGenerationOptimizerOutput(Config.isIsGenerationOptimizerOutput());
         OutputController.setAssemblyOutput(Config.isIsAssemblyOutput());
         // 具体信息输出初始化
         DebugDetailController.setBufferedWriter(Config.getDebugDetailOutputStream());
@@ -128,10 +130,10 @@ public class Config {
         if (Config.isIsParserOutput()) {
             Config.getParserOutputStream().close();
         }
-        if (Config.isGenerationMode()) {
+        if (Config.isIsGenerationOutput()) {
             Config.getGenerationOutputStream().close();
         }
-        if (Config.isGenerationMode()) {
+        if (Config.isIsGenerationOptimizerOutput()) {
             Config.getGenerationOptimizerOutputStream().close();
         }
         if (Config.isIsAssemblyOutput()) {
