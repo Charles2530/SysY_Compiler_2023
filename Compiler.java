@@ -31,7 +31,7 @@ public class Compiler {
     private static boolean IsGenerationOutput = false;
     private static boolean IsOptimize = true;
     private static boolean IsGenerationOptimizerOutput = !IsGenerationOutput;
-    private static boolean IsAssemblyOutput = true;
+    private static boolean IsAssemblyOutput = false;
     private static boolean IsDebugDetailOutput = true;
     private static BufferedReader fileInputStream = null;
     private static BufferedWriter errorOutputStream = null;
@@ -76,14 +76,18 @@ public class Compiler {
                 // 重新生成中间代码
                 OutputController.generationOptimizerPrint(GenerationMain.getModule().toString());
                 // 后端优化
-                BackEndOptimizerUnit backEndOptimizerUnit =
-                        new BackEndOptimizerUnit(GenerationMain.getModule());
-                backEndOptimizerUnit.optimize();
+                if (IsAssemblyOutput) {
+                    BackEndOptimizerUnit backEndOptimizerUnit =
+                            new BackEndOptimizerUnit(GenerationMain.getModule());
+                    backEndOptimizerUnit.optimize();
+                }
             }
             // 生成汇编代码
-            AssemblyGeneration assemblyGeneration =
-                    new AssemblyGeneration(GenerationMain.getModule());
-            assemblyGeneration.generate();
+            if (IsAssemblyOutput) {
+                AssemblyGeneration assemblyGeneration =
+                        new AssemblyGeneration(GenerationMain.getModule());
+                assemblyGeneration.generate();
+            }
         }
         compilerEnd();
     }

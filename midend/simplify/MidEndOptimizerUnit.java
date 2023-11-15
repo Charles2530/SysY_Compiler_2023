@@ -23,9 +23,9 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
      */
     private final Module module;
     private final boolean isMem2Reg = true;
-    private final boolean isFunctionInline = false;
-    private final boolean isGlobalVariableNumbering = true;
-    private final boolean isDeadCodeElimination = true;
+    private final boolean isFunctionInline = true;
+    private final boolean isGlobalVariableNumbering = false;
+    private final boolean isDeadCodeElimination = false;
 
     public MidEndOptimizerUnit(Module module) {
         this.module = module;

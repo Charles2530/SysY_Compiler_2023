@@ -19,6 +19,7 @@ import midend.simplify.controller.datastruct.Use;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * FunctionInlineUnit 是函数内联单元，
@@ -91,9 +92,20 @@ public class FunctionInlineUnit {
      * buildFuncCallGraph 方法用于建立函数调用图
      */
     private static void buildFuncCallGraph() {
-        FunctionInlineUnit.callers.clear();
-        FunctionInlineUnit.responses.clear();
+        FunctionInlineUnit.clear();
         module.getFunctions().forEach(Function::buildFuncCallGraph);
+    }
+
+    /**
+     * clear 方法用于清空函数调用图,便于重新构建
+     */
+    private static void clear() {
+        FunctionInlineUnit.callers = new HashMap<>();
+        FunctionInlineUnit.responses = new HashMap<>();
+        for (Function function : module.getFunctions()) {
+            FunctionInlineUnit.callers.put(function, new ArrayList<>());
+            FunctionInlineUnit.responses.put(function, new ArrayList<>());
+        }
     }
 
     /**
@@ -148,7 +160,7 @@ public class FunctionInlineUnit {
      * removeUselessFunction 方法用于删除无用函数
      */
     private static void removeUselessFunction() {
-        module.getFunctions().forEach(Function::removeUselessFunction);
+        module.getFunctions().removeIf(Function::removeUselessFunction);
     }
 
     /**

@@ -331,6 +331,8 @@ public class Function extends User {
     /**
      * inlineFunction 方法用于在该 Function 中的所有基本块中进行函数内联，
      * 主要用于函数内联
+     * 该函数的执行逻辑如下：
+     * 1.通过遍历，获得所有调用 inlineFunc 的 callInstr
      */
     public void inlineFunction() {
         ArrayList<CallInstr> callList = new ArrayList<>();
@@ -340,7 +342,7 @@ public class Function extends User {
                 for (BasicBlock basicBlock : target.getBasicBlocks()) {
                     for (Instr instr : basicBlock.getInstrArrayList()) {
                         if (instr instanceof CallInstr callInstr) {
-                            if (callInstr.getBelongingBlock().getBelongingFunc().equals(target)) {
+                            if (callInstr.getTarget().equals(target)) {
                                 callList.add(callInstr);
                             }
                         }
@@ -360,12 +362,11 @@ public class Function extends User {
      * removeUselessFunction 方法用于在该 Function 中的所有基本块中进行无用函数删除，
      * 主要用于无用函数删除
      */
-    public void removeUselessFunction() {
+    public boolean removeUselessFunction() {
         if (!this.isBuildIn()) {
-            if (FunctionInlineUnit.getResponse(this).isEmpty() &&
-                    !this.getName().equals("@main")) {
-                GenerationMain.getModule().getFunctions().remove(this);
-            }
+            return FunctionInlineUnit.getResponse(this).isEmpty() &&
+                    !this.getName().equals("@main");
         }
+        return false;
     }
 }

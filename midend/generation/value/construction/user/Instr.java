@@ -141,7 +141,7 @@ public class Instr extends User {
      */
     public void buildFuncCallGraph() {
         if (this instanceof CallInstr callInstr) {
-            Function response = callInstr.getBelongingBlock().getBelongingFunc();
+            Function response = callInstr.getTarget();
             Function curFunc = this.getBelongingBlock().getBelongingFunc();
             if (!curFunc.isBuildIn()) {
                 if (!FunctionInlineUnit.getCaller(curFunc).contains(response)) {
