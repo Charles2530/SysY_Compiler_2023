@@ -2,7 +2,7 @@ package backend.generation;
 
 import backend.generation.utils.AssemblyData;
 import backend.generation.utils.AssemblyUnit;
-import iostream.OutputController;
+import iostream.structure.OutputController;
 import midend.generation.value.construction.Module;
 
 /**

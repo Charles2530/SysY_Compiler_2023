@@ -1,8 +1,7 @@
-package iostream;
+package iostream.structure;
 
 import frontend.generation.semantic.symtable.SymbolTable;
 import frontend.generation.syntax.AstRecursion;
-import iostream.structure.ErrorToken;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;

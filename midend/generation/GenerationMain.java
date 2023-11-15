@@ -1,10 +1,10 @@
 package midend.generation;
 
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.llvm.LLvmGenIR;
 import midend.generation.utils.IrNameController;
 import midend.generation.value.construction.Module;
-import iostream.OutputController;
+import iostream.structure.OutputController;
 import frontend.generation.semantic.symtable.SymbolTable;
 import frontend.generation.syntax.AstNode;
 

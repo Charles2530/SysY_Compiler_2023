@@ -1,7 +1,7 @@
 package frontend.generation.lexer;
 
-import iostream.ErrorController;
-import iostream.OutputController;
+import iostream.structure.ErrorController;
+import iostream.structure.OutputController;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@ import midend.simplify.controller.datastruct.FunctionClone;
 import midend.simplify.method.FunctionInlineUnit;
 import iostream.declare.GetIntDeclare;
 import iostream.structure.IoStreamGeneration;
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;

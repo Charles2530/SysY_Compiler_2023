@@ -1,6 +1,6 @@
 package frontend.generation.syntax.decl;
 
-import iostream.ErrorController;
+import iostream.structure.ErrorController;
 import frontend.generation.syntax.AstNode;
 import frontend.generation.syntax.utils.Definer;
 import frontend.generation.syntax.utils.Judge;

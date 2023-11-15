@@ -1,6 +1,6 @@
 package frontend.generation.lexer;
 
-import iostream.ErrorController;
+import iostream.structure.ErrorController;
 import iostream.structure.ErrorToken;
 
 import java.io.IOException;

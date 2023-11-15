@@ -1,7 +1,7 @@
 package midend.simplify;
 
 import midend.simplify.method.FunctionInlineUnit;
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.GenerationMain;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
@@ -22,10 +22,10 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
      * isDeadCodeElimination 是该 MidEndOptimizerUnit 的死代码消除优化开关
      */
     private final Module module;
-    private final boolean isMem2Reg = true;
-    private final boolean isFunctionInline = true;
-    private final boolean isGlobalVariableNumbering = false;
-    private final boolean isDeadCodeElimination = false;
+    private static boolean isMem2Reg;
+    private static boolean isFunctionInline;
+    private static boolean isGlobalVariableNumbering;
+    private static boolean isDeadCodeElimination;
 
     public MidEndOptimizerUnit(Module module) {
         this.module = module;
@@ -45,5 +45,21 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
         if (isDeadCodeElimination) {
             GenerationMain.getModule().getFunctions().forEach(Function::deadCodeElimination);
         }
+    }
+
+    public static void setMem2Reg(boolean mem2Reg) {
+        isMem2Reg = mem2Reg;
+    }
+
+    public static void setFunctionInline(boolean functionInline) {
+        isFunctionInline = functionInline;
+    }
+
+    public static void setGlobalVariableNumbering(boolean globalVariableNumbering) {
+        isGlobalVariableNumbering = globalVariableNumbering;
+    }
+
+    public static void setDeadCodeElimination(boolean deadCodeElimination) {
+        isDeadCodeElimination = deadCodeElimination;
     }
 }

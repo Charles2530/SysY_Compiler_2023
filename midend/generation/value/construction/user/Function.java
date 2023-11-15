@@ -8,7 +8,7 @@ import backend.generation.utils.RegisterUtils;
 import backend.simplify.BackEndOptimizerUnit;
 import backend.simplify.method.BasicBlockSortedUnit;
 import iostream.structure.DebugDetailController;
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.StructType;

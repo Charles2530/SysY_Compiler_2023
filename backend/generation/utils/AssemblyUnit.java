@@ -1,7 +1,7 @@
 package backend.generation.utils;
 
 import backend.generation.mips.Register;
-import iostream.ErrorController;
+import iostream.structure.ErrorController;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;
 

@@ -1,7 +1,7 @@
 package frontend.generation.syntax;
 
-import iostream.ErrorController;
-import iostream.OutputController;
+import iostream.structure.ErrorController;
+import iostream.structure.OutputController;
 import frontend.generation.lexer.SymToken;
 
 import java.io.IOException;

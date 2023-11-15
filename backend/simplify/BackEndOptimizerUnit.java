@@ -2,7 +2,7 @@ package backend.simplify;
 
 import backend.simplify.method.PhiEliminationUnit;
 import backend.simplify.method.RemoveContinuousBranchUnit;
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.GenerationMain;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
@@ -22,11 +22,11 @@ public class BackEndOptimizerUnit extends OptimizerUnit {
      * isBasicBlockSorted 是是否对基本块进行排序优化
      */
     private final Module module;
-    private final boolean isRemovePhi = true;
-    private static boolean isSpaceOptimizer = false;
-    private static boolean isRemoveContinuousBranch = true;
-    private static boolean isRemoveDeadCode = true;
-    private static boolean isBasicBlockSorted = false;
+    private static boolean isRemovePhi;
+    private static boolean isSpaceOptimizer;
+    private static boolean isRemoveContinuousBranch;
+    private static boolean isRemoveDeadCode;
+    private static boolean isBasicBlockSorted;
 
     public BackEndOptimizerUnit(Module module) {
         this.module = module;
@@ -51,5 +51,25 @@ public class BackEndOptimizerUnit extends OptimizerUnit {
         if (isRemoveDeadCode) {
             GenerationMain.getModule().getFunctions().forEach(Function::deadCodeElimination);
         }
+    }
+
+    public static void setIsRemovePhi(boolean isRemovePhi) {
+        BackEndOptimizerUnit.isRemovePhi = isRemovePhi;
+    }
+
+    public static void setIsSpaceOptimizer(boolean isSpaceOptimizer) {
+        BackEndOptimizerUnit.isSpaceOptimizer = isSpaceOptimizer;
+    }
+
+    public static void setIsRemoveContinuousBranch(boolean isRemoveContinuousBranch) {
+        BackEndOptimizerUnit.isRemoveContinuousBranch = isRemoveContinuousBranch;
+    }
+
+    public static void setIsRemoveDeadCode(boolean isRemoveDeadCode) {
+        BackEndOptimizerUnit.isRemoveDeadCode = isRemoveDeadCode;
+    }
+
+    public static void setIsBasicBlockSorted(boolean isBasicBlockSorted) {
+        BackEndOptimizerUnit.isBasicBlockSorted = isBasicBlockSorted;
     }
 }

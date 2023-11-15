@@ -1,6 +1,6 @@
 package frontend.generation.semantic;
 
-import iostream.ErrorController;
+import iostream.structure.ErrorController;
 import frontend.generation.semantic.symtable.SymbolTable;
 import frontend.generation.semantic.utils.SymChecker;
 import frontend.generation.syntax.AstNode;

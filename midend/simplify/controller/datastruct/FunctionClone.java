@@ -40,14 +40,12 @@ public class FunctionClone {
         this.clear();
         Function copyFunction = new Function(
                 response.getName() + "_Inline", response.getReturnType());
+        ControlFlowGraph.addFunctionIndBasicBlock(copyFunction, new HashMap<>());
+        ControlFlowGraph.addFunctionOutBasicBlock(copyFunction, new HashMap<>());
         for (int i = 0; i < response.getParams().size(); i++) {
             Param param = new Param(
                     response.getParams().get(i).getType(), response.getParams().get(i).getName());
             copyFunction.addParam(param);
-        }
-        ControlFlowGraph.addFunctionIndBasicBlock(copyFunction, new HashMap<>());
-        ControlFlowGraph.addFunctionOutBasicBlock(copyFunction, new HashMap<>());
-        for (int i = 0; i < response.getParams().size(); i++) {
             this.putValue(response.getParams().get(i), copyFunction.getParams().get(i));
         }
         for (BasicBlock basicBlock : response.getBasicBlocks()) {

@@ -1,6 +1,6 @@
 package midend.generation.value.construction;
 
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;

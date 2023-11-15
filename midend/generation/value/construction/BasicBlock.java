@@ -3,7 +3,7 @@ package midend.generation.value.construction;
 import backend.generation.mips.asm.textsegment.structure.Label;
 import backend.simplify.method.PhiEliminationUnit;
 import iostream.structure.IoStreamGeneration;
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.StructType;

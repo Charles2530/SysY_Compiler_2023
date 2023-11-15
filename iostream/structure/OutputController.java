@@ -1,4 +1,4 @@
-package iostream;
+package iostream.structure;
 
 import backend.generation.utils.AssemblyData;
 import frontend.generation.lexer.SymToken;

@@ -1,6 +1,6 @@
 package frontend.simplify;
 
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.value.construction.Module;
 
 /**

@@ -1,7 +1,7 @@
 package midend.generation.value.construction;
 
 import backend.generation.mips.asm.datasegment.AsciizAsm;
-import iostream.structure.OptimizerUnit;
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
