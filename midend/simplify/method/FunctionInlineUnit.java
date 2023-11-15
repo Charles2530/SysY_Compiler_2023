@@ -238,7 +238,7 @@ public class FunctionInlineUnit {
             }
         }
         FunctionInlineUnit.dealWithRetValue(
-                callInstr, retList, inlineBlock, response.getReturnType(),cnt);
+                callInstr, retList, inlineBlock, response.getReturnType(), cnt);
         Iterator<BasicBlock> iterator = copyFunc.getBasicBlocks().iterator();
         while (iterator.hasNext()) {
             BasicBlock block = iterator.next();
@@ -257,19 +257,18 @@ public class FunctionInlineUnit {
      * 如果返回值是int32，则将所有的RetInstr的返回值替换成phi指令
      * 如果返回值是void，则直接删除所有的RetInstr
      */
-    /*TODO: phi have bug*/
     private static void dealWithRetValue(
             CallInstr callInstr, ArrayList<RetInstr> retList,
             BasicBlock inlineBlock, IrType returnType, int cnt) {
         if (returnType.isInt32()) {
             PhiInstr phiInstr = new PhiInstr(
                     IrNameController.getLocalVarName(inlineBlock.getBelongingFunc()),
-                    inlineBlock.getBlockIndBasicBlock(),cnt);
+                    inlineBlock.getBlockIndBasicBlock(), cnt);
             inlineBlock.addInstr(phiInstr, 0);
             for (RetInstr retInstr : retList) {
                 phiInstr.inlineReturnValue(retInstr.getRetValue(), retInstr.getBelongingBlock());
                 retInstr.getBelongingBlock().getBlockOutBasicBlock().remove(inlineBlock);
-                //inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
+                inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
                 JumpInstr jumpInstr = new JumpInstr(inlineBlock);
                 retInstr.getBelongingBlock().insertInstr(
                         retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr),

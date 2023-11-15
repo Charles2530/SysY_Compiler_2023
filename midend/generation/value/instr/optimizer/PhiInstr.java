@@ -21,16 +21,12 @@ public class PhiInstr extends Instr {
 
     public PhiInstr(String name, ArrayList<BasicBlock> indBasicBlock, int... cnt) {
         super(new VarType(32), name, "phi");
-        this.indBasicBlock = indBasicBlock;
-        int size = (cnt.length == 0) ? indBasicBlock.size() : cnt[0];
+        this.indBasicBlock = new ArrayList<>(indBasicBlock);
+        int size = (cnt.length == 0) ? this.indBasicBlock.size() : cnt[0];
         addOperand(null, size);
-        while (indBasicBlock.size() < size) {
-            indBasicBlock.add(null);
+        while (this.indBasicBlock.size() < size) {
+            this.indBasicBlock.add(null);
         }
-    }
-
-    public ArrayList<BasicBlock> getIndBasicBlock() {
-        return indBasicBlock;
     }
 
     @Override
