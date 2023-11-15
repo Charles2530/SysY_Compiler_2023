@@ -31,10 +31,6 @@ public class Loop {
         this.followBlock = followBlock;
     }
 
-    public AstNode getForStmtVal1() {
-        return forStmtVal1;
-    }
-
     public BasicBlock getCondBlock() {
         return condBlock;
     }

@@ -19,12 +19,13 @@ public class JumpInstr extends Instr {
      * 主要用于后端代码优化时去除连接块的不必要跳转语句
      */
     private BasicBlock target;
-    private boolean isAssemblerReduce = false;
+    private boolean isAssemblerReduce;
 
     public JumpInstr(BasicBlock target) {
         super(new VarType(0), "JumpInstr", "jump");
         addOperand(target);
         this.target = target;
+        this.isAssemblerReduce = false;
     }
 
     public void setTarget(BasicBlock target) {

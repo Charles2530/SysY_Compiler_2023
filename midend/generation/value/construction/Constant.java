@@ -13,7 +13,7 @@ public class Constant extends Value {
      * isDefined 表示该 Constant 是否被定义,如果未被定义则为val会被初始化为0
      */
     private final int val;
-    private boolean isDefined;
+    private final boolean isDefined;
 
     public Constant(String num, IrType type, boolean... isDefined) {
         super(type, num);

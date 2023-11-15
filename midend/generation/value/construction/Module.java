@@ -88,7 +88,7 @@ public class Module extends Value {
         for (FormatString stringLiteral : stringLiterals) {
             stringLiteral.generateAssembly();
         }
-        new Comment("jump to main function");
+        new Comment("Jump to main Function");
         new JtypeAsm("jal", "main");
         new JtypeAsm("j", "end");
         for (Function function : functions) {

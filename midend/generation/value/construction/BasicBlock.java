@@ -40,7 +40,7 @@ public class BasicBlock extends Value {
     private boolean exist;
 
     public BasicBlock(String name) {
-        super(new StructType("basicblock"), name);
+        super(new StructType("basicBlock"), name);
         this.instrArrayList = new ArrayList<>();
         if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addBasicBlock(this);

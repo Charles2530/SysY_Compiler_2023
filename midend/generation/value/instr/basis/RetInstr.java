@@ -18,7 +18,7 @@ import midend.simplify.controller.datastruct.FunctionClone;
  * ret void
  */
 public class RetInstr extends Instr {
-    private Value retValue;
+    private final Value retValue;
 
     public RetInstr(Value retValue) {
         super(new VarType(0), "RetInstr", "ret");

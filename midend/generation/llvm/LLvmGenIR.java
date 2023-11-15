@@ -151,10 +151,11 @@ public class LLvmGenIR {
     private Value genIrVarDefChecker(AstNode rootAst) {
         IntSymbol intSymbol = (IntSymbol) semanticAnalysisChecker.createVarDefChecker(rootAst);
         SymbolTable.addSymbol(intSymbol);
-        Initial initial = intSymbol.getInitial();
         if (intSymbol.getSymbolLevel().equals(0)) {
-            GlobalVar globalVar = new GlobalVar(new PointerType(initial.getType()),
-                    IrNameController.getGlobalVarName(intSymbol.getSymbolName()), initial);
+            GlobalVar globalVar = new GlobalVar(
+                    new PointerType(intSymbol.getInitial().getType()),
+                    IrNameController.getGlobalVarName(
+                            intSymbol.getSymbolName()), intSymbol.getInitial());
             intSymbol.setValue(globalVar);
         } else {
             Instr instr;
@@ -197,32 +198,41 @@ public class LLvmGenIR {
         return null;
     }
 
+    /**
+     * genIrIfStmtChecker 主要处理if语句的生成LLVM IR中间代码的过程
+     * 这里如果childList的长度大于5，说明有else语句，需要生成对应的
+     * 条件跳转指令，否则直接生成对应的条件跳转指令即可
+     */
     private Value genIrIfStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
-        BasicBlock thenblock = new BasicBlock(IrNameController.getBlockName());
+        BasicBlock thenBlock = new BasicBlock(IrNameController.getBlockName());
         if (rootAst.getChildList().size() > 5) {
-            BasicBlock elseblock = new BasicBlock(IrNameController.getBlockName());
-            llvmGenUtils.genCondIr(rootAst.getChildList().get(2), thenblock, elseblock);
-            IrNameController.setCurrentBlock(thenblock);
+            BasicBlock elseBlock = new BasicBlock(IrNameController.getBlockName());
+            llvmGenUtils.genCondIr(rootAst.getChildList().get(2), thenBlock, elseBlock);
+            IrNameController.setCurrentBlock(thenBlock);
             genIrAnalysis(rootAst.getChildList().get(4));
-            BasicBlock followblock = new BasicBlock(IrNameController.getBlockName());
-            new JumpInstr(followblock);
-            IrNameController.setCurrentBlock(elseblock);
+            BasicBlock followBlock = new BasicBlock(IrNameController.getBlockName());
+            new JumpInstr(followBlock);
+            IrNameController.setCurrentBlock(elseBlock);
             genIrAnalysis(rootAst.getChildList().get(6));
-            new JumpInstr(followblock);
-            IrNameController.setCurrentBlock(followblock);
-            IrNameController.setCurrentBlock(followblock);
+            new JumpInstr(followBlock);
+            IrNameController.setCurrentBlock(followBlock);
         } else {
-            BasicBlock followblock = new BasicBlock(IrNameController.getBlockName());
-            llvmGenUtils.genCondIr(rootAst.getChildList().get(2), thenblock, followblock);
-            IrNameController.setCurrentBlock(thenblock);
+            BasicBlock followBlock = new BasicBlock(IrNameController.getBlockName());
+            llvmGenUtils.genCondIr(rootAst.getChildList().get(2), thenBlock, followBlock);
+            IrNameController.setCurrentBlock(thenBlock);
             genIrAnalysis(rootAst.getChildList().get(4));
-            new JumpInstr(followblock);
-            IrNameController.setCurrentBlock(followblock);
+            new JumpInstr(followBlock);
+            IrNameController.setCurrentBlock(followBlock);
         }
         return null;
     }
 
+    /**
+     * genIrForStmtChecker 主要处理for语句的生成LLVM IR中间代码的过程
+     * 这里由于forStmtVal1,CondAst和forStmtVal2均可能缺省，所以需要分多
+     * 种情况分类讨论
+     */
     private Value genIrForStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
         AstNode forStmtVal1 = null;
@@ -279,6 +289,10 @@ public class LLvmGenIR {
         return null;
     }
 
+    /**
+     * genIrContinueStmtChecker 主要处理continue语句的生成LLVM IR中间代码的过程
+     * 这里continue的跳转逻辑决定于Cond是否缺省
+     */
     private Value genIrContinueStmtChecker() {
         if (IrNameController.getCurrentLoop().getForStmtVal2() != null) {
             genIrAnalysis(IrNameController.getCurrentLoop().getForStmtVal2());
@@ -385,16 +399,19 @@ public class LLvmGenIR {
         } else {
             FuncSymbol funcSymbol = (FuncSymbol) SymbolTable.getSymByName(
                     rootAst.getChildList().get(0).getSymToken().getWord());
-            Function function = funcSymbol.getfunction();
-            ArrayList<Value> params = new ArrayList<>();
-            if (rootAst.getChildList().get(2).getGrammarType().equals("<FuncRParams>")) {
-                for (AstNode child : rootAst.getChildList().get(2).getChildList()) {
-                    if (child.getGrammarType().equals("<Exp>")) {
-                        params.add(genIrAnalysis(child));
+            if (funcSymbol != null) {
+                Function function = funcSymbol.getfunction();
+                ArrayList<Value> params = new ArrayList<>();
+                if (rootAst.getChildList().get(2).getGrammarType().equals("<FuncRParams>")) {
+                    for (AstNode child : rootAst.getChildList().get(2).getChildList()) {
+                        if (child.getGrammarType().equals("<Exp>")) {
+                            params.add(genIrAnalysis(child));
+                        }
                     }
                 }
+                ans = new CallInstr(IrNameController.getLocalVarName(), function, params);
+                return ans;
             }
-            ans = new CallInstr(IrNameController.getLocalVarName(), function, params);
             return ans;
         }
     }
@@ -519,8 +536,7 @@ public class LLvmGenIR {
                 funcSymbol.getSymbolName()), returnType);
         funcSymbol.setFunction(function);
         IrNameController.setCurrentFunc(function);
-        String blockName = IrNameController.getBlockName();
-        BasicBlock basicBlock = new BasicBlock(blockName);
+        BasicBlock basicBlock = new BasicBlock(IrNameController.getBlockName());
         IrNameController.setCurrentBlock(basicBlock);
         GenerationMain.preTraverse(rootAst);
         BasicBlock lastBlock = IrNameController.getCurrentBlock();

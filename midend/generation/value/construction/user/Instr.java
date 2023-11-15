@@ -143,7 +143,7 @@ public class Instr extends User {
         if (this instanceof CallInstr callInstr) {
             Function response = callInstr.getBelongingBlock().getBelongingFunc();
             Function curFunc = this.getBelongingBlock().getBelongingFunc();
-            if (!curFunc.isBuildin()) {
+            if (!curFunc.isBuildIn()) {
                 if (!FunctionInlineUnit.getCaller(curFunc).contains(response)) {
                     FunctionInlineUnit.addCaller(curFunc, response);
                 }

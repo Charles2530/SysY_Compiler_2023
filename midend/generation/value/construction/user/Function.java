@@ -41,14 +41,14 @@ public class Function extends User {
      * params 是该 Function 的参数集合
      * registerHashMap 是该 Function 的寄存器映射表
      * isImproved 是该 Function 是否可以进行 GVN 优化
-     * isBuildin 是该 Function 是否是内建函数
+     * isBuildIn 是该 Function 是否是内建函数
      */
     private final IrType returnType;
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
     private HashMap<Value, Register> registerHashMap;
     private Boolean isImproved;
-    private boolean isBuildin;
+    private boolean isBuildIn;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
@@ -57,18 +57,18 @@ public class Function extends User {
         this.params = new ArrayList<>();
         this.registerHashMap = null;
         this.isImproved = null;
-        this.isBuildin = false;
+        this.isBuildIn = false;
         if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addFunction(this);
         }
     }
 
-    public boolean isBuildin() {
-        return isBuildin;
+    public boolean isBuildIn() {
+        return isBuildIn;
     }
 
-    public void setBuildin(boolean buildin) {
-        isBuildin = buildin;
+    public void setBuildIn(boolean buildIn) {
+        isBuildIn = buildIn;
     }
 
     public IrType getReturnType() {
@@ -220,7 +220,7 @@ public class Function extends User {
     }
 
     /**
-     * uniqueInstr 方法用于在该 Function 中的所有基本块中进行指令唯一化，
+     * uniqueInstr 方法用于找出Block中可以优化的指令,
      * 主要用于 GVN 优化
      */
     public void uniqueInstr() {
@@ -287,8 +287,8 @@ public class Function extends User {
      * phiEliminate 方法用于在该 Function 中的所有基本块中进行 Phi 指令消除，
      * 主要用于 Phi 指令消除，便于后续转MIPS汇编
      * 这里消除Phi指令有两个步骤
-     * 1.将所有的phi指令删除，增加pcopy指令
-     * 2.将所有的pcopy指令删除，增加move指令
+     * 1.将所有的phi指令删除，增加ParallelCopy指令
+     * 2.将所有的ParallelCopy指令删除，增加move指令
      */
     public void phiEliminate() {
         ArrayList<BasicBlock> copy = new ArrayList<>(basicBlocks);
@@ -301,7 +301,7 @@ public class Function extends User {
      * 主要用于函数内联
      */
     public void buildFuncCallGraph() {
-        if (!this.isBuildin()) {
+        if (!this.isBuildIn()) {
             basicBlocks.forEach(BasicBlock::buildFuncCallGraph);
         }
     }
@@ -312,9 +312,9 @@ public class Function extends User {
      */
     public void dfsCaller() {
         FunctionInlineUnit.setInlineAble(true);
-        if (!this.isBuildin() && !this.getName().equals("@main")) {
+        if (!this.isBuildIn() && !this.getName().equals("@main")) {
             for (Function response : FunctionInlineUnit.getCaller(this)) {
-                if (!response.isBuildin()) {
+                if (!response.isBuildIn()) {
                     FunctionInlineUnit.setInlineAble(false);
                     break;
                 }
@@ -325,7 +325,6 @@ public class Function extends User {
             if (FunctionInlineUnit.isInlineAble()) {
                 FunctionInlineUnit.addInlineFunction(this);
             }
-
         }
     }
 
@@ -362,7 +361,7 @@ public class Function extends User {
      * 主要用于无用函数删除
      */
     public void removeUselessFunction() {
-        if (!this.isBuildin()) {
+        if (!this.isBuildIn()) {
             if (FunctionInlineUnit.getResponse(this).isEmpty() &&
                     !this.getName().equals("@main")) {
                 GenerationMain.getModule().getFunctions().remove(this);

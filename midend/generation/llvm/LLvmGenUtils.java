@@ -2,6 +2,7 @@ package midend.generation.llvm;
 
 import frontend.generation.semantic.symtable.Symbol;
 import frontend.generation.semantic.symtable.SymbolTable;
+import frontend.generation.semantic.symtable.symbol.VarSymbol;
 import frontend.generation.semantic.symtable.symbol.varsymbol.ConstSymbol;
 import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
 import frontend.generation.syntax.AstNode;
@@ -91,20 +92,23 @@ public class LLvmGenUtils {
         }
         IntSymbol intSymbol = (IntSymbol) SymbolTable.getSymByName(rootAst.getChildList()
                 .get(0).getSymToken().getWord());
-        Integer dim = intSymbol.getDim();
-        ArrayList<Integer> space = intSymbol.getSpace();
-        if (dim.equals(0)) {
-            return intSymbol.getValue();
-        } else if (dim.equals(1)) {
-            return new GetEleInstr(IrNameController.getLocalVarName(),
-                    intSymbol.getValue(), values.get(0));
-        } else {
-            return new GetEleInstr(IrNameController.getLocalVarName(), intSymbol.getValue(),
-                    new CalcInstr(IrNameController.getLocalVarName(), "add",
-                            new CalcInstr(IrNameController.getLocalVarName(), "mul",
-                                    new Constant(String.valueOf(space.get(1)), new VarType(32)),
-                                    values.get(0)), values.get(1)));
+        if (intSymbol != null) {
+            Integer dim = intSymbol.getDim();
+            ArrayList<Integer> space = intSymbol.getSpace();
+            if (dim.equals(0)) {
+                return intSymbol.getValue();
+            } else if (dim.equals(1)) {
+                return new GetEleInstr(IrNameController.getLocalVarName(),
+                        intSymbol.getValue(), values.get(0));
+            } else {
+                return new GetEleInstr(IrNameController.getLocalVarName(), intSymbol.getValue(),
+                        new CalcInstr(IrNameController.getLocalVarName(), "add",
+                                new CalcInstr(IrNameController.getLocalVarName(), "mul",
+                                        new Constant(String.valueOf(space.get(1)), new VarType(32)),
+                                        values.get(0)), values.get(1)));
+            }
         }
+        return null;
     }
 
     public Value genLValIr(AstNode rootAst) {
@@ -116,27 +120,19 @@ public class LLvmGenUtils {
                 expNum++;
             }
         }
-        Symbol symbol = SymbolTable.getSymByName(
-                rootAst.getChildList().get(0).getSymToken().getWord());
-        return (symbol instanceof IntSymbol) ? genVarValueIr((IntSymbol) symbol, values, expNum) :
-                genConstValueIr((ConstSymbol) symbol, values, expNum);
-    }
-
-    private Value genConstValueIr(ConstSymbol constSymbol, ArrayList<Value> values, int expNum) {
-        return getSubValueIr(values, expNum, constSymbol.getDim(),
-                constSymbol.getSpace(), constSymbol.getValue());
-    }
-
-    private Value genVarValueIr(IntSymbol intSymbol, ArrayList<Value> values, int expNum) {
-        return getSubValueIr(values, expNum, intSymbol.getDim(),
-                intSymbol.getSpace(), intSymbol.getValue());
+        VarSymbol varSymbol = ((VarSymbol) SymbolTable.getSymByName(
+                rootAst.getChildList().get(0).getSymToken().getWord()));
+        return genVarSymbolValueIr(values, expNum, varSymbol.getDim(),
+                varSymbol.getSpace(), varSymbol.getValue());
     }
 
     /**
-     * genSubValueIr 用于数值对应的LLVM IR代码，提取了genVarValueIr和genConstValueIr的公共部分
+     * genVarSymbolValueIr 用于数值对应的LLVM IR代码，
+     * 提取了genIntValueIr和genConstValueIr的公共部分
+     * 形成了VarSymbol的一类处理方法
      */
-    private Value getSubValueIr(ArrayList<Value> values, int expNum,
-                                Integer dim, ArrayList<Integer> space, Value value) {
+    private Value genVarSymbolValueIr(ArrayList<Value> values, int expNum,
+                                      Integer dim, ArrayList<Integer> space, Value value) {
         if (dim.equals(0)) {
             return new LoadInstr(IrNameController.getLocalVarName(), value);
         } else if (dim.equals(1)) {
