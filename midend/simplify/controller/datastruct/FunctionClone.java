@@ -3,6 +3,7 @@ package midend.simplify.controller.datastruct;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Constant;
+import midend.generation.value.construction.Param;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.GlobalVar;
 import midend.generation.value.construction.user.Instr;
@@ -39,6 +40,13 @@ public class FunctionClone {
         this.clear();
         Function copyFunction = new Function(
                 response.getName() + "_COPY", response.getReturnType());
+        for (int i = 0; i < response.getParams().size(); i++) {
+            Param param = new Param(
+                    response.getParams().get(i).getType(), response.getParams().get(i).getName());
+            copyFunction.addParam(param);
+        }
+        ControlFlowGraph.addFunctionIndBasicBlock(copyFunction, new HashMap<>());
+        ControlFlowGraph.addFunctionOutBasicBlock(copyFunction, new HashMap<>());
         for (int i = 0; i < response.getParams().size(); i++) {
             this.putValue(response.getParams().get(i), copyFunction.getParams().get(i));
         }

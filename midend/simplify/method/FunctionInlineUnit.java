@@ -2,6 +2,7 @@ package midend.simplify.method;
 
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
+import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.Param;
@@ -19,6 +20,7 @@ import midend.simplify.controller.datastruct.Use;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * FunctionInlineUnit 是函数内联单元，
@@ -170,7 +172,7 @@ public class FunctionInlineUnit {
         BasicBlock basicBlock = callInstr.getBelongingBlock();
         Function function = basicBlock.getBelongingFunc();
         BasicBlock inlineBlock = new BasicBlock(IrNameController.getBlockName(function));
-        function.getBasicBlocks().add(function.getBasicBlocks().indexOf(basicBlock), inlineBlock);
+        function.addBasicBlock(inlineBlock, function.getBasicBlocks().indexOf(basicBlock) + 1);
         FunctionInlineUnit.splitBlock(callInstr, basicBlock, inlineBlock);
         FunctionInlineUnit.cloneBlock(callInstr, basicBlock, inlineBlock, response);
     }
@@ -185,7 +187,7 @@ public class FunctionInlineUnit {
         Function function = basicBlock.getBelongingFunc();
         for (int i = 0; i < copyFunc.getParams().size(); i++) {
             Param param = copyFunc.getParams().get(i);
-            Param callParam = (Param) callInstr.getOperands().get(i + 1);
+            Value callParam = callInstr.getOperands().get(i + 1);
             if (callParam.getType().isInt32()) {
                 param.replaceAllUse(callParam);
             } else {
@@ -210,8 +212,8 @@ public class FunctionInlineUnit {
             }
         }
         JumpInstr toFunc = new JumpInstr(copyFunc.getBasicBlocks().get(0));
-        toFunc.getBelongingBlock().getInstrArrayList().remove(toFunc);
         basicBlock.addInstr(toFunc);
+        toFunc.getBelongingBlock().getInstrArrayList().removeIf(instr -> instr.equals(toFunc));
         ArrayList<RetInstr> retList = new ArrayList<>();
         for (BasicBlock block : copyFunc.getBasicBlocks()) {
             for (Instr instr : block.getInstrArrayList()) {
@@ -221,10 +223,12 @@ public class FunctionInlineUnit {
             }
         }
         FunctionInlineUnit.dealWithRetValue(retList, inlineBlock, response.getReturnType());
-        for (BasicBlock block : copyFunc.getBasicBlocks()) {
-            block.getBelongingFunc().getBasicBlocks().remove(block);
+        Iterator<BasicBlock> iterator = copyFunc.getBasicBlocks().iterator();
+        while (iterator.hasNext()) {
+            BasicBlock block = iterator.next();
             function.addBasicBlock(inlineBlock,
-                    block.getBelongingFunc().getBasicBlocks().indexOf(block) - 1);
+                    block.getBelongingFunc().getBasicBlocks().indexOf(block));
+            iterator.remove();
         }
         callInstr.dropOperands();
         callInstr.getBelongingBlock().getInstrArrayList().remove(callInstr);
@@ -274,13 +278,15 @@ public class FunctionInlineUnit {
     private static void splitBlock(
             CallInstr callInstr, BasicBlock basicBlock, BasicBlock inlineBlock) {
         boolean backInst = false;
-        for (Instr instr : basicBlock.getInstrArrayList()) {
+        Iterator<Instr> iterator = basicBlock.getInstrArrayList().iterator();
+        while (iterator.hasNext()) {
+            Instr instr = iterator.next();
             if (!backInst && instr.equals(callInstr)) {
                 backInst = true;
                 continue;
             }
             if (backInst) {
-                basicBlock.getInstrArrayList().remove(instr);
+                iterator.remove();
                 inlineBlock.addInstr(instr);
             }
         }

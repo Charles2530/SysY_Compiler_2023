@@ -25,10 +25,8 @@ public class ControlFlowGraph {
      */
     private static HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> indBasicBlockFunctionMap;
-    private static HashMap<BasicBlock, ArrayList<BasicBlock>> indBasicBlockMap;
     private static HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> outBasicBlockFunctionMap;
-    private static HashMap<BasicBlock, ArrayList<BasicBlock>> outBasicBlockMap;
 
     /**
      * build() 是控制流图的构建函数，
@@ -38,15 +36,13 @@ public class ControlFlowGraph {
         ControlFlowGraph.indBasicBlockFunctionMap = new HashMap<>();
         ControlFlowGraph.outBasicBlockFunctionMap = new HashMap<>();
         for (Function function : module.getFunctions()) {
-            ControlFlowGraph.indBasicBlockMap = new HashMap<>();
-            ControlFlowGraph.indBasicBlockFunctionMap
-                    .put(function, ControlFlowGraph.indBasicBlockMap);
-            ControlFlowGraph.outBasicBlockMap = new HashMap<>();
-            ControlFlowGraph.outBasicBlockFunctionMap
-                    .put(function, ControlFlowGraph.outBasicBlockMap);
+            HashMap<BasicBlock, ArrayList<BasicBlock>> indBasicBlockMap = new HashMap<>();
+            ControlFlowGraph.addFunctionIndBasicBlock(function, indBasicBlockMap);
+            HashMap<BasicBlock, ArrayList<BasicBlock>> outBasicBlockMap = new HashMap<>();
+            ControlFlowGraph.addFunctionOutBasicBlock(function, outBasicBlockMap);
             for (BasicBlock basicBlock : function.getBasicBlocks()) {
-                ControlFlowGraph.indBasicBlockMap.put(basicBlock, new ArrayList<>());
-                ControlFlowGraph.outBasicBlockMap.put(basicBlock, new ArrayList<>());
+                ControlFlowGraph.addBlockIndBasicBlockList(basicBlock, new ArrayList<>());
+                ControlFlowGraph.addBlockOutBasicBlockList(basicBlock, new ArrayList<>());
             }
             ControlFlowGraph.buildControlFlowGraph(function);
         }
@@ -79,9 +75,19 @@ public class ControlFlowGraph {
         ControlFlowGraph.addBlockOutBasicBlock(fromBlock, toBlock);
     }
 
+    public static void addFunctionIndBasicBlock(
+            Function function, HashMap<BasicBlock, ArrayList<BasicBlock>> indBasicBlockMap) {
+        ControlFlowGraph.indBasicBlockFunctionMap.put(function, indBasicBlockMap);
+    }
+
     public static HashMap<BasicBlock,
             ArrayList<BasicBlock>> getFunctionIndBasicBlock(Function function) {
         return ControlFlowGraph.indBasicBlockFunctionMap.get(function);
+    }
+
+    public static void addFunctionOutBasicBlock(
+            Function function, HashMap<BasicBlock, ArrayList<BasicBlock>> outBasicBlockMap) {
+        ControlFlowGraph.outBasicBlockFunctionMap.put(function, outBasicBlockMap);
     }
 
     public static HashMap<BasicBlock,
@@ -110,6 +116,12 @@ public class ControlFlowGraph {
         }
     }
 
+    public static void addBlockOutBasicBlockList(
+            BasicBlock basicBlock, ArrayList<BasicBlock> outBasicBlocks) {
+        ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                .put(basicBlock, outBasicBlocks);
+    }
+
     /**
      * addBlockOutBasicBlock 方法用于向控制流图中添加后序基本块
      *
@@ -131,12 +143,22 @@ public class ControlFlowGraph {
         }
     }
 
+    public static void addBlockIndBasicBlockList(
+            BasicBlock basicBlock, ArrayList<BasicBlock> indBasicBlocks) {
+        ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                .put(basicBlock, indBasicBlocks);
+    }
+
     public static ArrayList<BasicBlock> getBlockIndBasicBlock(BasicBlock basicBlock) {
+        ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                .computeIfAbsent(basicBlock, k -> new ArrayList<>());
         return ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
                 .get(basicBlock);
     }
 
     public static ArrayList<BasicBlock> getBlockOutBasicBlock(BasicBlock basicBlock) {
+        ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                .computeIfAbsent(basicBlock, k -> new ArrayList<>());
         return ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
                 .get(basicBlock);
     }
@@ -159,10 +181,11 @@ public class ControlFlowGraph {
                 ControlFlowGraph.getBlockOutBasicBlock(indbasicBlock).indexOf(outbasicblock));
         ControlFlowGraph.getBlockIndBasicBlock(outbasicblock).remove(indbasicBlock);
         ControlFlowGraph.getBlockOutBasicBlock(indbasicBlock).remove(outbasicblock);
-        if (!ControlFlowGraph.indBasicBlockMap.containsKey(midbasicblock)) {
-            ControlFlowGraph.indBasicBlockMap.put(midbasicblock, new ArrayList<>());
+        if (!ControlFlowGraph.getFunctionIndBasicBlock(midbasicblock.getBelongingFunc()).
+                containsKey(midbasicblock)) {
+            ControlFlowGraph.addBlockIndBasicBlockList(midbasicblock, new ArrayList<>());
             ControlFlowGraph.addBlockIndBasicBlock(midbasicblock, indbasicBlock);
-            ControlFlowGraph.outBasicBlockMap.put(midbasicblock, new ArrayList<>());
+            ControlFlowGraph.addBlockOutBasicBlockList(midbasicblock, new ArrayList<>());
             ControlFlowGraph.addBlockOutBasicBlock(midbasicblock, outbasicblock);
         }
     }

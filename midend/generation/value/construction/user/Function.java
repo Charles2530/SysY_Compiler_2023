@@ -341,7 +341,7 @@ public class Function extends User {
                 for (BasicBlock basicBlock : target.getBasicBlocks()) {
                     for (Instr instr : basicBlock.getInstrArrayList()) {
                         if (instr instanceof CallInstr callInstr) {
-                            if (callInstr.getTarget().equals(target)) {
+                            if (callInstr.getTarget().equals(this)) {
                                 callList.add(callInstr);
                             }
                         }
