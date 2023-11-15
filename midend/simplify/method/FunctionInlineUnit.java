@@ -19,7 +19,6 @@ import midend.simplify.controller.datastruct.Use;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * FunctionInlineUnit 是函数内联单元，

@@ -7,8 +7,6 @@ import backend.generation.utils.RegisterAllocator;
 import backend.generation.utils.RegisterUtils;
 import backend.simplify.BackEndOptimizerUnit;
 import backend.simplify.method.BasicBlockSortedUnit;
-import midend.generation.GenerationMain;
-import midend.simplify.method.FunctionInlineUnit;
 import iostream.structure.DebugDetailController;
 import iostream.structure.OptimizerUnit;
 import midend.generation.utils.IrNameController;
@@ -22,6 +20,7 @@ import midend.generation.value.instr.basis.CallInstr;
 import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
+import midend.simplify.method.FunctionInlineUnit;
 import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
