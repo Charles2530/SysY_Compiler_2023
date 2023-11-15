@@ -1,9 +1,7 @@
 package midend.generation.llvm;
 
-import frontend.generation.semantic.symtable.Symbol;
 import frontend.generation.semantic.symtable.SymbolTable;
 import frontend.generation.semantic.symtable.symbol.VarSymbol;
-import frontend.generation.semantic.symtable.symbol.varsymbol.ConstSymbol;
 import frontend.generation.semantic.symtable.symbol.varsymbol.IntSymbol;
 import frontend.generation.syntax.AstNode;
 import iostream.declare.GetIntDeclare;
