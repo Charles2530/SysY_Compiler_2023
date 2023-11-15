@@ -42,7 +42,7 @@ public class LoadInstr extends Instr {
     public Value copy(FunctionClone functionClone) {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyPtr = functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new LoadInstr(this.getName() + "_copy", copyPtr);
+        Instr instr = new LoadInstr(this.getName(), copyPtr);
         copyBlock.addInstr(instr);
         return instr;
     }

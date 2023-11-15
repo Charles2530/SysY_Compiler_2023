@@ -64,7 +64,7 @@ public class IcmpInstr extends Instr {
         Value copyAns = functionClone.getValue(this.getOperands().get(0));
         Value copyRes = functionClone.getValue(this.getOperands().get(1));
         Instr instr = new IcmpInstr(
-                this.getName() + "_copy", this.getInstrType(), copyAns, copyRes);
+                this.getName(), this.getInstrType(), copyAns, copyRes);
         copyBlock.addInstr(instr);
         return instr;
     }

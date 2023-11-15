@@ -332,6 +332,8 @@ public class Function extends User {
      * 主要用于函数内联
      * 该函数的执行逻辑如下：
      * 1.通过遍历，获得所有调用 inlineFunc 的 callInstr
+     * 2.对于每一个 callInstr，将其替换为 inlineFunc 的所有基本块
+     * 3.去除调用关系
      */
     public void inlineFunction() {
         ArrayList<CallInstr> callList = new ArrayList<>();

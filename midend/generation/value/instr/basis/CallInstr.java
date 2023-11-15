@@ -115,7 +115,7 @@ public class CallInstr extends Instr {
             copyParamList.add(functionClone.getValue(this.getOperands().get(i)));
         }
         Function copyTarget = (Function) functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new CallInstr(this.getName() + "_copy", copyTarget, copyParamList);
+        Instr instr = new CallInstr(this.getName(), copyTarget, copyParamList);
         copyBlock.addInstr(instr);
         return instr;
     }

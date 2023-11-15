@@ -166,6 +166,13 @@ public class FunctionInlineUnit {
 
     /**
      * replaceFunctions 方法用于替换函数
+     * 辅助完成函数内联
+     * 该函数的执行逻辑如下：
+     * 1.将函数调用指令所在的基本块分割成两半
+     * 2.将函数调用指令所在的基本块之后再建一个块，用于存放函数调用指令之后的指令
+     * 3.克隆函数调用指令所在的基本块，将克隆的基本块插入到函数调用指令所在的基本块之后
+     *
+     * @param callInstr 函数调用指令
      */
     public static void replaceFunctions(CallInstr callInstr) {
         Function response = callInstr.getTarget();
@@ -179,6 +186,13 @@ public class FunctionInlineUnit {
 
     /**
      * cloneBlock 方法用于克隆基本块
+     * 该函数执行逻辑如下:
+     * 1.克隆函数调用指令所在的函数
+     * 2.将克隆的函数的形参替换成函数调用指令的实参
+     * 3.让basicBlock跳入克隆的函数的入口块
+     * 4.收集所有的RetInstr，对其进行处理，
+     * 如果返回值是int32，则将所有的RetInstr的返回值替换成phi指令
+     * 5.清除重新插入并删除call指令
      */
     private static void cloneBlock(
             CallInstr callInstr, BasicBlock basicBlock, BasicBlock inlineBlock, Function response) {
@@ -213,7 +227,7 @@ public class FunctionInlineUnit {
         }
         JumpInstr toFunc = new JumpInstr(copyFunc.getBasicBlocks().get(0));
         basicBlock.addInstr(toFunc);
-        toFunc.getBelongingBlock().getInstrArrayList().removeIf(instr -> instr.equals(toFunc));
+        //toFunc.getBelongingBlock().getInstrArrayList().removeIf(instr -> instr.equals(toFunc));
         ArrayList<RetInstr> retList = new ArrayList<>();
         for (BasicBlock block : copyFunc.getBasicBlocks()) {
             for (Instr instr : block.getInstrArrayList()) {
@@ -226,8 +240,8 @@ public class FunctionInlineUnit {
         Iterator<BasicBlock> iterator = copyFunc.getBasicBlocks().iterator();
         while (iterator.hasNext()) {
             BasicBlock block = iterator.next();
-            function.addBasicBlock(inlineBlock,
-                    block.getBelongingFunc().getBasicBlocks().indexOf(block));
+            function.addBasicBlock(block,
+                    inlineBlock.getBelongingFunc().getBasicBlocks().indexOf(inlineBlock));
             iterator.remove();
         }
         callInstr.dropOperands();
@@ -238,6 +252,8 @@ public class FunctionInlineUnit {
 
     /**
      * dealWithRetValue 方法对内联的函数的返回值进行处理
+     * 如果返回值是int32，则将所有的RetInstr的返回值替换成phi指令
+     * 如果返回值是void，则直接删除所有的RetInstr
      */
     private static void dealWithRetValue(
             ArrayList<RetInstr> retList, BasicBlock inlineBlock, IrType returnType) {
@@ -252,7 +268,7 @@ public class FunctionInlineUnit {
                 inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
                 JumpInstr jumpInstr = new JumpInstr(inlineBlock);
                 retInstr.getBelongingBlock().insertInstr(
-                        retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr) - 1,
+                        retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr),
                         jumpInstr);
                 retInstr.dropOperands();
                 retInstr.getBelongingBlock().getInstrArrayList().remove(retInstr);
@@ -263,7 +279,7 @@ public class FunctionInlineUnit {
                 inlineBlock.getBlockIndBasicBlock().remove(retInstr.getBelongingBlock());
                 JumpInstr jumpInstr = new JumpInstr(inlineBlock);
                 retInstr.getBelongingBlock().insertInstr(
-                        retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr) - 1,
+                        retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr),
                         jumpInstr);
                 retInstr.dropOperands();
                 retInstr.getBelongingBlock().getInstrArrayList().remove(retInstr);
@@ -274,6 +290,12 @@ public class FunctionInlineUnit {
     /**
      * splitBlock 方法用于分割基本块，这里是为了将 call 指令所在的块分割成两半
      * 在当前块（也就是 call 在的那个块）之后再建一个块，用于存放 call 之后的指令
+     * 该函数的执行逻辑如下:
+     * 1.遍历当前块的指令，找到 call 指令
+     * 2.将 call 指令之后的指令从当前块中删除，并添加到新建的块中
+     * 3.遍历当前块的后继块，找到其中的 phi 指令，并将其中的操作数中的当前块替换成新建的块
+     * 4.将新建的块的后继块添加到当前块的后继块中，并将当前块从新建的块的前驱块中删除
+     * 5.将当前块的后继块清空
      */
     private static void splitBlock(
             CallInstr callInstr, BasicBlock basicBlock, BasicBlock inlineBlock) {

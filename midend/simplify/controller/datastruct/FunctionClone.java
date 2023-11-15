@@ -39,7 +39,7 @@ public class FunctionClone {
     public Function copyFunc(Function response) {
         this.clear();
         Function copyFunction = new Function(
-                response.getName() + "_COPY", response.getReturnType());
+                response.getName() + "_Inline", response.getReturnType());
         for (int i = 0; i < response.getParams().size(); i++) {
             Param param = new Param(
                     response.getParams().get(i).getType(), response.getParams().get(i).getName());
@@ -51,7 +51,7 @@ public class FunctionClone {
             this.putValue(response.getParams().get(i), copyFunction.getParams().get(i));
         }
         for (BasicBlock basicBlock : response.getBasicBlocks()) {
-            BasicBlock copyBlock = new BasicBlock(basicBlock.getName() + "_COPY");
+            BasicBlock copyBlock = new BasicBlock(basicBlock.getName() + "_Inline");
             copyFunction.addBasicBlock(copyBlock);
             this.putValue(basicBlock, copyBlock);
         }

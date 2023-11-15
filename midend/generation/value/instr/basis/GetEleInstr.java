@@ -74,7 +74,7 @@ public class GetEleInstr extends Instr {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyPtr = functionClone.getValue(this.getOperands().get(0));
         Value copyOff = functionClone.getValue(this.getOperands().get(1));
-        Instr instr = new GetEleInstr(this.getName() + "_copy", copyPtr, copyOff);
+        Instr instr = new GetEleInstr(this.getName(), copyPtr, copyOff);
         copyBlock.addInstr(instr);
         return instr;
     }

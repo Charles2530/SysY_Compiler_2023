@@ -46,7 +46,7 @@ public class ZextInstr extends Instr {
     public Value copy(FunctionClone functionClone) {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyVal = functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new ZextInstr(this.getName() + "_copy",
+        Instr instr = new ZextInstr(this.getName(),
                 this.getInstrType(), copyVal, this.target);
         copyBlock.addInstr(instr);
         return instr;
