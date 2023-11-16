@@ -57,7 +57,10 @@ public class RetInstr extends Instr {
     @Override
     public Value copy(FunctionClone functionClone) {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
-        Value copyRetValue = functionClone.getValue(this.getOperands().get(0));
+        Value copyRetValue = null;
+        if (!operands.isEmpty()) {
+            copyRetValue = functionClone.getValue(this.getOperands().get(0));
+        }
         Instr instr = new RetInstr(copyRetValue);
         copyBlock.addInstr(instr);
         return instr;

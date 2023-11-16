@@ -11,7 +11,8 @@ public class VarType extends IrType {
     /**
      * bits 是该 VarType 的位数信息
      * 0 表示 void
-     * 1 表示 i1
+     * 1 表示 i1 用于Bool类型
+     * 8 表示 i8 用于FormatString使用
      * 32 表示 i32
      */
     private final int bits;
@@ -28,6 +29,7 @@ public class VarType extends IrType {
     public String toString() {
         return switch (bits) {
             case 1 -> "i1";
+            case 8 -> "i8";
             case 32 -> "i32";
             default -> "void";
         };
