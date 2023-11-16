@@ -77,9 +77,7 @@ public class Value {
      * replaceAllUse() 用于替换所有使用当前Value的User的该Value值为新的Value
      */
     public void replaceAllUse(Value value) {
-        ArrayList<User> users = useDefChain.stream().map(Use::getUser)
-                .collect(Collectors.toCollection(ArrayList::new));
-        users.forEach(user -> user.replaceOperand(this, value));
+        getUsers().forEach(user -> user.replaceOperand(this, value));
     }
 
 }

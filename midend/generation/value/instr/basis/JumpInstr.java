@@ -5,6 +5,7 @@ import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.FunctionClone;
 
 /**
@@ -56,6 +57,7 @@ public class JumpInstr extends Instr {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         BasicBlock copyTarget = (BasicBlock) functionClone.getValue(this.getOperands().get(0));
         Instr instr = new JumpInstr(copyTarget);
+        ControlFlowGraph.addDoubleEdge(copyBlock, copyTarget);
         copyBlock.addInstr(instr);
         return instr;
     }

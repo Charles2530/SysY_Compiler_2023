@@ -74,10 +74,8 @@ public class BrInstr extends Instr {
         Value copyCon = functionClone.getValue(this.getOperands().get(0));
         BasicBlock copyThen = (BasicBlock) functionClone.getValue(this.getOperands().get(1));
         BasicBlock copyElse = (BasicBlock) functionClone.getValue(this.getOperands().get(2));
-        ControlFlowGraph.addBlockIndBasicBlock(copyThen, copyBlock);
-        ControlFlowGraph.addBlockOutBasicBlock(copyBlock, copyThen);
-        ControlFlowGraph.addBlockIndBasicBlock(copyElse, copyBlock);
-        ControlFlowGraph.addBlockOutBasicBlock(copyBlock, copyElse);
+        ControlFlowGraph.addDoubleEdge(copyBlock,copyThen);
+        ControlFlowGraph.addDoubleEdge(copyBlock,copyElse);
         Instr instr = new BrInstr(copyCon, copyThen, copyElse);
         copyBlock.addInstr(instr);
         return instr;

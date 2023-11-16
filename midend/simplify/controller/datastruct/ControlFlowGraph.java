@@ -70,7 +70,7 @@ public class ControlFlowGraph {
      * addDoubleEdge 方法用于向控制流图中添加双向边，
      * 表示两个基本块之间的前序和后序关系
      */
-    private static void addDoubleEdge(BasicBlock fromBlock, BasicBlock toBlock) {
+    public static void addDoubleEdge(BasicBlock fromBlock, BasicBlock toBlock) {
         ControlFlowGraph.addBlockIndBasicBlock(toBlock, fromBlock);
         ControlFlowGraph.addBlockOutBasicBlock(fromBlock, toBlock);
     }

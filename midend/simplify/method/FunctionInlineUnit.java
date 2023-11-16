@@ -7,6 +7,7 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.Param;
+import midend.generation.value.construction.User;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.AllocaInstr;
@@ -18,7 +19,6 @@ import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.FunctionClone;
-import midend.simplify.controller.datastruct.Use;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -205,13 +205,13 @@ public class FunctionInlineUnit {
             if (callParam.getType().isInt32()) {
                 param.replaceAllUse(callParam);
             } else {
-                ArrayList<Use> users = new ArrayList<>(param.getUseDefChain());
-                for (Use use : users) {
-                    if (use.getUser() instanceof StoreInstr storeInstr &&
+                ArrayList<User> users = new ArrayList<>(param.getUsers());
+                for (User user : users) {
+                    if (user instanceof StoreInstr storeInstr &&
                             storeInstr.getOperands().get(1) instanceof AllocaInstr allocaInstr) {
                         allocaInstr.getBelongingBlock().getInstrArrayList().remove(allocaInstr);
-                        for (Use other : allocaInstr.getUseDefChain()) {
-                            if (other.getUser() instanceof Instr instr) {
+                        for (User other : allocaInstr.getUsers()) {
+                            if (other instanceof Instr instr) {
                                 if (instr instanceof LoadInstr loadInstr) {
                                     loadInstr.replaceAllUse(callParam);
                                 }
@@ -227,8 +227,7 @@ public class FunctionInlineUnit {
         }
         JumpInstr toFunc = new JumpInstr(copyFunc.getBasicBlocks().get(0));
         basicBlock.addInstr(toFunc);
-        ControlFlowGraph.addBlockIndBasicBlock(copyFunc.getBasicBlocks().get(0), inlineBlock);
-        ControlFlowGraph.addBlockOutBasicBlock(inlineBlock, copyFunc.getBasicBlocks().get(0));
+        ControlFlowGraph.addDoubleEdge(basicBlock, copyFunc.getBasicBlocks().get(0));
         //toFunc.getBelongingBlock().getInstrArrayList().removeIf(instr -> instr.equals(toFunc));
         ArrayList<RetInstr> retList = new ArrayList<>();
         int cnt = 0;
@@ -276,10 +275,7 @@ public class FunctionInlineUnit {
                 retInstr.getBelongingBlock().insertInstr(
                         retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr),
                         jumpInstr);
-                ControlFlowGraph.addBlockIndBasicBlock(
-                        retInstr.getBelongingBlock(), inlineBlock);
-                ControlFlowGraph.addBlockOutBasicBlock(
-                        inlineBlock, retInstr.getBelongingBlock());
+                ControlFlowGraph.addDoubleEdge(retInstr.getBelongingBlock(),inlineBlock);
                 retInstr.dropOperands();
                 retInstr.getBelongingBlock().getInstrArrayList().remove(retInstr);
             }
@@ -292,10 +288,7 @@ public class FunctionInlineUnit {
                 retInstr.getBelongingBlock().insertInstr(
                         retInstr.getBelongingBlock().getInstrArrayList().indexOf(retInstr),
                         jumpInstr);
-                ControlFlowGraph.addBlockIndBasicBlock(
-                        retInstr.getBelongingBlock(), inlineBlock);
-                ControlFlowGraph.addBlockOutBasicBlock(
-                        inlineBlock, retInstr.getBelongingBlock());
+                ControlFlowGraph.addDoubleEdge(retInstr.getBelongingBlock(),inlineBlock);
                 retInstr.dropOperands();
                 retInstr.getBelongingBlock().getInstrArrayList().remove(retInstr);
             }
