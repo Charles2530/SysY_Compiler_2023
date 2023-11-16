@@ -72,6 +72,9 @@ public class FunctionClone {
         for (Instr instr : basicBlock.getInstrArrayList()) {
             Value copyInstr = instr.copy(this);
             putValue(instr, copyInstr);
+            if (instr instanceof PhiInstr phiInstr) {
+                phiList.add(phiInstr);
+            }
         }
         for (BasicBlock outBasicBlock : basicBlock.getBlockOutBasicBlock()) {
             if (!visited.contains(outBasicBlock)) {
