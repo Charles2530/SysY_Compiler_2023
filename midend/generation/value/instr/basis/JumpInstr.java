@@ -81,4 +81,5 @@ public class JumpInstr extends Instr {
     public void setAssemblerReduce() {
         isAssemblerReduce = true;
     }
+
 }
