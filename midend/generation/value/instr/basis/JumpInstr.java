@@ -5,6 +5,7 @@ import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.FunctionClone;
 
 /**
@@ -29,6 +30,14 @@ public class JumpInstr extends Instr {
     }
 
     public void setTarget(BasicBlock target) {
+//        if (getTarget() != null &&
+//                getBelongingBlock().getBlockOutBasicBlock().contains(getTarget())) {
+//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), target,
+//                    getBelongingBlock().getBlockOutBasicBlock().indexOf(getTarget()));
+//            getBelongingBlock().getBlockOutBasicBlock().remove(getTarget());
+//            ControlFlowGraph.addBlockIndBasicBlock(target, getBelongingBlock());
+//            getTarget().getBlockIndBasicBlock().remove(getBelongingBlock());
+//        }
         operands.set(0, target);
         this.target = target;
     }
@@ -59,6 +68,15 @@ public class JumpInstr extends Instr {
         copyBlock.addInstr(instr);
         return instr;
     }
+
+//    @Override
+//    public void setBelongingBlock(BasicBlock currentBasicBlock) {
+//        super.setBelongingBlock(currentBasicBlock);
+//        if (!getBelongingBlock().getBlockOutBasicBlock().contains(target) && target != null) {
+//            ControlFlowGraph.addBlockIndBasicBlock(target, getBelongingBlock());
+//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), target);
+//        }
+//    }
 
     public void setAssemblerReduce() {
         isAssemblerReduce = true;

@@ -2,6 +2,7 @@ package iostream;
 
 import backend.simplify.BackEndOptimizerUnit;
 import midend.simplify.MidEndOptimizerUnit;
+import midend.simplify.controller.datastruct.ControlFlowGraph;
 
 /**
  * OptimizerUnit 是优化器的基类
@@ -13,24 +14,32 @@ public abstract class OptimizerUnit {
      */
     public static void initOptimizerSetting() {
         OptimizerUnit.isOptimizer = false;
+        OptimizerUnit.dataStructInit();
         // 优化全局设置
         Config.setIsGenerationOutput(false);
         Config.setIsOptimize(true);
         Config.setIsGenerationOptimizerOutput(!Config.isIsGenerationOutput());
-        Config.setIsAssemblyOutput(false);
+        Config.setIsAssemblyOutput(true);
         Config.setIsDebugDetailOutput(true);
         // 前端优化设置
         // 中端优化设置
         MidEndOptimizerUnit.setMem2Reg(true);
-        MidEndOptimizerUnit.setFunctionInline(true);
-        MidEndOptimizerUnit.setGlobalVariableNumbering(false);
-        MidEndOptimizerUnit.setDeadCodeElimination(false);
+        MidEndOptimizerUnit.setFunctionInline(false);
+        MidEndOptimizerUnit.setGlobalVariableNumbering(true);
+        MidEndOptimizerUnit.setDeadCodeElimination(true);
         // 后端优化设置
         BackEndOptimizerUnit.setIsRemovePhi(true);
         BackEndOptimizerUnit.setIsSpaceOptimizer(false);
         BackEndOptimizerUnit.setIsRemoveContinuousBranch(true);
         BackEndOptimizerUnit.setIsRemoveDeadCode(true);
         BackEndOptimizerUnit.setIsBasicBlockSorted(false);
+    }
+
+    /**
+     * dataStructInit 初始化位于优化过程中建立的数据结构
+     */
+    private static void dataStructInit() {
+        ControlFlowGraph.init();
     }
 
     /**

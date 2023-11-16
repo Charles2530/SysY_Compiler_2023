@@ -30,6 +30,10 @@ public class PhiInstr extends Instr {
         }
     }
 
+    public ArrayList<BasicBlock> getIndBasicBlock() {
+        return indBasicBlock;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

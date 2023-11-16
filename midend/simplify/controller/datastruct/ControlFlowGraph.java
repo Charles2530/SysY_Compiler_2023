@@ -29,6 +29,14 @@ public class ControlFlowGraph {
             ArrayList<BasicBlock>>> outBasicBlockFunctionMap;
 
     /**
+     * init 方法用于初始化控制流图
+     */
+    public static void init() {
+        ControlFlowGraph.indBasicBlockFunctionMap = new HashMap<>();
+        ControlFlowGraph.outBasicBlockFunctionMap = new HashMap<>();
+    }
+
+    /**
      * build() 是控制流图的构建函数，
      * 是构建控制流图的主函数
      */

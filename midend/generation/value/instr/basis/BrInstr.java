@@ -9,6 +9,7 @@ import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.FunctionClone;
 
 /**
@@ -35,11 +36,27 @@ public class BrInstr extends Instr {
     }
 
     public void setThenBlock(BasicBlock thenBlock) {
+//        if (getBelongingBlock().getBlockOutBasicBlock().contains(getThenBlock()) &&
+//                getThenBlock() != null) {
+//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), thenBlock,
+//                    getBelongingBlock().getBlockOutBasicBlock().indexOf(getThenBlock()));
+//            getBelongingBlock().getBlockOutBasicBlock().remove(getThenBlock());
+//            ControlFlowGraph.addBlockIndBasicBlock(thenBlock, getBelongingBlock());
+//            getThenBlock().getBlockIndBasicBlock().remove(getBelongingBlock());
+//        }
         this.thenBlock = thenBlock;
         operands.set(1, thenBlock);
     }
 
     public void setElseBlock(BasicBlock elseBlock) {
+//        if (getBelongingBlock().getBlockOutBasicBlock().contains(getElseBlock())
+//                && getElseBlock() != null) {
+//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), elseBlock,
+//                    getBelongingBlock().getBlockOutBasicBlock().indexOf(getElseBlock()));
+//            getBelongingBlock().getBlockOutBasicBlock().remove(getElseBlock());
+//            ControlFlowGraph.addBlockIndBasicBlock(elseBlock, getBelongingBlock());
+//            getElseBlock().getBlockIndBasicBlock().remove(getBelongingBlock());
+//        }
         this.elseBlock = elseBlock;
         operands.set(2, elseBlock);
     }
@@ -51,6 +68,19 @@ public class BrInstr extends Instr {
     public BasicBlock getElseBlock() {
         return elseBlock;
     }
+
+//    @Override
+//    public void setBelongingBlock(BasicBlock currentBasicBlock) {
+//        super.setBelongingBlock(currentBasicBlock);
+//        if (!getBelongingBlock().getBlockOutBasicBlock().contains(thenBlock) && thenBlock != null) {
+//            ControlFlowGraph.addBlockIndBasicBlock(thenBlock, getBelongingBlock());
+//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), thenBlock);
+//        }
+//        if (!getBelongingBlock().getBlockOutBasicBlock().contains(elseBlock) && elseBlock != null) {
+//            ControlFlowGraph.addBlockIndBasicBlock(elseBlock, getBelongingBlock());
+//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), elseBlock);
+//        }
+//    }
 
     @Override
     public String toString() {
