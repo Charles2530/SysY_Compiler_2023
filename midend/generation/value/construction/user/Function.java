@@ -57,8 +57,6 @@ public class Function extends User {
         if (!OptimizerUnit.isOptimizer()) {
             IrNameController.addFunction(this);
         }
-        ControlFlowGraph.addFunctionIndBasicBlock(this, new HashMap<>());
-        ControlFlowGraph.addFunctionOutBasicBlock(this, new HashMap<>());
     }
 
     public IrType getReturnType() {

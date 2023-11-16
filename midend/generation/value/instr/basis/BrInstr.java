@@ -36,27 +36,11 @@ public class BrInstr extends Instr {
     }
 
     public void setThenBlock(BasicBlock thenBlock) {
-//        if (getBelongingBlock().getBlockOutBasicBlock().contains(getThenBlock()) &&
-//                getThenBlock() != null) {
-//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), thenBlock,
-//                    getBelongingBlock().getBlockOutBasicBlock().indexOf(getThenBlock()));
-//            getBelongingBlock().getBlockOutBasicBlock().remove(getThenBlock());
-//            ControlFlowGraph.addBlockIndBasicBlock(thenBlock, getBelongingBlock());
-//            getThenBlock().getBlockIndBasicBlock().remove(getBelongingBlock());
-//        }
         this.thenBlock = thenBlock;
         operands.set(1, thenBlock);
     }
 
     public void setElseBlock(BasicBlock elseBlock) {
-//        if (getBelongingBlock().getBlockOutBasicBlock().contains(getElseBlock())
-//                && getElseBlock() != null) {
-//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), elseBlock,
-//                    getBelongingBlock().getBlockOutBasicBlock().indexOf(getElseBlock()));
-//            getBelongingBlock().getBlockOutBasicBlock().remove(getElseBlock());
-//            ControlFlowGraph.addBlockIndBasicBlock(elseBlock, getBelongingBlock());
-//            getElseBlock().getBlockIndBasicBlock().remove(getBelongingBlock());
-//        }
         this.elseBlock = elseBlock;
         operands.set(2, elseBlock);
     }
@@ -68,19 +52,6 @@ public class BrInstr extends Instr {
     public BasicBlock getElseBlock() {
         return elseBlock;
     }
-
-//    @Override
-//    public void setBelongingBlock(BasicBlock currentBasicBlock) {
-//        super.setBelongingBlock(currentBasicBlock);
-//        if (!getBelongingBlock().getBlockOutBasicBlock().contains(thenBlock) && thenBlock != null) {
-//            ControlFlowGraph.addBlockIndBasicBlock(thenBlock, getBelongingBlock());
-//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), thenBlock);
-//        }
-//        if (!getBelongingBlock().getBlockOutBasicBlock().contains(elseBlock) && elseBlock != null) {
-//            ControlFlowGraph.addBlockIndBasicBlock(elseBlock, getBelongingBlock());
-//            ControlFlowGraph.addBlockOutBasicBlock(getBelongingBlock(), elseBlock);
-//        }
-//    }
 
     @Override
     public String toString() {
@@ -103,6 +74,10 @@ public class BrInstr extends Instr {
         Value copyCon = functionClone.getValue(this.getOperands().get(0));
         BasicBlock copyThen = (BasicBlock) functionClone.getValue(this.getOperands().get(1));
         BasicBlock copyElse = (BasicBlock) functionClone.getValue(this.getOperands().get(2));
+        ControlFlowGraph.addBlockIndBasicBlock(copyThen, copyBlock);
+        ControlFlowGraph.addBlockOutBasicBlock(copyBlock, copyThen);
+        ControlFlowGraph.addBlockIndBasicBlock(copyElse, copyBlock);
+        ControlFlowGraph.addBlockOutBasicBlock(copyBlock, copyElse);
         Instr instr = new BrInstr(copyCon, copyThen, copyElse);
         copyBlock.addInstr(instr);
         return instr;
