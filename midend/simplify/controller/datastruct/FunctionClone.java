@@ -1,5 +1,6 @@
 package midend.simplify.controller.datastruct;
 
+import midend.generation.utils.IrNameController;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Constant;
@@ -22,15 +23,22 @@ public class FunctionClone {
      * copyMap 是克隆的映射表，
      * visited 是克隆的基本块的集合，表示已经访问过的基本块
      * phiList 是克隆的phi指令的集合
+     * caller 是克隆的函数的调用者,即克隆后将要被内联的函数
      */
     private final HashMap<Value, Value> copyMap;
     private final HashSet<BasicBlock> visited;
     private final ArrayList<PhiInstr> phiList;
+    private final Function caller;
 
-    public FunctionClone() {
+    public FunctionClone(Function caller) {
         this.copyMap = new HashMap<>();
         this.visited = new HashSet<>();
         this.phiList = new ArrayList<>();
+        this.caller = caller;
+    }
+
+    public Function getCaller() {
+        return caller;
     }
 
     /**
@@ -49,7 +57,8 @@ public class FunctionClone {
             this.putValue(response.getParams().get(i), copyFunction.getParams().get(i));
         }
         for (BasicBlock basicBlock : response.getBasicBlocks()) {
-            BasicBlock copyBlock = new BasicBlock(basicBlock.getName() + "_Inline");
+            BasicBlock copyBlock = new BasicBlock(
+                    IrNameController.getBlockName(getCaller()) + "_Inline");
             copyFunction.addBasicBlock(copyBlock);
             this.putValue(basicBlock, copyBlock);
         }

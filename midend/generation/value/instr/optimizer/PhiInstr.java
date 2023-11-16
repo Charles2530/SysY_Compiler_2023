@@ -1,5 +1,6 @@
 package midend.generation.value.instr.optimizer;
 
+import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
@@ -50,7 +51,9 @@ public class PhiInstr extends Instr {
         for (BasicBlock basicBlock : this.indBasicBlock) {
             copyIndBasicBlock.add((BasicBlock) functionClone.getValue(basicBlock));
         }
-        Instr instr = new PhiInstr(this.getName(), copyIndBasicBlock);
+        Instr instr = new PhiInstr(
+                IrNameController.getLocalVarName(functionClone.getCaller()) + "_Inline",
+                copyIndBasicBlock);
         copyBlock.addInstr(instr);
         return instr;
     }

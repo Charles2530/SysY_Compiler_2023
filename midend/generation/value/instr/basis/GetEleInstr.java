@@ -3,6 +3,7 @@ package midend.generation.value.instr.basis;
 import backend.generation.mips.Register;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
+import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
@@ -71,11 +72,12 @@ public class GetEleInstr extends Instr {
     /*TODO:bug maybe*/
     @Override
     public Value copy(FunctionClone functionClone) {
-        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyPtr = functionClone.getValue(this.getOperands().get(0));
         Value copyOff = functionClone.getValue(this.getOperands().get(1));
-        Instr instr = new GetEleInstr(this.getName() + suffix, copyPtr, copyOff);
+        Instr instr = new GetEleInstr(
+                IrNameController.getLocalVarName(functionClone.getCaller()) + "_Inline",
+                copyPtr, copyOff);
         copyBlock.addInstr(instr);
         return instr;
     }

@@ -82,6 +82,7 @@ public class IrNameController {
      */
     public static String getBlockName(Function... function) {
         Function presentFunction = ((function.length == 0) ? currentFunction : function[0]);
+        blockNameIndexHashMap.computeIfAbsent(presentFunction, k -> 0);
         int blockNameIndex = blockNameIndexHashMap.get(presentFunction);
         blockNameIndexHashMap.put(presentFunction, blockNameIndex + 1);
         String funcName = presentFunction.getName().equals("@main") ? "main" :

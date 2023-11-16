@@ -4,6 +4,7 @@ import backend.generation.mips.Register;
 import backend.generation.mips.asm.textsegment.mipsinstr.ItypeAsm;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
+import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.utils.irtype.ArrayType;
 import midend.generation.utils.irtype.PointerType;
@@ -51,8 +52,8 @@ public class AllocaInstr extends Instr {
     @Override
     public Value copy(FunctionClone functionClone) {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
-        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
-        Instr instr = new AllocaInstr(this.getName() + suffix, this.type);
+        Instr instr = new AllocaInstr(IrNameController.getLocalVarName(
+                functionClone.getCaller()) + "_Inline", this.type);
         copyBlock.addInstr(instr);
         return instr;
     }

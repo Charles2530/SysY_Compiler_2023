@@ -3,6 +3,7 @@ package midend.generation.value.instr.basis;
 import backend.generation.mips.Register;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
+import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
@@ -44,10 +45,10 @@ public class ZextInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
-        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyVal = functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new ZextInstr(this.getName() + suffix,
+        Instr instr = new ZextInstr(
+                IrNameController.getLocalVarName(functionClone.getCaller()) + "_Inline",
                 this.getInstrType(), copyVal, this.target);
         copyBlock.addInstr(instr);
         return instr;

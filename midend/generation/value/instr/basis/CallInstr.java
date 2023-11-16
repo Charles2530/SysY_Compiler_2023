@@ -7,6 +7,7 @@ import backend.generation.mips.asm.textsegment.mipsinstr.JtypeAsm;
 import backend.generation.mips.asm.textsegment.mipsinstr.MemTypeAsm;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
+import midend.generation.utils.IrNameController;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Function;
@@ -109,14 +110,15 @@ public class CallInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
-        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         ArrayList<Value> copyParamList = new ArrayList<>();
         for (int i = 1; i < this.getOperands().size(); i++) {
             copyParamList.add(functionClone.getValue(this.getOperands().get(i)));
         }
         Function copyTarget = (Function) functionClone.getValue(this.getOperands().get(0));
-        Instr instr = new CallInstr(this.getName() + suffix, copyTarget, copyParamList);
+        Instr instr = new CallInstr(
+                IrNameController.getLocalVarName(functionClone.getCaller()) + "_Inline",
+                copyTarget, copyParamList);
         copyBlock.addInstr(instr);
         return instr;
     }

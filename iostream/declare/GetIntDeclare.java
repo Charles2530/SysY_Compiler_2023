@@ -6,6 +6,7 @@ import backend.generation.mips.asm.textsegment.complex.MoveAsm;
 import backend.generation.mips.asm.textsegment.mipsinstr.SyscallAsm;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
+import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.VarType;
 import iostream.structure.IoStreamGeneration;
 import midend.generation.value.Value;
@@ -46,10 +47,10 @@ public class GetIntDeclare extends IoStreamGeneration {
 
     @Override
     public Value copy(FunctionClone functionClone) {
-        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
-        GetIntDeclare getIntDeclare =
-                new GetIntDeclare(this.getName() + suffix, this.getInstrType());
+        GetIntDeclare getIntDeclare = new GetIntDeclare(
+                IrNameController.getLocalVarName(functionClone.getCaller()) + "_Inline",
+                this.getInstrType());
         copyBlock.addInstr(getIntDeclare);
         return getIntDeclare;
     }

@@ -5,6 +5,7 @@ import backend.generation.mips.asm.textsegment.mipsinstr.MdTypeAsm;
 import backend.generation.mips.asm.textsegment.mipsinstr.RtypeAsm;
 import backend.generation.utils.AssemblyUnit;
 import backend.generation.utils.RegisterUtils;
+import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
@@ -101,11 +102,12 @@ public class CalcInstr extends Instr {
 
     @Override
     public Value copy(FunctionClone functionClone) {
-        String suffix = "_" + this.getBelongingBlock().getBelongingFunc().getName().substring(3);
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());
         Value copyOperand1 = functionClone.getValue(operands.get(0));
         Value copyOperand2 = functionClone.getValue(operands.get(1));
-        Instr instr = new CalcInstr(name + suffix, instrType, copyOperand1, copyOperand2);
+        Instr instr = new CalcInstr(
+                IrNameController.getLocalVarName(functionClone.getCaller()) + "_Inline",
+                instrType, copyOperand1, copyOperand2);
         copyBlock.addInstr(instr);
         return instr;
     }

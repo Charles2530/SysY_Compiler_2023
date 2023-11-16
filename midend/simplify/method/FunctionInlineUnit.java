@@ -195,9 +195,9 @@ public class FunctionInlineUnit {
      */
     private static void cloneBlock(
             CallInstr callInstr, BasicBlock basicBlock, BasicBlock inlineBlock, Function response) {
-        FunctionClone functionCloner = new FunctionClone();
-        Function copyFunc = functionCloner.copyFunc(response);
         Function function = basicBlock.getBelongingFunc();
+        FunctionClone functionCloner = new FunctionClone(function);
+        Function copyFunc = functionCloner.copyFunc(response);
         for (int i = 0; i < copyFunc.getParams().size(); i++) {
             Param param = copyFunc.getParams().get(i);
             Value callParam = callInstr.getOperands().get(i + 1);
