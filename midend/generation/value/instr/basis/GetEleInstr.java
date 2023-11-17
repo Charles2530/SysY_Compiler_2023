@@ -69,7 +69,6 @@ public class GetEleInstr extends Instr {
         return operands.get(0).getName() + " " + operands.get(1).getName();
     }
 
-    /*TODO:bug maybe*/
     @Override
     public Value copy(FunctionClone functionClone) {
         BasicBlock copyBlock = (BasicBlock) functionClone.getValue(this.getBelongingBlock());

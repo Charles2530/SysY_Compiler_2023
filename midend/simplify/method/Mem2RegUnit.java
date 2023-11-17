@@ -26,7 +26,6 @@ import java.util.Stack;
 public class Mem2RegUnit {
     /**
      * module 是LLVM IR生成的顶级模块
-     * cfGraphController 是该 Mem2RegUnit 的控制流图
      * initialBasicBlock 存储了每个函数的第一个基本块，
      * 便于在不同函数中传递该参数
      * useInstrArrayList 存储了所有使用该alloca指令的load指令，以及phi指令
@@ -37,7 +36,6 @@ public class Mem2RegUnit {
      * currentAllocaInstr 是当前的alloca指令
      */
     private static Module module;
-    private static ControlFlowGraphController cfGraphController;
     private static BasicBlock initialBasicBlock;
     private static ArrayList<Instr> useInstrArrayList;
     private static ArrayList<Instr> defInstrArrayList;
@@ -73,8 +71,7 @@ public class Mem2RegUnit {
      * 主要需要构建控制流图CFG
      */
     private static void init() {
-        Mem2RegUnit.cfGraphController = new ControlFlowGraphController(module);
-        Mem2RegUnit.cfGraphController.build();
+        ControlFlowGraphController.build(module);
     }
 
     /**

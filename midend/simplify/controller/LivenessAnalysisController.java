@@ -52,7 +52,6 @@ public class LivenessAnalysisController {
      * 2.根据公式in = (out - def) + use，求出当前基本块的in
      * 3.如果in集合发生变化，则继续执行while循环，否则结束
      */
-    /*TODO:bug maybe because of phiInstr*/
     public static void calculateInOut(Function function) {
         ArrayList<BasicBlock> basicBlocks = function.getBasicBlocks();
         boolean change = true;
@@ -184,7 +183,6 @@ public class LivenessAnalysisController {
      * modifyMerged 方法用于修改合并后的基本块的in集合和out集合
      * 主要用于在后端优化中跳转基本块优化后修改对应的in集合和out集合
      */
-    /*TODO: BUG maybe*/
     public static void modifyMerged(BasicBlock preBasicBlock, BasicBlock basicBlock) {
         preBasicBlock.getOutBasicBlockHashSet().addAll(basicBlock.getOutBasicBlockHashSet());
         preBasicBlock.getDefBasicBlockHashSet().addAll(basicBlock.getDefBasicBlockHashSet());

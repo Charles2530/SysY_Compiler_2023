@@ -10,19 +10,12 @@ import midend.simplify.controller.datastruct.DominatorTree;
  */
 public class ControlFlowGraphController {
     /**
-     * module 是LLVM IR生成的顶级模块
-     */
-    private final Module module;
-
-    public ControlFlowGraphController(Module module) {
-        this.module = module;
-    }
-
-    /**
      * build() 是控制流图的构建函数，
      * 这里构建了CFG图和支配树
+     *
+     * @param module 是LLVM IR生成的顶级模块
      */
-    public void build() {
+    public static void build(Module module) {
         ControlFlowGraph.build(module);
         DominatorTree.build(module);
     }

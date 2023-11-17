@@ -18,8 +18,8 @@ import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.RetInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
+import midend.simplify.controller.ControlFlowGraphController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
-import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.controller.datastruct.FunctionClone;
 
 import java.util.ArrayList;
@@ -260,9 +260,8 @@ public class FunctionInlineUnit {
         callInstr.dropOperands();
         callInstr.getBelongingBlock().getInstrArrayList().remove(callInstr);
         inlineBlock.reducePhi(true);
-        // 重建CFG流图
-        ControlFlowGraph.build(GenerationMain.getModule());
-        DominatorTree.build(GenerationMain.getModule());
+        // 重建CFG流图及支配树
+        ControlFlowGraphController.build(GenerationMain.getModule());
     }
 
     /**
