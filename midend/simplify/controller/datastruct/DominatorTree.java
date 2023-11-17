@@ -30,6 +30,7 @@ public class DominatorTree {
     private static HashMap<Function, HashMap<BasicBlock, BasicBlock>> parentFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> childListFunctionHashMap;
+    private static HashMap<Function, HashMap<BasicBlock, Integer>> dominanceTreeDepthHashMap;
 
     /**
      * build() 是支配树的构建函数，
@@ -40,23 +41,28 @@ public class DominatorTree {
         DominatorTree.dominanceFrontierFunctionHashMap = new HashMap<>();
         DominatorTree.parentFunctionHashMap = new HashMap<>();
         DominatorTree.childListFunctionHashMap = new HashMap<>();
+        DominatorTree.dominanceTreeDepthHashMap = new HashMap<>();
         for (Function function : module.getFunctions()) {
             DominatorTree.addFunctionDominate(function, new HashMap<>());
             DominatorTree.addFunctionDominanceFrontier(function, new HashMap<>());
             DominatorTree.addFunctionDominateParent(function, new HashMap<>());
             DominatorTree.addFunctionDominateChildList(function, new HashMap<>());
+            DominatorTree.addFunctionDominanceTreeDepth(function, new HashMap<>());
             for (BasicBlock basicBlock : function.getBasicBlocks()) {
                 DominatorTree.addBlockDominateSet(basicBlock, new ArrayList<>());
                 DominatorTree.addBlockDominanceFrontier(basicBlock, new ArrayList<>());
                 DominatorTree.addBlockDominateParent(basicBlock, null);
                 DominatorTree.addBlockDominateChildList(basicBlock, new ArrayList<>());
+                DominatorTree.addBlockDominateTreeDepth(basicBlock, null);
             }
             function.searchBlockDominateSet();
             DominatorTree.buildDominateTree(function);
             function.searchBlockDominanceFrontier();
+            function.searchBlockDominateTreeDepth();
         }
         DebugDetailController.printDominateTree(dominateFunctionHashMap,
-                dominanceFrontierFunctionHashMap, parentFunctionHashMap, childListFunctionHashMap);
+                dominanceFrontierFunctionHashMap, parentFunctionHashMap, childListFunctionHashMap,
+                dominanceTreeDepthHashMap);
     }
 
     /**
@@ -162,6 +168,18 @@ public class DominatorTree {
     }
 
     /**
+     * addFunctionDominanceTreeDepth 方法用于向控制流图中添加基本块的支配树深度
+     */
+    public static void addFunctionDominanceTreeDepth(
+            Function function, HashMap<BasicBlock, Integer> hashMap) {
+        DominatorTree.dominanceTreeDepthHashMap.put(function, hashMap);
+    }
+
+    public static HashMap<BasicBlock, Integer> getFunctionDominanceTreeDepth(Function function) {
+        return DominatorTree.dominanceTreeDepthHashMap.get(function);
+    }
+
+    /**
      * addFunctionDominateChildList 方法用于向控制流图中添加dominate子节点集合
      */
     public static void addFunctionDominateChildList(
@@ -233,6 +251,21 @@ public class DominatorTree {
 
     public static ArrayList<BasicBlock> getBlockDominateChildList(BasicBlock basicBlock) {
         return DominatorTree.getFunctionDominateChildList(basicBlock.getBelongingFunc())
+                .get(basicBlock);
+    }
+
+    /**
+     * addBlockDominateTreeDepth 方法用于向控制流图中添加基本块的支配树深度
+     */
+    private static void addBlockDominateTreeDepth(BasicBlock basicBlock, Integer depth) {
+        dominanceTreeDepthHashMap.computeIfAbsent(basicBlock.getBelongingFunc(),
+                k -> new HashMap<>());
+        DominatorTree.getFunctionDominanceTreeDepth(basicBlock.getBelongingFunc())
+                .put(basicBlock, depth);
+    }
+
+    public static Integer getBlockDominateTreeDepth(BasicBlock basicBlock) {
+        return DominatorTree.getFunctionDominanceTreeDepth(basicBlock.getBelongingFunc())
                 .get(basicBlock);
     }
 
@@ -356,5 +389,17 @@ public class DominatorTree {
             visitedOut.add(parent);
         }
         return postOrder;
+    }
+
+    /**
+     * dfsDominateLevel 方法用于计算支配树的深度，
+     * 该函数依托于深度优先搜索进行
+     * 主要用于在GVN中计算支配树的深度
+     */
+    public static void dfsDominateLevel(BasicBlock basicBlock, Integer depth) {
+        DominatorTree.addBlockDominateTreeDepth(basicBlock, depth);
+        for (BasicBlock child : basicBlock.getBlockDominateChildList()) {
+            DominatorTree.dfsDominateLevel(child, depth + 1);
+        }
     }
 }

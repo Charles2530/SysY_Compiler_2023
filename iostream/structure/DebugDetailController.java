@@ -84,6 +84,7 @@ public class DebugDetailController {
      * @param dominanceFrontierFunctionHashMap 表示支配前沿哈希表
      * @param parentFunctionHashMap            表示父节点哈希表
      * @param childListFunctionHashMap         表示子节点哈希表
+     * @param dominanceTreeDepthHashMap
      */
     public static void printDominateTree(
             HashMap<Function, HashMap<BasicBlock, ArrayList<BasicBlock>>> dominateFunctionHashMap,
@@ -91,7 +92,8 @@ public class DebugDetailController {
                     ArrayList<BasicBlock>>> dominanceFrontierFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock, BasicBlock>> parentFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock,
-                    ArrayList<BasicBlock>>> childListFunctionHashMap) {
+                    ArrayList<BasicBlock>>> childListFunctionHashMap, HashMap<Function,
+            HashMap<BasicBlock, Integer>> dominanceTreeDepthHashMap) {
         printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         printDebugDetail("Dominate Tree:");
         for (Function function : dominateFunctionHashMap.keySet()) {
@@ -119,6 +121,9 @@ public class DebugDetailController {
                 for (BasicBlock child : childListFunctionHashMap.get(function).get(basicBlock)) {
                     printDebugDetail("              " + child.getName());
                 }
+                printDebugDetail("          Depth: ");
+                printDebugDetail("              " +
+                        dominanceTreeDepthHashMap.get(function).get(basicBlock));
                 printDebugDetail("\n");
             }
         }

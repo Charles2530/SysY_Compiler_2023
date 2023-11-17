@@ -40,7 +40,6 @@ public class BasicBlock extends Value {
     private ArrayList<Instr> instrArrayList;
     private Function belongingFunc;
     private boolean exist;
-    private Integer domDepth;
 
     public BasicBlock(String name) {
         super(new StructType("basicBlock"), name);
@@ -91,14 +90,6 @@ public class BasicBlock extends Value {
 
     public void setBelongingFunc(Function belongingFunc) {
         this.belongingFunc = belongingFunc;
-    }
-
-    public Integer getDomDepth() {
-        return domDepth;
-    }
-
-    public void setDomDepth(Integer domDepth) {
-        this.domDepth = domDepth;
     }
 
     @Override
@@ -303,6 +294,14 @@ public class BasicBlock extends Value {
      */
     public ArrayList<BasicBlock> getBlockDominateChildList() {
         return DominatorTree.getBlockDominateChildList(this);
+    }
+
+    /**
+     * getDomDepth 方法用于获取该 BasicBlock 的支配树深度，
+     * 主要来自创建DominatorTree的获得的支配树深度分析结果
+     */
+    public Integer getDomDepth() {
+        return DominatorTree.getBlockDominateTreeDepth(this);
     }
 
     /**

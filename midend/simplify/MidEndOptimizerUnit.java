@@ -20,6 +20,7 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
      * isMem2Reg 是该 MidEndOptimizerUnit 的Mem2Reg优化开关
      * isFunctionInline 是该 MidEndOptimizerUnit 的函数内联优化开关
      * isGlobalVariableNumbering 是该 MidEndOptimizerUnit 的全局变量编号优化开关
+     * isGlobalCodeMovement 是该 MidEndOptimizerUnit 的全局代码移动优化开关
      * isDeadCodeElimination 是该 MidEndOptimizerUnit 的死代码消除优化开关
      */
     private final Module module;

@@ -377,4 +377,12 @@ public class Function extends User {
             instrList.forEach(GlobalCodeMovementUnit::scheduleLate);
         }
     }
+
+    /**
+     * searchBlockDominateTreeDepth 方法用于在该 Function 中的所有基本块中进行支配树深度搜索，
+     * 主要用于GCM优化
+     */
+    public void searchBlockDominateTreeDepth() {
+        DominatorTree.dfsDominateLevel(basicBlocks.get(0), 0);
+    }
 }
