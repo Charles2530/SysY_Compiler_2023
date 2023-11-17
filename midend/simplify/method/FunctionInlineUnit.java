@@ -19,6 +19,7 @@ import midend.generation.value.instr.basis.RetInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
+import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.controller.datastruct.FunctionClone;
 
 import java.util.ArrayList;
@@ -261,7 +262,7 @@ public class FunctionInlineUnit {
         inlineBlock.reducePhi(true);
         // 重建CFG流图
         ControlFlowGraph.build(GenerationMain.getModule());
-
+        DominatorTree.build(GenerationMain.getModule());
     }
 
     /**
