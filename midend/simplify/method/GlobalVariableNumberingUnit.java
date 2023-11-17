@@ -29,7 +29,6 @@ public class GlobalVariableNumberingUnit {
      * 该控制器用于进行活跃变量分析
      */
     private static HashMap<Function, HashMap<String, Instr>> GlobalVariableNumberingHashMap;
-    private static LivenessAnalysisController livenessAnalysisController;
 
     /**
      * run 方法用于运行全局变量编号，是GVN的主函数
@@ -37,9 +36,7 @@ public class GlobalVariableNumberingUnit {
     public static void run(Module module) {
         GlobalVariableNumberingUnit.GlobalVariableNumberingHashMap = new HashMap<>();
         module.getFunctions().forEach(Function::uniqueInstr);
-        GlobalVariableNumberingUnit.livenessAnalysisController =
-                new LivenessAnalysisController(module);
-        GlobalVariableNumberingUnit.livenessAnalysisController.analysis();
+        LivenessAnalysisController.analysis(module);
     }
 
     /**

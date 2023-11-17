@@ -1,5 +1,6 @@
 package midend.simplify.method;
 
+import iostream.OptimizerUnit;
 import iostream.structure.DebugDetailController;
 import midend.generation.GenerationMain;
 import midend.generation.utils.IrNameController;
@@ -18,7 +19,6 @@ import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.RetInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.ControlFlowGraphController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.FunctionClone;
 
@@ -261,7 +261,7 @@ public class FunctionInlineUnit {
         callInstr.getBelongingBlock().getInstrArrayList().remove(callInstr);
         inlineBlock.reducePhi(true);
         // 重建CFG流图及支配树
-        ControlFlowGraphController.build(GenerationMain.getModule());
+        OptimizerUnit.build(GenerationMain.getModule());
     }
 
     /**

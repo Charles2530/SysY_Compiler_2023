@@ -22,14 +22,12 @@ public class LivenessAnalysisController {
      * useFunctionHashMap 存储了每个函数的每个基本块的use集合
      * defFunctionHashMap 存储了每个函数的每个基本块的def集合
      */
-    private static Module module;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> inFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> outFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> useFunctionHashMap;
     private static HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> defFunctionHashMap;
 
-    public LivenessAnalysisController(Module module) {
-        LivenessAnalysisController.module = module;
+    public static void init() {
         LivenessAnalysisController.inFunctionHashMap = new HashMap<>();
         LivenessAnalysisController.outFunctionHashMap = new HashMap<>();
         LivenessAnalysisController.useFunctionHashMap = new HashMap<>();
@@ -39,7 +37,8 @@ public class LivenessAnalysisController {
     /**
      * analysis() 是活跃变量分析的主函数
      */
-    public void analysis() {
+    public static void analysis(Module module) {
+        LivenessAnalysisController.init();
         module.getFunctions().forEach(Function::analysisActiveness);
         DebugDetailController.printLivenessAnalysis(
                 inFunctionHashMap, outFunctionHashMap, useFunctionHashMap, defFunctionHashMap);

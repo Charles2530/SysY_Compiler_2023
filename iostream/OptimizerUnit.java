@@ -1,7 +1,11 @@
 package iostream;
 
 import backend.simplify.BackEndOptimizerUnit;
+import midend.generation.value.construction.Module;
 import midend.simplify.MidEndOptimizerUnit;
+import midend.simplify.controller.LivenessAnalysisController;
+import midend.simplify.controller.datastruct.ControlFlowGraph;
+import midend.simplify.controller.datastruct.DominatorTree;
 
 /**
  * OptimizerUnit 是优化器的基类
@@ -31,6 +35,18 @@ public abstract class OptimizerUnit {
         BackEndOptimizerUnit.setIsRemoveContinuousBranch(true);
         BackEndOptimizerUnit.setIsRemoveDeadCode(true);
         BackEndOptimizerUnit.setIsBasicBlockSorted(false);
+    }
+
+    /**
+     * build() 是重构了优化时期的数据结构，
+     * 这里构建了CFG图，支配树和活跃性分析
+     *
+     * @param module 是LLVM IR生成的顶级模块
+     */
+    public static void build(Module module) {
+        ControlFlowGraph.build(module);
+        DominatorTree.build(module);
+        LivenessAnalysisController.analysis(module);
     }
 
     /**

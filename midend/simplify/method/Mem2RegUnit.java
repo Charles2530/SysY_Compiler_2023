@@ -1,5 +1,6 @@
 package midend.simplify.method;
 
+import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
@@ -11,7 +12,6 @@ import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.basis.LoadInstr;
 import midend.generation.value.instr.basis.StoreInstr;
 import midend.generation.value.instr.optimizer.PhiInstr;
-import midend.simplify.controller.ControlFlowGraphController;
 import midend.simplify.controller.datastruct.Use;
 
 import java.util.ArrayList;
@@ -68,10 +68,10 @@ public class Mem2RegUnit {
 
     /**
      * init 方法用于初始化Mem2RegUnit
-     * 主要需要构建控制流图CFG
+     * 主要需要构建控制流图CFG和支配树DominatorTree
      */
     private static void init() {
-        ControlFlowGraphController.build(module);
+        OptimizerUnit.build(module);
     }
 
     /**
