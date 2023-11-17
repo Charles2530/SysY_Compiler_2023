@@ -6,6 +6,7 @@ import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
+import midend.simplify.controller.datastruct.LoopVal;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
@@ -223,5 +224,44 @@ public class DebugDetailController {
                     globalVariableNumberingFunctionHashMap.get(string).toString());
         }
         printDebugDetail("\n\n\n");
+    }
+
+    /**
+     * printLoopAnalysisDetail 用于输出循环分析的详细信息
+     *
+     * @param loopDepthHashMap  循环深度哈希表
+     * @param loopValHashMap    循环集合哈希表
+     * @param loopValTopHashMap 顶层循环集合哈希表
+     */
+    public static void printLoopAnalysisDetail(
+            HashMap<Function, HashMap<BasicBlock, Integer>> loopDepthHashMap,
+            HashMap<Function, ArrayList<LoopVal>> loopValHashMap,
+            HashMap<Function, ArrayList<LoopVal>> loopValTopHashMap) {
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        printDebugDetail("Loop Analysis Detail:");
+        for (Function function : loopDepthHashMap.keySet()) {
+            printDebugDetail("  Function: " + function.getName());
+            ArrayList<BasicBlock> paramList = new ArrayList<>(
+                    loopDepthHashMap.get(function).keySet());
+            paramList.sort(Comparator.comparing(Value::getName));
+            for (BasicBlock basicBlock : paramList) {
+                printDebugDetail("      BasicBlock: " + basicBlock.getName());
+                printDebugDetail("          Loop Depth: " +
+                        loopDepthHashMap.get(function).get(basicBlock));
+                printDebugDetail("          Loop Val: ");
+                for (LoopVal loopVal : loopValHashMap.get(function)) {
+                    if (loopVal.getLoopBlocks().contains(basicBlock)) {
+                        printDebugDetail("              " + loopVal);
+                    }
+                }
+                printDebugDetail("          Loop Val Top: ");
+                for (LoopVal loopVal : loopValTopHashMap.get(function)) {
+                    if (loopVal.getLoopBlocks().contains(basicBlock)) {
+                        printDebugDetail("              " + loopVal);
+                    }
+                }
+                printDebugDetail("\n");
+            }
+        }
     }
 }

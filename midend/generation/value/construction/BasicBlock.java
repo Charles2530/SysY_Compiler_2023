@@ -2,8 +2,8 @@ package midend.generation.value.construction;
 
 import backend.generation.mips.asm.textsegment.structure.Label;
 import backend.simplify.method.PhiEliminationUnit;
-import iostream.structure.IoStreamGeneration;
 import iostream.OptimizerUnit;
+import iostream.structure.IoStreamGeneration;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.irtype.PointerType;
 import midend.generation.utils.irtype.StructType;
@@ -16,9 +16,9 @@ import midend.generation.value.instr.basis.CallInstr;
 import midend.generation.value.instr.optimizer.ParallelCopy;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.LivenessAnalysisController;
-import midend.simplify.controller.LoopAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
+import midend.simplify.controller.datastruct.LoopVal;
 import midend.simplify.method.BlockSimplifyUnit;
 import midend.simplify.method.Mem2RegUnit;
 
@@ -41,6 +41,7 @@ public class BasicBlock extends Value {
     private ArrayList<Instr> instrArrayList;
     private Function belongingFunc;
     private boolean exist;
+    private LoopVal loopVal;
 
     public BasicBlock(String name) {
         super(new StructType("basicBlock"), name);
@@ -91,6 +92,14 @@ public class BasicBlock extends Value {
 
     public void setBelongingFunc(Function belongingFunc) {
         this.belongingFunc = belongingFunc;
+    }
+
+    public LoopVal getLoopVal() {
+        return loopVal;
+    }
+
+    public void setLoopVal(LoopVal loopVal) {
+        this.loopVal = loopVal;
     }
 
     @Override
@@ -353,8 +362,11 @@ public class BasicBlock extends Value {
         }
     }
 
-    public Integer getLoopDepth() {
-        return LoopAnalysisController.getBlockLoopDepth(this);
+    public int getLoopDepth() {
+        if (loopVal == null) {
+            return 0;
+        }
+        return loopVal.getLoopDepth();
     }
 }
 

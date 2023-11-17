@@ -393,6 +393,12 @@ public class Function extends User {
      * 主要用于循环分析
      */
     public void loopAnalysis() {
+        LoopAnalysisController.addFunctionLoopDepthHashMap(this, new HashMap<>());
+        LoopAnalysisController.addFunctionLoopVal(this, new ArrayList<>());
+        LoopAnalysisController.addFunctionLoopValTop(this, new ArrayList<>());
+        for (BasicBlock block : basicBlocks) {
+            block.setLoopVal(null);
+        }
         ArrayList<BasicBlock> latchBlocks = new ArrayList<>();
         ArrayList<BasicBlock> posOrderBlocks =
                 DominatorTree.computeDominanceTreePostOrder(this);

@@ -1,5 +1,6 @@
 package midend.simplify.controller;
 
+import iostream.structure.DebugDetailController;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
@@ -33,6 +34,8 @@ public class LoopAnalysisController {
     public static void analysis(Module module) {
         LoopAnalysisController.init();
         module.getFunctions().forEach(Function::loopAnalysis);
+        DebugDetailController.printLoopAnalysisDetail(
+                loopDepthHashMap, loopValHashMap, loopValTopHashMap);
     }
 
     /**
@@ -82,7 +85,8 @@ public class LoopAnalysisController {
     }
 
     public static void addLoopVal(LoopVal loop) {
-        LoopAnalysisController.getFunctionLoopVal(loop.getFunction()).add(loop);
+        LoopAnalysisController.getFunctionLoopVal(
+                loop.getEntryBlock().getBelongingFunc()).add(loop);
     }
 
     /**
@@ -98,7 +102,8 @@ public class LoopAnalysisController {
     }
 
     public static void addLoopValTop(LoopVal loop) {
-        LoopAnalysisController.getFunctionLoopValTop(loop.getFunction()).add(loop);
+        LoopAnalysisController.getFunctionLoopValTop(
+                loop.getEntryBlock().getBelongingFunc()).add(loop);
     }
 
     /**
@@ -112,6 +117,30 @@ public class LoopAnalysisController {
         ArrayList<BasicBlock> blocks = new ArrayList<>(latchBlocks);
         while (!blocks.isEmpty()) {
             BasicBlock block = blocks.remove(0);
+            LoopVal subloop = block.getLoopVal();
+            if (subloop == null) {
+                block.setLoopVal(loop);
+                if (block.equals(loop.getEntryBlock())) {
+                    continue;
+                }
+                blocks.addAll(block.getBlockIndBasicBlock());
+            } else {
+                LoopVal parent = subloop.getParentLoop();
+                while (parent != null) {
+                    subloop = parent;
+                    parent = parent.getParentLoop();
+                }
+                if (subloop.equals(loop)) {
+                    continue;
+                }
+                subloop.setParentLoop(loop);
+                for (BasicBlock indBasicBlock :
+                        subloop.getEntryBlock().getBlockIndBasicBlock()) {
+                    if (indBasicBlock.getLoopVal() != subloop) {
+                        blocks.add(indBasicBlock);
+                    }
+                }
+            }
         }
     }
 
@@ -127,7 +156,36 @@ public class LoopAnalysisController {
         HashSet<BasicBlock> visited = new HashSet<>();
         stack.push(root);
         while (!stack.isEmpty()) {
-
+            BasicBlock block = stack.pop();
+            visited.add(block);
+            LoopVal subloop = block.getLoopVal();
+            if (subloop != null && block.equals(subloop.getEntryBlock())) {
+                LoopVal parent = subloop.getParentLoop();
+                if (parent != null) {
+                    parent.addSubLoop(subloop);
+                    LoopAnalysisController.getFunctionLoopVal(root.getBelongingFunc()).add(subloop);
+                } else {
+                    LoopAnalysisController.getFunctionLoopValTop(
+                            root.getBelongingFunc()).add(subloop);
+                    LoopAnalysisController.getFunctionLoopVal(root.getBelongingFunc()).add(subloop);
+                }
+                int depth = 1;
+                LoopVal tmp = subloop.getParentLoop();
+                while (tmp != null) {
+                    tmp = tmp.getParentLoop();
+                    depth++;
+                }
+                subloop.setLoopDepth(depth);
+            }
+            while (subloop != null) {
+                subloop.addBlock(block);
+                subloop = subloop.getParentLoop();
+            }
+            for (BasicBlock outBasicBlock : block.getBlockOutBasicBlock()) {
+                if (!visited.contains(outBasicBlock)) {
+                    stack.push(outBasicBlock);
+                }
+            }
         }
     }
 }
