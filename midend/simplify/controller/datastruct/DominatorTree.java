@@ -8,6 +8,7 @@ import midend.generation.value.construction.user.Function;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Stack;
 
 /**
  * DominatorTree 是支配树，
@@ -330,4 +331,30 @@ public class DominatorTree {
         DominatorTree.addBlockDominateChildList(preBasicBlock, preDominateChildList);
     }
 
+    /**
+     * computeDominanceTreePostOrder 方法用于计算支配树的后序遍历，
+     * 主要用于在GVN中计算支配树的后序遍历
+     * 本函数采用广度优先遍历实现
+     *
+     * @param function 待分析函数
+     */
+    public static ArrayList<BasicBlock> computeDominanceTreePostOrder(Function function) {
+        ArrayList<BasicBlock> postOrder = new ArrayList<>();
+        HashSet<BasicBlock> visitedOut = new HashSet<>();
+        Stack<BasicBlock> stack = new Stack<>();
+        stack.add(function.getBasicBlocks().get(0));
+        while (!stack.isEmpty()) {
+            BasicBlock parent = stack.peek();
+            if (visitedOut.contains(parent)) {
+                postOrder.add(parent);
+                stack.pop();
+                continue;
+            }
+            for (BasicBlock child : parent.getBlockDominateChildList()) {
+                stack.push(child);
+            }
+            visitedOut.add(parent);
+        }
+        return postOrder;
+    }
 }

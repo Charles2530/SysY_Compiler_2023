@@ -35,10 +35,12 @@ public class BasicBlock extends Value {
      * belongingFunc 是该 BasicBlock 所属的函数
      * exist 是该 BasicBlock 是否存在，主要是用于后
      * 续中间代码优化时删除基本块所使用的标记。
+     * dom
      */
     private ArrayList<Instr> instrArrayList;
     private Function belongingFunc;
     private boolean exist;
+    private Integer domDepth;
 
     public BasicBlock(String name) {
         super(new StructType("basicBlock"), name);
@@ -89,6 +91,14 @@ public class BasicBlock extends Value {
 
     public void setBelongingFunc(Function belongingFunc) {
         this.belongingFunc = belongingFunc;
+    }
+
+    public Integer getDomDepth() {
+        return domDepth;
+    }
+
+    public void setDomDepth(Integer domDepth) {
+        this.domDepth = domDepth;
     }
 
     @Override
@@ -341,6 +351,11 @@ public class BasicBlock extends Value {
                 }
             }
         }
+    }
+
+    /*TODO:need change*/
+    public Integer getLoopDepth() {
+        return 0;
     }
 }
 

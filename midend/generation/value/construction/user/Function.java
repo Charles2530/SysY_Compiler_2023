@@ -26,6 +26,7 @@ import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -354,11 +355,26 @@ public class Function extends User {
     /**
      * GlobalCodeMovementAnalysis 方法用于在该 Function 中的所有基本块中进行全局代码移动分析。
      * 主要用于全局代码移动
+     * 该函数的执行流程如下:
+     * 1.首先判断该函数是否只有一个基本块，如果是，直接返回
+     * 2.否则，首先计算该函数的支配树后序遍历序列
+     * 3.然后，对于每一个基本块，将其指令加入到一个指令列表中
+     * 4.对于每一个指令，首先调用 GlobalCodeMovementUnit.scheduleEarly 方法进行向前移动
+     * 5.然后，对于每一个指令，调用 GlobalCodeMovementUnit.scheduleLate 方法进行向后移动
      */
     public void globalCodeMovementAnalysis() {
         if (basicBlocks.size() > 1) {
             GlobalCodeMovementUnit.getVisited().clear();
-
+            ArrayList<BasicBlock> posOrderBlocks =
+                    DominatorTree.computeDominanceTreePostOrder(this);
+            Collections.reverse(posOrderBlocks);
+            ArrayList<Instr> instrList = new ArrayList<>();
+            posOrderBlocks.forEach(v -> instrList.addAll(v.getInstrArrayList()));
+            instrList.forEach(instr ->
+                    GlobalCodeMovementUnit.scheduleEarly(instr, this));
+            GlobalCodeMovementUnit.getVisited().clear();
+            Collections.reverse(instrList);
+            instrList.forEach(GlobalCodeMovementUnit::scheduleLate);
         }
     }
 }

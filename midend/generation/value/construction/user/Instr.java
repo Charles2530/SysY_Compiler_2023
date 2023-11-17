@@ -159,4 +159,10 @@ public class Instr extends User {
     public Value copy(FunctionClone functionClone) {
         return null;
     }
+
+    public boolean isPinned() {
+        return !(this instanceof CalcInstr) && !(this instanceof IcmpInstr) &&
+                !(this instanceof ZextInstr) && !(this instanceof GetEleInstr) &&
+                !(this instanceof CallInstr callInstr && callInstr.isPure());
+    }
 }

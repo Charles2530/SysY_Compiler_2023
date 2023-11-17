@@ -1,8 +1,12 @@
 package midend.simplify.method;
 
+import midend.generation.value.Value;
+import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
+import midend.generation.value.construction.User;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
+import midend.generation.value.instr.optimizer.PhiInstr;
 
 import java.util.HashSet;
 
@@ -33,5 +37,134 @@ public class GlobalCodeMovementUnit {
 
     public static HashSet<Instr> getVisited() {
         return visited;
+    }
+
+    /**
+     * scheduleEarly 用于在GCM中实现尽可能的把指令前移，
+     * 确定每个指令能被调度到的最早的基本块，同时不影响指令间的依赖关系。
+     * 当我们把指令向前提时，限制它前移的是它的输入，
+     * 即每条指令最早要在它的所有输入定义后的位置。
+     * 该函数执行逻辑如下:
+     * 1.如果已经处理过了，或者是无法移动，那么就结束处理。
+     * 2.如果未处理，将这条指令从当前块移除，然后插入到入口块的最后一条指令之前。
+     * 3.遍历该指令用到的操作数，尝试前移。
+     */
+    public static void scheduleEarly(Instr instr, Function function) {
+        if (visited.contains(instr) || instr.isPinned()) {
+            return;
+        }
+        visited.add(instr);
+        BasicBlock root = function.getBasicBlocks().get(0);
+        instr.getBelongingBlock().getInstrArrayList().remove(instr);
+        root.addInstr(instr, root.getInstrArrayList().size() - 1);
+        instr.getOperands().forEach(v -> scheduleEarlyAnalysis(v, instr, function));
+    }
+
+    /**
+     * scheduleLate 用于在GCM中尽可能的把指令后移，
+     * 确定每个指令能被调度到的最晚的基本块。
+     * 每个指令也会被使用它们的指令限制，限制其不能无限向后移。
+     * 该函数执行逻辑如下:
+     * 1.如果已经处理过了，或者是无法移动，那么就结束处理。
+     */
+    /*TODO:注释没有写完*/
+    public static void scheduleLate(Instr instr) {
+        if (visited.contains(instr) || instr.isPinned()) {
+            return;
+        }
+        visited.add(instr);
+        BasicBlock lcaBlock = null;
+        for (User user : instr.getUsers()) {
+            lcaBlock = scheduleLateAnalysis(user, instr, lcaBlock);
+        }
+        GlobalCodeMovementUnit.pickFinalPos(lcaBlock, instr);
+        BasicBlock bestBlock = instr.getBelongingBlock();
+        for (Instr instInst : bestBlock.getInstrArrayList()) {
+            if (!instInst.equals(instr) && !(instInst instanceof PhiInstr) &&
+                    instInst.getOperands().contains(instr)) {
+                instr.getBelongingBlock().getInstrArrayList().remove(instr);
+                bestBlock.addInstr(instr, bestBlock.getInstrArrayList().indexOf(instInst));
+                break;
+            }
+        }
+    }
+
+    /**
+     * pickFinalPos 用于在GCM中寻找指令最终所处的位置
+     */
+    private static void pickFinalPos(BasicBlock lcaBlock, Instr instr) {
+        BasicBlock posBlock = lcaBlock;
+        if (!instr.getUsers().isEmpty()) {
+            BasicBlock bestBlock = posBlock;
+            while (!posBlock.equals(instr.getBelongingBlock())) {
+                posBlock = posBlock.getBlockDominateParent();
+                if (posBlock.getLoopDepth() < bestBlock.getLoopDepth()) {
+                    bestBlock = posBlock;
+                }
+            }
+            instr.getBelongingBlock().getInstrArrayList().remove(instr);
+            bestBlock.addInstr(instr, bestBlock.getInstrArrayList().size() - 1);
+        }
+    }
+
+    private static BasicBlock scheduleLateAnalysis(User user, Instr instr, BasicBlock lcaBlock) {
+        BasicBlock lcaVector = lcaBlock;
+        if (user instanceof Instr userInst) {
+            GlobalCodeMovementUnit.scheduleLate(userInst);
+            BasicBlock useBasicBlock;
+            if (userInst instanceof PhiInstr phiInstr) {
+                for (int i = 0; i < phiInstr.getOperands().size(); i++) {
+                    if (phiInstr.getOperands().get(i) instanceof Instr instInst &&
+                            instr.equals(instInst)) {
+                        useBasicBlock = phiInstr.getIndBasicBlock().get(i);
+                        lcaVector = getLeastCommonAncestor(lcaVector, useBasicBlock);
+                    }
+                }
+            } else {
+                useBasicBlock = userInst.getBelongingBlock();
+                lcaVector = getLeastCommonAncestor(lcaVector, useBasicBlock);
+            }
+        }
+        return lcaVector;
+    }
+
+    private static BasicBlock getLeastCommonAncestor(
+            BasicBlock lcaBlock, BasicBlock useBasicBlock) {
+        BasicBlock block1 = lcaBlock;
+        BasicBlock block2 = useBasicBlock;
+        if (block1 == null) {
+            return block2;
+        }
+        while (block1.getDomDepth() < block2.getDomDepth()) {
+            block2 = block2.getBlockDominateParent();
+        }
+        while (block1.getDomDepth() > block2.getDomDepth()) {
+            block1 = block1.getBlockDominateParent();
+        }
+        while (!(block1.equals(block2))) {
+            block1 = block1.getBlockDominateParent();
+            block2 = block2.getBlockDominateParent();
+        }
+        return block1;
+    }
+
+    /**
+     * scheduleEarlyAnalysis() 用于在优化中调度该Value的前移分析
+     * 主要用于GCM优化
+     * 该函数执行逻辑如下:
+     * 1.如果该操作数是个指令，那么应该是一并提升
+     * 2.比较两个指令和操作数的支配树深度，如果指令的深度要小于操作数的深度
+     * 则将指令插在输入指令的基本块的最后一条指令的前面
+     */
+    public static void scheduleEarlyAnalysis(Value value, Instr instr, Function function) {
+        if (value instanceof Instr instrInst) {
+            GlobalCodeMovementUnit.scheduleEarly(instrInst, function);
+            if (instrInst.getBelongingBlock().getDomDepth() >
+                    instr.getBelongingBlock().getDomDepth()) {
+                BasicBlock block = instrInst.getBelongingBlock();
+                block.getInstrArrayList().remove(instrInst);
+                block.addInstr(instr, block.getInstrArrayList().size() - 1);
+            }
+        }
     }
 }

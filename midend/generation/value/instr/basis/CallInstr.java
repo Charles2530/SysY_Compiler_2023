@@ -122,4 +122,19 @@ public class CallInstr extends Instr {
         copyBlock.addInstr(instr);
         return instr;
     }
+
+    /*TODO: need sideEffectAnalysis*/
+    public boolean isPure() {
+        //        if (this.getUsers().isEmpty() || target.hasSideEffect()) {
+        if (this.getUsers().isEmpty()) {
+            return false;
+        }
+        for (Value value : operands) {
+            if (value instanceof GetEleInstr || value instanceof LoadInstr ||
+                    value.getType().isPointer()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
