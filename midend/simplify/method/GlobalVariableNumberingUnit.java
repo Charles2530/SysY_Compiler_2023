@@ -1,5 +1,6 @@
 package midend.simplify.method;
 
+import iostream.structure.DebugDetailController;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
@@ -34,6 +35,9 @@ public class GlobalVariableNumberingUnit {
      * run 方法用于运行全局变量编号，是GVN的主函数
      */
     public static void run(Module module) {
+        DebugDetailController.printDebugDetail(
+                ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        DebugDetailController.printDebugDetail("Global Variable Numbering:");
         GlobalVariableNumberingUnit.GlobalVariableNumberingHashMap = new HashMap<>();
         module.getFunctions().forEach(Function::uniqueInstr);
         LivenessAnalysisController.analysis(module);
@@ -79,6 +83,7 @@ public class GlobalVariableNumberingUnit {
         }
         entry.getBlockDominateChildList()
                 .forEach(child -> uniqueInstr(child, hashMap));
+        DebugDetailController.printGlobalVariableNumbering(entry.getBelongingFunc(), hashMap);
         for (Instr instr : vis) {
             hashMap.remove(instr.getGlobalVariableNumberingHash());
         }

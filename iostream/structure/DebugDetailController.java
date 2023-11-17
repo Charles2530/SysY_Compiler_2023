@@ -5,6 +5,7 @@ import midend.generation.GenerationMain;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.user.Function;
+import midend.generation.value.construction.user.Instr;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
@@ -31,8 +32,10 @@ public class DebugDetailController {
 
     /**
      * printDebugDetail 是一个用于输出调试信息的函数
+     *
+     * @param string 表示调试信息
      */
-    private static void printDebugDetail(String string) {
+    public static void printDebugDetail(String string) {
         if (isDebugDetailOutput) {
             try {
                 debugDetailOutputStream.write(string + '\n');
@@ -44,10 +47,14 @@ public class DebugDetailController {
 
     /**
      * printControlFlowGraph 是一个用于输出控制流图的函数
+     *
+     * @param indBasicBlockFunctionMap 表示入口基本块哈希表
+     * @param outBasicBlockFunctionMap 表示出口基本块哈希表
      */
     public static void printControlFlowGraph(HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> indBasicBlockFunctionMap, HashMap<Function, HashMap<BasicBlock,
             ArrayList<BasicBlock>>> outBasicBlockFunctionMap) {
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         printDebugDetail("Control Flow Graph:");
         for (Function function : indBasicBlockFunctionMap.keySet()) {
             printDebugDetail("  Function: " + function.getName());
@@ -72,6 +79,11 @@ public class DebugDetailController {
 
     /**
      * printDominateTree 是一个用于输出支配树的函数
+     *
+     * @param dominateFunctionHashMap          表示支配哈希表
+     * @param dominanceFrontierFunctionHashMap 表示支配前沿哈希表
+     * @param parentFunctionHashMap            表示父节点哈希表
+     * @param childListFunctionHashMap         表示子节点哈希表
      */
     public static void printDominateTree(
             HashMap<Function, HashMap<BasicBlock, ArrayList<BasicBlock>>> dominateFunctionHashMap,
@@ -80,6 +92,7 @@ public class DebugDetailController {
             HashMap<Function, HashMap<BasicBlock, BasicBlock>> parentFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock,
                     ArrayList<BasicBlock>>> childListFunctionHashMap) {
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         printDebugDetail("Dominate Tree:");
         for (Function function : dominateFunctionHashMap.keySet()) {
             printDebugDetail("  Function: " + function.getName());
@@ -114,12 +127,18 @@ public class DebugDetailController {
 
     /**
      * printLivenessAnalysis 是一个用于输出活跃变量分析的函数
+     *
+     * @param inFunctionHashMap  表示入口活跃变量哈希表
+     * @param outFunctionHashMap 表示出口活跃变量哈希表
+     * @param useFunctionHashMap 表示使用活跃变量哈希表
+     * @param defFunctionHashMap 表示定义活跃变量哈希表
      */
     public static void printLivenessAnalysis(
             HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> inFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> outFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> useFunctionHashMap,
             HashMap<Function, HashMap<BasicBlock, HashSet<Value>>> defFunctionHashMap) {
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         printDebugDetail("Liveness Analysis:");
         for (Function function : inFunctionHashMap.keySet()) {
             printDebugDetail("  Function: " + function.getName());
@@ -152,15 +171,20 @@ public class DebugDetailController {
 
     /**
      * printRegisterValueReflection 是一个用于输出寄存器与值的映射关系的函数
+     *
+     * @param function        表示函数
+     * @param registerHashMap 表示寄存器与值的映射关系
      */
     public static void printRegisterValueReflection(
             Function function, HashMap<Value, Register> registerHashMap) {
-        printDebugDetail("Function: " + function.getName());
-        printDebugDetail("  Register Value Reflection:");
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        printDebugDetail("Register Value Reflection:");
+        printDebugDetail("  Function: " + function.getName());
+        printDebugDetail("      Register Value Reflection:");
         ArrayList<Value> paramList = new ArrayList<>(registerHashMap.keySet());
         paramList.sort(Comparator.comparing(Value::getName));
         for (Value value : paramList) {
-            printDebugDetail("      " + value.getName() + " ==> " + registerHashMap.get(value));
+            printDebugDetail("          " + value.getName() + " ==> " + registerHashMap.get(value));
         }
     }
 
@@ -174,5 +198,25 @@ public class DebugDetailController {
         printDebugDetail("Inline Function Result:");
         printDebugDetail("  Iterations: " + iterations);
         printDebugDetail(GenerationMain.getModule().toString());
+    }
+
+    /**
+     * printGlobalVariableNumbering 是一个用于输出全局变量编号的函数
+     *
+     * @param function                               表示函数
+     * @param globalVariableNumberingFunctionHashMap 表示全局变量编号哈希表
+     */
+    public static void printGlobalVariableNumbering(
+            Function function, HashMap<String, Instr> globalVariableNumberingFunctionHashMap) {
+        printDebugDetail("  Function: " + function.getName());
+        printDebugDetail("      Global Variable Numbering:");
+        ArrayList<String> paramList = new ArrayList<>(
+                globalVariableNumberingFunctionHashMap.keySet());
+        paramList.sort(Comparator.comparing(String::toString));
+        for (String string : paramList) {
+            printDebugDetail("          " + string + " ==> " +
+                    globalVariableNumberingFunctionHashMap.get(string).toString());
+        }
+        printDebugDetail("\n\n\n");
     }
 }
