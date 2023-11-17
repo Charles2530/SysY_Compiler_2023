@@ -111,15 +111,21 @@ public class ControlFlowGraph {
             ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
                     .get(basicBlock).add(idx[0], indBasicBlock);
         } else {
-            ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
-                    .get(basicBlock).add(indBasicBlock);
+            if (!ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                    .get(basicBlock).contains(indBasicBlock)) {
+                ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                        .get(basicBlock).add(indBasicBlock);
+            }
         }
     }
 
     public static void addBlockOutBasicBlockList(
             BasicBlock basicBlock, ArrayList<BasicBlock> outBasicBlocks) {
-        ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
-                .put(basicBlock, outBasicBlocks);
+        if (!ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                .containsKey(basicBlock)) {
+            ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                    .put(basicBlock, outBasicBlocks);
+        }
     }
 
     /**
@@ -138,15 +144,21 @@ public class ControlFlowGraph {
             ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
                     .get(basicBlock).add(idx[0], outBasicBlock);
         } else {
-            ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
-                    .get(basicBlock).add(outBasicBlock);
+            if (!ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                    .get(basicBlock).contains(outBasicBlock)) {
+                ControlFlowGraph.getFunctionOutBasicBlock(basicBlock.getBelongingFunc())
+                        .get(basicBlock).add(outBasicBlock);
+            }
         }
     }
 
     public static void addBlockIndBasicBlockList(
             BasicBlock basicBlock, ArrayList<BasicBlock> indBasicBlocks) {
-        ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
-                .put(basicBlock, indBasicBlocks);
+        if (!ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                .containsKey(basicBlock)) {
+            ControlFlowGraph.getFunctionIndBasicBlock(basicBlock.getBelongingFunc())
+                    .put(basicBlock, indBasicBlocks);
+        }
     }
 
     public static ArrayList<BasicBlock> getBlockIndBasicBlock(BasicBlock basicBlock) {
