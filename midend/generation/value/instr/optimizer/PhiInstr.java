@@ -58,7 +58,7 @@ public class PhiInstr extends Instr {
         Instr instr = new PhiInstr(
                 IrNameController.getLocalVarName(functionClone.getCaller()) + "_Inline",
                 copyIndBasicBlock);
-        copyBlock.addInstr(instr);
+        copyBlock.insertInstr(0, instr);
         return instr;
     }
 

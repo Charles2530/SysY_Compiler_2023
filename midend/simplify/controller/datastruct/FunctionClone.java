@@ -51,10 +51,9 @@ public class FunctionClone {
         ControlFlowGraph.addFunctionIndBasicBlock(copyFunction, new HashMap<>());
         ControlFlowGraph.addFunctionOutBasicBlock(copyFunction, new HashMap<>());
         for (int i = 0; i < response.getParams().size(); i++) {
-            Param param = new Param(
-                    response.getParams().get(i).getType(), response.getParams().get(i).getName());
+            Param param = response.getParams().get(i).copy();
             copyFunction.addParam(param);
-            this.putValue(response.getParams().get(i), copyFunction.getParams().get(i));
+            this.putValue(response.getParams().get(i), param);
         }
         for (BasicBlock basicBlock : response.getBasicBlocks()) {
             BasicBlock copyBlock = new BasicBlock(
@@ -66,9 +65,12 @@ public class FunctionClone {
         for (PhiInstr phiInstr : phiList) {
             for (int i = 0; i < phiInstr.getOperands().size(); i++) {
                 Value operand = phiInstr.getOperands().get(i);
+                BasicBlock basicBlock = phiInstr.getIndBasicBlock().get(i);
                 PhiInstr reflectPhi = ((PhiInstr) getValue(phiInstr));
                 reflectPhi.getOperands().set(i, getValue(operand));
+                reflectPhi.getIndBasicBlock().set(i, (BasicBlock) getValue(basicBlock));
                 getValue(operand).addUseDefChain(reflectPhi);
+                getValue(basicBlock).addUseDefChain(reflectPhi);
             }
         }
         return copyFunction;

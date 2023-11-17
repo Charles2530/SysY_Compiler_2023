@@ -3,6 +3,8 @@ package midend.generation.value.construction;
 import iostream.OptimizerUnit;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
+import midend.generation.utils.irtype.PointerType;
+import midend.generation.utils.irtype.VarType;
 import midend.generation.value.Value;
 import midend.generation.value.construction.user.Function;
 
@@ -30,5 +32,10 @@ public class Param extends Value {
     @Override
     public String toString() {
         return type + " " + name;
+    }
+
+    public Param copy() {
+        IrType type = this.type.isInt32() ? new VarType(32) : new PointerType(this.type);
+        return new Param(type, this.name);
     }
 }
