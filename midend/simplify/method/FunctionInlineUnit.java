@@ -1,6 +1,7 @@
 package midend.simplify.method;
 
 import iostream.structure.DebugDetailController;
+import midend.generation.GenerationMain;
 import midend.generation.utils.IrNameController;
 import midend.generation.utils.IrType;
 import midend.generation.value.Value;
@@ -258,6 +259,9 @@ public class FunctionInlineUnit {
         callInstr.dropOperands();
         callInstr.getBelongingBlock().getInstrArrayList().remove(callInstr);
         inlineBlock.reducePhi(true);
+        // 重建CFG流图
+        ControlFlowGraph.build(GenerationMain.getModule());
+
     }
 
     /**
