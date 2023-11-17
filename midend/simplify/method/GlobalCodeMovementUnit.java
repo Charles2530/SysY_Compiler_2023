@@ -7,6 +7,8 @@ import midend.generation.value.construction.User;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.optimizer.PhiInstr;
+import midend.simplify.controller.LoopAnalysisController;
+import midend.simplify.controller.SideEffectAnalysisController;
 
 import java.util.HashSet;
 
@@ -25,6 +27,8 @@ public class GlobalCodeMovementUnit {
 
     public static void run(Module module) {
         GlobalCodeMovementUnit.init();
+        LoopAnalysisController.analysis(module);
+        SideEffectAnalysisController.analysis(module);
         module.getFunctions().forEach(Function::globalCodeMovementAnalysis);
     }
 

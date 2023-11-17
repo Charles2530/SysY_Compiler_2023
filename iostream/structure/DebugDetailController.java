@@ -4,6 +4,7 @@ import backend.generation.mips.Register;
 import midend.generation.GenerationMain;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
+import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
 import midend.generation.value.construction.user.Instr;
 import midend.simplify.controller.datastruct.LoopVal;
@@ -263,5 +264,21 @@ public class DebugDetailController {
                 printDebugDetail("\n");
             }
         }
+        printDebugDetail("\n\n\n");
+    }
+
+    /**
+     * printSideEffectAnalysis 是一个用于输出副作用分析的函数
+     *
+     * @param module 表示LLVM IR生成的顶级模块
+     */
+    public static void printSideEffectAnalysis(Module module) {
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        printDebugDetail("Side Effect Analysis:");
+        for (Function function : module.getFunctions()) {
+            printDebugDetail("  Function: " + function.getName());
+            printDebugDetail("      Side Effect: " + function.getSideEffect());
+        }
+        printDebugDetail("\n\n\n");
     }
 }

@@ -4,7 +4,6 @@ import backend.simplify.BackEndOptimizerUnit;
 import midend.generation.value.construction.Module;
 import midend.simplify.MidEndOptimizerUnit;
 import midend.simplify.controller.LivenessAnalysisController;
-import midend.simplify.controller.LoopAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 
@@ -49,7 +48,6 @@ public abstract class OptimizerUnit {
         ControlFlowGraph.build(module);
         DominatorTree.build(module);
         LivenessAnalysisController.analysis(module);
-        LoopAnalysisController.analysis(module);
     }
 
     /**

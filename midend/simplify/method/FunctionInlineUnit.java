@@ -106,7 +106,7 @@ public class FunctionInlineUnit {
     /**
      * buildFuncCallGraph 方法用于建立函数调用图
      */
-    private static void buildFuncCallGraph() {
+    public static void buildFuncCallGraph() {
         FunctionInlineUnit.reset();
         module.getFunctions().forEach(Function::buildFuncCallGraph);
     }

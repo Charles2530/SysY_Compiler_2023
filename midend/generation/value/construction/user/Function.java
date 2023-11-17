@@ -17,8 +17,10 @@ import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Param;
 import midend.generation.value.construction.User;
 import midend.generation.value.instr.basis.CallInstr;
+import midend.generation.value.instr.basis.StoreInstr;
 import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.LoopAnalysisController;
+import midend.simplify.controller.SideEffectAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.controller.datastruct.LoopVal;
@@ -44,12 +46,16 @@ public class Function extends User {
      * params 是该 Function 的参数集合
      * registerHashMap 是该 Function 的寄存器映射表
      * isImproved 是该 Function 是否可以进行 GVN 优化
+     * responses 是该 Function 调用的函数集合
+     * sideEffect 是该 Function 是否有副作用
      */
     private final IrType returnType;
     private final ArrayList<BasicBlock> basicBlocks;
     private final ArrayList<Param> params;
     private HashMap<Value, Register> registerHashMap;
     private Boolean isImproved;
+    private HashSet<Function> responses;
+    private boolean sideEffect;
 
     public Function(String name, IrType returnType) {
         super(new StructType("function"), name);
@@ -431,5 +437,47 @@ public class Function extends User {
      */
     public void getLoopTopArray() {
         LoopAnalysisController.getFunctionLoopValTop(this);
+    }
+
+    /**
+     * sideEffectBuildGraph 方法用于在该 Function 中的所有基本块中进行副作用分析，
+     */
+    public void sideEffectBuildGraph() {
+        responses.clear();
+        sideEffect = false;
+        SideEffectAnalysisController.addFunctionVisited(this, false);
+        SideEffectAnalysisController.addFunctionProcessed(this, false);
+        for (BasicBlock block : basicBlocks) {
+            for (Instr instr : block.getInstrArrayList()) {
+                if (instr instanceof CallInstr callInstr) {
+                    Function target = callInstr.getTarget();
+                    responses.add(target);
+                }
+                if (instr instanceof StoreInstr) {
+                    sideEffect = true;
+                    SideEffectAnalysisController.addFunctionProcessed(this, true);
+                }
+            }
+        }
+    }
+
+    /**
+     * initResponse 方法用于初始化该函数的响应
+     */
+    public void initResponse() {
+        responses = new HashSet<>();
+        responses.addAll(FunctionInlineUnit.getResponse(this));
+    }
+
+    public HashSet<Function> getResponses() {
+        return responses;
+    }
+
+    public void setSideEffect(boolean sideEffect) {
+        this.sideEffect = sideEffect;
+    }
+
+    public boolean getSideEffect() {
+        return sideEffect;
     }
 }

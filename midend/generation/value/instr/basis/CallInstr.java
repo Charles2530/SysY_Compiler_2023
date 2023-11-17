@@ -123,10 +123,8 @@ public class CallInstr extends Instr {
         return instr;
     }
 
-    /*TODO: need sideEffectAnalysis*/
     public boolean isPure() {
-        //        if (this.getUsers().isEmpty() || target.hasSideEffect()) {
-        if (this.getUsers().isEmpty()) {
+        if (this.getUsers().isEmpty() || target.getSideEffect()) {
             return false;
         }
         for (Value value : operands) {
