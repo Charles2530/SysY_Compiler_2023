@@ -441,6 +441,7 @@ public class Function extends User {
 
     /**
      * sideEffectBuildGraph 方法用于在该 Function 中的所有基本块中进行副作用分析，
+     * 如果是 store 那么就是有影响的
      */
     public void sideEffectBuildGraph() {
         responses.clear();

@@ -67,11 +67,6 @@ public class LoopAnalysisController {
                 basicBlock.getBelongingFunc()).put(basicBlock, integer);
     }
 
-    public static Integer getBlockLoopDepth(BasicBlock basicBlock) {
-        return LoopAnalysisController.getFunctionLoopDepthHashMap(
-                basicBlock.getBelongingFunc()).get(basicBlock);
-    }
-
     /**
      * addFunctionLoopVal 方法用于添加循环哈希表
      */
@@ -84,11 +79,6 @@ public class LoopAnalysisController {
         return LoopAnalysisController.loopValHashMap.get(function);
     }
 
-    public static void addLoopVal(LoopVal loop) {
-        LoopAnalysisController.getFunctionLoopVal(
-                loop.getEntryBlock().getBelongingFunc()).add(loop);
-    }
-
     /**
      * addFunctionLoopValTop 方法用于添加循环哈希表
      */
@@ -99,11 +89,6 @@ public class LoopAnalysisController {
 
     public static ArrayList<LoopVal> getFunctionLoopValTop(Function function) {
         return LoopAnalysisController.loopValTopHashMap.get(function);
-    }
-
-    public static void addLoopValTop(LoopVal loop) {
-        LoopAnalysisController.getFunctionLoopValTop(
-                loop.getEntryBlock().getBelongingFunc()).add(loop);
     }
 
     /**

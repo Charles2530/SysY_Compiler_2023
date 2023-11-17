@@ -70,8 +70,9 @@ public class GlobalCodeMovementUnit {
      * 每个指令也会被使用它们的指令限制，限制其不能无限向后移。
      * 该函数执行逻辑如下:
      * 1.如果已经处理过了，或者是无法移动，那么就结束处理。
+     * 2.如果未处理，遍历该指令的使用者，寻找LCA尝试后移。
+     * 3.如果该指令的使用者是Phi指令，那么遍历Phi指令的每个操作数，寻找LCA尝试后移。
      */
-    /*TODO:注释没有写完*/
     public static void scheduleLate(Instr instr) {
         if (visited.contains(instr) || instr.isPinned()) {
             return;
@@ -95,6 +96,11 @@ public class GlobalCodeMovementUnit {
 
     /**
      * pickFinalPos 用于在GCM中寻找指令最终所处的位置
+     * 该函数的执行逻辑如下：
+     * 1.如果该指令没有使用者，那么直接返回
+     * 2.如果该指令有使用者，那么遍历该指令的使用者，找到最佳位置
+     * 3.找到他们的LCA，如果他们是有共同祖先的，那么就将该指令插入到共同祖先的位置
+     * 4.如果共同祖先不是该指令的所在块，则尽量让循环深度变小
      */
     private static void pickFinalPos(BasicBlock lcaBlock, Instr instr) {
         BasicBlock posBlock = lcaBlock;
@@ -111,6 +117,9 @@ public class GlobalCodeMovementUnit {
         }
     }
 
+    /**
+     * scheduleLateAnalysis() 用于在优化中调度该Value的后移分析
+     */
     private static BasicBlock scheduleLateAnalysis(User user, Instr instr, BasicBlock lcaBlock) {
         BasicBlock lcaVector = lcaBlock;
         if (user instanceof Instr userInst) {
@@ -132,6 +141,9 @@ public class GlobalCodeMovementUnit {
         return lcaVector;
     }
 
+    /**
+     * getLeastCommonAncestor 用于在GCM中寻找两个基本块的最近公共祖先
+     */
     private static BasicBlock getLeastCommonAncestor(
             BasicBlock lcaBlock, BasicBlock useBasicBlock) {
         BasicBlock block1 = lcaBlock;
