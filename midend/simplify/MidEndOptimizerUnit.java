@@ -5,6 +5,7 @@ import iostream.OptimizerUnit;
 import midend.generation.GenerationMain;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
+import midend.simplify.method.GlobalCodeMovementUnit;
 import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
@@ -25,6 +26,7 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
     private static boolean isMem2Reg;
     private static boolean isFunctionInline;
     private static boolean isGlobalVariableNumbering;
+    private static boolean isGlobalCodeMovement;
     private static boolean isDeadCodeElimination;
 
     public MidEndOptimizerUnit(Module module) {
@@ -42,6 +44,9 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
         if (isGlobalVariableNumbering) {
             GlobalVariableNumberingUnit.run(module);
         }
+        if (isGlobalCodeMovement) {
+            GlobalCodeMovementUnit.run(module);
+        }
         if (isDeadCodeElimination) {
             GenerationMain.getModule().getFunctions().forEach(Function::deadCodeElimination);
         }
@@ -57,6 +62,10 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
 
     public static void setGlobalVariableNumbering(boolean globalVariableNumbering) {
         isGlobalVariableNumbering = globalVariableNumbering;
+    }
+
+    public static void setIsGlobalCodeMovement(boolean isGlobalCodeMovement) {
+        MidEndOptimizerUnit.isGlobalCodeMovement = isGlobalCodeMovement;
     }
 
     public static void setDeadCodeElimination(boolean deadCodeElimination) {

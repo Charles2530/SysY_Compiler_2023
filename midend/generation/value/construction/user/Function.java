@@ -21,6 +21,7 @@ import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.method.FunctionInlineUnit;
+import midend.simplify.method.GlobalCodeMovementUnit;
 import midend.simplify.method.GlobalVariableNumberingUnit;
 import midend.simplify.method.Mem2RegUnit;
 
@@ -348,5 +349,16 @@ public class Function extends User {
     public boolean removeUselessFunction() {
         return FunctionInlineUnit.getResponse(this).isEmpty() &&
                 !this.getName().equals("@main");
+    }
+
+    /**
+     * GlobalCodeMovementAnalysis 方法用于在该 Function 中的所有基本块中进行全局代码移动分析。
+     * 主要用于全局代码移动
+     */
+    public void globalCodeMovementAnalysis() {
+        if (basicBlocks.size() > 1) {
+            GlobalCodeMovementUnit.getVisited().clear();
+
+        }
     }
 }

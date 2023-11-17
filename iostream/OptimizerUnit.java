@@ -28,6 +28,7 @@ public abstract class OptimizerUnit {
         MidEndOptimizerUnit.setMem2Reg(true);
         MidEndOptimizerUnit.setFunctionInline(true);
         MidEndOptimizerUnit.setGlobalVariableNumbering(true);
+        MidEndOptimizerUnit.setIsGlobalCodeMovement(true);
         MidEndOptimizerUnit.setDeadCodeElimination(true);
         // 后端优化设置
         BackEndOptimizerUnit.setIsRemovePhi(true);
