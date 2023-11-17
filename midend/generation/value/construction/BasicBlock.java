@@ -16,6 +16,7 @@ import midend.generation.value.instr.basis.CallInstr;
 import midend.generation.value.instr.optimizer.ParallelCopy;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.LivenessAnalysisController;
+import midend.simplify.controller.LoopAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
 import midend.simplify.method.BlockSimplifyUnit;
@@ -352,9 +353,8 @@ public class BasicBlock extends Value {
         }
     }
 
-    /*TODO:need change*/
     public Integer getLoopDepth() {
-        return 0;
+        return LoopAnalysisController.getBlockLoopDepth(this);
     }
 }
 

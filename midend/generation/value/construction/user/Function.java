@@ -18,8 +18,10 @@ import midend.generation.value.construction.Param;
 import midend.generation.value.construction.User;
 import midend.generation.value.instr.basis.CallInstr;
 import midend.simplify.controller.LivenessAnalysisController;
+import midend.simplify.controller.LoopAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 import midend.simplify.controller.datastruct.DominatorTree;
+import midend.simplify.controller.datastruct.LoopVal;
 import midend.simplify.method.FunctionInlineUnit;
 import midend.simplify.method.GlobalCodeMovementUnit;
 import midend.simplify.method.GlobalVariableNumberingUnit;
@@ -384,5 +386,44 @@ public class Function extends User {
      */
     public void searchBlockDominateTreeDepth() {
         DominatorTree.dfsDominateLevel(basicBlocks.get(0), 0);
+    }
+
+    /**
+     * loopAnalysis 方法用于在该 Function 中的所有基本块中进行循环分析，
+     * 主要用于循环分析
+     */
+    public void loopAnalysis() {
+        ArrayList<BasicBlock> latchBlocks = new ArrayList<>();
+        ArrayList<BasicBlock> posOrderBlocks =
+                DominatorTree.computeDominanceTreePostOrder(this);
+        for (BasicBlock basicBlock : posOrderBlocks) {
+            for (BasicBlock indBasicBlock : basicBlock.getBlockIndBasicBlock()) {
+                if (indBasicBlock.getBlockDominateSet().contains(basicBlock)) {
+                    latchBlocks.add(indBasicBlock);
+                }
+            }
+            if (!latchBlocks.isEmpty()) {
+                LoopVal loop = new LoopVal(basicBlock, latchBlocks);
+                LoopAnalysisController.addLoopIntoGraph(latchBlocks, loop);
+                latchBlocks.clear();
+            }
+        }
+        LoopAnalysisController.addLoopSons(basicBlocks.get(0));
+    }
+
+    /**
+     * getLoopArray 方法用于获得位于该函数的所有循环
+     * 主要来自创建LoopAnalysisController的获得的循环分析的结果
+     */
+    public void getLoopArray() {
+        LoopAnalysisController.getFunctionLoopVal(this);
+    }
+
+    /**
+     * getLoopTopArray 方法用于获得位于该函数的所有顶层循环
+     * 主要来自创建LoopAnalysisController的获得的循环分析的结果
+     */
+    public void getLoopTopArray() {
+        LoopAnalysisController.getFunctionLoopValTop(this);
     }
 }
