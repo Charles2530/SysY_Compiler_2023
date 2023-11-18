@@ -47,6 +47,16 @@ public class DebugDetailController {
         }
     }
 
+    public static void printDebugDetailWithoutBackSpace(String string) {
+        if (isDebugDetailOutput) {
+            try {
+                debugDetailOutputStream.write(string);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * printControlFlowGraph 是一个用于输出控制流图的函数
      *
@@ -288,6 +298,28 @@ public class DebugDetailController {
         for (Function function : module.getFunctions()) {
             printDebugDetail("  Function: " + function.getName());
             printDebugDetail("      Side Effect: " + function.getSideEffect());
+        }
+        printDebugDetail("\n\n\n");
+    }
+
+    public static void printGlobalCodeMovementPath(HashMap<Instr, ArrayList<BasicBlock>> pathMap) {
+        printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        printDebugDetail("Global Code Movement Path:");
+        for (Instr instr : pathMap.keySet()) {
+            if (pathMap.get(instr).size() <= 1) {
+                continue;
+            }
+            printDebugDetail("  Instr: " + instr.toString());
+            printDebugDetailWithoutBackSpace("      Path: ");
+            BasicBlock pre = null;
+            for (BasicBlock basicBlock : pathMap.get(instr)) {
+                if (pre != null && pre.equals(basicBlock)) {
+                    continue;
+                }
+                printDebugDetailWithoutBackSpace(basicBlock.getName() + " ==> ");
+                pre = basicBlock;
+            }
+            printDebugDetail(" END");
         }
         printDebugDetail("\n\n\n");
     }

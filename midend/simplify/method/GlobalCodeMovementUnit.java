@@ -1,6 +1,8 @@
 package midend.simplify.method;
 
 import iostream.OptimizerUnit;
+import iostream.structure.DebugDetailController;
+import midend.generation.GenerationMain;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
@@ -12,6 +14,8 @@ import midend.simplify.controller.LoopAnalysisController;
 import midend.simplify.controller.SideEffectAnalysisController;
 import midend.simplify.controller.datastruct.DominatorTree;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -24,8 +28,11 @@ import java.util.HashSet;
 public class GlobalCodeMovementUnit {
     /**
      * visited 是该 GlobalCodeMovementUnit 的已访问指令集合
+     * pathMap 是该 GlobalCodeMovementUnit 的路径映射,记录了指令的移动路径
+     * 主要用于调试
      */
     private static HashSet<Instr> visited;
+    private static HashMap<Instr, ArrayList<BasicBlock>> pathMap;
 
     public static void run(Module module) {
         GlobalCodeMovementUnit.init();
@@ -33,6 +40,7 @@ public class GlobalCodeMovementUnit {
         LoopAnalysisController.analysis(module);
         SideEffectAnalysisController.analysis(module);
         module.getFunctions().forEach(Function::globalCodeMovementAnalysis);
+        DebugDetailController.printGlobalCodeMovementPath(pathMap);
         OptimizerUnit.build(module);
     }
 
@@ -41,6 +49,22 @@ public class GlobalCodeMovementUnit {
      */
     private static void init() {
         GlobalCodeMovementUnit.visited = new HashSet<>();
+        GlobalCodeMovementUnit.pathMap = new HashMap<>();
+        for (Function function : GenerationMain.getModule().getFunctions()) {
+            function.getBasicBlocks().forEach(basicBlock -> {
+                basicBlock.getInstrArrayList().forEach(instr -> {
+                    GlobalCodeMovementUnit.pathMap.put(instr, new ArrayList<>());
+                    GlobalCodeMovementUnit.pathMap.get(instr).add(basicBlock);
+                });
+            });
+        }
+    }
+
+    /**
+     * addPath 方法用于向该 GlobalCodeMovementUnit 的路径映射中添加路径
+     */
+    public static void addPath(Instr instr, BasicBlock basicBlock) {
+        GlobalCodeMovementUnit.pathMap.get(instr).add(basicBlock);
     }
 
     public static HashSet<Instr> getVisited() {
@@ -65,6 +89,7 @@ public class GlobalCodeMovementUnit {
         BasicBlock root = function.getBasicBlocks().get(0);
         instr.getBelongingBlock().getInstrArrayList().remove(instr);
         root.addInstr(instr, root.getInstrArrayList().size() - 1);
+        GlobalCodeMovementUnit.addPath(instr, root);
         instr.getOperands().forEach(v -> scheduleEarlyAnalysis(v, instr, function));
     }
 
@@ -93,6 +118,7 @@ public class GlobalCodeMovementUnit {
                     instInst.getOperands().contains(instr)) {
                 instr.getBelongingBlock().getInstrArrayList().remove(instr);
                 bestBlock.addInstr(instr, bestBlock.getInstrArrayList().indexOf(instInst));
+                GlobalCodeMovementUnit.addPath(instr, bestBlock);
                 break;
             }
         }
@@ -121,6 +147,7 @@ public class GlobalCodeMovementUnit {
             }
             instr.getBelongingBlock().getInstrArrayList().remove(instr);
             bestBlock.addInstr(instr, bestBlock.getInstrArrayList().size() - 1);
+            GlobalCodeMovementUnit.addPath(instr, bestBlock);
         }
     }
 
@@ -192,8 +219,8 @@ public class GlobalCodeMovementUnit {
                 instr.getBelongingBlock().getInstrArrayList().remove(instr);
                 BasicBlock block = instrInst.getBelongingBlock();
                 block.addInstr(instr, block.getInstrArrayList().size() - 1);
+                GlobalCodeMovementUnit.addPath(instr, block);
             }
         }
     }
-
 }
