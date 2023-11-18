@@ -1,5 +1,6 @@
 package midend.simplify.method;
 
+import iostream.OptimizerUnit;
 import midend.generation.value.Value;
 import midend.generation.value.construction.BasicBlock;
 import midend.generation.value.construction.Module;
@@ -9,6 +10,7 @@ import midend.generation.value.construction.user.Instr;
 import midend.generation.value.instr.optimizer.PhiInstr;
 import midend.simplify.controller.LoopAnalysisController;
 import midend.simplify.controller.SideEffectAnalysisController;
+import midend.simplify.controller.datastruct.DominatorTree;
 
 import java.util.HashSet;
 
@@ -29,7 +31,9 @@ public class GlobalCodeMovementUnit {
         GlobalCodeMovementUnit.init();
         LoopAnalysisController.analysis(module);
         SideEffectAnalysisController.analysis(module);
+        DominatorTree.build(module);
         module.getFunctions().forEach(Function::globalCodeMovementAnalysis);
+        OptimizerUnit.build(module);
     }
 
     /**
@@ -102,15 +106,20 @@ public class GlobalCodeMovementUnit {
      * 3.找到他们的LCA，如果他们是有共同祖先的，那么就将该指令插入到共同祖先的位置
      * 4.如果共同祖先不是该指令的所在块，则尽量让循环深度变小
      */
+    /*TODO: bug maybe*/
     private static void pickFinalPos(BasicBlock lcaBlock, Instr instr) {
         BasicBlock posBlock = lcaBlock;
         if (!instr.getUsers().isEmpty()) {
             BasicBlock bestBlock = posBlock;
-            while (!posBlock.equals(instr.getBelongingBlock())) {
+            while (!posBlock.equals(instr.getBelongingBlock()) &&
+                    posBlock.getBlockDominateParent() != null) {
                 posBlock = posBlock.getBlockDominateParent();
                 if (posBlock.getLoopDepth() < bestBlock.getLoopDepth()) {
                     bestBlock = posBlock;
                 }
+            }
+            if (posBlock.getBlockDominateParent() == null) {
+                return;
             }
             instr.getBelongingBlock().getInstrArrayList().remove(instr);
             bestBlock.addInstr(instr, bestBlock.getInstrArrayList().size() - 1);
@@ -119,6 +128,10 @@ public class GlobalCodeMovementUnit {
 
     /**
      * scheduleLateAnalysis() 用于在优化中调度该Value的后移分析
+     *
+     * @param user     使用该Value的指令
+     * @param instr    该Value
+     * @param lcaBlock 该Value的最近公共祖先
      */
     private static BasicBlock scheduleLateAnalysis(User user, Instr instr, BasicBlock lcaBlock) {
         BasicBlock lcaVector = lcaBlock;
@@ -171,14 +184,15 @@ public class GlobalCodeMovementUnit {
      * 1.如果该操作数是个指令，那么应该是一并提升
      * 2.比较两个指令和操作数的支配树深度，如果指令的深度要小于操作数的深度
      * 则将指令插在输入指令的基本块的最后一条指令的前面
+     * 注：这里若为PhiInstr，则操作数不需要考虑indBasicBlocks，因为其中不含instr
      */
     public static void scheduleEarlyAnalysis(Value value, Instr instr, Function function) {
         if (value instanceof Instr instrInst) {
             GlobalCodeMovementUnit.scheduleEarly(instrInst, function);
             if (instrInst.getBelongingBlock().getDomDepth() >
                     instr.getBelongingBlock().getDomDepth()) {
+                instr.getBelongingBlock().getInstrArrayList().remove(instr);
                 BasicBlock block = instrInst.getBelongingBlock();
-                block.getInstrArrayList().remove(instrInst);
                 block.addInstr(instr, block.getInstrArrayList().size() - 1);
             }
         }

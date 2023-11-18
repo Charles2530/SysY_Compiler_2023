@@ -38,10 +38,10 @@ public class SideEffectAnalysisController {
      * processAnalysis 方法用于处理函数的副作用
      */
     private static boolean processAnalysis(Function function) {
-        boolean hasSideEffect = false;
-        addFunctionVisited(function, false);
+        boolean sideEffect = false;
+        addFunctionVisited(function, true);
         if (getFunctionProcessed(function)) {
-            hasSideEffect = function.getSideEffect();
+            sideEffect = function.getSideEffect();
             for (Function response : function.getResponses()) {
                 if (!getFunctionVisited(response) && !getFunctionProcessed(response)) {
                     processAnalysis(response);
@@ -52,14 +52,14 @@ public class SideEffectAnalysisController {
                 if (response.getSideEffect() ||
                         (!getFunctionVisited(response) && !getFunctionProcessed(response)
                                 && processAnalysis(response))) {
-                    hasSideEffect = true;
+                    sideEffect = true;
                 }
             }
         }
         addFunctionVisited(function, false);
-        function.setSideEffect(hasSideEffect);
+        function.setSideEffect(sideEffect);
         addFunctionProcessed(function, true);
-        return hasSideEffect;
+        return sideEffect;
     }
 
     /**
@@ -71,6 +71,8 @@ public class SideEffectAnalysisController {
 
     /**
      * init 方法用于初始化副作用处理模块
+     * 该函数借用了在函数内联中的函数调用图创建函数
+     * 之后将其填入每个function的responses中以完成初始化
      */
     private static void init() {
         SideEffectAnalysisController.functionProcessedHashMap = new HashMap<>();
