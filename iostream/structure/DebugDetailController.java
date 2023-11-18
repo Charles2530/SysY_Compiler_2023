@@ -21,6 +21,10 @@ import java.util.HashSet;
  * 例如控制流图，支配树，活跃变量分析等
  */
 public class DebugDetailController {
+    /**
+     * debugDetailOutputStream 是一个用于输出调试信息的输出流
+     * isDebugDetailOutput 是否开启优化信息输出
+     */
     private static BufferedWriter debugDetailOutputStream;
     private static boolean isDebugDetailOutput;
 
@@ -96,7 +100,7 @@ public class DebugDetailController {
      * @param dominanceFrontierFunctionHashMap 表示支配前沿哈希表
      * @param parentFunctionHashMap            表示父节点哈希表
      * @param childListFunctionHashMap         表示子节点哈希表
-     * @param dominanceTreeDepthHashMap
+     * @param dominanceTreeDepthHashMap        表示支配树深度哈希表
      */
     public static void printDominateTree(
             HashMap<Function, HashMap<BasicBlock, ArrayList<BasicBlock>>> dominateFunctionHashMap,
@@ -302,10 +306,19 @@ public class DebugDetailController {
         printDebugDetail("\n\n\n");
     }
 
+    /**
+     * printGlobalCodeMovementPath 是一个用于输出全局代码移动路径的函数
+     *
+     * @param pathMap 表示全局代码移动路径哈希表
+     */
     public static void printGlobalCodeMovementPath(HashMap<Instr, ArrayList<BasicBlock>> pathMap) {
         printDebugDetail(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         printDebugDetail("Global Code Movement Path:");
         for (Instr instr : pathMap.keySet()) {
+            if (pathMap.get(instr).get(0).equals(pathMap.get(instr).
+                    get(pathMap.get(instr).size() - 1))) {
+                continue;
+            }
             if (pathMap.get(instr).size() <= 1) {
                 continue;
             }

@@ -153,6 +153,8 @@ public class GlobalCodeMovementUnit {
 
     /**
      * scheduleLateAnalysis() 用于在优化中调度该Value的后移分析
+     * 该函数的基本逻辑是寻找某个Value所对应User的公共LCA，之后
+     * 就可以将指令移动到LCA所在的基本块
      *
      * @param user     使用该Value的指令
      * @param instr    该Value
