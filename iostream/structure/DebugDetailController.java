@@ -264,6 +264,16 @@ public class DebugDetailController {
                 printDebugDetail("\n");
             }
         }
+        printDebugDetail("After Loop Review");
+        for (Function function : GenerationMain.getModule().getFunctions()) {
+            printDebugDetail("  Function: " + function.getName());
+            ArrayList<BasicBlock> sortedList = new ArrayList<>(function.getBasicBlocks());
+            sortedList.sort(Comparator.comparing(BasicBlock::getLoopDepth));
+            for (BasicBlock block : sortedList) {
+                printDebugDetail("      BasicBlock: " + block.getName() +
+                        "'s depth is " + block.getLoopDepth());
+            }
+        }
         printDebugDetail("\n\n\n");
     }
 

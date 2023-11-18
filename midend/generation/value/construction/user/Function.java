@@ -180,6 +180,7 @@ public class Function extends User {
      * 对于这个函数而言，函数的逻辑是在for循环中找到所有不被 basicBlock支配的block，
      * 放入reachSet中，这样所有不在reachedSet中的Block就都是被basicBlock
      * 支配的Block，然后将所有不在reachSet中的block放入domList中(包括basicBlock本身)
+     * 注:这里与教程中的支配集合定义有区别，应该理解为该支配集合里的节点都是被该节点支配的。
      */
     public void searchBlockDominateSet() {
         BasicBlock entry = basicBlocks.get(0);
@@ -410,7 +411,7 @@ public class Function extends User {
                 DominatorTree.computeDominanceTreePostOrder(this);
         for (BasicBlock basicBlock : posOrderBlocks) {
             for (BasicBlock indBasicBlock : basicBlock.getBlockIndBasicBlock()) {
-                if (indBasicBlock.getBlockDominateSet().contains(basicBlock)) {
+                if (basicBlock.getBlockDominateSet().contains(indBasicBlock)) {
                     latchBlocks.add(indBasicBlock);
                 }
             }
