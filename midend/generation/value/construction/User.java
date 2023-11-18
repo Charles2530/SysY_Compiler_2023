@@ -55,7 +55,7 @@ public class User extends Value {
      */
     public void dropOperands() {
         for (Value operand : operands) {
-            operand.getUsers().remove(this);
+            operand.getUseDefChain().removeIf(use -> use.getUser().equals(this));
         }
     }
 

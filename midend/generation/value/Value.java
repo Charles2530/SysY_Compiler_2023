@@ -77,7 +77,10 @@ public class Value {
      * replaceAllUse() 用于替换所有使用当前Value的User的该Value值为新的Value
      */
     public void replaceAllUse(Value value) {
-        getUsers().forEach(user -> user.replaceOperand(this, value));
+        ArrayList<Use> useDefCopy = new ArrayList<>(getUseDefChain());
+        for (Use use : useDefCopy) {
+            User user = use.getUser();
+            user.replaceOperand(this, value);
+        }
     }
-
 }

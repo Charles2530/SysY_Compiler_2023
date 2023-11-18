@@ -482,4 +482,12 @@ public class Function extends User {
     public boolean getSideEffect() {
         return sideEffect;
     }
+
+    /**
+     * reducePhi 方法用于将该 Function 中的 Phi 指令进行简化，
+     * 主要用于去除冗余的Phi指令
+     */
+    public void reducePhi(boolean flag) {
+        basicBlocks.forEach(block -> block.reducePhi(flag));
+    }
 }

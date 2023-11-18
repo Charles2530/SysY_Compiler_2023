@@ -136,14 +136,12 @@ public class GlobalCodeMovementUnit {
         BasicBlock posBlock = lcaBlock;
         if (!instr.getUsers().isEmpty()) {
             BasicBlock bestBlock = posBlock;
-            while ((posBlock != null) && !posBlock.equals(instr.getBelongingBlock())) {
+            while ((posBlock.getBlockDominateParent() != null) &&
+                    !posBlock.equals(instr.getBelongingBlock())) {
+                posBlock = posBlock.getBlockDominateParent();
                 if (posBlock.getLoopDepth() < bestBlock.getLoopDepth()) {
                     bestBlock = posBlock;
                 }
-                posBlock = posBlock.getBlockDominateParent();
-            }
-            if (posBlock == null) {
-                return;
             }
             instr.getBelongingBlock().getInstrArrayList().remove(instr);
             bestBlock.addInstr(instr, bestBlock.getInstrArrayList().size() - 1);

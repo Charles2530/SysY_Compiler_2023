@@ -83,6 +83,7 @@ public class PhiEliminationUnit {
             if (instr instanceof PhiInstr phiInstr) {
                 phiInstr.generateCopyList(pcList);
                 iterator.remove();
+                phiInstr.dropOperands();
             }
         }
     }

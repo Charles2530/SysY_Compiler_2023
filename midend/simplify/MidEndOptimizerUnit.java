@@ -50,6 +50,7 @@ public class MidEndOptimizerUnit extends OptimizerUnit {
         }
         if (isDeadCodeElimination) {
             GenerationMain.getModule().getFunctions().forEach(Function::deadCodeElimination);
+            GenerationMain.getModule().getFunctions().forEach(function -> function.reducePhi(true));
         }
     }
 

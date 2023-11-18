@@ -188,6 +188,7 @@ public class Mem2RegUnit {
                 instrNum++;
                 stack.push(storeInstr.getOperands().get(0));
                 iter.remove();
+                storeInstr.dropOperands();
             } else if (instr instanceof LoadInstr loadInstr &&
                     useInstrArrayList.contains(loadInstr)) {
                 loadInstr.replaceAllUse(((stack.isEmpty()) ?
@@ -198,6 +199,7 @@ public class Mem2RegUnit {
                 stack.push(phiInstr);
             } else if (instr.equals(Mem2RegUnit.currentAllocaInstr)) {
                 iter.remove();
+                instr.dropOperands();
             }
         }
         return instrNum;

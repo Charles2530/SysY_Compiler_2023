@@ -348,7 +348,7 @@ public class BasicBlock extends Value {
 
     /**
      * reducePhi 方法用于将该 BasicBlock 中的 Phi 指令进行简化，
-     * 主要是在 Mem2Reg 优化中使用，去除冗余的Phi指令
+     * 主要是在 函数内联 优化中使用，去除冗余的Phi指令
      */
     public void reducePhi(boolean flag) {
         Iterator<Instr> iterator = instrArrayList.iterator();
@@ -357,6 +357,7 @@ public class BasicBlock extends Value {
             if (instr instanceof PhiInstr phiInstr) {
                 if (phiInstr.reducePhi(flag)) {
                     iterator.remove();
+                    phiInstr.dropOperands();
                 }
             }
         }
