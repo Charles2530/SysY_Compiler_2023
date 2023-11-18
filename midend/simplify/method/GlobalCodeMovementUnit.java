@@ -29,9 +29,9 @@ public class GlobalCodeMovementUnit {
 
     public static void run(Module module) {
         GlobalCodeMovementUnit.init();
+        DominatorTree.build(module);
         LoopAnalysisController.analysis(module);
         SideEffectAnalysisController.analysis(module);
-        DominatorTree.build(module);
         module.getFunctions().forEach(Function::globalCodeMovementAnalysis);
         OptimizerUnit.build(module);
     }
@@ -106,19 +106,17 @@ public class GlobalCodeMovementUnit {
      * 3.找到他们的LCA，如果他们是有共同祖先的，那么就将该指令插入到共同祖先的位置
      * 4.如果共同祖先不是该指令的所在块，则尽量让循环深度变小
      */
-    /*TODO: bug maybe*/
     private static void pickFinalPos(BasicBlock lcaBlock, Instr instr) {
         BasicBlock posBlock = lcaBlock;
         if (!instr.getUsers().isEmpty()) {
             BasicBlock bestBlock = posBlock;
-            while (!posBlock.equals(instr.getBelongingBlock()) &&
-                    posBlock.getBlockDominateParent() != null) {
-                posBlock = posBlock.getBlockDominateParent();
+            while ((posBlock != null) && !posBlock.equals(instr.getBelongingBlock())) {
                 if (posBlock.getLoopDepth() < bestBlock.getLoopDepth()) {
                     bestBlock = posBlock;
                 }
+                posBlock = posBlock.getBlockDominateParent();
             }
-            if (posBlock.getBlockDominateParent() == null) {
+            if (posBlock == null) {
                 return;
             }
             instr.getBelongingBlock().getInstrArrayList().remove(instr);
