@@ -21,17 +21,14 @@ import java.util.HashSet;
  */
 public class GlobalVariableLocalizeUnit {
     /**
-     * module 是LLVM IR生成的顶级模块
      * globalVarUsers 是记录的是全局变量和调用它的函数列表
      */
-    private static Module module;
     private static HashMap<GlobalVar, HashSet<Function>> globalVarUsers;
 
     /**
      * run 是全局变量局部化的主函数
      */
     public static void run(Module module) {
-        GlobalVariableLocalizeUnit.module = module;
         GlobalVariableLocalizeUnit.init(module);
         module.getGlobalVars().forEach(GlobalVariableLocalizeUnit::analysisGlobalVarUsers);
         FunctionInlineUnit.buildFuncCallGraph();
@@ -43,9 +40,7 @@ public class GlobalVariableLocalizeUnit {
      */
     private static void init(Module module) {
         globalVarUsers = new HashMap<>();
-        for (GlobalVar var : module.getGlobalVars()) {
-            globalVarUsers.put(var, new HashSet<>());
-        }
+        module.getGlobalVars().forEach(var -> globalVarUsers.put(var, new HashSet<>()));
     }
 
     /**
@@ -54,8 +49,7 @@ public class GlobalVariableLocalizeUnit {
     private static void analysisGlobalVarUsers(GlobalVar var) {
         for (User user : var.getUsers()) {
             if (user instanceof Instr instr) {
-                Function userFunc = instr.getBelongingBlock().getBelongingFunc();
-                globalVarUsers.get(var).add(userFunc);
+                globalVarUsers.get(var).add(instr.getBelongingBlock().getBelongingFunc());
             }
         }
     }

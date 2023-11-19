@@ -119,8 +119,7 @@ public class LoopAnalysisController {
                     continue;
                 }
                 subloop.setParentLoop(loop);
-                for (BasicBlock indBasicBlock :
-                        subloop.getEntryBlock().getBlockIndBasicBlock()) {
+                for (BasicBlock indBasicBlock : subloop.getEntryBlock().getBlockIndBasicBlock()) {
                     if (indBasicBlock.getLoopVal() != subloop) {
                         blocks.add(indBasicBlock);
                     }

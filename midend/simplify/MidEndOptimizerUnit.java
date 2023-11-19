@@ -1,10 +1,14 @@
 package midend.simplify;
 
-import midend.simplify.method.*;
 import iostream.OptimizerUnit;
 import midend.generation.GenerationMain;
 import midend.generation.value.construction.Module;
 import midend.generation.value.construction.user.Function;
+import midend.simplify.method.FunctionInlineUnit;
+import midend.simplify.method.GlobalCodeMovementUnit;
+import midend.simplify.method.GlobalVariableLocalizeUnit;
+import midend.simplify.method.GlobalVariableNumberingUnit;
+import midend.simplify.method.Mem2RegUnit;
 
 /**
  * MidEndOptimizerUnit 是中间优化单元，

@@ -61,7 +61,7 @@ public class Instr extends User {
 
     /**
      * insertPhiProcess 方法用于在 Mem2Reg 优化中插入 Phi 指令
-     * 该函数首先初始化和该alloca指令相关的数据结构
+     * 该函数首先初始化和该 alloca 指令相关的数据结构
      * 之后找出需要添加phi指令的基本块，并添加phiInstr
      */
     public void insertPhiProcess() {
@@ -83,7 +83,7 @@ public class Instr extends User {
      * isValid 的指令有 alloca，alu，call，gep，io，getint，load，phi，zext
      * 其中call指令调用的函数将指针作为形参、修改全局变量、调用了其他函数，
      * 因此不能直接删除
-     * io中的getint指令获得的数字即使没有用到也应该完成io操作，也不能删除
+     * io中的 getint 指令获得的数字即使没有用到也应该完成io操作，也不能删除
      */
     public boolean isValid() {
         boolean valid = this instanceof AllocaInstr || this instanceof CalcInstr ||
@@ -160,6 +160,10 @@ public class Instr extends User {
         return null;
     }
 
+    /**
+     * isPinned 方法用于判断该 Instr 是否为固定指令
+     * 主要用于GCM优化
+     */
     public boolean isPinned() {
         return !(this instanceof CalcInstr) && !(this instanceof IcmpInstr) &&
                 !(this instanceof ZextInstr) && !(this instanceof GetEleInstr) &&

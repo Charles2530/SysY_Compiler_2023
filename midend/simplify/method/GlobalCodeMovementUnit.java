@@ -82,15 +82,14 @@ public class GlobalCodeMovementUnit {
      * 3.遍历该指令用到的操作数，尝试前移。
      */
     public static void scheduleEarly(Instr instr, Function function) {
-        if (visited.contains(instr) || instr.isPinned()) {
-            return;
+        if (!visited.contains(instr) && !instr.isPinned()) {
+            visited.add(instr);
+            BasicBlock root = function.getBasicBlocks().get(0);
+            instr.getBelongingBlock().getInstrArrayList().remove(instr);
+            root.addInstr(instr, root.getInstrArrayList().size() - 1);
+            GlobalCodeMovementUnit.addPath(instr, root);
+            instr.getOperands().forEach(v -> scheduleEarlyAnalysis(v, instr, function));
         }
-        visited.add(instr);
-        BasicBlock root = function.getBasicBlocks().get(0);
-        instr.getBelongingBlock().getInstrArrayList().remove(instr);
-        root.addInstr(instr, root.getInstrArrayList().size() - 1);
-        GlobalCodeMovementUnit.addPath(instr, root);
-        instr.getOperands().forEach(v -> scheduleEarlyAnalysis(v, instr, function));
     }
 
     /**
@@ -103,23 +102,22 @@ public class GlobalCodeMovementUnit {
      * 3.如果该指令的使用者是Phi指令，那么遍历Phi指令的每个操作数，寻找LCA尝试后移。
      */
     public static void scheduleLate(Instr instr) {
-        if (visited.contains(instr) || instr.isPinned()) {
-            return;
-        }
-        visited.add(instr);
-        BasicBlock lcaBlock = null;
-        for (User user : instr.getUsers()) {
-            lcaBlock = scheduleLateAnalysis(user, instr, lcaBlock);
-        }
-        GlobalCodeMovementUnit.pickFinalPos(lcaBlock, instr);
-        BasicBlock bestBlock = instr.getBelongingBlock();
-        for (Instr instInst : bestBlock.getInstrArrayList()) {
-            if (!instInst.equals(instr) && !(instInst instanceof PhiInstr) &&
-                    instInst.getOperands().contains(instr)) {
-                instr.getBelongingBlock().getInstrArrayList().remove(instr);
-                bestBlock.addInstr(instr, bestBlock.getInstrArrayList().indexOf(instInst));
-                GlobalCodeMovementUnit.addPath(instr, bestBlock);
-                break;
+        if (!visited.contains(instr) && !instr.isPinned()) {
+            visited.add(instr);
+            BasicBlock lcaBlock = null;
+            for (User user : instr.getUsers()) {
+                lcaBlock = scheduleLateAnalysis(user, instr, lcaBlock);
+            }
+            GlobalCodeMovementUnit.pickFinalPos(lcaBlock, instr);
+            BasicBlock bestBlock = instr.getBelongingBlock();
+            for (Instr instInst : bestBlock.getInstrArrayList()) {
+                if (!instInst.equals(instr) && !(instInst instanceof PhiInstr) &&
+                        instInst.getOperands().contains(instr)) {
+                    instr.getBelongingBlock().getInstrArrayList().remove(instr);
+                    bestBlock.addInstr(instr, bestBlock.getInstrArrayList().indexOf(instInst));
+                    GlobalCodeMovementUnit.addPath(instr, bestBlock);
+                    break;
+                }
             }
         }
     }
