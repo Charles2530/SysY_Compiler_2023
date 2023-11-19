@@ -210,7 +210,7 @@ public class ControlFlowGraph {
     public static void modifyMerged(BasicBlock preBasicBlock, BasicBlock basicBlock) {
         preBasicBlock.getBlockOutBasicBlock().remove(basicBlock);
         basicBlock.getBlockOutBasicBlock().forEach(outBasicBlock -> {
-            preBasicBlock.getOutBasicBlockHashSet().add(outBasicBlock);
+            preBasicBlock.getBlockOutBasicBlock().add(outBasicBlock);
             outBasicBlock.getBlockIndBasicBlock().remove(basicBlock);
             outBasicBlock.getBlockIndBasicBlock().add(preBasicBlock);
         });

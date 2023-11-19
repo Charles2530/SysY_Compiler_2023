@@ -56,6 +56,9 @@ public class GlobalVariableLocalizeUnit {
 
     /**
      * localize 是局部化全局变量的函数
+     * 该函数的执行逻辑如下:
+     * 1. 如果全局变量没有使用者，那么就可以局部化
+     * 2. 如果全局变量只有一个使用者，那么就可以局部化
      */
     private static boolean localize(GlobalVar globalVar) {
         if (globalVarUsers.get(globalVar).isEmpty()) {

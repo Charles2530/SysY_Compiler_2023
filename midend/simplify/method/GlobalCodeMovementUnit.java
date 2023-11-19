@@ -34,6 +34,9 @@ public class GlobalCodeMovementUnit {
     private static HashSet<Instr> visited;
     private static HashMap<Instr, ArrayList<BasicBlock>> pathMap;
 
+    /**
+     * run 方法用于执行全局代码移动,是执行全局代码移动的主函数
+     */
     public static void run(Module module) {
         GlobalCodeMovementUnit.init();
         DominatorTree.build(module);

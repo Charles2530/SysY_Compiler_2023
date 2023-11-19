@@ -20,7 +20,7 @@ public class DominatorTree {
     /**
      * dominateFunctionHashMap 存储了每个函数的每个基本块的支配集合
      * dominanceFrontierFunctionHashMap 存储了每个函数的每个基本块的支配边界集合
-     * parentFunctionHashMap 存储了每个函数的每个基本块的支配父节点
+     * parentFunctionHashMap 存储了每个函数的每个基本块的直接支配父节点
      * childListFunctionHashMap 存储了每个函数的每个基本块的支配子节点集合
      */
     private static HashMap<Function, HashMap<BasicBlock,
@@ -80,7 +80,7 @@ public class DominatorTree {
      * buildDoubleEdge 方法用于判断并构建双向边
      */
     private static void buildDoubleEdge(BasicBlock basicBlock, BasicBlock dominateBlock) {
-        if (isImmediateDominator(basicBlock, dominateBlock)) {
+        if (DominatorTree.isImmediateDominator(basicBlock, dominateBlock)) {
             addDoubleEdge(basicBlock, dominateBlock);
         }
     }

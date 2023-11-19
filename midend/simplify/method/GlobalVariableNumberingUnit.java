@@ -58,7 +58,7 @@ public class GlobalVariableNumberingUnit {
     /**
      * uniqueInstr 方法用于找出可以优化的指令
      * 遍历一遍Instr，找出所有可优化的alu, gep, icmp和func
-     * 如果GVN中已存在，直接用该值即可, 否则插入到GVN中
+     * 如果GVN中已存在，直接用该值即可, 否则插入到GVN中,
      * 之后对其直接支配的子节点调用该函数实现递归
      * 最后需要将该基本块插入GVN的instr全部删去, 避免影响兄弟子树的遍历
      */

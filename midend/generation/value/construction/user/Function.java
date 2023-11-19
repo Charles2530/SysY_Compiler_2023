@@ -398,6 +398,7 @@ public class Function extends User {
     /**
      * loopAnalysis 方法用于在该 Function 中的所有基本块中进行循环分析，
      * 主要用于循环分析
+     * 判断循环的依据是如果某个块支配了它的某个前序块，那么这个块就是循环的头
      */
     public void loopAnalysis() {
         LoopAnalysisController.addFunctionLoopDepthHashMap(this, new HashMap<>());

@@ -36,6 +36,12 @@ public class SideEffectAnalysisController {
 
     /**
      * processAnalysis 方法用于处理函数的副作用
+     * 该函数的执行逻辑如下:
+     * 1. 如果该函数已经被访问过,则直接返回该函数的副作用
+     * 2. 如果该函数没有被访问过,则将该函数标记为已访问
+     * 3. 之后我们需要看该函数调用的所有函数，如果它调用的
+     * 函数本身存在副作用或者它调用的函数没有被访问过且
+     * 该函数调用的函数存在副作用，则该函数存在副作用
      */
     private static boolean processAnalysis(Function function) {
         boolean sideEffect = false;
