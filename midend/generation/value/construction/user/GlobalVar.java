@@ -33,6 +33,10 @@ public class GlobalVar extends User {
         }
     }
 
+    public Initial getInitial() {
+        return initial;
+    }
+
     @Override
     public String toString() {
         return name + " = dso_local global " +
