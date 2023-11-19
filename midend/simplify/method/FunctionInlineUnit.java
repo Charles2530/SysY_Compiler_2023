@@ -71,7 +71,7 @@ public class FunctionInlineUnit {
     private static void reset() {
         FunctionInlineUnit.callers = new HashMap<>();
         FunctionInlineUnit.responses = new HashMap<>();
-        for (Function function : module.getFunctions()) {
+        for (Function function : GenerationMain.getModule().getFunctions()) {
             FunctionInlineUnit.callers.put(function, new ArrayList<>());
             FunctionInlineUnit.responses.put(function, new ArrayList<>());
         }
@@ -108,7 +108,7 @@ public class FunctionInlineUnit {
      */
     public static void buildFuncCallGraph() {
         FunctionInlineUnit.reset();
-        module.getFunctions().forEach(Function::buildFuncCallGraph);
+        GenerationMain.getModule().getFunctions().forEach(Function::buildFuncCallGraph);
     }
 
     /**

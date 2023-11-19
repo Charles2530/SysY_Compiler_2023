@@ -42,6 +42,10 @@ public class Module extends Value {
         globalVars.add(globalVar);
     }
 
+    public ArrayList<GlobalVar> getGlobalVars() {
+        return globalVars;
+    }
+
     /**
      * addFunction 方法用于向该 Module 中添加函数
      */

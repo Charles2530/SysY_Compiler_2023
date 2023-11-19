@@ -25,6 +25,7 @@ public abstract class OptimizerUnit {
         Config.setIsDebugDetailOutput(true);
         // 前端优化设置
         // 中端优化设置
+        MidEndOptimizerUnit.setGlobalVarLocalize(true);
         MidEndOptimizerUnit.setMem2Reg(true);
         MidEndOptimizerUnit.setFunctionInline(true);
         MidEndOptimizerUnit.setGlobalVariableNumbering(true);
