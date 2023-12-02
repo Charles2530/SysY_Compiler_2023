@@ -15,6 +15,7 @@ import midend.generation.value.instr.basis.JumpInstr;
 import midend.generation.value.instr.optimizer.MoveInstr;
 import midend.generation.value.instr.optimizer.ParallelCopy;
 import midend.generation.value.instr.optimizer.PhiInstr;
+import midend.simplify.controller.LivenessAnalysisController;
 import midend.simplify.controller.datastruct.ControlFlowGraph;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class PhiEliminationUnit {
      * run 方法用于执行PhiElimination
      */
     public static void run(Module module) {
+        LivenessAnalysisController.analysis(module);
         RegisterAllocator.init();
         module.getFunctions().forEach(Function::regAllocate);
         module.getFunctions().forEach(Function::phiEliminate);
