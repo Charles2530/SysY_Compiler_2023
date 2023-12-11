@@ -38,13 +38,19 @@ public class AllocaInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 在栈上分配空间，同时更新栈指针
         AssemblyUnit.moveCurrentOffset(
                 (type.isArray()) ? (-4 * ((ArrayType) type).calcSpaceTot()) : -4);
+        // 尝试从寄存器中获取当前alloca指令的寄存器
         Register reg = AssemblyUnit.getRegisterController().getRegister(this);
         if (reg != null) {
+            // 如果存在对应的寄存器，那么我们直接将地址赋值给这个寄存器即可
             new ItypeAsm("addi", reg, Register.SP, AssemblyUnit.getCurrentOffset());
         } else {
+            // 如果不存在对应的寄存器，那么我们需要重新分配一个寄存器
+            // 首先使用K0寄存器保存分配空间的首地址（实际上是最低地址）
             new ItypeAsm("addi", Register.K0, Register.SP, AssemblyUnit.getCurrentOffset());
+            // 然后再从栈上为这个指令开一个空间，保存刚刚新分配空间的首地址
             RegisterUtils.allocReg(this, Register.K0);
         }
     }

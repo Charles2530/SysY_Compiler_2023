@@ -61,32 +61,42 @@ public class CallInstr extends Instr {
     public void generateAssembly() {
         super.generateAssembly();
         ArrayList<Register> allocatedRegs = AssemblyUnit.getAllocatedRegister();
+        // 将已经分配了寄存器的部分进行压栈
         int registerOffset = 0;
         int currentOffset = AssemblyUnit.getCurrentOffset();
         for (Register register : allocatedRegs) {
             registerOffset += 4;
             new MemTypeAsm("sw", null, register, Register.SP, currentOffset - registerOffset);
         }
+        //最后将SP指针和RA指针也进行压栈
         new MemTypeAsm("sw", null, Register.SP, Register.SP, currentOffset - registerOffset - 4);
         new MemTypeAsm("sw", null, Register.RA, Register.SP, currentOffset - registerOffset - 8);
+        //将实参的值压入被调用函数的堆栈或者寄存器中
         for (int paraNum = 1; paraNum < operands.size(); paraNum++) {
             Value para = operands.get(paraNum);
+            // 如果参数在前3个中，我们直接将他们放入a1-a3寄存器中
             if (paraNum <= 3 && AssemblyUnit.getRegisterController().getRegisterHashMap() != null) {
                 RegisterUtils.allocParamReg(para, Register.regTransform(
                         Register.A0.ordinal() + paraNum), currentOffset, allocatedRegs);
             } else {
+                // 如果参数不在前3个中或寄存器控制器中没有对应寄存器，我们将其存入堆栈中
                 RegisterUtils.allocParamMem(para, Register.K0,
                         currentOffset, allocatedRegs, paraNum);
             }
         }
+        // 将sp设置为被调用函数的栈底地址
         new ItypeAsm("addi", Register.SP, Register.SP, currentOffset - registerOffset - 8);
+        // 调用函数
         new JtypeAsm("jal", operands.get(0).getName().substring(1));
+        // 恢复完sp和ra
         new MemTypeAsm("lw", null, Register.RA, Register.SP, 0);
         new MemTypeAsm("lw", null, Register.SP, Register.SP, 4);
+        // 寄存器恢复
         for (int offset = 0; offset < allocatedRegs.size(); offset++) {
             new MemTypeAsm("lw", null, allocatedRegs.get(offset),
                     Register.SP, currentOffset - (offset + 1) * 4);
         }
+        // 如果当前函数有返回值，则从v0中获取返回值
         if (AssemblyUnit.getRegisterController().getRegister(this) == null) {
             RegisterUtils.allocReg(this, Register.V0);
         } else {

@@ -33,6 +33,9 @@ public class RegisterUtils {
 
     /**
      * allocReg 方法用于申请分配寄存器
+     * 函数执行逻辑如下:
+     * 1. 首先将栈指针向下移动4个字节，用来分配寄存器
+     * 2. 然后将value的偏移量和寄存器的映射添加到寄存器控制器中
      */
     public static void allocReg(Value value, Register target) {
         moveValueOffset(value);

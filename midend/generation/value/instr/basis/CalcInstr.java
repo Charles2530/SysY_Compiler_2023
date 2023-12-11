@@ -54,8 +54,11 @@ public class CalcInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 首先在寄存器控制器中查找当前指令对应的寄存器，如果为null则使用K0寄存器
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
+        // 同理，我们也需要查找当前指令的操作数对应的寄存器，如果rs为null则使用K0寄存器,
+        // 如果rt为null则使用K1寄存器
         Register rs = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         rs = RegisterUtils.loadVariableValue(operands.get(0), rs, Register.K0);
         Register rt = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
@@ -88,6 +91,7 @@ public class CalcInstr extends Instr {
             default:
                 throw new RuntimeException("Unknown instruction type: " + instrType);
         }
+        // 如果之前没有为当前指令分配寄存器，那么我们需要重新分配一个寄存器
         RegisterUtils.reAllocReg(this, target);
     }
 
