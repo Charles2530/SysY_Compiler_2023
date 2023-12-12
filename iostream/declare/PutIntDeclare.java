@@ -35,8 +35,10 @@ public class PutIntDeclare extends IoStreamGeneration {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 首先我们需要将整数加载到寄存器中
         Register targetReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         targetReg = RegisterUtils.loadVariableValue(operands.get(0), targetReg, Register.A0);
+        // 然后我们使用 syscall 指令输出整数
         if (targetReg != Register.A0) {
             new MoveAsm(Register.A0, targetReg);
         }

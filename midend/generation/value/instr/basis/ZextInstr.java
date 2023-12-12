@@ -33,8 +33,10 @@ public class ZextInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 如果是 i1 类型的零扩展，我们需要将其转换为 i32 类型
         if (operands.get(0).getType().isInt1() && target.isInt32()) {
             Register oriReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
+            // 如果oriReg有对应的寄存器，我们只需要在栈指针上记录对应的偏移量即可，否则我们需要重新申请空间
             if (oriReg != null) {
                 RegisterUtils.allocReg(this, oriReg);
             } else {

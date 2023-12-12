@@ -38,6 +38,8 @@ public class PutStrDeclare extends IoStreamGeneration {
 
     @Override
     public void generateAssembly() {
+        // 首先我们需要将字符串的地址加载到寄存器中
+        // 然后我们使用 syscall 指令输出字符串
         super.generateAssembly();
         new LaAsm(Register.A0, str.getName().substring(1));
         new LiAsm(Register.V0, 4);

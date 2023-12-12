@@ -55,12 +55,17 @@ public class GetEleInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 首先在寄存器控制器中查找当前指令对应的寄存器，如果为null则使用K0寄存器
         Register target = AssemblyUnit.getRegisterController().getRegister(this);
         target = (target == null) ? Register.K0 : target;
+        // 同理，我们也需要查找当前指令的操作数对应的寄存器，如果rs为null则使用K0寄存器,
+        // 如果rt为null则使用K1寄存器,当然这里由于我们的操作数是一个指针，所以我们还需要
+        // 从指针中获取对应的地址
         Register pointerReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         pointerReg = RegisterUtils.loadPointerValue(operands.get(0), pointerReg, Register.K0);
         Register offsetReg = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
         RegisterUtils.loadMemoryOffset(operands.get(1), Register.K1, target, pointerReg, offsetReg);
+        // 如果之前使用了默认寄存器，则需要重新分配地址，并在寄存器控制器中更新对应的寄存器
         RegisterUtils.reAllocReg(this, target);
     }
 

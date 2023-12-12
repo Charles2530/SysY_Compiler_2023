@@ -42,10 +42,12 @@ public class RetInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 如果存在返回值，首先我们需要将返回值存入寄存器 V0 中
         Value retValue = operands.isEmpty() ? null : operands.get(0);
         if (retValue != null) {
             Register retReg = AssemblyUnit.getRegisterController().getRegister(retValue);
             retReg = RegisterUtils.loadVariableValue(retValue, retReg, Register.V0);
+            // 如果本身有对应的寄存器，我们需要添加一个move指令将结果移动到V0中
             if (retReg != Register.V0) {
                 new MoveAsm(Register.V0, retReg);
             }

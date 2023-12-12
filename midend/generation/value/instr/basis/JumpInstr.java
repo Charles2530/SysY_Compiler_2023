@@ -46,9 +46,11 @@ public class JumpInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 如果当前指令需要被优化，则不生成汇编代码
         if (isAssemblerReduce) {
             return;
         }
+        // 跳转指令的目标基本块
         new JtypeAsm("j", operands.get(0).getName());
     }
 

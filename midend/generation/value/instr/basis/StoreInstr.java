@@ -33,10 +33,13 @@ public class StoreInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 首先 store 指令的第二个操作数是一个指针，我们需要先读取指针的值
         Register toReg = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
         toReg = RegisterUtils.loadPointerValue(operands.get(1), toReg, Register.K1);
+        // 首先在寄存器控制器中查找当前指令对应的寄存器，如果为null则使用K0寄存器
         Register fromReg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         fromReg = RegisterUtils.loadVariableValue(operands.get(0), fromReg, Register.K0);
+        // 然后我们使用 sw 指令将数据写入内存
         new MemTypeAsm("sw", null, fromReg, toReg, 0);
     }
 

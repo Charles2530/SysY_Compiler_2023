@@ -55,16 +55,21 @@ public class MoveInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 首先我们需要将源操作数的值加载到寄存器中
         Register dstReg = AssemblyUnit.getRegisterController().getRegister(to);
         Register srcReg = AssemblyUnit.getRegisterController().getRegister(from);
+        // 如果源操作数和目的操作数都是寄存器，我们需要判断是否相同，如果相同则不需要move
         if (dstReg != null && dstReg.equals(srcReg)) {
             return;
         }
+        // 如果dstReg为null则使用K0寄存器，如果srcReg为null则使用dstReg寄存器
         dstReg = (dstReg == null) ? Register.K0 : dstReg;
         srcReg = RegisterUtils.loadVariableValue(from, srcReg, dstReg);
+        // 如果源操作数和目的操作数都是寄存器，我们需要再次判断是否相同，如果不相同则需要move
         if (!srcReg.equals(dstReg)) {
             new MoveAsm(dstReg, srcReg);
         }
+        // 如果使用了默认寄存器，那么我们需要重新申请空间
         RegisterUtils.memAllocReg(to, dstReg);
     }
 }

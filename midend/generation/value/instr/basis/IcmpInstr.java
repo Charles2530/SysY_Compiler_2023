@@ -36,6 +36,8 @@ public class IcmpInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 我们需要查找当前指令的操作数对应的寄存器，如果rs为null则使用K0寄存器,
+        // 如果rt为null则使用K1寄存器，如果target为null则使用K0寄存器
         Register rs = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         rs = RegisterUtils.loadVariableValue(operands.get(0), rs, Register.K0);
         Register rt = AssemblyUnit.getRegisterController().getRegister(operands.get(1));
@@ -51,6 +53,7 @@ public class IcmpInstr extends Instr {
             case "sle" -> new RtypeAsm("sle", target, rs, rt);
             default -> throw new RuntimeException("Invalid icmp instruction type");
         }
+        // 如果使用了默认寄存器，那么我们需要重新申请空间
         RegisterUtils.reAllocReg(this, target);
     }
 

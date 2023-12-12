@@ -62,8 +62,10 @@ public class BrInstr extends Instr {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 首先在寄存器控制器中查找当前指令对应的寄存器，如果为null则使用K0寄存器
         Register reg = AssemblyUnit.getRegisterController().getRegister(operands.get(0));
         reg = RegisterUtils.loadRegisterValue(operands.get(0), Register.K0, reg);
+        // 判断con是否不等于0，如果不等于0则跳转到thenBlock，否则跳转到elseBlock
         new BtypeAsm("bne", operands.get(1).getName(), reg, Register.ZERO);
         new JtypeAsm("j", operands.get(2).getName());
     }

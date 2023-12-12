@@ -35,9 +35,12 @@ public class GetIntDeclare extends IoStreamGeneration {
     @Override
     public void generateAssembly() {
         super.generateAssembly();
+        // 首先我们需要使用 syscall 指令读取一个整数
         new LiAsm(Register.V0, 5);
         new SyscallAsm();
+        // 然后我们需要将读取到的整数加载到寄存器中
         Register reg = AssemblyUnit.getRegisterController().getRegister(this);
+        // 如果寄存器已经被分配了，那么我们就需要将其移动到 V0 中
         if (reg != null) {
             new MoveAsm(reg, Register.V0);
         } else {
