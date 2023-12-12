@@ -37,6 +37,7 @@ public class AllocaInstr extends Instr {
 
     @Override
     public void generateAssembly() {
+        // 调用父类的generateAssembly方法，用于输出对应的llvm代码
         super.generateAssembly();
         // 在栈上分配空间，同时更新栈指针
         AssemblyUnit.moveCurrentOffset(

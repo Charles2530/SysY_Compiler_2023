@@ -25,6 +25,7 @@ public class RegisterUtils {
      */
     public static Integer moveValueOffset(Value value) {
         Integer valueOffset;
+        // 移动栈指针并在偏移量和value的映射中更新映射
         AssemblyUnit.moveCurrentOffset(-4);
         valueOffset = AssemblyUnit.getCurrentOffset();
         AssemblyUnit.addOffset(value, valueOffset);
@@ -61,6 +62,7 @@ public class RegisterUtils {
             if (offset == null) {
                 allocReg(value, target);
             } else {
+                // 由于调用这个函数对应的是move指令，所以即使存在对应的offset我们也需要更新该处offset对应的value
                 new MemTypeAsm("sw", null, target, Register.SP, offset);
             }
         }
@@ -71,9 +73,12 @@ public class RegisterUtils {
      */
     public static Register loadRegisterValue(Value operand, Register instead, Register reg) {
         Register register = reg;
+        // 如果没有对应的寄存器，则使用默认寄存器
         if (register == null) {
             register = instead;
+            // 尝试在栈中查找操作数
             Integer offset = AssemblyUnit.getOffset(operand);
+            // 如果没有找到，则移动栈指针并添加对应的偏移量和value的映射
             offset = (offset == null) ? moveValueOffset(operand) : offset;
             new MemTypeAsm("lw", null, register, Register.SP, offset);
         }
@@ -85,10 +90,12 @@ public class RegisterUtils {
      */
     public static Register loadVariableValue(Value operand, Register reg, Register instead) {
         Register register = reg;
+        // 如果操作数是Constant，则直接使用li指令
         if (operand instanceof Constant) {
             new LiAsm(instead, ((Constant) operand).getVal());
             return instead;
         }
+        // 否则则加载到寄存器中
         register = loadRegisterValue(operand, instead, register);
         return register;
     }
@@ -98,10 +105,12 @@ public class RegisterUtils {
      */
     public static Register loadPointerValue(Value operand, Register pointerReg, Register instead) {
         Register register = pointerReg;
+        // 如果操作数是全局变量，则直接使用la指令
         if (operand instanceof GlobalVar) {
             new LaAsm(instead, operand.getName().substring(1));
             return instead;
         }
+        // 否则则加载到寄存器中
         register = loadRegisterValue(operand, instead, register);
         return register;
     }

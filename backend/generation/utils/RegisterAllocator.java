@@ -28,6 +28,7 @@ public class RegisterAllocator {
 
     /**
      * init 方法用于初始化寄存器分配器
+     * 这里没有区分临时寄存器和全局寄存器，均作为临时寄存器使用
      */
     public static void init() {
         RegisterAllocator.registers = new ArrayList<>();
