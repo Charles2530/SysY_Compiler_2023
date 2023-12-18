@@ -20,7 +20,7 @@ public class Definer {
         AstNode constTkNode = new AstNode("CONSTTK");
         constDeclNode.addChild(constTkNode);
         AstRecursion.nextSym();
-        if (getPreSym().equals("INTTK")) {
+        if (Judge.isBtype()) {
             AstNode intNode = new AstNode("<BType>");
             constDeclNode.addChild(intNode);
             AstNode intTkNode = new AstNode("INTTK");
@@ -43,14 +43,7 @@ public class Definer {
         } else {
             ErrorController.printDefinerPrintError();
         }
-        if (getPreSym().equals("SEMICN")) {
-            AstNode semicnNode = new AstNode("SEMICN");
-            constDeclNode.addChild(semicnNode);
-            AstRecursion.nextSym();
-        } else {
-            ErrorController.addError(new ErrorToken("i",
-                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-        }
+        genSemanticCheck("SEMICN", constDeclNode, "i");
     }
 
     /**
@@ -116,32 +109,29 @@ public class Definer {
     public static void genVarDecl(AstNode blockNode) throws IOException {
         AstNode varDeclNode = new AstNode("<VarDecl>");
         blockNode.addChild(varDeclNode);
-        AstNode intNode = new AstNode("<BType>");
-        varDeclNode.addChild(intNode);
-        AstNode intTkNode = new AstNode("INTTK");
-        intNode.addChild(intTkNode);
-        AstRecursion.nextSym();
-        while (true) {
-            if (Judge.isVarDef()) {
-                genVarDef(varDeclNode);
-            } else {
-                ErrorController.printDefinerPrintError();
-            }
-            if (getPreSym().equals("COMMA")) {
-                AstNode commaNode = new AstNode("COMMA");
-                varDeclNode.addChild(commaNode);
-                AstRecursion.nextSym();
-            } else {
-                break;
-            }
-        }
-        if (getPreSym().equals("SEMICN")) {
-            AstNode semicnNode = new AstNode("SEMICN");
-            varDeclNode.addChild(semicnNode);
+        if (Judge.isBtype()) {
+            AstNode intNode = new AstNode("<BType>");
+            varDeclNode.addChild(intNode);
+            AstNode intTkNode = new AstNode("INTTK");
+            intNode.addChild(intTkNode);
             AstRecursion.nextSym();
+            while (true) {
+                if (Judge.isVarDef()) {
+                    genVarDef(varDeclNode);
+                } else {
+                    ErrorController.printDefinerPrintError();
+                }
+                if (getPreSym().equals("COMMA")) {
+                    AstNode commaNode = new AstNode("COMMA");
+                    varDeclNode.addChild(commaNode);
+                    AstRecursion.nextSym();
+                } else {
+                    break;
+                }
+            }
+            genSemanticCheck("SEMICN", varDeclNode, "i");
         } else {
-            ErrorController.addError(new ErrorToken("i",
-                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
+            ErrorController.printDefinerPrintError();
         }
     }
 
@@ -182,14 +172,7 @@ public class Definer {
             if (Judge.isConstExp()) {
                 genConstExp(vardefNode);
             }
-            if (getPreSym().equals("RBRACK")) {
-                AstNode rbrackNode = new AstNode("RBRACK");
-                vardefNode.addChild(rbrackNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("k",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
+            genSemanticCheck("RBRACK", vardefNode, "k");
         }
     }
 
@@ -342,26 +325,10 @@ public class Definer {
                 AstNode lparentNode = new AstNode("LPARENT");
                 stmtNode.addChild(lparentNode);
                 AstRecursion.nextSym();
-                if (getPreSym().equals("RPARENT")) {
-                    AstNode rparentNode = new AstNode("RPARENT");
-                    stmtNode.addChild(rparentNode);
-                    AstRecursion.nextSym();
-                } else {
-                    ErrorController.addError(new ErrorToken("j",
-                            AstRecursion.getPreviousNoTerminalAst()
-                                    .getSpan().getEndLine()));
-                }
+                genSemanticCheck("RPARENT", stmtNode, "j");
             }
         }
-        if (getPreSym().equals("SEMICN")) {
-            AstNode semicnAst = new AstNode("SEMICN");
-            stmtNode.addChild(semicnAst);
-            AstRecursion.nextSym();
-        } else {
-            ErrorController.addError(new ErrorToken("i",
-                    AstRecursion.getPreviousNoTerminalAst()
-                            .getSpan().getEndLine()));
-        }
+        genSemanticCheck("SEMICN", stmtNode, "i");
     }
 
     /**
@@ -403,14 +370,7 @@ public class Definer {
             } else {
                 ErrorController.printDefinerPrintError();
             }
-            if (getPreSym().equals("RPARENT")) {
-                AstNode rparentNode = new AstNode("RPARENT");
-                blockNode.addChild(rparentNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("j",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
+            genSemanticCheck("RPARENT", blockNode, "j");
             if (Judge.isStmt()) {
                 genStmt(blockNode);
             } else {
@@ -445,36 +405,15 @@ public class Definer {
             if (Judge.isForStmtVal()) {
                 genForStmtVal(blockNode);
             }
-            if (getPreSym().equals("SEMICN")) {
-                AstNode semicnNode = new AstNode("SEMICN");
-                blockNode.addChild(semicnNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("i",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
+            genSemanticCheck("SEMICN", blockNode, "i");
             if (Judge.isCond()) {
                 genCond(blockNode);
             }
-            if (getPreSym().equals("SEMICN")) {
-                AstNode semicnNode = new AstNode("SEMICN");
-                blockNode.addChild(semicnNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("i",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
+            genSemanticCheck("SEMICN", blockNode, "i");
             if (Judge.isForStmtVal()) {
                 genForStmtVal(blockNode);
             }
-            if (getPreSym().equals("RPARENT")) {
-                AstNode rparentNode = new AstNode("RPARENT");
-                blockNode.addChild(rparentNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("j",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
+            genSemanticCheck("RPARENT", blockNode, "j");
             if (Judge.isStmt()) {
                 genStmt(blockNode);
             } else {
@@ -492,14 +431,7 @@ public class Definer {
         AstNode breakStmtNode = new AstNode("BREAKTK");
         blockNode.addChild(breakStmtNode);
         AstRecursion.nextSym();
-        if (getPreSym().equals("SEMICN")) {
-            AstNode semicnNode = new AstNode("SEMICN");
-            blockNode.addChild(semicnNode);
-            AstRecursion.nextSym();
-        } else {
-            ErrorController.addError(new ErrorToken("i",
-                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-        }
+        genSemanticCheck("SEMICN", blockNode, "i");
     }
 
     /**
@@ -509,14 +441,7 @@ public class Definer {
         AstNode continueStmtNode = new AstNode("CONTINUETK");
         blockNode.addChild(continueStmtNode);
         AstRecursion.nextSym();
-        if (getPreSym().equals("SEMICN")) {
-            AstNode semicnNode = new AstNode("SEMICN");
-            blockNode.addChild(semicnNode);
-            AstRecursion.nextSym();
-        } else {
-            ErrorController.addError(new ErrorToken("i",
-                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-        }
+        genSemanticCheck("SEMICN", blockNode, "i");
     }
 
     /**
@@ -529,14 +454,7 @@ public class Definer {
         if (Judge.isExp()) {
             genExp(blockNode);
         }
-        if (getPreSym().equals("SEMICN")) {
-            AstNode semicnNode = new AstNode("SEMICN");
-            blockNode.addChild(semicnNode);
-            AstRecursion.nextSym();
-        } else {
-            ErrorController.addError(new ErrorToken("i",
-                    AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-        }
+        genSemanticCheck("SEMICN", blockNode, "i");
     }
 
     /**
@@ -567,22 +485,8 @@ public class Definer {
             } else {
                 ErrorController.printDefinerPrintError();
             }
-            if (getPreSym().equals("RPARENT")) {
-                AstNode rparentNode = new AstNode("RPARENT");
-                blockNode.addChild(rparentNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("j",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
-            if (getPreSym().equals("SEMICN")) {
-                AstNode semicnNode = new AstNode("SEMICN");
-                blockNode.addChild(semicnNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("i",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
+            genSemanticCheck("RPARENT", blockNode, "j");
+            genSemanticCheck("SEMICN", blockNode, "i");
         }
     }
 
@@ -650,14 +554,7 @@ public class Definer {
                 } else {
                     ErrorController.printDefinerPrintError();
                 }
-                if (getPreSym().equals("RBRACK")) {
-                    AstNode rbrackNode = new AstNode("RBRACK");
-                    lvalNode.addChild(rbrackNode);
-                    AstRecursion.nextSym();
-                } else {
-                    ErrorController.addError(new ErrorToken("k",
-                            AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-                }
+                genSemanticCheck("RBRACK", lvalNode, "k");
             }
         } else {
             ErrorController.printDefinerPrintError();
@@ -679,14 +576,7 @@ public class Definer {
             } else {
                 ErrorController.printDefinerPrintError();
             }
-            if (getPreSym().equals("RPARENT")) {
-                AstNode rparentNode = new AstNode("RPARENT");
-                primaryExpNode.addChild(rparentNode);
-                AstRecursion.nextSym();
-            } else {
-                ErrorController.addError(new ErrorToken("j",
-                        AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-            }
+            genSemanticCheck("RPARENT", primaryExpNode, "j");
         } else if (Judge.isIdent()) {
             genLVal(primaryExpNode);
         } else if (Judge.isNumber()) {
@@ -733,14 +623,7 @@ public class Definer {
                 if (Judge.isFuncRParams()) {
                     genFuncRParams(unaryExpNode);
                 }
-                if (getPreSym().equals("RPARENT")) {
-                    AstNode rparentNode = new AstNode("RPARENT");
-                    unaryExpNode.addChild(rparentNode);
-                    AstRecursion.nextSym();
-                } else {
-                    ErrorController.addError(new ErrorToken("j",
-                            AstRecursion.getPreviousNoTerminalAst().getSpan().getEndLine()));
-                }
+                genSemanticCheck("RPARENT", unaryExpNode, "j");
             }
         } else if (Judge.isPrimaryExp()) {
             genPrimaryExp(unaryExpNode);
@@ -969,6 +852,21 @@ public class Definer {
         AstNode idenfrNode = new AstNode("IDENFR");
         constExpNode.addChild(idenfrNode);
         AstRecursion.nextSym();
+    }
+
+    /**
+     * genSemanticCheck:提取检测语法错误成分的代码
+     */
+    private static void genSemanticCheck(String symbol, AstNode stmtNode, String errorType) {
+        if (getPreSym().equals(symbol)) {
+            AstNode symAst = new AstNode(symbol);
+            stmtNode.addChild(symAst);
+            AstRecursion.nextSym();
+        } else {
+            ErrorController.addError(new ErrorToken(errorType,
+                    AstRecursion.getPreviousNoTerminalAst()
+                            .getSpan().getEndLine()));
+        }
     }
 
     /**

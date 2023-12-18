@@ -9,6 +9,9 @@ public class Judge {
     public static boolean isDecl() {
         return isConstDecl() || isVarDecl();
     }
+    public static boolean isBtype() {
+        return getPreSym().equals("INTTK");
+    }
 
     public static boolean isFuncDef() {
         return isFuncType() && getNextSym(1).equals("IDENFR") && getNextSym(2).equals("LPARENT");

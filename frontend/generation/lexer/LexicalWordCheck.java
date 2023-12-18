@@ -67,11 +67,12 @@ public class LexicalWordCheck {
                     ErrorController.addError(new ErrorToken("a", lineNum));
                 }
                 addWordToWords(words);
-            } else if (i + 1 < line.length() && (c == '&' && line.charAt(i + 1) == '&'
-                    || c == '|' && line.charAt(i + 1) == '|')) {
-                addWordToWords(words);
-                words.add(c + String.valueOf(line.charAt(i + 1)));
-                i++;
+            } else if (c == '&' || c == '|') {
+                if (i + 1 < line.length() && line.charAt(i + 1) == c) {
+                    addWordToWords(words);
+                    words.add(c + String.valueOf(line.charAt(i + 1)));
+                    i++;
+                }
             } else if (c == '/') {
                 addWordToWords(words);
                 if (i + 1 < line.length() && line.charAt(i + 1) == '/') {
