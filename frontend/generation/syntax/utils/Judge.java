@@ -9,6 +9,7 @@ public class Judge {
     public static boolean isDecl() {
         return isConstDecl() || isVarDecl();
     }
+
     public static boolean isBtype() {
         return getPreSym().equals("INTTK");
     }
