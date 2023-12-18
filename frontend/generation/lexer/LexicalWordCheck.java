@@ -3,7 +3,6 @@ package frontend.generation.lexer;
 import iostream.structure.ErrorController;
 import iostream.structure.ErrorToken;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class LexicalWordCheck {
@@ -29,7 +28,7 @@ public class LexicalWordCheck {
     /**
      * 拆分读入的一行字符串，将其分解为单词集合
      */
-    public ArrayList<String> split(String line, int lineNum) throws IOException {
+    public ArrayList<String> split(String line, int lineNum) {
         ArrayList<String> words = new ArrayList<>();
         for (int i = 0; i < line.length(); i++) {
             if (isComment) {
@@ -59,8 +58,7 @@ public class LexicalWordCheck {
                 addWordToWords(words);
                 word += line.charAt(i++);
                 while (i < line.length() && line.charAt(i) != '\"') {
-                    word += line.charAt(i);
-                    i++;
+                    word += line.charAt(i++);
                 }
                 word += line.charAt(i);
                 if (this.checkIllegalSym(word)) {
