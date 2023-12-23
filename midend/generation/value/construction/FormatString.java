@@ -42,7 +42,7 @@ public class FormatString extends Value {
     @Override
     public String toString() {
         return name + " = constant " + ((PointerType) type).getTarget() +
-                " c\"" + string + "\\00\"";
+                " c\"" + string.replace("\n","\\0A") + "\\00\"";
     }
 
     @Override
