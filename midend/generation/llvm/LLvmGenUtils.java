@@ -32,12 +32,18 @@ public class LLvmGenUtils {
         this.llvmGenIR = llvmGenIR;
     }
 
+    /**
+     * Cond -> LOrExp
+     */
     public void genCondIr(AstNode rootAst, BasicBlock thenBlock, BasicBlock elseBlock) {
         if (rootAst.getChildList().get(0).getGrammarType().equals("<LOrExp>")) {
             genOrIr(rootAst.getChildList().get(0), thenBlock, elseBlock);
         }
     }
 
+    /**
+     * LorExp -> LAndExp | LOrExp '||' LAndExp
+     */
     public void genOrIr(AstNode child, BasicBlock thenBlock, BasicBlock elseBlock) {
         for (AstNode node : child.getChildList()) {
             if (node.getGrammarType().equals("<LAndExp>")) {
@@ -55,6 +61,9 @@ public class LLvmGenUtils {
         }
     }
 
+    /**
+     * LAndExp -> EqExp | LAndExp '&&' EqExp
+     */
     public void genAndIr(AstNode child, BasicBlock thenBlock, BasicBlock elseBlock) {
         for (AstNode node : child.getChildList()) {
             if (node.getGrammarType().equals("<EqExp>")) {
@@ -72,6 +81,9 @@ public class LLvmGenUtils {
         }
     }
 
+    /**
+     * EqExp -> RelExp | EqExp ('=='|'!=') RelExp
+     */
     public void genEqIr(AstNode node, BasicBlock thenBlock, BasicBlock elseBlock) {
         Value cond = llvmGenIR.genIrAnalysis(node);
         if (cond.getType().isInt32()) {
@@ -81,6 +93,10 @@ public class LLvmGenUtils {
         new BrInstr(cond, thenBlock, elseBlock);
     }
 
+    /**
+     * LVal -> Ident { '[' Exp ']'}
+     * 用于获取左值对应的LLVM IR代码
+     */
     public Value genAssignIr(AstNode rootAst) {
         ArrayList<Value> values = new ArrayList<>();
         for (AstNode child : rootAst.getChildList()) {
@@ -109,6 +125,10 @@ public class LLvmGenUtils {
         return null;
     }
 
+    /**
+     * LVal -> Ident { '[' Exp ']'}
+     * 用于创建左值对应的LLVM IR代码
+     */
     public Value genLValIr(AstNode rootAst) {
         int expNum = 0;
         ArrayList<Value> values = new ArrayList<>();
@@ -160,6 +180,9 @@ public class LLvmGenUtils {
         }
     }
 
+    /**
+     * Stmt -> LVal '=' 'getint' '(' ')'';'
+     */
     public Value genIrGetIntChecker(AstNode rootAst) {
         Value pointer = genAssignIr(rootAst.getChildList().get(0));
         GetIntDeclare getIntDeclare = new GetIntDeclare(IrNameController.getLocalVarName(),

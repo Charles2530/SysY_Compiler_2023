@@ -103,11 +103,16 @@ public class LLvmGenIR {
     }
 
     //Definer.java
+
+    /**
+     * ConstDef -> Ident { '[' ConstExp ']' } '=' ConstInitVal ';'
+     */
     private Value genIrConstDefChecker(AstNode rootAst) {
         ConstSymbol constSymbol =
                 (ConstSymbol) semanticAnalysisChecker.createConstDefChecker(rootAst);
         SymbolTable.addSymbol(constSymbol);
         if (constSymbol.getSymbolLevel().equals(0)) {
+            // 如果该常量所处符号表深度为0，说明是全局常量，需要生成对应的全局变量
             GlobalVar globalVar = new GlobalVar(
                     new PointerType(constSymbol.getInitial().getType()),
                     IrNameController.getGlobalVarName(
@@ -147,6 +152,9 @@ public class LLvmGenIR {
         return null;
     }
 
+    /**
+     * VarDef -> Ident { '[' ConstExp ']' } ';' | Ident { '[' ConstExp ']' } '=' InitVal ';'
+     */
     private Value genIrVarDefChecker(AstNode rootAst) {
         IntSymbol intSymbol = (IntSymbol) semanticAnalysisChecker.createVarDefChecker(rootAst);
         SymbolTable.addSymbol(intSymbol);
@@ -199,6 +207,7 @@ public class LLvmGenIR {
 
     /**
      * genIrIfStmtChecker 主要处理if语句的生成LLVM IR中间代码的过程
+     * Stmt -> 'if' '(' Cond ')' Stmt ['else' Stmt]
      * 这里如果childList的长度大于5，说明有else语句，需要生成对应的
      * 条件跳转指令，否则直接生成对应的条件跳转指令即可
      */
@@ -229,6 +238,7 @@ public class LLvmGenIR {
 
     /**
      * genIrForStmtChecker 主要处理for语句的生成LLVM IR中间代码的过程
+     * Stmt -> 'for' '(' [ForStmtVal1] ';' [Cond] ';' [ForStmtVal2] ')' Stmt
      * 这里由于forStmtVal1,CondAst和forStmtVal2均可能缺省，所以需要分多
      * 种情况分类讨论
      */
@@ -283,6 +293,9 @@ public class LLvmGenIR {
         return null;
     }
 
+    /**
+     * Stmt -> 'break' ';'
+     */
     private Value genIrBreakStmtChecker() {
         new JumpInstr(IrNameController.getCurrentLoop().getFollowBlock());
         return null;
@@ -290,6 +303,7 @@ public class LLvmGenIR {
 
     /**
      * genIrContinueStmtChecker 主要处理continue语句的生成LLVM IR中间代码的过程
+     * Stmt -> 'continue' ';'
      * 这里continue的跳转逻辑决定于Cond是否缺省
      */
     private Value genIrContinueStmtChecker() {
@@ -304,6 +318,9 @@ public class LLvmGenIR {
         return null;
     }
 
+    /**
+     * Stmt -> 'return' [Exp] ';'
+     */
     private Value genIrReturnStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
         Value retValue = null;
@@ -315,6 +332,9 @@ public class LLvmGenIR {
         return new RetInstr(retValue);
     }
 
+    /**
+     * Stmt -> 'printf' '(' FormatString {',' Exp} ')' ';'
+     */
     private Value genIrPrintStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
         StringBuilder sb = new StringBuilder();
@@ -355,27 +375,41 @@ public class LLvmGenIR {
         return null;
     }
 
+    /**
+     * Exp -> AddExp
+     * ConstExp -> AddExp
+     */
     private Value genIrExpChecker(AstNode rootAst) {
         return genIrAnalysis(rootAst.getChildList().get(0));
     }
 
+    /**
+     * PrimaryExp -> '(' Exp ')' | LVal | Number
+     */
     private Value genIrPrimaryExpChecker(AstNode rootAst) {
         AstNode child = rootAst.getChildList().get(0);
         Value ans;
         if (child.getGrammarType().equals("LPARENT")) {
-            ans = genIrAnalysis(rootAst.getChildList().get(1));
+            ans = genIrExpChecker(rootAst.getChildList().get(1));
         } else if (child.getGrammarType().equals("<LVal>")) {
             ans = llvmGenUtils.genLValIr(child);
         } else {
-            ans = genIrAnalysis(child);
+            ans = genIrNumberCallChecker(child);
         }
         return ans;
     }
 
+    /**
+     * Number -> IntConst
+     */
     private Value genIrNumberCallChecker(AstNode rootAst) {
         return new Constant(rootAst.getChildList().get(0).getSymToken().getWord(), new VarType(32));
     }
 
+    /**
+     * UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
+     * PrimaryExp -> '(' Exp ')' | LVal | Number
+     */
     private Value genIrUnaryExpChecker(AstNode rootAst) {
         Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         if (rootAst.getChildList().get(0).getGrammarType().equals("<PrimaryExp>")) {
@@ -415,6 +449,9 @@ public class LLvmGenIR {
         }
     }
 
+    /**
+     * MulExp -> UnaryExp { ('*'|'/'|'%') UnaryExp }
+     */
     private Value genIrMulExpChecker(AstNode rootAst) {
         Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
@@ -432,6 +469,9 @@ public class LLvmGenIR {
         return ans;
     }
 
+    /**
+     * AddExp -> MulExp { ('+'|'-') MulExp }
+     */
     private Value genIrAddExpChecker(AstNode rootAst) {
         Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
@@ -446,6 +486,9 @@ public class LLvmGenIR {
         return ans;
     }
 
+    /**
+     * RelExp -> AddExp { ('<'|'<='|'>'|'>=') AddExp }
+     */
     private Value genIrRelExpChecker(AstNode rootAst) {
         Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
@@ -470,6 +513,9 @@ public class LLvmGenIR {
         return ans;
     }
 
+    /**
+     * EqExp -> RelExp { ('=='|'!=') RelExp }
+     */
     private Value genIrEqExpChecker(AstNode rootAst) {
         Value ans = genIrAnalysis(rootAst.getChildList().get(0));
         for (int i = 1; i < rootAst.getChildList().size(); i++) {
@@ -494,12 +540,19 @@ public class LLvmGenIR {
     }
 
     //FuncDef.java
+
+    /**
+     * FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
+     */
     private Value genIrFuncDefChecker(AstNode rootAst) {
         SymbolTable.setGlobalArea(false);
         FuncSymbol funcSymbol = (FuncSymbol) semanticAnalysisChecker.createFuncDefChecker(rootAst);
         return genFuncDefSubChecker(rootAst, funcSymbol);
     }
 
+    /**
+     * FuncFParam -> BType Ident [ '[' ']' { '[' ConstExp ']' }]
+     */
     private Value genIrFuncFParamChecker(AstNode rootAst) {
         IntSymbol symbol = (IntSymbol) semanticAnalysisChecker.createFuncFParamChecker(rootAst);
         SymbolTable.addSymbol(symbol);
@@ -518,6 +571,10 @@ public class LLvmGenIR {
     }
 
     //MainFuncDef.java
+
+    /**
+     * MainFuncDef -> 'int' 'main' '(' ')' Block
+     */
     private Value genIrMainFuncDefChecker(AstNode rootAst) {
         SymbolTable.setGlobalArea(false);
         FuncSymbol funcSymbol =
@@ -551,6 +608,10 @@ public class LLvmGenIR {
     }
 
     //Lexer_part
+
+    /**
+     * Stmt-> LVal '=' ('getint' '(' ')' ';'| Exp ';')
+     */
     private Value genIrAssignChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
         if (rootAst.getChildList().get(2).getGrammarType().equals("GETINTTK")) {
