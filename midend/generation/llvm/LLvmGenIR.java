@@ -324,7 +324,8 @@ public class LLvmGenIR {
     private Value genIrReturnStmtChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
         Value retValue = null;
-        if (rootAst.getChildList().get(1).getGrammarType().equals("<Exp>")) {
+        if (rootAst.getChildList().size() > 1 &&
+                rootAst.getChildList().get(1).getGrammarType().equals("<Exp>")) {
             retValue = genIrAnalysis(rootAst.getChildList().get(1));
         } else if (IrNameController.getCurrentFunc().getReturnType().isInt32()) {
             retValue = new Constant("0", new VarType(32));
@@ -435,7 +436,8 @@ public class LLvmGenIR {
             if (funcSymbol != null) {
                 Function function = funcSymbol.getfunction();
                 ArrayList<Value> params = new ArrayList<>();
-                if (rootAst.getChildList().get(2).getGrammarType().equals("<FuncRParams>")) {
+                if (rootAst.getChildList().size() > 2 &&
+                        rootAst.getChildList().get(2).getGrammarType().equals("<FuncRParams>")) {
                     for (AstNode child : rootAst.getChildList().get(2).getChildList()) {
                         if (child.getGrammarType().equals("<Exp>")) {
                             params.add(genIrAnalysis(child));
@@ -614,7 +616,8 @@ public class LLvmGenIR {
      */
     private Value genIrAssignChecker(AstNode sonAst) {
         AstNode rootAst = sonAst.getParent();
-        if (rootAst.getChildList().get(2).getGrammarType().equals("GETINTTK")) {
+        if (rootAst.getChildList().size() > 2 &&
+                rootAst.getChildList().get(2).getGrammarType().equals("GETINTTK")) {
             return llvmGenUtils.genIrGetIntChecker(rootAst);
         } else {
             Value lval = llvmGenUtils.genAssignIr(rootAst.getChildList().get(0));

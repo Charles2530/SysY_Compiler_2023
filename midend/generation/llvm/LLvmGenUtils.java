@@ -95,7 +95,7 @@ public class LLvmGenUtils {
 
     /**
      * LVal -> Ident { '[' Exp ']'}
-     * 用于获取左值对应的LLVM IR代码
+     * 用于获取左值对应的LLVM IR代码，获得左值的地址
      */
     public Value genAssignIr(AstNode rootAst) {
         ArrayList<Value> values = new ArrayList<>();
@@ -127,7 +127,7 @@ public class LLvmGenUtils {
 
     /**
      * LVal -> Ident { '[' Exp ']'}
-     * 用于创建左值对应的LLVM IR代码
+     * 用于创建左值对应的LLVM IR代码，获得左值的值
      */
     public Value genLValIr(AstNode rootAst) {
         int expNum = 0;
