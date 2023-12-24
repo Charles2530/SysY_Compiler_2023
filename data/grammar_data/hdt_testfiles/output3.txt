@@ -1,0 +1,5 @@
+21373188
+test_d_array_param_2():sum of test_v2d_array_param is 11
+test_d_array_param_1():sum of test_v1d_array_param is 1
+test global const array: global_d1 is [1, 2]
+test global const array: global_d2 is [[1, 2],[3, 4]]

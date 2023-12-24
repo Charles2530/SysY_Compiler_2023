@@ -1,0 +1,9 @@
+21371227
+2: !()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ3: []^_'abcdefghijklmnopqrstuvwxyz{|}~
+4:28
+5:for1 end when i=5
+6:for2 end when i=7
+7:for3 end when i=9
+8:for4 end when i=11
+9:not equal
+10:59

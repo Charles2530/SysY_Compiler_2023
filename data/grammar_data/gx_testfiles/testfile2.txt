@@ -1,0 +1,55 @@
+// #include <stdio.h>
+
+void nothing() {}
+
+void func1(int a) {}
+
+void func2(int a, int b) {}
+
+int func3(int a[][2], int b) { return b; }
+
+int func4(int a[]) {
+    return a[0];
+}
+
+int main() {
+    printf("21373181\n");
+    int v1;
+    int arr1[2][2] = {{1, 2},
+                      {3, 4}};
+    int res;
+    res = func3(arr1, v1) + 3 % 2 - 7 * 6;
+    int arr3[2] = {3, 6 * 4};
+    res = arr3[0];
+    int arr[2][2] = {{5,  10},
+                     {-5, -10}};
+    int a = arr[0][0];
+    int b = - + -arr[0][1];
+    int arr2[2] = {1, 2};
+    const int C = arr2[0];
+    int d = 0;
+    d = -arr2[0];
+    if (!0) {
+        int e;
+    }
+    for (;;) { break; };
+    if (b <= 2) printf("Condition 1 is satisfied!\n"); else printf("Condition 1 is not satisfied!\n");
+
+    if (b > 0) printf("Condition 2 is satisfied!\n"); else printf("Condition 2 is not satisfied!\n");
+
+    if (b >= 0) printf("Condition 3 is satisfied!\n"); else printf("Condition 3 is not satisfied!\n");
+
+    if (b + 1 > 0) printf("Condition 4 is satisfied!\n"); else printf("Condition 4 is not satisfied!\n");
+
+    if (b * 2 == 10) printf("Condition 5 is satisfied!\n"); else printf("Condition 5 is not satisfied!\n");
+
+    if (b != 10) printf("Condition 6 is satisfied!\n"); else printf("Condition 6 is not satisfied!\n");
+
+    if (a < b) printf("Condition 7 is satisfied!\n"); else printf("Condition 7 is not satisfied!\n");
+
+    if (a < b) printf("Condition 8 is satisfied!\n"); else printf("Condition 8 is not satisfied!\n");
+
+    if (!a) printf("Condition 9 is satisfied!\n"); else printf("Condition 9 is not satisfied!\n");
+
+    return 0;
+}

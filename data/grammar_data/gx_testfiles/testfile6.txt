@@ -1,0 +1,20 @@
+void hanoi(int n, int source, int auxiliary, int destination) {
+    if (n > 0) {
+        hanoi(n - 1, source, destination, auxiliary);
+        printf("Move disk %d from peg %d to peg %d\n", n, source, destination);
+        hanoi(n - 1, auxiliary, source, destination);
+    }
+}
+
+int main() {
+    int numDisks = 3;  // 汉诺塔的盘子数量
+    int source = 2;  // 起始柱子
+    int auxiliary = 1;  // 辅助柱子
+    int destination = 3;  // 目标柱子
+
+    printf("21373181\n");
+    hanoi(numDisks, source, auxiliary, destination);
+    printf("Done\n");
+    printf("Congratulations!\n");
+    return 0;
+}

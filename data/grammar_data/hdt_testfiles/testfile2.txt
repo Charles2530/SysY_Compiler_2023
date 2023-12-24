@@ -1,0 +1,34 @@
+const int global_d1[2] = {1, 2}, global_d2[2][2] = {{1, 2},
+                                                    {3, 4}};
+const int global_0 = 0, global_1 = 1, global_2 = 2, global_3 = 3, global_4 = 4;
+int global_vd1[2] = {global_0, global_1}, global_vd2[2][2] = {{global_2, global_3},
+                                                              {global_4, 2}};
+
+int test_d_array_param_1(int a[], int len) {
+    int i, sum = 0;
+    for (i = 0; i < len; i = i + 1) {
+        sum = sum + a[i];
+    }
+    return sum;
+}
+
+int test_d_array_param_2(int a[][2], int len) {
+    int i, sum = 0;
+    for (i = 0; i < len; i = i + 1) {
+        int j;
+        for (j = 0; j < 2; j = j + 1) {
+            sum = sum + a[i][j];
+        }
+    }
+    return sum;
+}
+
+int main() {
+    printf("21373188\n");
+    printf("test_d_array_param_2():sum of test_v2d_array_param is %d\n", test_d_array_param_2(global_vd2, 2));
+    printf("test_d_array_param_1():sum of test_v1d_array_param is %d\n", test_d_array_param_1(global_vd1, 2));
+    printf("test global const array: global_d1 is [%d, %d]\n", global_d1[0], global_d1[1]);
+    printf("test global const array: global_d2 is [[%d, %d],[%d, %d]]\n", global_d2[0][0], global_d2[0][1],
+           global_d2[1][0], global_d2[1][1]);
+    return 0;
+}

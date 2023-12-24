@@ -1,0 +1,47 @@
+const int global_0 = 0;
+const int global_1 = 2 - 1, global_2 = 1 + 1, global_3 = 6 / 2, global_4 = 2 * 2, global_5 = 11 % 6,
+        global_6 = 20 / 2 - 2 * (2 + 2);
+int global_v0;
+int global_v1, global_v2 = global_1 + global_2;
+
+int test_multi_param(int a, int b) {
+    return a + b;
+}
+
+int test_one_param(int a) {
+    int b = a;
+    printf("test_one_param(): a = %d, b = %d\n", a, b);
+    return a * b;
+}
+
+void test_no_param() {
+    printf("test_no_param(): I am joker!\n");
+}
+
+void test_no_block() {}
+
+void test_block_item() {
+    int a = 1;
+    a = a * 2;;
+    {
+        a = a * 3;
+    }
+    return;
+}
+
+int main() {
+    printf("21373188\n");
+    int local_a = test_multi_param(global_1, global_2), local_b;
+    local_b = getint();
+    printf("test_multi_param(): %d + %d = %d\n", global_1, local_b, global_1 + local_b);
+    test_no_param();
+    test_one_param(global_v2);
+    test_no_block();
+    test_block_item();
+    global_v1 = getint();
+    global_v0 = global_v1 + global_v2;
+    printf("test global const: %d,%d,%d,%d,%d,%d,%d\n", global_0, global_1, global_2, global_3, global_4, global_5,
+           global_6);
+    printf("test global variable: %d,%d,%d\n", global_v0, global_v1, global_v2);
+    return 0;
+}

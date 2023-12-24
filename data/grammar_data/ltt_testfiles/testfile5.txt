@@ -1,0 +1,16 @@
+
+int main() {
+    printf("21371229\n");
+    int i = 0;
+
+    for (; ; ) { break; continue; }
+    for (i=0; ; ) { break; continue; }
+    for (; 0; ) { break; continue; }
+    for (i=0; 0; ) { break; continue; }
+    for (; ; i = 0) { break; continue; }
+    for (i=0; ; i = 0) { break; continue; }
+    for (; 0; i =0 ) { break; continue; }
+    for (i=0; 0; i = 0) { break; continue; }
+
+    return 0;
+}

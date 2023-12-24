@@ -1,0 +1,62 @@
+/*
+#include <cstdio>
+
+
+int getint(){
+    int n;
+    scanf("%d",&n);
+    return n;
+}
+*/
+
+const int ci0=1;
+const int ci1=10,ci2=20;
+int Aa_0=-+-1, Aa_1=0, sc;
+
+void func3() {
+    printf("3: use func\n");
+    return ;
+}
+
+void func8() {
+    printf("8: use func\n");
+    return ;
+}
+
+int func1(int a,int id) {
+    printf("%d: use func1\n",id);
+    int i;
+    for(i=0;i<9;i=i+1) {
+        a=a+i;
+    }
+    return a;
+}
+
+int func2(int b) {
+    return b;
+}
+
+int main() {
+    //testfile5.txt
+    printf("21371227\n");
+    sc=getint();
+    int a=0;
+    {
+        int a=+-Aa_1;
+        printf("2: use only-block\n");
+    }
+    func3();
+    int b=func1(Aa_0, 4);
+    int c=func2(sc);
+    printf("5: %d %d\n",b,ci1);
+    printf("6: %d %d\n",c,ci2);
+    printf("7: %d\n",c*func2(sc));
+    if (func2(sc)>=0) {
+        func8();
+        printf("9: YES\n");
+    }
+    if (sc) {
+        printf("10: YES\n");
+    }
+    return 0;
+}

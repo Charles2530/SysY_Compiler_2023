@@ -1,0 +1,14 @@
+21373191
+var_ans from getint() is 1 ! 
+j=1
+21373191
+21373191
+21373191
+21373191
+21373191
+21373191
+21373191
+21373191
+right answer !!!!
+var_res from getint() is 2 ! 
+getint is 1

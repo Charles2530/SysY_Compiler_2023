@@ -1,0 +1,91 @@
+//
+// Created by charles on 2023/9/12.
+//
+
+
+//////////////////////////////////////
+const int const_var_0 = 0;
+const int const_var_1 = 2 - 1, const_var_2 = 1 + 1, const_var_3 = 6 / 2, const_var_4 = 2 * 2, const_var_5 = 11 % 6,
+        const_var_6 = 20 / 2 - 2 * (2 + 2);
+int var_0;
+int var_1, var_2 = const_var_1 + const_var_2;
+
+void no_block() {}
+
+void isprime(int n) {
+    int i;
+    for (i = 2; i < n; i = i + 1) {
+        if (n % i == 0) {
+            printf("no\n");
+            return;
+        }
+    }
+    printf("yes\n");
+    return;
+}
+
+int multiplus(int a, int b) {
+    return a * b + 3;
+}
+
+int one(int a) {
+    int b = a;
+    printf("a = %d, b = %d\n", a, b);
+    return a * b + 3;
+}
+
+void no() {
+    var_0 = 0;
+    printf("no!!!\n");
+}
+
+
+void gcd(int a, int b) {
+    int t;
+    for (; b != 0;) {
+        t = a % b;
+        a = b;
+        b = t;
+    }
+    printf("%d\n", a);
+    return;
+}
+
+void block_item() {
+    int al = +1;
+    al = al * 2;;
+    {
+        al = al * 8;
+    }
+    return;
+}
+
+int main() {
+    printf("21373191\n");
+    int var_ans;
+    var_ans = getint();
+    int var_res;
+    var_res = getint();
+    printf("var_ans from getint() is %d\n", var_ans);
+    printf("var_res from getint() is %d\n", var_res + 1);
+    printf("getint is %d\n", 1);
+    block_item();
+    multiplus(var_1, var_2);
+    no_block();
+    printf("%d\n", const_var_0);
+    no();
+    one(var_2);
+    int val = var_ans + var_res;
+    if (!val) {
+        printf("%d\n!", val);
+    }
+    no();
+    printf("%d+%d=%d\n", var_1, var_2, var_1 + var_2);
+    printf("global const: %d,%d,%d,%d,%d,%d,%d\n", const_var_0, const_var_1, const_var_2, const_var_3, const_var_4,
+           const_var_5,
+           const_var_6);
+    printf("global variable: %d,%d,%d\n", var_0, var_1, var_2);
+    isprime(val);
+    gcd(var_1, var_2);
+    return 0;
+}

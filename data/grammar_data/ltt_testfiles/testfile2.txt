@@ -1,0 +1,113 @@
+
+const int len = 16, Mod = 1919810;
+const int dx[7] = {1, 1, 0, 0, -1, -1, 1};
+const int dy[7] = {0, 0, 1, 1,  0, 0, -1};
+const int map[4][4] = {
+        {1, 1, 1, 1},
+        {2, 4, 8, 16},
+        {3, 9, 27, 81},
+        {4, 16, 64, 256}
+}, set[2][3] = { {1, 2, 3}, {4, 5, 6} };
+int happy[0];
+//int happy2[0] = {};
+int rev[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int vis[8][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0}
+};
+int /* zi[len/2]; // */ fi[8][8], yi[8];
+int flag = 1145;
+//* int flag = 1;
+///bit-reversal permutation
+void reverse(int rev[]) {
+    int i;
+    for (i = 0; i<len; i = i + 1) {
+        rev[i] = rev[i / 2] / 2;
+        if (i % 2 == 1) rev[i] = rev[i] + len / 2;
+    }
+}
+
+void print(int a[]) {
+    int i;
+    printf("%d", a[0]);
+    for (i = 0; i < len / 2; i = i+1) printf(" %d", a[i]);
+    printf("\n");
+}
+
+void attack(int vis[][8], int yi[], int x) {
+    if (!flag) return;
+    int i;
+    if (x == len / 2) {
+        flag = flag - 1;
+        if (flag) return;
+        for (i=0; i<len /2; i = i + 1)
+            print(vis[i]);
+        return;
+    }
+    int y = 0;
+    for (;y < len/ 2; y = y + 1) {
+        if (yi[y]) continue;
+        yi[y] = 1;
+        vis[x][y] = 1;
+        attack(vis, yi, x + 1);
+        yi[y] = 0;
+        vis[x][y] = 0;
+    }
+}
+
+int get(int s[][4], int x, int y) {
+    return s[x][y];
+}
+
+void print_num(int x) {
+    printf(" %d", x);
+}
+
+int main() {
+    printf("21371229\n");
+    reverse(rev);
+    int i;
+    for (i = 0; i < len; i = i + 1) printf("rev[%d]: %d\n", i, rev[i]);
+
+    attack(vis, yi, 0);
+
+    int x = 0, y = 0, z = get(map, x, y);
+    printf("(%d, %d) = %d\n", x, y, z);
+    for (i=0; i<7; i = i + 1) {
+        x = x + dx[i];
+        y = y + dy[i];
+        z = get(map, x, y);
+        printf("(%d, %d) = %d\n", x, y, z);
+    }
+    int ssr[10][10], sr[10];
+
+    fi[0][1] = 1;
+    x = 0; y = 1;
+    int a = 0, b = 1;
+    for (; ; ) {
+        if (y == 8) {
+            x = x + 1;
+            y = 0;
+        } else y = y + 1;
+        if (x == 8) break;
+        fi[x][y] = (a + b) % Mod;
+        a = b;
+        b = fi[x][y];
+    }
+    for (x = 0; x < 8; x = x + 1) {
+        y = 0;
+        printf("%d", fi[x][y]);
+        for (y = y + 1; y < 8; y = y + 1)
+            print_num(fi[x][y]);
+        printf("\n");
+    }
+
+    return 0;
+}
+

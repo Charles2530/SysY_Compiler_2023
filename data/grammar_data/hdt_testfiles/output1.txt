@@ -1,0 +1,10 @@
+21373188
+input is 10
+j=5
+j=4
+j=3
+j=2
+j=1
+0:This should only be printed once
+2:This should only be printed once
+5:This should only be printed once

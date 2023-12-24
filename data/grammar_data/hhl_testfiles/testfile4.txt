@@ -1,0 +1,77 @@
+//#include <stdio.h>
+
+/*
+int getint(){
+    int n;
+    scanf("%d",&n);
+    return n;
+}*/
+
+
+
+int main() {
+    //testfile4.txt
+    printf("21371227\n");
+    const int ci0=1;
+    const int ci1=10,ci2=20*2/ci0-ci0+ci0;
+    int Aa_0=-+-1, Aa_2=0, sc;
+    sc=10;
+    int Aa_1=Aa_0+sc-(0+3*Aa_0)*sc+Aa_0*sc/1*1%4+(1)+(Aa_0+1)*2+ci2;
+    printf("2: !()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    printf("3: []^_`abcdefghijklmnopqrstuvwxyz{|}~\n");
+    printf("4:%d\n",Aa_1);
+    if (Aa_1>=0) Aa_2=0;
+    else {
+        if (Aa_1<=100) Aa_2=0;
+        Aa_2=1;
+    }
+    if (Aa_2==0) {
+        int i;
+        for(i=0*Aa_0+ci0;i<7;i=i+1) {
+            if(i>4) {
+                printf("5:for1 end when i=%d\n",i);
+                break;
+            } else {
+                continue;
+            }
+        }
+        for(;i<ci2;i=i+1) {
+            if(i>6) {
+                printf("6:for2 end when i=%d\n",i);
+                break;
+            }
+        }
+        for(i=7;;i=i+1) {
+            if(i>8) {
+                printf("7:for3 end when i=%d\n",i);
+                break;
+            }
+        }
+        for(i=7;i<=100;) {
+            i=i+1;
+            if(i>ci1+Aa_2) {
+                printf("8:for4 end when i=%d\n",i);
+                break;
+            }
+            if(i<100) continue;
+        }
+        for(;;i=i+1) {
+            break;
+        }
+        for(;i<100;) {
+            break;
+        }
+        for(i=10;;) {
+            break;
+        }
+        for(;;) {
+            break;
+        }
+    }
+    else ;
+    if (Aa_0!=Aa_2+10) {
+        printf("9:not equal\n");
+    }
+    if (!Aa_2) printf("10:%d",(Aa_0+1-1+Aa_1-ci2)/1/ci0%ci1+20*3);
+    return 0;
+}

@@ -1,0 +1,36 @@
+// #include <stdio.h>
+
+int get_first(int a[][2]) {
+    return a[0][0];
+}
+
+void nothing() {
+
+}
+
+int main() {
+    int num;
+   num = getint();
+    printf("21373181\n");
+    int cnt = 0;
+    int i = 0;
+    for (i = 0; i < 100; i = i + 1) {
+        cnt = cnt + 1;
+        if (cnt == 10) {
+            break;
+        }
+        printf("%d\n", cnt);
+    }
+    int j = 0;
+    for (j = 0; j < 10; j = j + 1) {
+        nothing();
+        continue;
+    }
+    nothing();
+    int arr_2_2[2][2] = {{0, 1},
+                         {2, 3}};
+    int d = 0;
+    d = get_first(arr_2_2);
+    const int e = - +2;
+    return 0;
+}

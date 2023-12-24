@@ -1,0 +1,74 @@
+//
+// Created by charles on 2023/9/12.
+//
+
+
+//////////////////////////////////////
+int main() {
+    printf("21373191\n");
+    int var_ans;
+    var_ans = getint();
+    int var_res;
+    var_res = getint();
+    printf("var_ans from getint() is %d\n", var_ans);
+    printf("var_res from getint() is %d\n", var_res + 1);
+    printf("getint is %d\n", 1);
+    int i;
+    for (i = 0;;) {
+        break;
+    }
+    for (; i < 2;) {
+        printf("21373191\n");
+        if (i == 1) {
+            break;
+        }
+        if (!i)
+            i = i + 1;
+        else
+            i = i + 2;
+        continue;
+    }
+    for (;; i = i + 1) {
+        printf("21373191\n");
+        if (i == 1) {
+            break;
+        }
+        if (!i)
+            i = i + 1;
+        else
+            i = i + 2;
+        continue;
+    }
+    for (i = 0; i < 2;) {
+        printf("21373191\n");
+        if (i == 1) {
+            break;
+        }
+        if (!i)
+            i = i + 1;
+        else
+            i = i + 2;
+        continue;
+    }
+    for (; i < 2; i = i + 1) {
+        printf("21373191\n");
+        if (i == 1) {
+            break;
+        }
+    }
+    for (i = 0;; i = i + 1) {
+        printf("21373191\n");
+        if (i == 0) {
+            continue;
+        }
+        break;
+    }
+    for (;;) {
+        printf("21373191\n");
+        if (i == 0) {
+            continue;
+        }
+        break;
+    }
+    return 0;
+}

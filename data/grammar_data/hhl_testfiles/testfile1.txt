@@ -1,0 +1,78 @@
+//#include<cstdio>
+
+const int Ci0_0=1,Ci0_1=1;
+const int Ci1_0[2]={0,1};
+const int Ci1_1[2]={0,1};
+const int Ci2_0[2][2]={{Ci0_0,Ci0_0*Ci0_1+1-Ci0_0},{Ci0_0,Ci0_0*Ci0_1+1-Ci0_0}};
+
+int Vi0_0=1,Vi0_1=1;
+int Vi1_0[2]={0,1};
+int Vi2_0[2][2]={{0,1},{0,1}};
+int Vi2_1[2][2]={{0,1},{0,1}};
+
+void func1() {
+    return;
+}
+
+void func2(int v0) {
+    printf("7: for %d\n", v0);
+    return;
+}
+
+void func3(int v0, int v1[]) {
+    v1[0] = v1[0]+v0-v0;
+    return;
+}
+
+int func0(int v0,int v1[],int v2[][Ci0_0*Ci0_1+1]) {
+    return v0+v1[0]+v2[0][0];
+}
+
+int main() {
+    //testfile1.txt
+    printf("21371227\n");
+    int _Vi0_0=1,_Vi0_1=1;
+    int _Vi1_0[2]={0,1};
+    int _Vi2_0[2][2]={{0,1},{0,1}};
+    ;
+    {};
+    func1();
+    func2(_Vi0_0);
+    func3(_Vi0_0,_Vi1_0);
+
+    int _Vi2_1[2][2]={{0,1},{0,1}};
+    _Vi0_0=Vi1_0[1]+Ci0_1-(0+3*Vi2_0[0][1])*Ci0_1+Vi0_0*_Vi0_1/1*1%4+(1)+(Vi0_0+1)*2;
+    _Vi1_0[1]=1;
+    _Vi2_0[0][1]=1;
+
+    _Vi2_1[1][1]=Vi2_0[0][1]%2-Vi1_0[1]+Ci0_0;
+    {
+        const int _Ci0_0_=1,_Ci0_1_=1;
+        int _Vi0_0_=1,_Vi0_1_=1;
+        int _Vi1_0_[2]={0,1};
+        int _Vi2_0_[2][2]={{0,1},{0,1}};
+        int _Vi2_1_[2][2]={{Vi0_0,Vi0_0*Ci0_1+1-Ci0_0},{Vi0_0,Vi0_0*Ci0_1+1-Ci0_0}};
+        printf("2: in block %d\n", Vi2_0[Ci0_0-1][Ci0_0]%2-Vi1_0[Ci0_0]+Ci0_0);
+    }
+    int i;
+    for (_Vi1_0[0]=1;_Vi1_0[0]<=1 && _Vi1_0[0]<=10 || _Vi1_0[0]>100;_Vi1_0[0]=_Vi1_0[0]+1) {
+        for (_Vi2_0[0][1]=1;_Vi2_0[0][1]<=1;_Vi2_0[0][1]=_Vi2_0[0][1]+1) {
+            _Vi0_0 = _Vi0_0 + 1;
+        }
+        printf("3: forbegin\n");
+        if (Vi2_0[0][1]%2-Vi1_0[1]+Ci0_0>=1 && Vi2_0[0][1]%2-Vi1_0[1]+Ci0_0<10) {
+            if (_Vi1_0[0]==1&&_Vi0_1==1 || _Vi0_1<=0) {
+                printf("4: for %d\n", Ci1_0[0]);
+                printf("5: for %d\n", Ci2_0[0][1]);
+                printf("6: for %d\n", Ci2_0[Vi0_0-1][Ci0_0]);
+                printf("8: for %d\n", _Vi0_0);
+            }
+        }
+        else if (Vi0_1==0) {
+            break;
+        }
+    }
+    printf("9: %d\n",func0(Ci0_0, Vi1_0, Vi2_0));
+    printf("10: %d\n",func0(Vi2_0[0][1]%2-Vi1_0[1]+Ci0_0,Vi2_0[1],Vi2_1));
+    return 0;
+}

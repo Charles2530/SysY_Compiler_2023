@@ -1,0 +1,33 @@
+
+
+int count = 0;
+int map[4][4];
+
+void update(int a[]) {
+    int i = 0;
+    for (i=0; ;) {
+        count = count + 1;
+        a[i] = count;
+        i = i + 1;
+        if (i == 4) break;
+    }
+}
+
+void print(int a[][4]) {
+    int i;
+    for (i = 0; i <4; i = i + 1) {
+        int j;
+        for (j = 0; j < 4; j = j + 1) printf(" %d", map[i][j]);
+    }
+}
+
+int main() {
+    printf("21371229\n");
+    int i = 0;
+    for (i = 0; i <4; i = i + 1) update(map[i]);
+
+    print(map);
+
+    return 0;
+}
+

@@ -1,0 +1,13 @@
+21373191
+var_ans from getint() is 1
+var_res from getint() is 2
+getint is 1
+0
+no!!!
+a = 3, b = 3
+no!!!
+0+3=3
+global const: 0,1,2,3,4,5,2
+global variable: 0,0,3
+yes
+3

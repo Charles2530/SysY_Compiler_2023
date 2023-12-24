@@ -1,0 +1,10 @@
+21373181
+Condition 1 is not satisfied! 0
+Condition 2 is satisfied! 0
+Condition 3 is satisfied!
+Condition 4 is satisfied!
+Condition 5 is not satisfied!
+Condition 6 is not satisfied!
+Condition 7 is satisfied!
+Condition 8 is satisfied!
+Condition 9 is not satisfied!

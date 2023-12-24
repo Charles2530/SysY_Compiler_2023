@@ -1,0 +1,8 @@
+21371229
+ !()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~-21371229
+getInt() format_string() magic_number is 4220824
+-17150405
+1919810
+844956005
+last Id: 20371229, getInti: 100
+sum: 381864920, getInti: 3

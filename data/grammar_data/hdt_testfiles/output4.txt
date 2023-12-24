@@ -1,0 +1,6 @@
+21373188
+test_multi_param(): 1 + 2 = 3
+test_no_param(): I am joker!
+test_one_param(): a = 3, b = 3
+test global const: 0,1,2,3,4,5,2
+test global variable: 6,3,3

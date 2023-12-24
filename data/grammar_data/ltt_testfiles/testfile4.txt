@@ -1,0 +1,80 @@
+
+
+/*
+ * {Decl}
+ */
+const int Id = 21371229, date = 19260817, Mod = 998244353;
+const int ikun = 5 / 2, magic_number = (Id % date) * ikun;
+int n = magic_number, m = ikun * 4, x_1, x_2;
+
+/*
+ * {FuncDef}
+ */
+void print_enter() {
+    printf("\n");
+}
+/// format_string
+void format_string() {
+    printf(" !()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~%d", +-Id);
+    printf("\ngetInt() format_string() magic_number is %d", magic_number);
+    print_enter();
+}
+void print(int n) {
+    if (n < 0) { printf("-"); n = -+-(-n); }
+    if (!n) return;
+    print(n / 10);
+    printf("%d", n % 10);
+}
+
+int s_mult(int x, int y) {
+    int ret = 0;
+    for (;y;) {
+        if (y % 2 == 1) ret = (ret + x) % Mod;
+        x = (x + x) % Mod;
+        y = y / 2;
+    }
+    return ret;
+}
+
+int q_power(int x, int y) {
+    int ret;
+    for (ret = 1;y; y = y/2) {
+        if (y % 2 == 1) ret = s_mult(ret, x);
+        x = s_mult(x, x);
+    }
+    return ret;
+}
+int main() {
+    printf("21371229\n");
+    /*---*/ format_string();
+    print(Id - date * 2); print_enter();
+    int date = 1919810;
+    print(date); print_enter();
+    print(q_power(ikun, Id)); print_enter();
+    int cvbb = 114514;
+    int getInti;
+    getInti = getint();
+    if (getInti >= -cvbb) s_mult(s_mult(date, cvbb), Id);
+    if (s_mult(cvbb, date) != s_mult(date, cvbb)) {
+        printf("wrong performance: %d * %d != %d * %d\n", cvbb, date, date, cvbb);
+    } else if (getInti > 0) {
+        printf("last Id: %d, getInti: %d\n", Id - 1000000, getInti);
+    } else {
+        printf("next Id: %d, getInti: %d\n", Id + 1000000, getInti);
+    }
+    { { {} } }
+    ;
+    int sum = 0;
+    for (getInti = 10; getInti; getInti = getInti - 1) {
+        if (getInti <= 3) break;
+        sum = q_power(getInti, sum + getInti);
+        continue;
+        getInti = getInti / 2;
+    }
+    printf("sum: %d, getInti: %d\n", sum, getInti);
+//    printf("21371229\n");
+//    printf("21371229\n");
+//    printf("21371229\n");
+//    printf("21371229\n");
+    return 0;
+}

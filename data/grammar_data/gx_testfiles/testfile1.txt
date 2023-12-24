@@ -1,0 +1,36 @@
+// #include <stdio.h>
+
+int main() {
+    printf("21373181\n");
+    int arr[2][2] = {{5,  10},
+                     {-5, -10}};
+    int a = arr[0][0];
+    int b = - + -arr[0][1];
+    int arr2[2] = {1, 2};
+    const int C = arr2[0];
+    int d = 0;
+    d = -arr2[0];
+    if (!0) {
+        int e;
+    }
+    for (;;) { break; };
+    if (a > 0 && a < 2 && b <= 2) printf("Condition 1 is satisfied!\n"); else printf("Condition 1 is not satisfied!\n");
+
+    if (a > 0 || b > 0) printf("Condition 2 is satisfied!\n"); else printf("Condition 2 is not satisfied!\n");
+
+    if (a > 0 || b >= 0) printf("Condition 3 is satisfied!\n"); else printf("Condition 3 is not satisfied!\n");
+
+    if (a > 0 && b + 1 > 0) printf("Condition 4 is satisfied!\n"); else printf("Condition 4 is not satisfied!\n");
+
+    if (a == 5 && b * 2 == 10) printf("Condition 5 is satisfied!\n"); else printf("Condition 5 is not satisfied!\n");
+
+    if (a != 5 || b != 10) printf("Condition 6 is satisfied!\n"); else printf("Condition 6 is not satisfied!\n");
+
+    if (a > 0 && b > 0 && a < b) printf("Condition 7 is satisfied!\n"); else printf("Condition 7 is not satisfied!\n");
+
+    if (a > 0 || b != 0 || a < b) printf("Condition 8 is satisfied!\n"); else printf("Condition 8 is not satisfied!\n");
+
+    if (!a) printf("Condition 9 is satisfied!\n"); else printf("Condition 9 is not satisfied!\n");
+
+    return 0;
+}

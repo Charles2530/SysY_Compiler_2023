@@ -1,0 +1,99 @@
+
+
+int x1,x3,x4 = 5;
+const int x5 = 2*5/4,x6 = 3; 
+const int x7 = 7;
+int x2;
+int x8 = 8;
+int a__9 = 9*8*7*6;
+const int A = 97;
+const int b = 76,__C = 65,_dDd = 13;
+
+void f1() {
+	x1 = 1 + 2 - (1+1);
+	x2 = 2;
+	x3 = 3;
+	if (x1 >= 2) {
+		x1 = 4;
+	}
+}
+
+void f2(int x) {
+	x2 = x8 + 7 + x4 - x;
+	if (x2 <= 2) {
+		x2 = 5;
+	}
+	return;
+}
+
+void f3(int x[][2],int y[][2]) {
+	x[0][0] = y[1][0] + y[1][1] * x8;
+	x[0][1] = y[1][0] - y[1][1] + x5*x4;
+	x[1][0] = y[0][0] * (y[0][1] - x3);
+	x[1][1] = y[1][0] * y[1][1]* y[0][0];
+	if (x[0][0] == 1 && x[1][1] == 0) {
+		x[1][1] = 2;
+	}
+	return; 
+}
+
+int f4() {
+	int x = 5 * a__9 /(9*7*8*6);
+	x = x1 + x2*(x/(x3 + 1))%2;
+	if (x == 3 || x == 4) {
+		x = 100;
+	}
+	return x;
+}
+
+int f5(int x) {
+	int a = 0;
+	if (!a) {
+		x = 10;
+	}
+	return x+1;
+}
+
+int f6(int x,int y) {
+	int t = f5(x);
+	return (x+y) * x5 / x6 * x4;
+}
+
+int main() {
+	printf("21373293\n");
+	f2(A);
+	f1();
+	f2(3);
+	int x[2][2] = {{1,2},{3,4}};
+	int y[2][2] = {{3*4,7-3},{5%3,9/2}};
+	int z[2];
+	z[0] = 7*8-+6%4*2-+(5/1)*x2;
+	z[1] = x1*4+x1/(x2*x3 + 1)-+x4%3*x5;
+	f3(x,y);
+	int a = f4();
+	int b = f5(a);
+	int c = f6(a,b);
+	if (a > b + 1&& b*2+1 < c%a && x[0][0]*z[0] - 4 <= x[0][1] + z[1] && x[1][0]*(5)*1 >= x[1][1]/(x2 + 1) - 2 && y[0][0] == x[0][0] && y[0][1] + 1*y[1][1] != x[0][1])
+		printf("%d %d\n",a,b);
+	else {
+		printf("%d %d\n",a,c);
+	}
+	if (a <= c+1 && x1%100 >= x2 || x3*x2+1-1 < x4 + f5(1)|| x5*x2 != x6*3*4/5-1 && x8 > x4 && x[1][1]+-+1*1*0 == y[1][1])
+		printf("\n%d\n",c);
+	else {
+		printf("\n%d\n",b);
+	}
+	if (a == b && c != b) {
+		a = b + 1;
+	}
+	if (a != b || c == 1) {
+		a = b-1;
+	}
+	if (a > b && c <x1) {
+		printf("%d\n",a);
+	} else {
+		printf("%d\n",b);
+	}
+	return 0; 
+}
+

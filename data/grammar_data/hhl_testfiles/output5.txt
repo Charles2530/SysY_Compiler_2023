@@ -1,0 +1,10 @@
+21371227
+2: use only-block
+3: use func
+4: use func1
+5: 37 10
+6: 10 20
+7: 100
+8: use func
+9: YES
+10: YES

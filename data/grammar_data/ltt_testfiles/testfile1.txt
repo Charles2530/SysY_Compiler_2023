@@ -1,0 +1,31 @@
+const int Mod = 1000;
+int n = 0, m = 0;
+
+int add() {
+    n = n + 1;
+    return n;
+}
+
+void print_n() {
+    printf("%d\n", n);
+}
+
+int main() {
+    printf("21371229\n");
+    int Mod = Mod + 10, ikun = ikun;
+    printf("Mod - Mod: %d, ikun * 0: %d\n", Mod - Mod, ikun * 0);
+    int n; n = getint();
+    if (0 && add()) printf("n: %d\n", n);
+    else if (1 || add()) print_n();
+    if (1 && add()) ; print_n();
+    if (0 || add()) ; print_n();
+    if (n || 1 && add()) ; print_n();
+    printf("21371229\n");
+    printf("21371229\n");
+    printf("21371229\n");
+    printf("21371229\n");
+    printf("21371229\n");
+    printf("21371229\n");
+
+    return 0;
+}
