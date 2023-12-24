@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public class SymbolTable {
     /**
-     * symbolTables 是符号表的树状结构，使用HashMap实现,每个
+     * symbolTable 是符号表的树状结构，使用HashMap实现,每个
      * 符号表项是一个StackSymbolTable数组,每个StackSymbolTable
      * 是一个栈结构，每个栈结构中存储的是同一层次的符号表项(类似栈式符号表)
      * isGlobalArea 是用于标记当前符号表是否处于全局区

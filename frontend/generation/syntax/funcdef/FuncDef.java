@@ -61,7 +61,7 @@ public class FuncDef {
     /**
      * funcType : 'void' | 'int';
      */
-    private void genFuncType(AstNode funcDefNode) throws IOException {
+    private void genFuncType(AstNode funcDefNode) {
         AstNode funcTypeNode = new AstNode("<FuncType>");
         funcDefNode.addChild(funcTypeNode);
         if (getPreSym().equals("INTTK")) {
