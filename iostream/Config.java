@@ -26,8 +26,8 @@ public class Config {
         Config.setGenerationMode(true);
         Config.setIsCalcMode(false);
         Config.setIsDebugMode(true);
-        Config.setIsLexerOutput(false);
-        Config.setIsParserOutput(false);
+        Config.setIsLexerOutput(true);
+        Config.setIsParserOutput(true);
     }
 
     /**
@@ -81,9 +81,9 @@ public class Config {
         Config.setErrorOutputStream(Config.isIsDebugMode() ? new BufferedWriter(
                 new FileWriter("error.txt", false)) : null);
         Config.setLexerOutputStream(Config.isIsLexerOutput() ? new BufferedWriter(
-                new FileWriter("output.txt", false)) : null);
+                new FileWriter("lexer_output.txt", false)) : null);
         Config.setParserOutputStream(Config.isIsParserOutput() ? new BufferedWriter(
-                new FileWriter("output.txt", false)) : null);
+                new FileWriter("parser_output.txt", false)) : null);
         Config.setGenerationOutputStream(Config.isIsGenerationOutput() ? new BufferedWriter(
                 new FileWriter("llvm_ir.txt", false)) : null);
         Config.setGenerationOptimizerOutputStream(

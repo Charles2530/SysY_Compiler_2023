@@ -18,8 +18,8 @@ public abstract class OptimizerUnit {
     public static void initOptimizerSetting() {
         OptimizerUnit.isOptimizer = false;
         // 优化全局设置
-        Config.setIsGenerationOutput(false);
-        Config.setIsOptimize(true);
+        Config.setIsGenerationOutput(true);
+        Config.setIsOptimize(false);
         Config.setIsGenerationOptimizerOutput(!Config.isIsGenerationOutput());
         Config.setIsAssemblyOutput(true);
         Config.setIsDebugDetailOutput(true);
