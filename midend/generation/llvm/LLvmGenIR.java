@@ -258,10 +258,10 @@ public class LLvmGenIR {
                 condAst = rootAst.getChildList().get(i);
             }
         }
+        SymbolTable.enterLoop();
         if (forStmtVal1 != null) {
             genIrAnalysis(forStmtVal1);
         }
-        SymbolTable.enterLoop();
         BasicBlock condBlock = null;
         if (condAst != null) {
             condBlock = new BasicBlock(IrNameController.getBlockName());

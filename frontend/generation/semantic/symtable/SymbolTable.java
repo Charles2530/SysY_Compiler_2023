@@ -79,10 +79,12 @@ public class SymbolTable {
      */
     public static void enterLoop() {
         loopLevel++;
+        createStackSymbolTable();
     }
 
     public static void leaveLoop() {
         loopLevel--;
+        destroyStackSymbolTable();
     }
 
     /**
